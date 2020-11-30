@@ -1,15 +1,26 @@
-> 要求：php >= 7.4
-访问目录为`public`目录
-开发中
-安装方法 `composer create-project chengyao/yao=dev-master .`
+# 安装
 
-建议使用git拉取源码，因为composer安装的可能不是最新版
-https://github.com/topyao
-如果使用git安装，需要使用composer install 安装依赖
-> 由于是开发版本，安装完成后需要进入vendor/chengyao目录删除所有包内的.git仓库
+提供两种安装方式：
 
-使用 `php yao serve [-p 8080]` 运行程序（注意当路由中存在后缀例如.html时可能会出现404，这时应该考虑使用apache）
-> 框架强制路由，所以在编写控制器前应该先定义路由规则，如果你的环境是windows需要修改public/.htaccess中的RewriteRule或者nginx伪静态规则，在index.php后面加上?。框架对数据类型比较敏感，例如在该设置为true时候不要设置1。否则会报404。
+## 1.composer安装：
+
+> composer create-project chengyao/yao=dev-master .
+
+注意这里因为是开发版本，所以安装完成后需要手动删除`vendor/chengyao`下的包中的`.git`文件夹
+
+## 2.github安装
+
+> git clone https://github.com/topyao/yao
+
+会在该目录下创建一个`yao`的文件夹，该文件夹即项目目录，需要进入`yao`目录在cmd下更新依赖
+
+>  composer install
+
+安装完成后就可以使用 `php yao serve [-p 8080]` 运行程序（注意当路由中存在后缀例如`.html`时可能会出现`404`，这时应该考虑使用`apache/nginx`）。框架强制路由，所以在编写控制器前应该先定义路由规则，如果你的环境是`windows`需要修改`public/.htaccess`中的`RewriteRule`或者`nginx`伪静态规则，在`index.php`后面加上`?`。框架对数据类型比较敏感，例如在该设置为`true`时候不要设置`1`。否则会报错。
+
+## 3.伪静态
+
+下面提供了`apache`和`nginx`的伪静态配置
 
 >apache
 
@@ -22,7 +33,9 @@ https://github.com/topyao
   RewriteRule ^(.*)$ index.php?/$1 [QSA,PT,L]
 </IfModule>
 ```
+
 >nginx 
+
 ```
 if (!-d $request_filename){
 	set $rule_0 1$rule_0;
@@ -35,43 +48,113 @@ if ($rule_0 = "21"){
 }
 ```
 
+# 目录结构
+- app  应用目录
+  - http 基础服务目录
+    - Controller.php
+    - Event.php
+    - Validate.php
+  - index 应用目录
+    - controller 控制器目录
+    - event 事件目录
+    - facade 用户自定义门面目录
+    - migrate 迁移文件目录
+    - model 模型目录
+    - validate 验证器目录
+    - view 视图目录
+- config 配置文件目录
+  - app.php 应用配置文件
+  - database.php 数据库配置文件
+  - view.php 视图配置文件
+- extend 扩展类库目录【命名空间为\\】
+- public 应用访问目录
+  - .htaccess apache伪静态文件
+  - index.php 入口文件
+- route 路由目录
+  - route.php	路由文件
+- vendor 固件包
+- .env 环境变量文件
+- .env.example 环境变量示例文件
+- .htaccess 伪静态文件
+- composer.json composer配置文件
+- composer.lock composer锁定文件
+- LICENSE 开源许可证
+- README.md 手册
+- yao 命令行文件
 
-# 一、配置文件
+> 框架支持单/多应用，单应用时需要将`app/index`下的目录全部放置在`app`下,在定义路由和渲染模板的时候应该有所注意，这里在下面的章节中会提到。
+
+# 配置
+
+配置文件包含两种，一种是`config`目录下的以小写字母开头的`.php`为后缀的文件，另一种是框架根目录下的`.env`文件，下面简单介绍下如何使用他们。
+
 ## ENV
 在开发环境下大多数配置都可以通过.env文件获取，而且默认为从.env文件获取，线上环境需要删除.env文件或者将配置中的env去掉，例如在`app.php`中有这样`'debug' => env('app.debug', false),`一个配置，我们可以更改为`'debug' => false,`
 .env文件可以使用节，例如：
+
 ```
 [APP]
-DEBUG=true
-AUTO_START=true
+DEBUG=true #开启调试
+AUTO_START=true 
 ```
 其中app就是一节，获取`DEBUG`配置可以使用`env('app.debug')`或者`\yao\facade\Env::get('app.debug');`
 
 ## config
-配置文件是位于`config`目录下，以`.php`结尾的文件。
+配置文件是位于`config`目录下，以`.php`结尾的返回一个关联数组的文件。
 
 使用`yao\Config::get()`获取所有配置，可以传入一个参数例如`app`,则会获取`app.php`文件中的配置，传入`app.auto_start` 则获取`app`中的`auto_start`参数的值
 
-### 自定义配置文件
+
+
 如果需要自定义一个配置文件，可以在`/config`目录下新建例如`alipay.php`文件并返回一个数组。使用`Config::get('alipay.param')`获取配置的值
 
 >可以使用辅助函数config() ，例如config('app.debug')
 
 
-# 二、路由定义方法
-## 在`route/route.php`中添加
-> Route::请求方式('路由地址','模块/控制器/方法');
+# 路由
+所有的路由都添加在`route/route.php`文件中，如果需要分文件存放，可以将其他文件引入该文件
 
-注意：需要引入`yao\facade\Route`类
+> 注意：需要引入`yao\facade\Route`类
 
->请求方式可以是get,post,put,delete,patch请求类型
+## 路由定义
 
-还可以定义多个类型的路由，例如：（这里的/非必须，但是建议加上）
->Route::rule('/', 'index/index/index', ['get', 'post']);
+路由的定义方式有三种：字符串，数组，闭包
 
-第三个参数传入请求方式数组，可以为空，为空默认为get和post
+路由定义需要设置请求方式例如
 
-## 路由定义支持闭包
+> Route::get(路由地址,路由表达式)   get方式请求的路由    
+
+> Route::post(路由地址,路由表达式) post方式请求的路由
+
+请求方式可以是get,post,put,delete,patch等请求类型,以下非特殊都是用`get`做演示，这里的路由地址是不包含queryString的，即使url中有queryString,也会匹配该路由。
+
+### 字符串
+
+当我们使用单应用模式的时候，按照下面的方法定义路由
+
+> Route::get('路由地址','控制器/方法');
+
+如果是多应用
+
+> Route::get('路由地址','应用@控制器/方法');
+
+例如
+
+> Route::get('index','index@index/index'); 
+
+该路由会匹配`get`方式请求的`path`为`/index`的url，并路由到`index`应用下的`Index`控制器中的`index`方法
+
+### 数组
+
+使用数组的方式定义路由，数组的第一个参数必须是一个控制器类的完整类名，第二个参数为方法名字符串，例如
+
+```php
+Route::get('index',['\app\index\controller\Index','index']);
+```
+
+表示路由到`\app\index\controller\Index`控制器的`index`方法
+
+### 闭包
 
 ```
 Route::get('index',function(){
@@ -79,28 +162,65 @@ Route::get('index',function(){
 });
 ```
 
-注意：这里使用到了view助手函数，可以传入第三个参数，表示渲染基于ROOT常量路径的模板。
+注意：这里使用到了view助手函数，当路由地址中含有参数时可以给闭包函数传递相应参数，在下面会提到。
 
-## 路由定义支持数组
-> 例如 Route::get('index',['\app\index\controller\Index','index']);
-表示路由到`\app\index\controller\Index`控制器的`index`方法
+## 路由高级
 
-## 路由定义支持正则表达式
-例如：`Route::get('/article/(\d+).html', 'index/article/read');` 会匹配`/article/数字.html`的请求地址，并且会给`read`方法传入一个参数，该参数不能用其他请求方法获取，需要传入的参数要在正则表达式中用括号括起来，可以传入多个参数,传入顺序按照preg_match之后的match数组去掉第一个之后的顺序传入
+### 多请求类型路由
 
-注意：正则路由中的正则不需要添加定界符。路由匹配遵循最先原则，即在route.php中出现的顺序，即匹配到之后就停止匹配
+当我们一个url需要多种请求方式来访问的时候可以定义`rule`类型的路由，例如：（这里的/非必须，但是建议加上）
+
+>Route::rule('/', 'index/index/index', ['get', 'post']);
+
+第三个参数传入请求方式数组，可以为空，为空默认为`get`和`post`
+
+### 正则表达式与参数传递
+
+在上面提到了路由是可以给控制器方法或者闭包传递参数的。
+
+例如我定义了一个如下的路由
+
+```php
+Route::get('/article/index(\d+).html', 'index/article/read');
+```
+
+该路由的第一个参数是一个不带定界符的正则表达式，该表达式会匹配`/article/任意数字.html`的请求地址，这个正则中使用了一个匹配组`(\d+)`,并且这个组是第一次出现的，那么就可以在控制器方法或者闭包中传入一个参数。
+
+> 给闭包传参
+
+```php
+Route::get('/article/index(\d+)?.html',function($id = 0){
+	echo $id;
+})
+```
+
+> 给控制器方法传参
+
+```php
+public functin read($id = 0){
+	echo $id;
+}
+```
+
+可以传入多个参数,传入顺序按照preg_match之后的match数组去掉第一个之后的顺序传入,，例如：
+
+```php
+Route::get('/(\w+)-index(\d+).html',function($a,$b){
+	echo $a,$b;
+})	
+```
+
+访问`blog-index2.html` 时会输出`blog` 和 `2`
+
+> 注意：正则路由中的正则不需要添加定界符，多个参数是按匹配到的顺序传递的。
 
 
-如果需要将路由分文件存储，只需要将文件引入到route.php即可
-
-开发环境下可以设置`app.php`或者`.env`配置文件中的`debug`为`true`，这样就可以看到错误错误的详细信息了。
-
-
-# 三、请求
+# 请求
 ## 获取请求参数
 获取请求可以用Facade `yao\facade\Request::get()` ，或者使用new Request(? array $filters = null) 可以不传参数，传入的参数必须是包含可以使用的过滤函数的数组，当独立使用时建议加上参数可以实现获取数据的过滤
 使用`yao\facade\Request::get()`,获取所有`get`的参数列表，如果需要获取某一个参数，可以使用`yao\facade\Request::get('a');` 获取多个参数可以使用`yao\facade\Request::get(['a','b']);`
 还可以获取`post`请求的内容
+
 >yao\facade\Request::post();
 
 获取所有`$_REQUEST`使用`yao\facade\Request::param();`
@@ -120,7 +240,7 @@ Route::get('index',function(){
 
 注意：如果需要获取的参数不存在，该参数的值将会是null，例如`Request::get(['a','b'])`当b不存在的时候会是`null`，此时需要用`is_null`判断。
 
-# 四、验证器
+# 验证器
 
 >需要验证的数据必须是数组，比如通过Request类方法传入数组获取的数组。
 
@@ -178,15 +298,34 @@ $vali = Validate::data($data)->max(['a' => 10])->required(['a' => true,'b' => tr
 > 验证器支持设置验证失败抛出异常，只需将独立验证的属性throwAble设置为true，或者给check方法传入第三个参数true，即可开启抛出异常，批量验证失败抛出异常信息为json。
 
 
-# 五、控制器
+# 控制器
 假如我定义了一个`Route::get('/','index/index/index');`的路由
 如果需要编写控制器代码，就需要编写`/app/index/controller`目录下的`Index.php`控制器下的`index`方法
 
+控制器的基本代码如下：
+```
+<?php
 
+namespace app\index\controller;
 
-# 六、模板（smarty）
-模板引擎使用了`smarty`
-模板目录位于`/app/模块/view` 目录，比如我在`/app/index/view/index`目录下有一个`index.html`的模板，我可以在控制器方法中使用`return view('index/index')`渲染模板，该方法可以传入第二个数组参数用来给模板赋值，例如
+class Index
+{
+    public function index()
+    {
+    }
+}
+```
+> 控制器可以继承\yao\Controller 基础控制器来使用基础控制器中提供的方法，你也可以自定义基础控制器
+
+>可以给控制器方法传入参数，参数个数和位置取决于路由中正则匹配到的参数。
+当路由中的参数为可选，就应该给控制器参数一个初始值
+
+# 模板引擎
+
+模板引擎使用了twig
+
+模板目录位于`/app/应用/view` 目录，比如我在`/app/index/view/index`目录下有一个`index.html`的模板，我可以在控制器方法中使用`return view('index/index')`渲染模板，该方法可以传入第二个数组参数用来给模板赋值，例如
+
 >view('index',['data'=>$data]);
 
 或者使用facade的`yao\facade\View::fetch('template',$params);`
@@ -197,27 +336,42 @@ $vali = Validate::data($data)->max(['a' => 10])->required(['a' => true,'b' => tr
 
 > 你可以使用composer安装你喜欢的模板引擎
 
-# 七、facade
+# facade
 
-加入了facade，可以在任何可以composer自动加载的位置创建类继承yao\Facade类，就可以实现静态代理
+facade基本代码示例如下：
 ```
-class View extends Facade
+<?php
+
+namespace app\index\facade;
+
+use yao\Facade;
+
+class UserCheck extends Facade
 {
     protected static function getFacadeClass()
     {
-        return \yao\View::class;
+        return \app\index\validate\UserCheck::class;
     }
+
 }
 ```
+
+> 你可以在任何可以composer自动加载的位置创建独立验证器类并继承yao\Facade类，就可以实现静态代理，但是为了方便维护，建议创建在应用对应的facade目录下。
+
 >注意: facade默认实例化对象都不是单例的。如果需要使用单例，可以加入`protected static $singleInstance = true;`，当然仅仅是在你的请求的页面中使用该类的方法全部为facade的时候才是单例的。
 
-# 八、数据库（目前只支持mysql）
+# 数据库
+
+很遗憾，由于本人技术有限，目前的`Db`类只对`mysql`支持良好，其他数据库暂时没有测试。如果有需求可以使用`composer`安装第三方的数据库操作类，例如：`medoo`，`thinkorm`
+
 ## 新增
 > db('users')->insert(['name' => 'username','age' => 28]);
 ## 删除
 > db('users')->where(['id' => 1])->delete();
-## 查询(查询到的是数据集对象，可以使用toArray或者toJson获取)
+## 查询
 > yao\Db::name('表名')->field('字段')->where([条件])->limit(1,3)->find()/select();
+查询到的是数据集对象，可以使用toArray或者toJson获取
+
 ## 更新
 > db('users')->where('id > 10')->update(['name' => 'zhangsan']);
 
@@ -243,14 +397,37 @@ class View extends Facade
 > Db::query('SELECT * from users where id > :id',['id' => 1],true);
 
 表示查询出所有id大于1的用户信息
-> Db::exec('UPDATE users SET name=? where id = ?',['zhangsan',1]);
+```php
+Db::exec('UPDATE users SET name=? where id = ?',['zhangsan',1]);
+```
 
 修改id为1的用户的名字为张三
 
 ## 删除
-> yao\Db::name('users')->where('id > 10')->delete();
+```
+yao\Db::name('users')->where('id > 10')->delete();
+```
 
 删除id大于10的用户。
 > 注意：你可以自行安装`medoo`，`think-orm`等数据库操作类库或者使用自带的Db类,该Db类的操作方法大部分需要的是数组类型的参数。
+
+
+# 事件
+
+事件实现基本代码如下
+```
+<?php
+
+namespace app\index\event;
+
+class Serve
+{
+    public function boot()
+    {
+        echo '1';
+    }
+}
+```
+
 
 联系邮箱:bigyao@139.com
