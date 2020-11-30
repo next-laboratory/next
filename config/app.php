@@ -11,8 +11,6 @@ return [
     'default_timezone' => env('app.default_timezone', 'PRC'),
     //参数过滤
     'filter' => ['trim', 'htmlspecialchars'],
-    //禁止访问的模块
-    'banned_module' => ['http'],
 
     'exception_view' => ROOT . 'vendor/chengyao/framework/src/tpl/exception.html'
 ];
