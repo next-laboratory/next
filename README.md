@@ -6,6 +6,7 @@
 建议使用git拉取源码，因为composer安装的可能不是最新版
 https://github.com/topyao
 如果使用git安装，需要使用composer install 安装依赖
+> 由于是开发版本，安装完成后需要进入vendor/chengyao目录删除所有包内的.git仓库
 
 使用 `php yao serve [-p 8080]` 运行程序（注意当路由中存在后缀例如.html时可能会出现404，这时应该考虑使用apache）
 > 框架强制路由，所以在编写控制器前应该先定义路由规则，如果你的环境是windows需要修改public/.htaccess中的RewriteRule或者nginx伪静态规则，在index.php后面加上?。框架对数据类型比较敏感，例如在该设置为true时候不要设置1。否则会报404。
