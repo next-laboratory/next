@@ -19,7 +19,9 @@
     ]
   },
   "require": {
-    "php": ">=7.4"
+    "php": ">=7.4",
+    "chengyao/framework": ">=0.0.1",
+    "chengyao/migrate": ">=0.0.1"
   },
   "require-dev": {
     "chengyao/framework": "dev-master",
