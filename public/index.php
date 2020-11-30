@@ -4,8 +4,7 @@
 ini_set('display_errors', 'on');
 error_reporting(E_ALL);
 
-define('DS', DIRECTORY_SEPARATOR);
-define('ROOT', dirname(getcwd()) . DS);
+define('ROOT', dirname(getcwd()) . '/');
 require ROOT . 'vendor/autoload.php';
 //调用框架初始化方法
 yao\App::run();
