@@ -3,7 +3,7 @@
 
 namespace app\http;
 
-class Service extends \yao\Service
+class Event extends \yao\Event
 {
     public function services()
     {
