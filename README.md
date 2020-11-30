@@ -1,10 +1,10 @@
 > 要求：php >= 7.4
 访问目录为`public`目录
-
-安装方法 `composer create-project chengyao/yao`
+开发中
+安装方法 `composer create-project chengyao/yao=dev-master .`
 
 建议使用git拉取源码，因为composer安装的可能不是最新版
-https://gitee.com/cheng-yao/yao
+https://github.com/topyao
 如果使用git安装，需要使用composer install 安装依赖
 
 使用 `php yao serve [-p 8080]` 运行程序（注意当路由中存在后缀例如.html时可能会出现404，这时应该考虑使用apache）
