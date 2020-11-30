@@ -2,13 +2,10 @@
 
 namespace app\index\controller;
 
-use yao\Controller;
-
-class Index extends Controller
+class Index
 {
-
-    public function index($page = 1)
+    public function index()
     {
-        abort('感谢信任',666);
+        abort('Yao', 666);
     }
 }
