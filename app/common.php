@@ -4,13 +4,6 @@
  * 用户自定义函数
  */
 
-function alertRedirect($message)
-{
-    exit("<script>alert('$message');window.history.go(-1)</script>");
-    //    exit("<script> alert('$message'); </script><meta http-equiv='Refresh' content='$time;URL=$url'>");
-}
-
-
 if (!function_exists('time_convert')) {
     /**
      * 时间个性化函数

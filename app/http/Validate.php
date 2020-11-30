@@ -4,14 +4,16 @@ namespace app\http;
 
 class Validate extends \yao\Validate
 {
-    /**
-     * protected array $message = [];
-     * 存放错误信息
-     * protected array $data = [];
-     * 存放需要验证的数据
-     * protected array $rule = [];
-     * 存放用户验证规则
-     */
+
+    protected bool $throwAble = false;
+
+    protected array $rule = [
+        'field' => ['max' => 10],
+    ];
+
+    protected array $notice = [
+        'field' => ['max' => '最长是十哦！']
+    ];
 
     /*
     * 用户自定义验证方法
