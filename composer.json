@@ -1,0 +1,26 @@
+{
+  "name": "chengyao/yao",
+  "description": "Are you okay!",
+  "type": "project",
+  "authors": [
+    {
+      "name": "chengyao"
+    }
+  ],
+  "license": "Apache-2.0",
+  "autoload": {
+    "psr-4": {
+      "app\\": "app/",
+      "": "extend/"
+    },
+    "files": [
+      "app/common.php",
+      "route/route.php"
+    ]
+  },
+  "require": {
+    "php": ">=7.4",
+    "chengyao/framework": "^0.0.3",
+    "chengyao/migrate": "^0.0.1"
+  }
+}

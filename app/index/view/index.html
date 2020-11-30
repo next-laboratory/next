@@ -1,0 +1,341 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>穷逼</title>
+    <meta name="description" content="">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="/static/index/css/bootstrap.min.css">
+    <script type="text/javascript" src="/static/index/js/jquery-3.5.1.min.js"></script>
+    <script src="/static/index/js/bootstrap.js"></script>
+    <script src="/static/index/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="/static/index/js/common.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#customAmount").keyup(function () {
+                var amount = $(this).val()
+
+                amount = amount.replace(/\D|^0/g, '')
+                $(this).val(amount)
+
+                $("#amount").val(amount)
+                //console.log($("#amount").val())
+            }).bind("paste", function () {
+                $(this).val($(this).val().replace(/\D|^0/g, ''))
+            })
+        })
+    </script>
+    <link rel="stylesheet" href="/static/index/css/css.css">
+</head>
+
+<body>
+<div class="wrap">
+    <h1 class="logo"><img src="/static/index/picture/qiong.bi.gif" class="logo-img"><span class="logo-txt">穷逼</span>
+    </h1>
+    <blockquote class="slogan">
+        <p>“我是穷逼，人穷志短的傻逼，我自卑，我虚荣；我没钱，没梦想；没朋友，没爱情，更没有尊严。”</p>
+        <p>“我穷困潦倒，我失意颓废，我人生一片灰暗。放下我卑贱的自尊，只求大爷您用金钱羞辱我，践踏我！”</p>
+    </blockquote>
+    <h2 class="alms-title">用金钱羞辱他</h2>
+    <form action="?" method="post" class="alms-form">
+        <p class="field">
+            <label for="">大爷尊称</label>
+            <span class="ui-input">
+          <span class="inner">
+            <input name="username" id="username" class="input-txt" type="text" placeholder="一个好人">
+          </span>
+        </span>
+        </p>
+        <p class="field">
+            <label for="">您的邮箱</label>
+            <span class="ui-input">
+          <span class="inner">
+            <input name="email" id="email" class="input-txt" type="email" placeholder="help@me.com">
+          </span>
+        </span>
+            <span class="tips">以便与您取得联系</span>
+        </p>
+
+        <p class="field">
+            <label for="">羞辱他几句</label>
+            <span class="ui-input">
+          <span class="inner">
+            <textarea name="says" id="says" class="input-txt" id="" cols="60" rows="4"
+                      placeholder="机遇永远是准备好的人得到的。"></textarea>
+          </span>
+        </span>
+        </p>
+        <p class="field field-group amounts">
+            <span class="amount first" data-amount="5">5<small class="currency">¥</small></span>
+            <span class="amount" data-amount="8.88">8.88<small class="currency">¥</small></span>
+            <span class="amount" data-amount="10">10<small class="currency">¥</small></span>
+            <span class="amount" data-amount="20">20<small class="currency">¥</small></span>
+            <span class="amount" data-amount="50">50<small class="currency">¥</small></span>
+            <span class="amount custom">
+          <span class="ui-input">
+            <span class="inner">
+              <input type="text" class="input-txt" id="customAmount" placeholder="其他金额≥5">
+            </span>
+          </span>
+        </span>
+        </p>
+
+        <p class="action">
+            <button type="submit" class="btn-form"><span class="ico"><img class="alipay-icon"
+                                                                          src="/static/index/image/alipay.png"
+                                                                          alt=""></span><span class="txt">践踏他的尊严</span>
+            </button>
+        </p>
+        <input type="hidden" name="amount" id="amount" value="5">
+
+        <div class="payment" style="display:none;">
+            <h3>谢谢您的关爱</h3>
+            <p class="img"><img src="/static/index/picture/default.jpg" alt="" width="150" height="150"></p>
+            <p class="txt">微信扫描关爱<strong class="price"><span class="value">100</span> &yen;</strong><br>祝好人一生平安</p>
+            <p class="state"></p>
+        </div>
+
+        <div class="aside summary">
+            <p>截至
+                <script>document.write(new Date().toLocaleDateString())</script>
+                共92人<br>羞辱过本穷逼的金钱共计<span
+                        class="donation">{{sum}}<small class="currency">¥</small></span></p>
+        </div>
+    </form>
+    <h2 class="alms-title alms-list-title" id="comments">有钱就是爷</h2>
+    <div class="alms-list">
+        <ol class="list" role="main">
+
+            <{foreach $comments as $comment}>
+            <li itemscope="" itemtype="http://schema.org/Person">
+                <p class='info'><img itemprop="photo" src='/static/index/picture/100.jpg'><span class='fn'
+                                                                                                itemprop="name"><{$comment.username}></span>于
+                    <time datetime='2018/4/13 15:49:26'><{$comment.time|time_convert}></time>
+                    向他捐赠<strong
+                            class='sum'><{$comment.donate}></strong>&yen;
+                </p>
+                <p class='says'><i class='qt-l'></i><{$comment.say}><i class='qt-r'></i></p>
+            </li>
+            <{/foreach}>
+        </ol>
+        <p class="pages">
+            <span class='disabled'>&laquo; 上一页</span><span class='current'>1</span><a href='/2#comments'>2</a><a
+                href='/3#comments'>3</a><a href='/4#comments'>4</a><a href=''>下一页 &raquo;</a>
+        </p>
+    </div>
+    <div class="aside about">
+        <p>本站自豪地使用了世界上<br>最好的语言开发<br><img src="/static/index/picture/asp_logo.jpg" alt="" height="20"></p>
+        <p class="statement">本站LOGO原型来自于网络<br>LOGO字体版权归造字工坊</p>
+
+        <p class="copyright">&copy; 2015 - 2020&nbsp;test.com</p>
+    </div>
+</div>
+
+<div class="modal fade" id="buy-template" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content border-0">
+            <!--            <div class="modal-header">-->
+            <!--                <h5 class="modal-title" id="exampleModalLabel">购买</h5>-->
+            <!--                <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+            <!--                    <span aria-hidden="true">&times;</span>-->
+            <!--                </button>-->
+            <!--            </div>-->
+            <div class="modal-body pb-0">
+                <div class="row">
+                    <div class="col">
+                        <ul class="nav nav-tabs nav-justified border-0" id="myTab" role="tablist">
+                            <li class="nav-item"><a class="nav-link mr-0 active" id="alipay-tab" data-toggle="tab"
+                                                    href="#alipay"
+                                                    role="tab" aria-controls="alipay" aria-selected="true"><img
+                                    data-original="/static/index/img/payment/alipay.png" class="img-fluid pb-2"
+                                    src="/static/index/image/alipay.png" style=""></a>
+                            </li>
+                            <li class="nav-item"><a class="nav-link mr-0" id="wechat-tab" data-toggle="tab"
+                                                    href="#wechat"
+                                                    role="tab" aria-controls="profile" aria-selected="false"><img
+                                    data-original="/static/index/img/payment/wechat.png" class="img-fluid pb-2"
+                                    src="/static/index/image/wechat.png" style=""></a></li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade active show" id="alipay" role="tabpanel"
+                                 aria-labelledby="visa-tab">
+                                <div id="div1" style="display: inline;">
+                                    <ul class="list-group">
+                                        <li class="text-center my-3 alipay-qrcode">
+                                        </li>
+                                        <!--                                        <li class="list-group-item d-flex justify-content-between btn-success-soft p-3">-->
+                                        <!--                                            <span>总计</span><strong></strong>-->
+                                        <!--                                        </li>-->
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade text-center" id="wechat" role="tabpanel"
+                                 aria-labelledby="paypal-tab">
+                                暂不支持微信支付
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer text-center" style="background-color: #007bff;">
+                <h6 class="text-white">请使用微信或者支付宝扫码支付！(支付遇到问题联系QQ:707711924)</h6>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script type="text/javascript">
+    var times = 0
+
+    function buyTemplate(price, id) {
+        $.ajax({
+            url: '/face?amount=' + price + '&id=' + id + '&description={$item.title}',
+            data: {author: <{$item.user.id}>, tid:
+        <{$item.id}>},
+    dataType: 'json',
+    type: 'get',
+    success: function (e) {
+    switch (e.status) {
+    case -1:
+    window.location.href = '/login'
+    break;
+    case 1:
+    $('.alipay-qrcode').html('
+        <img class="w-100" data-id="' + e.msg.tradeNo + '" src="data:image/png;base64,' + e.msg.img + '">
+            <p class="mb-0">支付宝支付<i class="las la-coins"></i>'+ price +'
+            </p>
+            ')
+            // $('#alipay').find('strong').html('<i class="las la-coins"></i>' + price)
+            $('#buy-template').modal('show')
+            pay()
+            break;
+            case 2:
+            alert(e.msg);
+            break;
+            case 3:
+            window.location.href = '/down?id=' + id
+            break;
+            }
+            }
+            })
+            }
+
+    //支付轮询
+    function pay() {
+        setTimeout(function () {
+            $.ajax({
+                url: '/payCheck?tradeNo=' + $('.alipay-qrcode').children('img').attr('data-id'),
+                type: 'GET',
+                dataType: 'json',
+                success: function (e) {
+                    if (e.status === 1) {
+                        pay()
+                        times++
+                        if (times === 80) {
+                            // 此处有bug
+                            $('.modal-footer').children('h6').text('二维码过期！')
+                        }
+                    } else if (e.status === 2) {
+                        pay()
+                        times++
+                        if (times === 80) {
+                            // 此处有bug
+                            $('.modal-footer').children('h6').text('二维码过期！')
+                        }
+                        $('.alipay-qrcode').children('img').attr('src', '/static/index/img/payment/scanned.png')
+                        // $('.modal-footer').children('h6').text('二维码扫描成功！根据提示支付吧！')
+                    } else {
+                        $('.alipay-qrcode').children('img').attr('src', '/static/index/img/payment/payed.png')
+                        // $('.modal-footer').children('h6').text('支付成功！现在可以点击下载按钮下载了！')
+                        setTimeout(function () {
+                            $('#buy-template').modal('hide')
+                        }, 1500)
+                    }
+                }
+            })
+        }, 1500)
+    }
+
+    $(function () {
+        $('.download-dropdown').click(function () {
+            var menu = $(this).siblings('.dropdown-menu')
+            var id = $(this).attr('data-id')
+            if (menu.children().length === 0) {
+                $.ajax({
+                    url: '/api/packages/get?id=' + id,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (e) {
+                        if (e.length === 0) {
+                            $('<h6>没有文件！</h6></td></tr>').appendTo($(menu))
+                        }
+                        for (var i in e) {
+                            if (e[i].price == 0) {
+                                e[i].price = '免费'
+                                var link = '/download?id=' + e[i].id
+                            } else {
+                                var link = 'javascript:buyTemplate(' + e[i].price + ',' + e[i].id + ')'
+                            }
+
+                            var a = $('<a class="dropdown-item" href="' + link + '"><i class="las la-coins"></i>' + e[i].price + ' | (<i class="las la-file"></i> ' + e[i].filesize + ')' + e[i].name + '</a>')
+                            a.appendTo(menu)
+                        }
+                    }
+                })
+            }
+
+        })
+
+
+        $('.avatar').each(function () {
+            $(this).attr('src', '/static/index/img/avatar/' + Math.round(Math.random() * 5 + 1) + '.jpg');
+        })
+        var testEditormdView, testEditormdView2;
+
+        // $.get("test.md", function (markdown) {
+        //
+        //     testEditormdView = editormd.markdownToHTML("test-editormd-view", {
+        //         markdown: markdown,//+ "\r\n" + $("#append-test").text(),
+        //         //htmlDecode      : true,       // 开启 HTML 标签解析，为了安全性，默认不开启
+        //         htmlDecode: "style,script,iframe",  // you can filter tags decode
+        //         //toc             : false,
+        //         tocm: true,    // Using [TOCM]
+        //         //tocContainer    : "#custom-toc-container", // 自定义 ToC 容器层
+        //         //gfm             : false,
+        //         //tocDropdown     : true,
+        //         // markdownSourceCode : true, // 是否保留 Markdown 源码，即是否删除保存源码的 Textarea 标签
+        //         emoji: true,
+        //         taskList: true,
+        //         tex: true,  // 默认不解析
+        //         flowChart: true,  // 默认不解析
+        //         sequenceDiagram: true,  // 默认不解析
+        //     });
+        //
+        //     //console.log("返回一个 jQuery 实例 =>", testEditormdView);
+        //
+        //     // 获取Markdown源码
+        //     //console.log(testEditormdView.getMarkdown());
+        //
+        //     //alert(testEditormdView.getMarkdown());
+        // });
+
+        testEditormdView2 = editormd.markdownToHTML("test-editormd-view2", {
+            htmlDecode: "style,script,iframe",  // you can filter tags decode
+            emoji: false,
+            taskList: true,
+            tex: true,  // 默认不解析
+            flowChart: true,  // 默认不解析
+            sequenceDiagram: true,  // 默认不解析
+        });
+    });
+
+
+</script>
+
+</html>

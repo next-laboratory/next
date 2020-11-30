@@ -1,0 +1,53 @@
+<?php
+
+namespace yao;
+
+class View
+{
+
+    private ?object $smarty = null;
+
+    public function __construct()
+    {
+        if (!($this->smarty instanceof self)) {
+            $this->smarty = new \Smarty();
+        }
+        $this->_setOptions();
+    }
+
+    /**
+     * 视图赋值和渲染方法
+     * @param string $template
+     * 模板名，例如index/index对应模块/index/index文件，可以为空表示模块/控制器/方法
+     * @param array $param 需要赋值给模板的参数
+     * @return mixed
+     */
+    public function fetch(string $template = '', $param = null, bool $rootBased = false)
+    {
+        $tpl = $template ?: ltrim(strtolower(strrchr(Yao::$controller, '\\')), DS) . DS . Yao::$action;
+        if ($rootBased) {
+            $tpl = ROOT . $template;
+        }
+        if (isset($param)) {
+            foreach ($param as $key => $value) {
+                $this->smarty->assign($key, $value);
+            }
+        }
+
+        return $this->smarty->display($tpl . '.' . \yao\facade\Config::get('view.template_suffix'), $rootBased);
+    }
+
+    private function _setOptions()
+    {
+        $config = \yao\facade\Config::get('view');
+//        初始化smarty的配置
+        $this->smarty->debugging = $config['debug'];
+        $this->smarty->caching = $config['cache'];
+        $this->smarty->left_delimiter = $config['left_delimiter'];
+        $this->smarty->right_delimiter = $config['right_delimiter'];
+        $this->smarty
+            ->setTemplateDir(ROOT . 'app' . DS . \yao\Route::$module . DS . 'view')
+            ->setCompileDir(ROOT . DS . 'bootstrap' . DS . 'template' . DS . 'compile')
+            ->setCacheDir(ROOT . DS . 'bootstrap' . DS . 'template' . DS . 'cache');
+    }
+}
