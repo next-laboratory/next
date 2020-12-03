@@ -4,9 +4,9 @@
 
 ## 1.composer安装：
 
-> composer create-project chengyao/yao=dev-master .
+> composer create-project chengyao/yao .
 
-注意这里因为是开发版本，所以安装完成后需要手动删除`vendor/chengyao`下的包中的`.git`文件夹
+注意如果你安装的是开发版本，安装完成后需要手动删除`vendor/chengyao`下的包中的`.git`文件夹
 
 ## 2.github安装
 
