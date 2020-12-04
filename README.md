@@ -10,7 +10,7 @@
 
 ## 2.github安装
 
-> git clone https://github.com/topyao/yao
+> git clone https://github.com/topyao/yao.git
 
 会在该目录下创建一个`yao`的文件夹，该文件夹即项目目录，需要进入`yao`目录在cmd下更新依赖
 
