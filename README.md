@@ -16,7 +16,7 @@
 
 >  composer install
 
-安装完成后就可以使用 `php yao serve [-p 8080]` 运行程序（注意当路由中存在后缀例如`.html`时可能会出现`404`，这时应该考虑使用`apache/nginx`）。框架强制路由，所以在编写控制器前应该先定义路由规则，如果你的环境是`windows`需要修改`public/.htaccess`中的`RewriteRule`或者`nginx`伪静态规则，在`index.php`后面加上`?`。框架对数据类型比较敏感，例如在该设置为`true`时候不要设置`1`。否则会报错。
+安装完成后就可以使用 `php yao serve [-p 8080]` 运行程序。框架强制路由，所以在编写控制器前应该先定义路由规则，如果你的环境是`windows`需要修改`public/.htaccess`中的`RewriteRule`或者`nginx`伪静态规则，在`index.php`后面加上`?`。框架对数据类型比较敏感，例如在该设置为`true`时候不要设置`1`。否则会报错。
 
 ## 3.伪静态
 
