@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+</head>
+
+<body>
+{{id}}
+<form name="fr1">
+    <input type='radio' name="time" value='cheng'>
+    <input type='radio' name="age" value='yao'>
+    <input type="button" id="add" value="添加">
+    <input type='button' value="提交">
+</form>
+</body>
+<script src="/jquery-3.5.1.js"></script>
+<script>
+
+    $(function () {
+
+        $('#add').click(function () {
+            $('<input type="radio" name="big" value="yd">').appendTo($(fr1))
+        })
+
+        $(':button').click(function () {
+            var form = $(fr1)
+            var qs = form.find(':radio:checked').filter(function (index, element) {
+                return $.trim(element.value).length > 0;
+            }).serialize();
+            console.log(qs)
+
+        })
+    })
+
+
+</script>
+
+</html>
