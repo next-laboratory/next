@@ -1,7 +1,7 @@
 <?php
 
 
-namespace app\http;
+namespace App\Http;
 
 class Event extends \yao\Event
 {

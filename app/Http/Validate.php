@@ -1,6 +1,6 @@
 <?php
 
-namespace app\http;
+namespace App\Http;
 
 class Validate extends \yao\Validate
 {

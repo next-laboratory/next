@@ -1,6 +1,6 @@
 <?php
 
-namespace app\http;
+namespace App\Http;
 
 use \yao\Controller as BaseController;
 

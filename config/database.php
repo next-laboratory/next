@@ -2,6 +2,7 @@
 
 return [
     'type' => env('database.type', 'mysql'),
+
     'mysql' => [
         //主机地址
         'host' => env('database.host', 'localhost'),

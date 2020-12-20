@@ -4,8 +4,8 @@
  * 路由定义文件
  */
 
-use yao\facade\Route;
+use \Yao\Facade\Route;
 
-Route::get('/', [\app\index\controller\Index::class, 'index']);
+Route::get('/', [\app\index\Controller\Index::class, 'list'])->alias('index');
 
-Route::get('/index.html', [\app\index\controller\Index::class, 'index']);
+Route::get('index', 'index@index/index')->alias('index');

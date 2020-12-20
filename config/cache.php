@@ -2,6 +2,7 @@
 
 return [
     'type' => 'redis',
+
     'redis' => [
         'host' => 'localhost',
         'port' => 6379,
