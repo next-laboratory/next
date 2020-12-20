@@ -10,7 +10,7 @@ if ('serve' === $cli) {
     if (isset($argv[2]) && '-p' == $argv[2]) {
         $port = $argv[3] ?? 8080;
     }
-    exec("php -S localhost:{$port} -t public");
+    exec("php -S 127.0.0.1:{$port} -t public public/router.php");
 }else if('migrate' === $cli){
 if(isset($argv[2])){
     $arg = explode('/',$argv[2]);
