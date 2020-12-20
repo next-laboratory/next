@@ -3,11 +3,10 @@
 
 namespace App\Http;
 
-class Event extends \yao\Event
+class Event extends \Yao\Event
 {
     public function services()
     {
         return [];
     }
-
 }
