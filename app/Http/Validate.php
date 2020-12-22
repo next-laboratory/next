@@ -2,9 +2,8 @@
 
 namespace App\Http;
 
-class Validate extends \yao\Validate
+class Validate extends \Yao\Validate
 {
-
     protected bool $throwAble = false;
 
     protected array $rule = [
