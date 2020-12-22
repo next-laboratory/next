@@ -1,9 +1,7 @@
 #!/usr/bin/env php
 <?php
-define('DS', DIRECTORY_SEPARATOR);
 define('ROOT', './');
 require('./vendor/autoload.php');
-
 $cli = $argv[1];
 
 if ('serve' === $cli) {
@@ -11,24 +9,28 @@ if ('serve' === $cli) {
     if (isset($argv[2]) && '-p' == $argv[2]) {
         $port = $argv[3] ?? 8080;
     }
-    exec("php -S 127.0.0.1:{$port} -t public public/router.php");
-}else if('migrate' === $cli){
-if(isset($argv[2])){
-    $arg = explode('/',$argv[2]);
-    $mig = 'app\\'.$arg[0].'\\migrate\\'.ucfirst($arg[1]);
-    $migrate = new $mig;
-    $migrate->do();
-}else{
-    helper();
-}
-}else {
+    passthru("php -S 127.0.0.1:{$port} -t public ./public/router.php");
+} else if ('migrate' === $cli) {
+    if (isset($argv[2])) {
+        $arg = explode('/', $argv[2]);
+        $mig = 'app\\' . $arg[0] . '\\migrate\\' . ucfirst($arg[1]);
+        $migrate = new $mig;
+        $migrate->do();
+    } else {
+        helper();
+    }
+} else if ('route' == $cli) {
+    dump(\Yao\Facade\Route::getRoute());
+} else {
     helper();
 }
 
 
-function helper(){
+function helper()
+{
     echo <<<EOT
         serve [-p 8080]          -以8080端口(默认)运行程序
         migrate <className>      -执行迁移文件
+        route                    -查看定义的路由
     EOT;
 }
