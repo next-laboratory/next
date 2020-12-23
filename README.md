@@ -6,13 +6,13 @@
 
 > composer create-project chengyao/yao .
 
-注意如果你安装的是开发版本，安装完成后需要手动删除`vendor/chengyao`下的包中的`.git`文件夹
+注意如果你安装的是开发版本，安装完成后可能需要手动删除`vendor/chengyao`下的包中的`.git`文件夹
 
 ## 2.github安装
 
 > git clone https://github.com/topyao/yao.git
 
-会在该目录下创建一个`yao`的文件夹，该文件夹即项目目录，需要进入`yao`目录在cmd下更新依赖
+会在该目录下创建一个`yao`的文件夹，该文件夹即项目目录，需要在项目目录更新依赖
 
 >  composer install
 
@@ -50,18 +50,18 @@ if ($rule_0 = "21"){
 
 # 目录结构
 - app  应用目录
-  - http 基础服务目录
+  - Http 基础服务目录
     - Controller.php
     - Event.php
     - Validate.php
-  - index 应用目录
-    - controller 控制器目录
-    - event 事件目录
-    - facade 用户自定义门面目录
-    - migrate 迁移文件目录
-    - model 模型目录
-    - validate 验证器目录
-    - view 视图目录
+  - Index 应用目录
+    - Controller 控制器目录
+    - Event 事件目录
+    - Facade 用户自定义门面目录
+    - Migrate 迁移文件目录
+    - Model 模型目录
+    - Validate 验证器目录
+    - View 视图目录
 - config 配置文件目录
   - app.php 应用配置文件
   - database.php 数据库配置文件
@@ -82,7 +82,7 @@ if ($rule_0 = "21"){
 - README.md 手册
 - yao 命令行文件
 
-> 框架支持单/多应用，单应用时需要将`app/index`下的目录全部放置在`app`下,在定义路由和渲染模板的时候应该有所注意，这里在下面的章节中会提到。
+> 框架支持单/多应用，单应用时需要将`app/Index`下的目录全部放置在`app`下,在定义路由和渲染模板的时候应该有所注意，这里在下面的章节中会提到。
 
 # 配置
 
@@ -97,7 +97,7 @@ if ($rule_0 = "21"){
 DEBUG=true #开启调试
 AUTO_START=true 
 ```
-其中app就是一节，获取`DEBUG`配置可以使用`env('app.debug')`或者`\yao\facade\Env::get('app.debug');`
+其中app就是一节，获取`DEBUG`配置可以使用`env('app.debug')`或者`\Yao\Facade\Env::get('app.debug');`
 
 ## config
 配置文件是位于`config`目录下，以`.php`结尾的返回一个关联数组的文件。
@@ -114,7 +114,7 @@ AUTO_START=true
 # 路由
 所有的路由都添加在`route/route.php`文件中，如果需要分文件存放，可以将其他文件引入该文件
 
-> 注意：需要引入`yao\facade\Route`类
+> 注意：需要引入`Yao\Facade\Route`类
 
 ## 路由定义
 
@@ -149,10 +149,10 @@ AUTO_START=true
 使用数组的方式定义路由，数组的第一个参数必须是一个控制器类的完整类名，第二个参数为方法名字符串，例如
 
 ```php
-Route::get('index',['\app\index\controller\Index','index']);
+Route::get('index',['\App\Index\Controller\Index','index']);
 ```
 
-表示路由到`\app\index\controller\Index`控制器的`index`方法
+表示路由到`\App\Index\Controller\Index`控制器的`index`方法
 
 ### 闭包
 
@@ -170,7 +170,7 @@ Route::get('index',function(){
 
 当我们一个url需要多种请求方式来访问的时候可以定义`rule`类型的路由，例如：（这里的/非必须，但是建议加上）
 
->Route::rule('/', 'index/index/index', ['get', 'post']);
+>Route::rule('/', 'index@index/index', ['get', 'post']);
 
 第三个参数传入请求方式数组，可以为空，为空默认为`get`和`post`
 
@@ -181,7 +181,7 @@ Route::get('index',function(){
 例如我定义了一个如下的路由
 
 ```php
-Route::get('/article/index(\d+).html', 'index/article/read');
+Route::get('/article/index(\d+).html', 'index@article/read');
 ```
 
 该路由的第一个参数是一个不带定界符的正则表达式，该表达式会匹配`/article/任意数字.html`的请求地址，这个正则中使用了一个匹配组`(\d+)`,并且这个组是第一次出现的，那么就可以在控制器方法或者闭包中传入一个参数。
@@ -197,7 +197,7 @@ Route::get('/article/index(\d+)?.html',function($id = 0){
 > 给控制器方法传参
 
 ```php
-public functin read($id = 0){
+public function read($id = 0){
 	echo $id;
 }
 ```
@@ -207,7 +207,7 @@ public functin read($id = 0){
 ```php
 Route::get('/(\w+)-index(\d+).html',function($a,$b){
 	echo $a,$b;
-})	
+})
 ```
 
 访问`blog-index2.html` 时会输出`blog` 和 `2`
@@ -217,23 +217,23 @@ Route::get('/(\w+)-index(\d+).html',function($a,$b){
 
 # 请求
 ## 获取请求参数
-获取请求可以用Facade `yao\facade\Request::get()` ，或者使用new Request(? array $filters = null) 可以不传参数，传入的参数必须是包含可以使用的过滤函数的数组，当独立使用时建议加上参数可以实现获取数据的过滤
-使用`yao\facade\Request::get()`,获取所有`get`的参数列表，如果需要获取某一个参数，可以使用`yao\facade\Request::get('a');` 获取多个参数可以使用`yao\facade\Request::get(['a','b']);`
+获取请求可以用Facade `Yao\Facade\Request::get()` ，或者使用new Request(? array $filters = null) 可以不传参数，传入的参数必须是包含可以使用的过滤函数的数组，当独立使用时建议加上参数可以实现获取数据的过滤
+使用`Yao\Facade\Request::get()`,获取所有`get`的参数列表，如果需要获取某一个参数，可以使用`Yao\Facade\Request::get('a');` 获取多个参数可以使用`Yao\Facade\Request::get(['a','b']);`
 还可以获取`post`请求的内容
 
->yao\facade\Request::post();
+>Yao\Facade\Request::post();
 
-获取所有`$_REQUEST`使用`yao\facade\Request::param();`
+获取所有`$_REQUEST`使用`Yao\Facade\Request::param();`
 >post和param使用方法和get一样。可以给这些方法添加第二个参数，第一个参数为字符串且不存在的时候会返回默认参数
 
 ## 判断请求类型
 判断请求类型是否为get
->yao\facade\Request::isMethod('get');
+>Yao\Facade\Request::isMethod('get');
 
 可以用来判断任何请求类型
 
 判断是否ajax请求
->yao\facade\Request::isAjax() 
+>Yao\Facade\Request::isAjax() 
 
 ## 参数过滤
 请求是可以设置函数进行过滤的，可以在`app.php`中的`filter`数组中添加过滤函数，注意函数必须只能传入一个参数，并且返回过滤后的字符串。如果使用`Request`类获取参数默认是被过滤的。不需要过滤可以使用`$_GET`数组。
@@ -249,7 +249,7 @@ Route::get('/(\w+)-index(\d+).html',function($a,$b){
 public function test()
    {
        $data = Request::post();
-       $vali = yao\facade\Validate::rule([
+       $vali = Yao\Facade\Validate::rule([
            'username' => ['required' => true, 'max' => 10, 'regexp' => '\w+']
        ])->check($data);
        if (true !== $vali) {
@@ -306,7 +306,7 @@ $vali = Validate::data($data)->max(['a' => 10])->required(['a' => true,'b' => tr
 ```
 <?php
 
-namespace app\index\controller;
+namespace App\Index\Controller;
 
 class Index
 {
@@ -328,7 +328,7 @@ class Index
 
 >view('index',['data'=>$data]);
 
-或者使用facade的`yao\facade\View::fetch('template',$params);`
+或者使用facade的`Yao\Facade\View::fetch('template',$params);`
 
 其中的`index`对应`app/index/view`目录下的`index.html`文件。
 模板后缀可以在`/config/view`中修改`template_suffix`
@@ -342,21 +342,21 @@ facade基本代码示例如下：
 ```
 <?php
 
-namespace app\index\facade;
+namespace App\Index\facade;
 
-use yao\Facade;
+use Yao\Facade;
 
 class UserCheck extends Facade
 {
     protected static function getFacadeClass()
     {
-        return \app\index\validate\UserCheck::class;
+        return \App\Index\validate\UserCheck::class;
     }
 
 }
 ```
 
-> 你可以在任何可以composer自动加载的位置创建独立验证器类并继承yao\Facade类，就可以实现静态代理，但是为了方便维护，建议创建在应用对应的facade目录下。
+> 你可以在任何可以composer自动加载的位置创建独立验证器类并继承Yao\Facade类，就可以实现静态代理，但是为了方便维护，建议创建在应用对应的facade目录下。
 
 >注意: facade默认实例化对象都不是单例的。如果需要使用单例，可以加入`protected static $singleInstance = true;`，当然仅仅是在你的请求的页面中使用该类的方法全部为facade的时候才是单例的。
 
@@ -418,7 +418,7 @@ yao\Db::name('users')->where('id > 10')->delete();
 ```
 <?php
 
-namespace app\index\event;
+namespace App\Index\event;
 
 class Serve
 {
