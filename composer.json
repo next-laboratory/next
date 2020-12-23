@@ -19,9 +19,9 @@
       "route/route.php"
     ]
   },
-  "require-dev": {
+  "require": {
     "php": ">=7.4",
-    "chengyao/framework": "dev-master",
-    "chengyao/migrate": "dev-master"
+    "chengyao/framework": "^0.0.2",
+    "chengyao/migrate": "^0.0.1"
   }
 }
