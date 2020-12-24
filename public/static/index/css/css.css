@@ -2,7 +2,22 @@ html,body {
             margin: 0;
             background-color: aliceblue;
         }
-
+a{
+    text-decoration:none;
+    color:grey
+}
+/* a:link{
+    color:#4568F5
+} */
+/* a:visited{
+    color: slateblue;
+} */
+/* a:active{
+    color: springgreen;
+} */
+a:hover{
+    color:darkmagenta;
+}
         nav {
             height: 3em;
             line-height: 3em;
@@ -32,7 +47,7 @@ html,body {
         main {
             width: 80%;
             height: 80vh;
-            margin: 1em auto 0;
+            margin: 2em auto 0;
             background-color: white;
             display: flex;
             padding: 1em;
@@ -42,15 +57,13 @@ html,body {
             justify-content: space-around
         }
 
-        footer {
-            width: 80%;
-            margin: 1em auto 0;
-        }
+
 
         section {
             width: 100%;
             word-break:break-all;
-            word-wrap: break-word
+            word-wrap: break-word;
+            overflow:hidden;
         }
 
         .form-input{
@@ -90,7 +103,8 @@ html,body {
         } */
 
    #left{
-       display: flex;
+       /* display: flex; */
+       text-align: center;
        align-content: center;
    }     
 
@@ -98,5 +112,11 @@ html,body {
     section#right{
        width:0px;
        transition:width .3s;
-       background-color: red;
+       /* background-color: red; */
    }
+   footer {
+    font-size:.7em;
+    text-align: center;
+    width: 80%;
+    margin: 1em auto 0;
+}

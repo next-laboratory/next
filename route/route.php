@@ -6,4 +6,4 @@
 
 use \Yao\Facade\Route;
 
-Route::get('/', [\App\Index\Controller\Index::class, 'index']);
+Route::rule('/', [\App\Index\Controller\Index::class, 'index']);
