@@ -5,38 +5,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-
+    <link rel="stylesheet" href="/static/index/css/css.css">
 </head>
 
 <body>
-{{id}}
-<form name="fr1">
-    <input type='radio' name="time" value='cheng'>
-    <input type='radio' name="age" value='yao'>
-    <input type="button" id="add" value="添加">
-    <input type='button' value="提交">
-</form>
+    <header>
+        <nav>
+            <li class="active">Home</li>
+            <li>ToDo</li>
+            <li>Login</li>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <div id="left">
+                <input class="form-input" type="text" name="todo">
+            </div>
+        </section>
+        <section id="handler">
+            <span>《</span>
+        </section>
+        <section id="right">
+        </section>
+    </main>
+    <footer>
+        fdsf
+    </footer>
 </body>
-<script src="/jquery-3.5.1.js"></script>
+
+<!-- <script src="/static/index/js/vue.js"></script>
 <script>
-
-    $(function () {
-
-        $('#add').click(function () {
-            $('<input type="radio" name="big" value="yd">').appendTo($(fr1))
+    (function (Vue) {
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                
+            }
         })
+    })(Vue)
+</script> -->
+<script>
+    var aside = document.querySelector('#handler>span');
+    var side = document.getElementById('right')
+    aside.onclick = function (e) {
+        if (side.style.width == '0px' || !side.style.width) {
+            side.style.width = '100%';
+            aside.innerText = '》'
+        } else {
+            side.style.width = '0px';
+            aside.innerText = '《'
+        }
 
-        $(':button').click(function () {
-            var form = $(fr1)
-            var qs = form.find(':radio:checked').filter(function (index, element) {
-                return $.trim(element.value).length > 0;
-            }).serialize();
-            console.log(qs)
-
-        })
-    })
-
-
+    }
+    console.log(aside)
 </script>
 
 </html>
