@@ -123,7 +123,6 @@ section#right {
     overflow-y: auto;
     transition: width .3s;
     text-align: center;
-    /* background-color: red; */
 }
 
 footer {
@@ -137,8 +136,9 @@ footer {
     cursor: pointer;
     background-color: #4568F5;
     color: white;
-    height: 3em;
-    width: 6em;
+    height: 2.5em;
+    width: 5em;
+    outline: none;
     border: none;
     border-radius: 5px;
     transition: background-color .5s, color .5s;

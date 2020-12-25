@@ -64,28 +64,38 @@
 </body>
 
 <script>
-    var aside = document.querySelector('#handler>span');
-    var side = document.getElementById('right')
-    aside.onclick = function (e) {
-        if (side.style.width == '0px' || !side.style.width) {
-            side.style.width = '100%';
-            aside.innerText = '》'
-        } else {
-            side.style.width = '0px';
-            aside.innerText = '《'
+    window.onload = function () {
+        var aside = document.querySelector('#handler>span');
+        var side = document.getElementById('right')
+        bar(sessionStorage.getItem('side'))
+        aside.onclick = function (e) {
+            if (side.style.width == '0px' || !side.style.width) {
+                sessionStorage.setItem('side', 1);
+            } else {
+                sessionStorage.setItem('side', 0);
+            }
+            bar(sessionStorage.getItem('side'))
+        }
+
+        function bar(flag) {
+            if (1 == flag) {
+                side.style.width = '100%';
+                aside.innerText = '》'
+            } else {
+                side.style.width = '0px';
+                aside.innerText = '《'
+            }
+        }
+
+        var file = document.getElementsByName('file')[0]
+        file.onchange = function (e) {
+            var f = this.files[0]
+            if (f.size > 1024 * 1024 * 10) {
+                alert('文件大小不能超过10mb!')
+                file.value = '';
+            }
         }
     }
-
-    var file = document.getElementsByName('file')[0]
-    file.onchange = function (e) {
-        var f = this.files[0]
-        if (f.size > 1024 * 1024 * 10) {
-            alert('文件大小不能超过10mb!')
-            file.value = '';
-        }
-    }
-
-    console.log(aside)
 </script>
 
 </html>
