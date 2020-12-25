@@ -120,7 +120,7 @@ section {
 
 section#right {
     width: 0;
-    overflow-y: scroll;
+    overflow-y: auto;
     transition: width .3s;
     text-align: center;
     /* background-color: red; */
