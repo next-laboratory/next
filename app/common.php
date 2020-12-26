@@ -29,3 +29,13 @@ if (!function_exists('time_convert')) {
         return date('Y/n/j', strtotime($time));
     }
 }
+function format_size(int $size)
+{
+    if ($size < 1024) {
+        return $size . 'B';
+    } else if ($size < 1024 * 1024) {
+        return round($size / 1024, 2) . 'KB';
+    } else if ($size < 1024 * 1024 * 1024) {
+        return round($size / 1024 / 1024, 2) . 'MB';
+    }
+}

@@ -10,10 +10,17 @@ class Index
 {
     public function index()
     {
-        if (Request::isMethod('get')) {
-            $file = Db::name('files')->field(['file', 'filename', 'md5'])->select()->toArray();
-            return view('index@index', ['file' => $file]);
+        $file = Db::name('files')->field(['file', 'filename', 'md5'])->select()->toArray();
+        foreach ($file as $k => $v) {
+            $file[$k]['size'] = format_size(filesize($file[$k]['file']));
+            unset($file[$k]['file']);
         }
+        header('Access-Control-Allow-Origin:*');
+        return $file;
+    }
+
+    public function upload()
+    {
         try {
             $res = \Yao\Facade\File::data(Request::file('file'))
                 ->validate(['extExcept' => ['php', 'sql', 'sh', 'html'], 'size' => 1024 * 1024 * 10])

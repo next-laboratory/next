@@ -16,28 +16,41 @@
         <li><a href="/login">登录</a></li>
     </nav>
 </header>
-<main>
+<main id="app">
     <section>
         <h3 style="text-align:center">上传文件<sub style="color: red">互联网并非法外之地</sub></h3>
         <div id="left" style="margin-top:180px">
             <form action="" method="post" accept-charset="utf-8" enctype="multipart/form-data">
-                <input type="file" name="file" id="file" value="选择文件"/>
+                <input type="file" name="file" id="file" value="选择文件" @change="file" ref="file"/>
                 <input type="submit" name="" value="上传" class="btn"/>
             </form>
         </div>
     </section>
     <section id="handler">
-        <span>《</span>
+        <span v-on:click="resize" v-text="aside"></span>
     </section>
-    <section id="right">
+    <section id="right" v-bind:style="aside_width">
         <h3>文件列表</h3>
-        {% for f in file %}
-        <a download="/download?hash={{ f.md5 }}" href="/download?hash={{ f.md5 }}">{{ f.filename }}</a> <br>
-        {% endfor %}
+        <table align="center" width="100%" style="text-align: center">
+            <tr>
+                <th>文件</th>
+                <th>大小</th>
+            </tr>
+            <tr v-for="f in files">
+                <td><a download="/download?hash={{f.md5}}" href="/download?hash={{f.md5}}">{{f.filename}}</a></td>
+                <td>{{f.size}}</td>
+            </tr>
+
+            <!--            {% for f in file %}-->
+            <!--            <tr>-->
+            <!--                <td><a download="/download?hash={{ f.md5 }}" href="/download?hash={{ f.md5 }}">{{ f.filename }}</a></td>-->
+            <!--                <td>{{f.size}}</td>-->
+            <!--            </tr>-->
+            <!--            {% endfor %}-->
+        </table>
     </section>
 </main>
 <footer>
-    <a href="https://github.com/topyao/yao">Yao框架</a>
     <a href="https://www.1kmb.com">一刻模板</a>
     </h1><a href="https://www.jetbrains.com/?from=topyao">
     <svg xmlns="http://www.w3.org/2000/svg"
@@ -58,44 +71,61 @@
                     fill="#FFF"></path>
         </g>
     </svg>
-    Phpstorm</a> | <a href="http://beian.miit.gov.cn" target="_blank"
-                      class="text">陕ICP备20000693号-1<br></a>
+    Phpstorm</a><br><a href="http://beian.miit.gov.cn" target="_blank"
+                       class="text">陕ICP备20000693号-1</a> | <a href="https://github.com/topyao/yao">Yao</a>
 </footer>
 </body>
-
+<script src="/static/index/js/Vue.js"></script>
 <script>
-    window.onload = function () {
-        var aside = document.querySelector('#handler>span');
-        var side = document.getElementById('right')
-        bar(sessionStorage.getItem('side'))
-        aside.onclick = function (e) {
-            if (side.style.width == '0px' || !side.style.width) {
-                sessionStorage.setItem('side', 1);
-            } else {
-                sessionStorage.setItem('side', 0);
-            }
-            bar(sessionStorage.getItem('side'))
-        }
+    (function (Vue) {
+        var side = sessionStorage.getItem('side');
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                aside_width: {
+                    width: side || '0px'
+                },
+                aside: (side == '0px' || !side) ? '《' : '》',
+                files:
+                    [
+                        {
+                            'filename': 'dsd',
+                            'size': 'dfd',
+                            'md5': 'dfadsf'
+                        },
+                        {
+                            'filename': 'ddfsd',
+                            'size': 'dfd',
+                            'md5': 'dfadsf'
+                        },
+                    ]
 
-        function bar(flag) {
-            if (1 == flag) {
-                side.style.width = '100%';
-                aside.innerText = '》'
-            } else {
-                side.style.width = '0px';
-                aside.innerText = '《'
+            },
+            methods: {
+                resize() {
+                    if (this.aside_width.width == '0px') {
+                        sessionStorage.setItem('side', '100%');
+                        this.aside = '》'
+                    } else {
+                        sessionStorage.setItem('side', '0px');
+                        this.aside = '《'
+                    }
+                    this.aside_width.width = sessionStorage.getItem('side')
+                }
+                ,
+                file() {
+                    var f = this.$refs.file.files[0]
+                    if (f.size > 1024 * 1024 * 10) {
+                        alert('文件大小不能超过10mb!')
+                        this.$refs.file.value = '';
+                    }
+                }
             }
-        }
+        })
+        console.log(vm)
+    })(Vue)
 
-        var file = document.getElementsByName('file')[0]
-        file.onchange = function (e) {
-            var f = this.files[0]
-            if (f.size > 1024 * 1024 * 10) {
-                alert('文件大小不能超过10mb!')
-                file.value = '';
-            }
-        }
-    }
 </script>
+
 
 </html>
