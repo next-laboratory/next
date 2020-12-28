@@ -12,5 +12,5 @@ return [
     //参数过滤
     'filter' => ['trim', 'htmlspecialchars'],
 
-    'exception_view' => ROOT . 'vendor/chengyao/framework/src/Tpl/exception.html'
+    'exception_view' => ''
 ];
