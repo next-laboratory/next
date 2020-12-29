@@ -8,9 +8,14 @@ use \Yao\Facade\Request;
 
 class Index
 {
+    public function test(\Yao\Http\Request $request)
+    {
+        dump(env('database.options'));
+    }
+
     public function index()
     {
-        $file = Db::name('files')->field(['file', 'filename', 'md5'])->select()->toArray();
+        $file = Db::name('files')->field(['file', 'filename', 'md5'])->order(['id' => 'desc'])->select()->toArray();
         foreach ($file as $k => $v) {
             $file[$k]['size'] = format_size(filesize($file[$k]['file']));
             unset($file[$k]['file']);
@@ -21,6 +26,9 @@ class Index
 
     public function upload()
     {
+        header('Access-Control-Allow-Origin:*');
+        header('Access-Control-Allow-Method:*');
+        header('Access-Control-Allow-Headers:content-type');
         try {
             $res = \Yao\Facade\File::data(Request::file('file'))
                 ->validate(['extExcept' => ['php', 'sql', 'sh', 'html'], 'size' => 1024 * 1024 * 10])

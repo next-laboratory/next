@@ -15,7 +15,7 @@ return [
         //端口
         'port' => env('database.port', '3306'),
         //额外设置
-        'options' => env('database.opotions', [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]),
+        'options' => env('database.options', [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]),
         //编码
         'charset' => env('database . charset', 'utf8mb4'),
     ]

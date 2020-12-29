@@ -6,8 +6,11 @@
 
 use \Yao\Facade\Route;
 
-Route::rule('/', [\App\Index\Controller\Index::class, 'index']);
-Route::get('todo', 'index@index/todo');
+
+Route::get('test', 'index@index/test');
+
+
+Route::rule('/', [\App\Index\Controller\Index::class, 'index'])->alias('dfds')->middleware(['index::class']);
 Route::get('download', 'index@index/download');
 
-Route::post('upload', 'index@index/upload');
+Route::post('upload', 'index@index/upload')->cross([]);
