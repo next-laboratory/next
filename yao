@@ -20,6 +20,7 @@ if ('serve' === $cli) {
         helper();
     }
 } else if ('route' == $cli) {
+    \Yao\Facade\Route::register();
     dump(array_filter(\Yao\Facade\Route::getRoute()));
 } else {
     helper();
