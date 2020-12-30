@@ -2,15 +2,22 @@
 
 namespace App\Index\Controller;
 
-use Yao\Db;
-use Yao\Facade\File;
-use \Yao\Facade\Request;
+use Yao\{
+    Db
+};
+use Yao\Facade\{
+    File,
+    Request,
+    Route
+};
+use Yao\Route\Alias;
 
 class Index
 {
     public function test(\Yao\Http\Request $request)
     {
-        dump(env('database.options'));
+        dump(url('index@name'));
+        // dump((new Alias())->get());
     }
 
     public function index()

@@ -15,8 +15,7 @@
       "": "extend/"
     },
     "files": [
-      "app/common.php",
-      "route/route.php"
+      "app/common.php"
     ]
   },
   "require-dev": {
