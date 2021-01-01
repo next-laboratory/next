@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo</title>
+    <link rel="stylesheet" href="./static/css/css.css">
+    <link rel="stylesheet" href="./static/font-awesome-4.7.0/css/font-awesome.css">
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <header>
+        <nav>
+            <ul>
+                <a href="./index.html" class="left"><i class="fa fa-gamepad"></i> Todo</a>
+                <li class="active d-bg"><a href="./index.html">主页</a></li>
+                <li class="d-bg"><a href="./todo.html">ToDo</a></li>
+                <a class="right right2 d-sm" v-on:click.prevent="show_bar"><i class="fa fa-bars"></i>
+                </a>
+                <a class="right right2" href="./login.html"> <i class="fa fa-sign-in"></i></a>
+                <a class="right" href="https://github.com/topyao/yao/blob/master/README.md"><i class="fa fa-book"></i>
+                    文档</a>
+                <a class="right right3 d-bg"><input type="text" name="" id="" value=""/></a>
+            </ul>
+            <div v-if="showBarFlg" v-cloak style="width:100%;">
+                <ul class="bar">
+                    <li>从v登录</li>
+                    <li>登录</li>
+                    <li>登录</li>
+                </ul>
+            </div>
+
+        </nav>
+    </header>
+    <div class="banner">
+        <div id="banner-title"></div>
+        <div id="banner-content">
+            <div>
+                <p class="big-font">Todo List</p>
+                <p class="small-font">使用轻量的PHP框架Yao开发</p>
+                <a target="_blank" id="download" href="https://github.com/topyao/yao/archive/0.0.1.zip"><i
+                        class="fa fa-download"></i>
+                    立即下载</a>
+                <p class="links">V0.0.1<a href="">Gitee</a><a href="https://github.com/topyao/yao">Github</a><a
+                        href="">Packagist</a>作者:chengyao</p>
+            </div>
+            <div class="banner-right">
+                <i class="fa fa-thumbs-o-up"></i>
+            </div>
+        </div>
+    </div>
+    <main>
+        <div class="main">
+            <section>
+                <h3 style="text-align:center">上传文件</h3>
+                <div id="left" style="margin-top:180px">
+                    <form action="" method="post" accept-charset="utf-8" enctype="multipart/form-data"
+                          v-on:submit.prevent="upload">
+                        <input type="file" name="file" id="file" value="选择文件" @change.prevent="file" ref="file"/>
+                        <input type="submit" name="" value="上传" class="btn"/>
+                    </form>
+                </div>
+            </section>
+            <section id="handler">
+                <span v-on:click="resize" v-text="aside"></span>
+            </section>
+            <section id="right" v-bind:style="aside_width" v-cloak>
+                <h3>文件列表</h3>
+                <table align="center" width="100%" style="text-align: center">
+                    <tr>
+                        <th>文件</th>
+                        <th>大小</th>
+                    </tr>
+                    <tr v-for="f in files">
+                        <td><a v-bind:download="`/download?hash=${f.md5}`"
+                               v-bind:href="`/download?hash=${f.md5}`">{{f.filename}}</a>
+                        </td>
+                        <td>{{f.size}}</td>
+                    </tr>
+                </table>
+            </section>
+        </div>
+    </main>
+    <footer>
+        <div style="margin-top:18px;"></div>
+        <a href="https://www.1kmb.com">一刻模板</a> |
+        <a href="https://www.jetbrains.com/?from=topyao">
+            使用Phpstorm开发</a><br><br><a href="http://beian.miit.gov.cn" target="_blank"
+                                       class="text">陕ICP备20000693号-1</a> | <a href="https://github.com/topyao/yao"><i
+            class="fa fa-yelp"></i> Yao</a>
+    </footer>
+</div>
+</body>
+<script src="./static/js/jquery-3.5.1.js"></script>
+<script src="./static/layer/layer.js"></script>
+<script src="./static/js/vue.js"></script>
+<script src="./static/js/axios.js"></script>
+<script>
+    (function (Vue) {
+        var side = sessionStorage.getItem('side');
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                aside_width: {
+                    width: side || '0px'
+                },
+                aside: (side == '0px' || !side) ? '《' : '》',
+                files: [],
+                showBarFlg: false
+            },
+            mounted: function () {
+                axios.get('http://127.0.0.1:8080/').then(d => {
+                    if (200 == d.status) {
+                        vm.files = d.data;
+                    }
+                })
+            },
+            methods: {
+                resize() {
+                    if (this.aside_width.width == '0px') {
+                        sessionStorage.setItem('side', '100%');
+                        this.aside = '》'
+                    } else {
+                        sessionStorage.setItem('side', '0px');
+                        this.aside = '《'
+                    }
+                    this.aside_width.width = sessionStorage.getItem('side')
+                },
+                file() {
+                    let f = this.$refs.file.files[0];
+                    let deniedType = ['php', 'html'];
+                    if (f.size > 1024 * 1024 * 10) {
+                        this.$refs.file.value = '';
+                        layer.alert('文件大小不能超过10mb!')
+                    }
+                    for (let i in deniedType) {
+                        if (deniedType[i] == f.name.substr(f.name.lastIndexOf('.') + 1)) {
+                            this.$refs.file.value = '';
+                            layer.alert('文件后缀不支持！')
+                        }
+                    }
+                },
+                upload() {
+                    if (!this.$refs.file.value) {
+                        layer.alert('没有选择文件！')
+                    } else {
+                        axios.post('http://127.0.0.1:8080/upload', {}).then(data => {
+
+                        })
+                    }
+                },
+                show_bar() {
+                    this.showBarFlg = !this.showBarFlg;
+                }
+            }
+        })
+    })(Vue)
+</script>
+
+
+</html>

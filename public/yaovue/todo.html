@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo</title>
+    <link rel="stylesheet" href="./static/css/css.css">
+    <link rel="stylesheet" href="./static/font-awesome-4.7.0/css/font-awesome.css">
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav>
+        <ul>
+            <a class="left"><i class="fa fa-gamepad"></i> Todo</a>
+            <li><a href="./index.html">主页</a></li>
+            <li class="active"><a href="./todo.html">ToDo</a></li>
+            <a class="right right2" href="./login"> <i class="fa fa-sign-in"></i></a>
+            <a class="right" href=""><i class="fa fa-book"></i> 文档</a>
+        </ul>
+    </nav>
+</header>
+<main id="app">
+    <div style="height: 2.5em"></div>
+    <div class="main">
+        <section>
+            <div class="input-area">
+                <input type="text" name="todo">
+            </div>
+        </section>
+        <section id="handler">
+            <span>《</span>
+        </section>
+        <section id="right">
+
+        </section>
+    </div>
+</main>
+<footer>
+    <a href="https://github.com/topyao/yao">Yao框架</a>
+    <a href="https://www.1kmb.com">一刻模板</a>
+    </h1><a href="https://www.jetbrains.com/?from=topyao">
+    <svg xmlns="http://www.w3.org/2000/svg"
+         viewBox="0 0 70 70" width="20px" height="20px" id="phpstorm">
+        <path fill="url(#phpstorm_a)" d="M39.6 15.2L36.3 5.2 11.9 0 0 13.5 37.2 32.5z"></path>
+        <path fill="url(#phpstorm_b)" d="M28 41.4L27.3 20.6 0 13.5 6.7 53.6 28 53.4z"></path>
+        <path fill="url(#phpstorm_c)"
+              d="M22.1 41L23.4 24.5 43.2 4.2 60.9 7.4 70 30.1 60.5 39.5 45 37 35.4 47.1z"></path>
+        <path fill="url(#phpstorm_d)" d="M43.2 4.2L14.8 29.4 20.3 61.8 43.9 70 70 54.4z"></path>
+        <g>
+            <path fill="#000" d="M13.4 13.4H56.6V56.6H13.4z"></path>
+            <path fill="#FFF" d="M17.5 48.5H33.7V51.2H17.5z"></path>
+            <path
+                    d="M17.3,19h7.3c4.3,0,6.9,2.5,6.9,6.2v0.1c0,4.2-3.2,6.3-7.3,6.3h-3l0,5.4h-3.9L17.3,19z M24.4,28 c2,0,3.1-1.2,3.1-2.7v-0.1c0-1.8-1.2-2.7-3.2-2.7h-3V28H24.4z"
+                    fill="#FFF"></path>
+            <path
+                    d="M32.5,34.4l2.3-2.8c1.6,1.3,3.3,2.2,5.4,2.2c1.6,0,2.6-0.6,2.6-1.7V32c0-1-0.6-1.5-3.6-2.3 c-3.6-0.9-6-1.9-6-5.5v-0.1c0-3.3,2.6-5.4,6.3-5.4c2.6,0,4.9,0.8,6.7,2.3l-2.1,3c-1.6-1.1-3.2-1.8-4.7-1.8c-1.5,0-2.3,0.7-2.3,1.6 v0.1c0,1.2,0.8,1.6,3.9,2.4c3.6,1,5.7,2.3,5.7,5.4v0.1c0,3.6-2.7,5.6-6.6,5.6C37.4,37.3,34.7,36.3,32.5,34.4"
+                    fill="#FFF"></path>
+        </g>
+    </svg>
+    Phpstorm</a> | <a href="http://beian.miit.gov.cn" target="_blank"
+                      class="text">陕ICP备20000693号-1<br></a>
+</footer>
+</body>
+<script>
+    var aside = document.querySelector('#handler>span');
+    var side = document.getElementById('right')
+    aside.onclick = function (e) {
+        if (side.style.width == '0px' || !side.style.width) {
+            side.style.width = '100%';
+            aside.innerText = '》'
+        } else {
+            side.style.width = '0px';
+            aside.innerText = '《'
+        }
+    }
+
+    var file = document.getElementsByName('file')[0]
+    file.onchange = function (e) {
+        var f = this.files[0]
+        if (f.size > 1024 * 1024 * 10) {
+            alert('文件大小不能超过10mb!')
+            file.value = '';
+        }
+    }
+
+    console.log(aside)
+</script>
+</html>
