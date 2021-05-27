@@ -1,0 +1,40 @@
+{
+  "name": "max/max",
+  "description": "一个简单易用的轻量PHP框架。",
+  "keywords": [
+    "MAXPHP",
+    "轻量",
+    "简单"
+  ],
+  "type": "project",
+  "authors": [
+    {
+      "name": "chengyao",
+      "email": "bigyao@139.com"
+    }
+  ],
+  "license": "Apache-2.0",
+  "autoload": {
+    "psr-4": {
+      "App\\": "app/",
+      "": "extend/"
+    },
+    "files": [
+      "app/common.php"
+    ]
+  },
+  "require": {
+    "php": ">=7.2.0",
+    "max/framework": "1.*",
+    "max/cache": "dev-master",
+    "max/database": "1.*",
+    "max/view": "dev-master",
+    "max/validator": "dev-master",
+    "max/redis": "dev-master"
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "Max\\Console\\Commands\\Config::Load"
+    ]
+  }
+}

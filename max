@@ -1,0 +1,19 @@
+#!/usr/bin/env php
+<?php
+
+namespace Max\Foundation;
+
+use App\Console\Console;
+
+if (!file_exists('./vendor/autoload.php')) {
+    if (!function_exists('passthru')) {
+        exit('没有安装框架核心，请使用composer install安装依赖!');
+    }
+    echo "没有安装框架核心，即将自动安装！\n";
+    passthru('composer install');
+    echo "框架核心安装成功，即将启动！\n";
+}
+
+require './vendor/autoload.php';
+
+app(Console::class, [$argv], false)->run();
