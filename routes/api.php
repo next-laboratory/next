@@ -2,4 +2,6 @@
 
 use Max\Facade\Route;
 
-Route::get('api/doc', 'index/index@index');
+Route::get('api', function () {
+    return ['status' => 1, 'msg' => 'success'];
+});
