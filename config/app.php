@@ -19,6 +19,7 @@ return [
     'alias'            => [],
     //全局中间件
     'middleware'       => [
+//        \App\Http\Middleware\Debug::class
 //        \App\Http\Middleware\BasicAuth::class
 //        \Max\Http\Middleware\GlobalCross::class,
     ],
@@ -32,7 +33,7 @@ return [
         ],
 
         'cli' => [
-            \Max\Console\ConsoleService::class,
+//            \Max\WorkermanService::class
         ],
     ],
     //响应Header中的Powered-By
