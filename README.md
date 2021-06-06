@@ -13,6 +13,8 @@
 
 一款基于组件的简单轻量的`PHP`框架，可以用作`API`开发，方便快速。
 
+>查看历史提交记录请前往<a href="https://gitee.com/cheng-yao/max">Gitee</a>
+
 ## 前言
 
 
