@@ -9,4 +9,9 @@ define('APP_START_MEMORY_USAGE', memory_get_usage());
 
 require __DIR__ . '/../vendor/autoload.php';
 
-App::instance()->run();
+$http = (new App())->http;
+
+$response = $http->response();
+
+$http->end($response);
+
