@@ -14,4 +14,6 @@ if (!file_exists('./vendor/autoload.php')) {
 
 require './vendor/autoload.php';
 
-app('console')->run();
+$console = (new App())->console;
+
+$console->run();

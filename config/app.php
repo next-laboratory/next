@@ -32,7 +32,7 @@ return [
         ],
 
         'cli' => [
-//            \Max\WorkermanService::class
+            \Max\WorkermanService::class
         ],
     ],
     //响应Header中的Powered-By
