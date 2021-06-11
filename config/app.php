@@ -13,8 +13,8 @@ return [
     'filter'           => ['trim', 'htmlspecialchars'],
     //默认语言
     'language'         => 'zh',
-    //异常模板
-    'exception_view'   => '',
+    //异常句柄， null使用框架的异常界面
+    'exception_handle' => null,
     //类别名
     'alias'            => [],
     //全局中间件
@@ -32,7 +32,11 @@ return [
         ],
 
         'cli' => [
-            \Max\WorkermanService::class
+            \Max\WorkermanService::class,
+            \Max\DatabaseService::class,
+            \Max\CacheService::class,
+            \Max\ViewService::class,
+            \Max\ValidatorService::class
         ],
     ],
     //响应Header中的Powered-By
