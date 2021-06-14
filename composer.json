@@ -31,7 +31,8 @@
     "max/view": "dev-master",
     "max/validator": "dev-master",
     "max/redis": "dev-master",
-    "max/console": "dev-master"
+    "max/console": "dev-master",
+    "max/filesystem": "dev-master"
   },
   "require-dev": {
     "max/captcha": "dev-master",
@@ -41,5 +42,7 @@
     "post-autoload-dump": [
       "Max\\Console\\Commands\\Config::Load"
     ]
-  }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }
