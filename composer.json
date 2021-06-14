@@ -24,7 +24,11 @@
     ]
   },
   "require": {
-    "php": ">=7.2.0",
+    "php": ">=7.2.0"
+  },
+  "require-dev": {
+    "max/captcha": "dev-master",
+    "max/workerman": "dev-master",
     "max/framework": "dev-master",
     "max/cache": "dev-master",
     "max/database": "dev-master",
@@ -33,10 +37,6 @@
     "max/redis": "dev-master",
     "max/console": "dev-master",
     "max/filesystem": "dev-master"
-  },
-  "require-dev": {
-    "max/captcha": "dev-master",
-    "max/workerman": "dev-master"
   },
   "scripts": {
     "post-autoload-dump": [
