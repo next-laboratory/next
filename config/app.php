@@ -19,7 +19,7 @@ return [
     'alias'             => [],
     //全局中间件
     'middleware'        => [
-        \App\Http\Middleware\Debug::class
+        \Max\Http\Middleware\Debug::class
 //        \App\Http\Middleware\BasicAuth::class
 //        \Max\Http\Middleware\GlobalCross::class,
     ],
