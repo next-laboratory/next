@@ -24,14 +24,14 @@
     ]
   },
   "require": {
-    "php": ">=7.2.0"
+    "php": ">=7.2.0",
+    "max/framework": "1.0.*",
+    "max/database": "1.0.*"
   },
   "require-dev": {
     "max/captcha": "dev-master",
     "max/workerman": "dev-master",
-    "max/framework": "dev-master",
     "max/cache": "dev-master",
-    "max/database": "dev-master",
     "max/view": "dev-master",
     "max/validator": "dev-master",
     "max/redis": "dev-master",
