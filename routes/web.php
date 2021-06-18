@@ -9,9 +9,9 @@ use \Max\Facade\Route;
 Route::get('/', 'index@index')
     ->alias('home')
     ->cache(600)
-    ->middleware(\Max\Http\Middleware\GlobalCross::class);
+    ->middleware(\App\Http\Middleware\GlobalCross::class);
 
-Route::group(['ext' => '.html', 'middleware' => \Max\Http\Middleware\GlobalCross::class], function (\Max\Http\Route $route) {
+Route::group(['ext' => '.html', 'middleware' => \App\Http\Middleware\GlobalCross::class], function (\Max\Http\Route $route) {
     $route->get('index', function () {
         return view('index');
     })->cache(600)->cors('*');
