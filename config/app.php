@@ -19,9 +19,9 @@ return [
     'alias'             => [],
     //全局中间件
     'middleware'        => [
-        \Max\Http\Middleware\Debug::class
+//        \App\Http\Middleware\Debug::class
 //        \App\Http\Middleware\BasicAuth::class
-//        \Max\Http\Middleware\GlobalCross::class,
+//        \App\Http\Middleware\GlobalCross::class,
     ],
     //服务提供者
     'provider'          => [
