@@ -1,8 +1,10 @@
 <?php
 
+namespace App\Http;
 
-class Handler extends \Max\Exception\Handler
+class Error extends \Max\Exception\Handler
 {
+
     public function __toString()
     {
         return <<<ETO

@@ -9,4 +9,3 @@ $http = (new App())->http;
 $response = $http->response();
 
 $http->end($response);
-

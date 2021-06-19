@@ -14,13 +14,13 @@ return [
     //默认语言
     'language'          => 'zh',
     //异常处理类
-    'exception_handler' => Handler::class,
+    'exception_handler' => \App\Http\Error::class,
     //类别名
     'alias'             => [],
     //全局中间件
     'middleware'        => [
-//        \App\Http\Middleware\Debug::class
-//        \App\Http\Middleware\BasicAuth::class
+//        \App\Http\Middleware\Debug::class,
+//        \App\Http\Middleware\BasicAuth::class,
 //        \App\Http\Middleware\GlobalCross::class,
     ],
     //服务提供者
@@ -33,6 +33,7 @@ return [
         ],
 
         'cli' => [
+            \Max\SwooleService::class,
             \Max\WorkermanService::class,
             \Max\DatabaseService::class,
             \Max\CacheService::class,
