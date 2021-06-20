@@ -27,7 +27,6 @@
   },
   "require-dev": {
     "max/captcha": "dev-master",
-    "max/workerman": "dev-master",
     "max/framework": "dev-master",
     "max/cache": "dev-master",
     "max/database": "dev-master",
@@ -35,8 +34,7 @@
     "max/validator": "dev-master",
     "max/redis": "dev-master",
     "max/console": "dev-master",
-    "max/filesystem": "dev-master",
-    "max/swoole": "dev-master"
+    "max/filesystem": "dev-master"
   },
   "scripts": {
     "post-autoload-dump": [
