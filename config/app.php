@@ -32,14 +32,7 @@ return [
             \Max\ValidatorService::class
         ],
 
-        'cli' => [
-            \Max\SwooleService::class,
-            \Max\WorkermanService::class,
-            \Max\DatabaseService::class,
-            \Max\CacheService::class,
-            \Max\ViewService::class,
-            \Max\ValidatorService::class
-        ],
+        'cli' => [],
     ],
     //响应Header中的Powered-By
     'powered_by'        => 'MaxPHP'
