@@ -25,14 +25,10 @@ return [
     ],
     //服务提供者
     'provider'          => [
-        'http' => [
-            \Max\DatabaseService::class,
-            \Max\CacheService::class,
-            \Max\ViewService::class,
-            \Max\ValidatorService::class
-        ],
-
-        'cli' => [],
+        \Max\DatabaseService::class,
+        \Max\CacheService::class,
+        \Max\ViewService::class,
+        \Max\ValidatorService::class,
     ],
     //响应Header中的Powered-By
     'powered_by'        => 'MaxPHP'

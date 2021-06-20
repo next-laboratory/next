@@ -2,9 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use Max\Contracts\Middleware;
-
-class Debug implements Middleware
+class Debug
 {
     public function handle($request, \Closure $next)
     {
