@@ -1,6 +1,6 @@
 <?php
 
-namespace Max\Foundation;
+namespace Max;
 
 require __DIR__ . '/../vendor/autoload.php';
 
