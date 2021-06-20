@@ -11,15 +11,14 @@ class Debug
         //框架运行初始内存
         $startMemoryUsage = memory_get_usage();
         $response         = $next($request);
-        if (app('config')->get('app.debug')) {
-            $SQL = '';
-            foreach (app('db')->getHistory() as $query) {
-                [$sql, $time] = [htmlspecialchars($query[0]), $query[1]];
-                $SQL .= "<p style='margin: 0 auto;'>{$sql}: {$time}ms </p>";
-            }
-            $timeCost    = round(microtime(true) - $startTime, 3);
-            $memoryUsage = round((memory_get_usage() - $startMemoryUsage) / 1024 / 1024, 3);
-            echo <<<EOT
+        $SQL              = '';
+        foreach (app('db')->getHistory() as $query) {
+            [$sql, $time] = [htmlspecialchars($query[0]), $query[1]];
+            $SQL .= "<p style='margin: 0 auto;'>{$sql}: {$time}ms </p>";
+        }
+        $timeCost    = round(microtime(true) - $startTime, 3);
+        $memoryUsage = round((memory_get_usage() - $startMemoryUsage) / 1024 / 1024, 3);
+        echo <<<EOT
 <style>
 
     #box {
@@ -94,7 +93,6 @@ class Debug
     }
 </script>
 EOT;
-        }
         return $response->contentType('text/html');
     }
 
