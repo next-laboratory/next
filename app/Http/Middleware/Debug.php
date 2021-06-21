@@ -77,10 +77,9 @@ class Debug
     <div id="title">
         <a class="item" href="javascript:void(0)">数据库</a>
         <a class="item" href="javascript:void(0)">缓存</a>
-        
-        <span style="cursor: pointer; position: absolute; right: 0" id="close">X</span>
+        <span style="cursor: pointer; position: absolute; right: .8em; font-weight: bold" id="close">X</span>
     </div>
-    <div style="height: 100%;background-color: #ebeff8;padding: .5em">
+    <div style="height: 100%;background-color: #ebeff8;padding: .5em; overflow-y: scroll">
         $SQL
     </div>
 </div>
