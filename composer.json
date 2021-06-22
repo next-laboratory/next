@@ -38,7 +38,7 @@
   },
   "scripts": {
     "post-autoload-dump": [
-      "Max\\Console\\Commands\\Config::Load"
+      "@php max vendor:publish"
     ]
   },
   "minimum-stability": "dev",
