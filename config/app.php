@@ -16,7 +16,9 @@ return [
     //异常处理类
     'exception_handler' => \App\Http\Error::class,
     //类别名
-    'alias'             => [],
+    'alias'             => [
+        'console' => \App\Console\Console::class,
+    ],
     //全局中间件
     'middleware'        => [
 //        \App\Http\Middleware\Debug::class,
