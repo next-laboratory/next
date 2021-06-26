@@ -26,13 +26,17 @@
     "php": ">=7.2.0"
   },
   "require-dev": {
-    "max/framework": "1.0.*",
-    "max/cache": "1.0.*",
-    "max/database": "1.0.*",
-    "max/view": "1.0.*",
-    "max/validator": "1.0.*",
-    "max/console": "1.0.*",
-    "max/filesystem": "1.0.*"
+    "max/captcha": "dev-master",
+    "max/workerman": "dev-master",
+    "max/framework": "dev-master",
+    "max/cache": "dev-master",
+    "max/database": "dev-master",
+    "max/view": "dev-master",
+    "max/validator": "dev-master",
+    "max/redis": "dev-master",
+    "max/console": "dev-master",
+    "max/filesystem": "dev-master",
+    "max/swoole": "dev-master"
   },
   "scripts": {
     "post-autoload-dump": [
