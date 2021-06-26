@@ -14,7 +14,7 @@ class Debug
         $SQL              = '';
         foreach (app('db')->getHistory() as $query) {
             [$sql, $time] = [htmlspecialchars($query[0]), $query[1]];
-            $SQL .= "<p style='margin: 0 auto;'>{$sql}: {$time}ms </p>";
+            $SQL .= "<p style='margin: 0 auto; display: flex; justify-content: space-between'><span>{$sql}</span><span>{$time}ms</span></p><hr>";
         }
         $timeCost    = round(microtime(true) - $startTime, 3);
         $memoryUsage = round((memory_get_usage() - $startMemoryUsage) / 1024 / 1024, 3);
