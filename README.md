@@ -49,7 +49,8 @@ composer create-project --prefer-dist max/max .
 > 你可以使用Git安装开发版，安装完成后会自动启动服务
 
 ```
-git clone https://github.com/topyao/max.git . ; php max serve
+git clone https://github.com/topyao/max.git .
+composer install
 ```
 
 > 欢迎各位大佬参与开发 ，联系邮箱：bigyao@139.com
