@@ -12,12 +12,16 @@ class Debug
         $startMemoryUsage = memory_get_usage();
         $response         = $next($request);
         $SQL              = '';
-        foreach (app('db')->getHistory() as $query) {
+        foreach (\Max\app('db')->getHistory() as $query) {
             [$sql, $time] = [htmlspecialchars($query[0]), $query[1]];
             $SQL .= "<p style='margin: 0 auto; display: flex; justify-content: space-between'><span>{$sql}</span><span>{$time}ms</span></p><hr>";
         }
         $timeCost    = round(microtime(true) - $startTime, 3);
         $memoryUsage = round((memory_get_usage() - $startMemoryUsage) / 1024 / 1024, 3);
+        $files       = '';
+        foreach (get_included_files() as $file) {
+            $files .= $file . '<hr>';
+        }
         echo <<<EOT
 <style>
 
@@ -75,21 +79,44 @@ class Debug
 </div>
 <div id="box">
     <div id="title">
-        <a class="item" href="javascript:void(0)">数据库</a>
-        <a class="item" href="javascript:void(0)">缓存</a>
+        <a class="item" href="javascript:void(0)" data-name="database">数据库</a>
+        <a class="item" href="javascript:void(0)" data-name="cache">缓存</a>
+        <a class="item" href="javascript:void(0)" data-name="files">文件</a>
         <span style="cursor: pointer; position: absolute; right: .8em; font-weight: bold" id="close">X</span>
     </div>
-    <div style="height: 100%;background-color: #ebeff8;padding: .5em; overflow-y: scroll">
-        $SQL
+    <div id="debug-content" style="height: 100%;background-color: #ebeff8;padding: .5em; overflow-y: scroll">
+        {$SQL}
     </div>
 </div>
 <script>
+
+    const SQL = "{$SQL}";
+    const files = "{$files}"
+    
     document.getElementById('btn').onclick = function() {
         document.getElementById('box').style.display = 'block';
     }
     document.getElementById('close').onclick = function() {
         document.getElementById('box').style.display = 'none';
     }
+    
+    const item = document.getElementsByClassName('item');
+    for (i in item) {
+        item[i].onclick = function() {
+            let data = this.getAttribute('data-name');
+            let content = '';
+            switch (data){
+                case 'database': 
+                    content = SQL;
+                    break;
+                case 'files':
+                    content = files;
+                    break;
+            }
+            document.getElementById('debug-content').innerHTML = content;     
+        }
+    }
+    
 </script>
 EOT;
         return $response->contentType('text/html');
