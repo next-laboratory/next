@@ -13,23 +13,6 @@
 
 一款基于组件的简单轻量的`PHP`框架，可以用作`API`开发，方便快速。
 
->查看历史提交记录请前往<a href="https://gitee.com/cheng-yao/max">Gitee</a>
-
-## 前言
-
-
-### 1.为什么写这个框架？
-
-为了学习更多框架的设计思想。
-
-### 2.为什么用这个框架？
-
-如果你感兴趣，可以玩玩。
-
-### 3.我可以参与开发吗？
-
-当然，非常欢迎！参与开发直接提交PR即可。
-
 ## 使用
 
 ### 1.安装要求
@@ -49,10 +32,11 @@ composer create-project --prefer-dist max/max .
 > 你可以使用Git安装开发版，安装完成后会自动启动服务
 
 ```
-git clone https://github.com/topyao/max.git . ; php max serve
+git clone https://github.com/topyao/max.git .
+composer install
 ```
 
-> 欢迎各位大佬参与开发 ，联系邮箱：bigyao@139.com
+> 欢迎各位志同道合的朋友参与开发
 
 <a href="https://www.kancloud.cn/cheng-yao/yaophp/2161148">开发文档</a>
 

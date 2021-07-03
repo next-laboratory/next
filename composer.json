@@ -1,8 +1,10 @@
 {
   "name": "max/max",
-  "description": "一个简单易用的轻量PHP框架。",
+  "description": "一款基于组件的轻量PHP框架。",
+  "homepage": "https://github.com/topyao/max",
   "keywords": [
-    "MAXPHP",
+    "MaxPHP",
+    "组件",
     "轻量",
     "简单"
   ],
@@ -27,7 +29,6 @@
   },
   "require-dev": {
     "max/captcha": "dev-master",
-    "max/workerman": "dev-master",
     "max/framework": "dev-master",
     "max/cache": "dev-master",
     "max/database": "dev-master",
@@ -35,8 +36,7 @@
     "max/validator": "dev-master",
     "max/redis": "dev-master",
     "max/console": "dev-master",
-    "max/filesystem": "dev-master",
-    "max/swoole": "dev-master"
+    "max/filesystem": "dev-master"
   },
   "scripts": {
     "post-autoload-dump": [
