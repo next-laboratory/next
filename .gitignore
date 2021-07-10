@@ -3,4 +3,3 @@
 .env
 vendor
 composer.lock
-storage
