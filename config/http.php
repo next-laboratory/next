@@ -22,6 +22,11 @@ return [
         \Max\ViewService::class,
         \Max\ValidatorService::class,
     ],
+    'session'    => [
+        'handler' => 'file',
+        'path'    => env('storage_path') . 'session',
+        'name'    => 'MAX'
+    ],
     //响应Header中的Powered-By
     'powered_by' => 'MaxPHP'
 ];

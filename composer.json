@@ -34,7 +34,10 @@
     "max/validator": "dev-master",
     "max/redis": "dev-master",
     "max/console": "dev-master",
-    "max/filesystem": "dev-master"
+    "max/filesystem": "dev-master",
+    "max/http": "dev-master",
+    "max/env": "dev-master",
+    "max/helper": "dev-master"
   },
   "scripts": {
     "post-autoload-dump": [
