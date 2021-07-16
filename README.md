@@ -15,6 +15,16 @@
 
 ## 使用
 
+## 必选组件
+> 目前以下组件为必须安装的组件
+
+max-http
+max-container
+max-framework
+max-console
+max-env
+max-helper
+
 ### 1.安装要求
 
 ```
@@ -31,12 +41,18 @@ composer create-project --prefer-dist max/max .
 
 > 你可以使用Git安装开发版，安装完成后会自动启动服务
 
-```
+```shell
 git clone https://github.com/topyao/max.git .
 composer install
 ```
 
 > 欢迎各位志同道合的朋友参与开发
+
+参与开发请安装开发版本
+
+```shell
+composer create-project max/max:dev-master .
+```
 
 <a href="https://www.kancloud.cn/cheng-yao/yaophp/2161148">开发文档</a>
 
