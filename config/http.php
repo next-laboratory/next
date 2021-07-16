@@ -7,11 +7,9 @@ return [
     'auto_start' => env('app.auto_start', false),
     //参数过滤
     'filter'     => ['trim', 'htmlspecialchars'],
-    //默认语言
-    'language'   => 'zh',
     //全局中间件
     'middleware' => [
-        \App\Http\Middleware\Debug::class,
+//        \App\Http\Middleware\Debug::class,
 //        \App\Http\Middleware\BasicAuth::class,
 //        \App\Http\Middleware\GlobalCross::class,
     ],
