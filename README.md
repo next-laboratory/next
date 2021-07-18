@@ -18,12 +18,12 @@
 ## 必选组件
 > 目前以下组件为必须安装的组件
 
-- max-http
-- max-container
-- max-framework
-- max-console
-- max-env
-- max-helper
+- max/http
+- max/container
+- max/framework
+- max/console
+- max/env
+- max/helper
 
 ### 1.安装要求
 
