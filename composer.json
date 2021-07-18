@@ -40,7 +40,8 @@
     "max/swoole": "dev-master",
     "max/http": "dev-master",
     "max/env": "dev-master",
-    "max/helper": "dev-master"
+    "max/helper": "dev-master",
+    "max/log": "dev-master"
   },
   "scripts": {
     "post-autoload-dump": [
