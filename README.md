@@ -54,7 +54,7 @@ composer install
 composer create-project max/max:dev-master .
 ```
 
-<a href="https://www.kancloud.cn/cheng-yao/yaophp/2161148">开发文档</a>
+<a href="https://www.chengyao.xyz/note/203.html">开发文档</a>
 
 > 官网：https://www.chengyao.xyz
 
