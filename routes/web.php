@@ -6,4 +6,4 @@
 
 use \Max\Facade\Route;
 
-Route::get('/', 'index@index')->alias('home')->cors('*');
+Route::get('/', 'App\Http\Controllers\Index@index')->alias('home')->cors('*');

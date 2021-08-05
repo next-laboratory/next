@@ -2,12 +2,7 @@
   "name": "max/max",
   "description": "一款基于组件的轻量PHP框架。",
   "homepage": "https://github.com/topyao/max",
-  "keywords": [
-    "MaxPHP",
-    "组件",
-    "轻量",
-    "简单"
-  ],
+  "keywords": ["maxphp", "flexible", "php framework"],
   "type": "project",
   "authors": [
     {
