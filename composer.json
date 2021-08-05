@@ -2,7 +2,11 @@
   "name": "max/max",
   "description": "一款基于组件的轻量PHP框架。",
   "homepage": "https://github.com/topyao/max",
-  "keywords": ["maxphp", "flexible", "php framework"],
+  "keywords": [
+    "maxphp",
+    "flexible",
+    "php framework"
+  ],
   "type": "project",
   "authors": [
     {
@@ -41,6 +45,9 @@
   "scripts": {
     "post-autoload-dump": [
       "@php max vendor:publish"
+    ],
+    "post-root-package-install": [
+      "@php -r \"file_exists('.env') || copy('.example.env', '.env');\""
     ]
   },
   "minimum-stability": "dev",
