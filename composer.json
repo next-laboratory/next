@@ -25,7 +25,6 @@
   },
   "require": {
     "php": ">=7.2.0",
-    "max/captcha": "dev-master",
     "max/framework": "dev-master",
     "max/cache": "dev-master",
     "max/database": "dev-master",
