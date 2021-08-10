@@ -4,8 +4,7 @@
 namespace Max;
 
 require './vendor/autoload.php';
-require './routes/console.php';
 
 $console = (new App())->console;
 
-$console->run();
+$console->register('./routes/console.php')->run();

@@ -11,7 +11,7 @@ return [
     'exception_handler' => \App\Http\Error::class,
     //类别名
     'alias'             => [
-        'console'    => \App\Console\Console::class,
+        'console'    => \Max\Console\Console::class,
         'log'        => \Max\Logger::class,
         'http'       => \Max\Http::class,
         'request'    => \Max\Http\Request::class,
