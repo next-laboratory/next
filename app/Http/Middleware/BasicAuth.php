@@ -3,8 +3,6 @@
 namespace App\Http\Middleware;
 
 use Max\Http\Request;
-use function Max\app;
-use function Max\response;
 
 /**
  * Basic认证中间件

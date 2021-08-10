@@ -1,7 +1,5 @@
 <?php
 
-use function Max\env;
-
 return [
     //是否开启调试
     'debug'             => env('app.debug', true),

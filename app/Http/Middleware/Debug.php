@@ -12,7 +12,7 @@ class Debug
         $startMemoryUsage = memory_get_usage();
         $response         = $next($request);
         $SQL              = '';
-        foreach (\Max\app('db')->getHistory() as $query) {
+        foreach (app('db')->getHistory() as $query) {
             foreach ($query as $value) {
                 [$sql, $time] = [htmlspecialchars($value['query']), isset($value['time']) ? $value['time'] . 'ms' : 'Error'];
             }

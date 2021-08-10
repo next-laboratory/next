@@ -39,7 +39,8 @@
     "max/http": "dev-master",
     "max/env": "dev-master",
     "max/helper": "dev-master",
-    "max/log": "dev-master"
+    "max/log": "dev-master",
+    "symfony/var-dumper": "^5.3"
   },
   "scripts": {
     "post-autoload-dump": [
