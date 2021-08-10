@@ -15,7 +15,7 @@ return [
         'log'        => \Max\Logger::class,
         'http'       => \Max\Http::class,
         'request'    => \Max\Http\Request::class,
-        'route'      => \Max\Http\Route::class,
+        'route'      => \Max\Http\Router::class,
         'error'      => \Max\Error::class,
         'response'   => \Max\Http\Response::class,
         'session'    => \Max\Http\Session::class,
