@@ -5,6 +5,11 @@ namespace Max;
 
 require './vendor/autoload.php';
 
-$console = (new App())->console;
+(new App())->setRootPath('./')->start(function (App $app) {
 
-$console->register('./routes/console.php')->run();
+    $console = $app->console;
+
+    $console->register('./routes/console.php')->run();
+});
+
+

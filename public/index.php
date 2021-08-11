@@ -10,4 +10,5 @@ require __DIR__ . '/../vendor/autoload.php';
     $response = $http->response();
 
     $http->end($response);
+
 });
