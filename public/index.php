@@ -4,8 +4,10 @@ namespace Max;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$http = (new App())->http;
+(new App())->start(function (App $app) {
 
-$response = $http->response();
+    $http     = $app->http;
+    $response = $http->response();
 
-$http->end($response);
+    $http->end($response);
+});
