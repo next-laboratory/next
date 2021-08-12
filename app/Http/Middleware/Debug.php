@@ -13,7 +13,7 @@ class Debug
         $response = $next($request);
         $SQL = '';
         foreach (app('db')->getHistory() as $query) {
-            [$sql, $time, $binds] = [htmlspecialchars($query['query']), $query['time'] . 'ms', htmlspecialchars(json_encode($query['bindParams']))];
+            [$sql, $time, $binds] = [htmlspecialchars($query['query']), $query['time'] . 'ms', htmlspecialchars(json_encode($query['boundParameters']))];
             $SQL .= "<p style='margin: 0 auto; display: flex; justify-content: space-between'><span title='{$binds}'>{$sql}</span><span>{$time}</span></p><hr>";
         }
         $timeCost = round(microtime(true) - $startTime, 3);
