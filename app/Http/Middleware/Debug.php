@@ -10,17 +10,15 @@ class Debug
         $startTime = microtime(true);
         //框架运行初始内存
         $startMemoryUsage = memory_get_usage();
-        $response         = $next($request);
-        $SQL              = '';
+        $response = $next($request);
+        $SQL = '';
         foreach (app('db')->getHistory() as $query) {
-            foreach ($query as $value) {
-                [$sql, $time] = [htmlspecialchars($value['query']), isset($value['time']) ? $value['time'] . 'ms' : 'Error'];
-            }
-            $SQL .= "<p style='margin: 0 auto; display: flex; justify-content: space-between'><span>{$sql}</span><span>{$time}</span></p><hr>";
+            [$sql, $time, $binds] = [htmlspecialchars($query['query']), $query['time'] . 'ms', htmlspecialchars(json_encode($query['bindParams']))];
+            $SQL .= "<p style='margin: 0 auto; display: flex; justify-content: space-between'><span title='{$binds}'>{$sql}</span><span>{$time}</span></p><hr>";
         }
-        $timeCost    = round(microtime(true) - $startTime, 3);
+        $timeCost = round(microtime(true) - $startTime, 3);
         $memoryUsage = round((memory_get_usage() - $startMemoryUsage) / 1024 / 1024, 3);
-        $files       = '';
+        $files = '';
         foreach (get_included_files() as $file) {
             $files .= $file . '<hr>';
         }
@@ -30,48 +28,48 @@ class Debug
     #box {
         height: 40%; width: 100%; position: fixed; bottom: 0;  display: none;z-index: 9999;
     }
-    
+
     #btn {
-        cursor: pointer; 
+        cursor: pointer;
         font-size: 13px;
-        text-align:center; 
+        text-align:center;
         font-weight:bolder;
         line-height: 40px;
         background-color: dodgerblue;
         box-shadow: grey 0 0 3px 1px;
         border-radius: 50%;
-        color:white; 
+        color:white;
         width: 40px;
-        height: 40px; 
+        height: 40px;
     }
     #btn:hover{
         transition: all .5s;
         transform: scale(.9);
     }
-    
+
     .item {
-        display: block; 
-        width: 5em; 
-        text-decoration: none; 
-        color: white; 
+        display: block;
+        width: 5em;
+        text-decoration: none;
+        color: white;
         font-weight: bold
     }
-    
+
     #title {
         padding: 0 1em;
-        line-height:2.5em; 
-        height: 2.5em; 
-        position: relative; 
-        border-bottom: 2px solid #d5d5d5; 
+        line-height:2.5em;
+        height: 2.5em;
+        position: relative;
+        border-bottom: 2px solid #d5d5d5;
         display: flex;
         background-color: #708af5;
     }
 </style>
-<div style=" position: fixed; 
-        bottom:.5em; 
-        right: .5em; display: flex;">  
+<div style=" position: fixed;
+        bottom:.5em;
+        right: .5em; display: flex;">
 <div style="font-size: .8em; font-weight: bold;margin-right: .5em; line-height: 20px">
-    {$timeCost}s 
+    {$timeCost}s
     <br>
     {$memoryUsage}MB
 </div>
@@ -94,31 +92,31 @@ class Debug
 
     const SQL = "{$SQL}";
     const files = "{$files}"
-    
+
     document.getElementById('btn').onclick = function() {
         document.getElementById('box').style.display = 'block';
     }
     document.getElementById('close').onclick = function() {
         document.getElementById('box').style.display = 'none';
     }
-    
+
     const item = document.getElementsByClassName('item');
     for (i in item) {
         item[i].onclick = function() {
             let data = this.getAttribute('data-name');
             let content = '';
             switch (data){
-                case 'database': 
+                case 'database':
                     content = SQL;
                     break;
                 case 'files':
                     content = files;
                     break;
             }
-            document.getElementById('debug-content').innerHTML = content;     
+            document.getElementById('debug-content').innerHTML = content;
         }
     }
-    
+
 </script>
 EOT;
         return $response->contentType('text/html');
