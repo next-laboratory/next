@@ -42,11 +42,16 @@ class Make extends Command
 
         $array = explode('/', $controller);
 
+
         $controller = ucfirst(array_pop($array));
 
         $namespace = implode('\\', array_map(function ($value) {
             return ucfirst($value);
         }, $array));
+
+        if (!empty($namespace)) {
+            $namespace = '\\' . $namespace;
+        }
 
         $path = env('app_path') . 'Http' . DIRECTORY_SEPARATOR . 'Controllers' . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
 
@@ -57,9 +62,9 @@ class Make extends Command
 
         File::mkdir($path);
 
-        $file = str_replace(['{{namespace}}', '{{class}}'], ['App\\Http\\Controllers\\' . $namespace, $controller], file_get_contents($file));
+        $file = str_replace(['{{namespace}}', '{{class}}'], ['App\\Http\\Controllers' . $namespace, $controller], file_get_contents($file));
         file_put_contents($path . $controller . '.php', $file);
-        return $this->writeLine("控制器App\\Http\\Controllers\\{$namespace}\\{$controller}创建成功！", Style::STYLE_GB);
+        return $this->writeLine("控制器App\\Http\\Controllers{$namespace}\\{$controller}创建成功！", Style::STYLE_GB);
     }
 
     /**
