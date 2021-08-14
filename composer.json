@@ -29,13 +29,11 @@
     "max/cache": "dev-master",
     "max/database": "dev-master",
     "max/console": "dev-master",
-    "max/container": "dev-master",
     "max/view": "dev-master",
     "max/validator": "dev-master",
     "max/redis": "dev-master",
     "max/filesystem": "dev-master",
     "max/http": "dev-master",
-    "max/helper": "dev-master",
     "max/log": "dev-master"
   },
   "require-dev": {
