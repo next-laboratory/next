@@ -32,7 +32,6 @@ class Vendor extends Command
                 }
             }
         }
-        echo "\033[32mPublish successfully ! \033[0m\n";
     }
 
 }

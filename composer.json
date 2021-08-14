@@ -35,9 +35,10 @@
     "max/redis": "dev-master",
     "max/filesystem": "dev-master",
     "max/http": "dev-master",
-    "max/env": "dev-master",
     "max/helper": "dev-master",
-    "max/log": "dev-master",
+    "max/log": "dev-master"
+  },
+  "require-dev": {
     "symfony/var-dumper": "^5.3"
   },
   "scripts": {
