@@ -17,7 +17,7 @@ class Route extends Command
      */
     protected $cacheFile;
 
-    protected const SEPARATOR = "+------+----------------------------------------------+--------------------------------------------------+----------------+\n";
+    protected const SEPARATOR = "+-----------+---------------------------------------------+---------------------------------------------+----------------+\n";
 
     /**
      * 初始化配置
@@ -67,21 +67,17 @@ EOT;
      */
     public function list()
     {
-        \Max\Facade\Route::register();
-        echo self::SEPARATOR . "|" . $this->_format(' 请求', 6) . " |" . $this->_format('请求地址', 50) . "|" . $this->_format('路由地址', 54) . "|  " . $this->_format('别名', 16) . "|\n" . self::SEPARATOR;
-        foreach (\Max\Facade\Route::all() as $method => $routes) {
-            foreach ($routes as $route => $locate) {
-                if (!isset($locate['route'])) {
-                    continue;
-                }
-                $location = $locate['route'];
-                if (is_array($location)) {
-                    $location = implode('@', $location);
-                } else if ($location instanceof \Closure || 'C:' === substr($location, 0, 2)) {
-                    $location = '\Closure';
-                }
-                echo '|' . $this->_format(strtoupper($method), 6) . '|' . $this->_format($route, 46) . '|' . $this->_format($location, 50) . '| ' . $this->_format(app(Alias::class)->getAliasByUri($route), 15) . "|\n";
+        $this->app->route->register()->routeCollection->append();
+        echo self::SEPARATOR . "|" . $this->_format(' METHODS', 10) . " |" . $this->_format('URI', 45) . "|" . $this->_format('DESTINATION', 45) . "|  " . $this->_format('ALIAS', 14) . "|\n" . self::SEPARATOR;
+        foreach (\Max\Facade\Route::getAll() as $route) {
+            if (is_array($route->destination)) {
+                $location = implode('@', $route->destination);
+            } else if ($route->destination instanceof \Closure || 'C:' === substr($route->destination, 0, 2)) {
+                $location = '\Closure';
+            } else {
+                $location = $route->destination;
             }
+            echo '|' . $this->_format(strtoupper(implode('|', $route->methods)), 11) . '|' . $this->_format($route->uri, 45) . '|' . $this->_format($location, 45) . '| ' . $this->_format($route->name ?? '', 15) . "|\n";
         }
         exit(self::SEPARATOR);
     }

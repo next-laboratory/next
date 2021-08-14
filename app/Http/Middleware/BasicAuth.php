@@ -42,6 +42,9 @@ class BasicAuth
      */
     public function handle(Request $request, \Closure $next)
     {
+        if (empty($this->users)) {
+            return response()->body('未找到配置文件auth.php, 请先新建配置文件。');
+        }
         if (!$request->hasHeader('Authorization')) {
             return response()->body('401')
                 ->withHeader('WWW-Authenticate', 'Basic')
