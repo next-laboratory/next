@@ -18,7 +18,5 @@ return [
         'route'      => \Max\Http\Router::class,
         'error'      => \Max\Error::class,
         'response'   => \Max\Http\Response::class,
-        'session'    => \Max\Http\Session::class,
-        'middleware' => \Max\Http\Middleware::class,
     ],
 ];
