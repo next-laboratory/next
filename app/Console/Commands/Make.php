@@ -10,11 +10,9 @@ use Max\Helper\File;
 class Make extends Command
 {
 
-    public function configure()
-    {
-        $this->setName('make')
-            ->setDescription('Create files in command line');
-    }
+    protected $name = 'make';
+
+    protected $description = 'Create files in command line';
 
     public function exec()
     {

@@ -8,11 +8,9 @@ use Max\Console\Style;
 class Help extends Command
 {
 
-    public function configure()
-    {
-        $this->setName('help')
-            ->setDescription('Show commands list');
-    }
+    protected $name = 'help';
+
+    protected $description = 'Show commands list';
 
     public function exec()
     {

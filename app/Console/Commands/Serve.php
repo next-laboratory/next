@@ -8,12 +8,14 @@ use Max\Console\Command;
 class Serve extends Command
 {
 
-    public function configure()
+    protected $name = 'serve';
+
+    protected $description = 'Start the built-in server';
+
+    public function __construct()
     {
-        $this->setName('serve')
-            ->addOption('--port', 'Set the port to listen on')
-            ->addOption('-p', 'Set the port to listen on')
-            ->setDescription('Start the built-in server');
+        $this->addOption('--port', 'Set the port to listen on')
+            ->addOption('-p', 'Set the port to listen on');
     }
 
     public function exec()

@@ -11,6 +11,11 @@ use Max\Http\Route\Alias;
 class Route extends Command
 {
 
+
+    protected $name = 'route';
+
+    protected $description = 'Manage your routers';
+
     /**
      * 缓存文件
      * @var string
@@ -22,10 +27,8 @@ class Route extends Command
     /**
      * 初始化配置
      */
-    public function configure()
+    public function __construct()
     {
-        $this->setName('route')
-            ->setDescription('Manage your routers');
         $this->cacheFile = env('storage_path') . 'cache' . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'routes.php';
     }
 

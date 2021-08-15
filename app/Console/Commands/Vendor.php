@@ -7,11 +7,9 @@ use Max\Console\Command;
 class Vendor extends Command
 {
 
-    public function configure()
-    {
-        $this->setName('vendor:publish')
-            ->setDescription('Publish publishable packages');
-    }
+    protected $name = 'vendor:publish';
+
+    protected $description = 'Publish publishable packages';
 
     public function exec()
     {
