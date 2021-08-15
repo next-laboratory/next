@@ -7,7 +7,5 @@ require './vendor/autoload.php';
 
 (new App('.'))->start(function (App $app) {
     $console = $app->console;
-    $console->register('./routes/console.php')->run();
+    $console->run();
 });
-
-

@@ -10,13 +10,13 @@ return [
     //异常处理类
     'exception_handler' => \App\Http\Error::class,
     //类别名
-    'alias'             => [
-        'console'    => \Max\Console::class,
-        'log'        => \Max\Logger::class,
-        'http'       => \Max\Http::class,
-        'request'    => \Max\Http\Request::class,
-        'route'      => \Max\Http\Router::class,
-        'error'      => \Max\Error::class,
-        'response'   => \Max\Http\Response::class,
+    'aliases'           => [
+        'console'  => \App\Console\Kernel::class,
+        'http'     => \App\Http\Kernel::class,
+        'log'      => \Max\Logger::class,
+        'request'  => \Max\Http\Request::class,
+        'route'    => \Max\Http\Router::class,
+        'error'    => \Max\Error::class,
+        'response' => \Max\Http\Response::class,
     ],
 ];
