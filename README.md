@@ -16,14 +16,13 @@
 ## 使用
 
 ## 必选组件
+
 > 目前以下组件为必须安装的组件
 
 - max/http
 - max/container
 - max/framework
 - max/console
-- max/env
-- max/helper
 
 ### 1.安装要求
 
@@ -61,3 +60,6 @@ composer create-project max/max:dev-master .
 ## 更新履历
 
 * 20210120 更名 MaxPHP 1.0.0版本发布
+* 20210815 开发版
+    新的中间件机制
+    路由，视图和Database功能优化
