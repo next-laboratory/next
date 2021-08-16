@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\Cors;
 use Max\Http;
 
 class Kernel extends Http
@@ -12,9 +13,9 @@ class Kernel extends Http
      * @var array
      */
     protected $middleware = [
+        Cors::class
 //        \App\Http\Middleware\Debug::class,
 //        \App\Http\Middleware\BasicAuth::class,
-//        \App\Http\Middleware\GlobalCross::class,
     ];
 
     /**
