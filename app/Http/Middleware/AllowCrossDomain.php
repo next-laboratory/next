@@ -2,11 +2,13 @@
 
 namespace App\Http\Middleware;
 
+use Max\Http\Middleware\Cors;
+
 /**
  * Class Cors
  * @package App\Http\Middleware
  */
-class Cors extends \Max\Http\Middleware\Cors
+class AllowCrossDomain extends Cors
 {
 
     /**

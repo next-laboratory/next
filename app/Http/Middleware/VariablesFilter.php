@@ -2,7 +2,9 @@
 
 namespace App\Http\Middleware;
 
-class Filter extends \Max\Http\Middleware\Filter
+use Max\Http\Middleware\Filter;
+
+class VariablesFilter extends Filter
 {
 
     /**

@@ -12,10 +12,10 @@ class Kernel extends Http
      * @var array
      */
     protected $middleware = [
-        \App\Http\Middleware\Filter::class,
-        \App\Http\Middleware\Cors::class,
-//        \App\Http\Middleware\Debug::class,
-//        \App\Http\Middleware\BasicAuth::class,
+        \App\Http\Middleware\VariablesFilter::class,
+        \App\Http\Middleware\AppDebug::class,
+        \App\Http\Middleware\AllowCrossDomain::class,
+//        \App\Http\Middleware\BasicAuthentication::class,
     ];
 
     /**

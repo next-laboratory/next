@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-class Debug
+class AppDebug
 {
     public function handle($request, \Closure $next)
     {
@@ -10,15 +10,15 @@ class Debug
         $startTime = microtime(true);
         //框架运行初始内存
         $startMemoryUsage = memory_get_usage();
-        $response = $next($request);
-        $SQL = '';
+        $response         = $next($request);
+        $SQL              = '';
         foreach (app('db')->getHistory() as $query) {
             [$sql, $time, $binds] = [htmlspecialchars($query['query']), $query['time'] . 'ms', htmlspecialchars(json_encode($query['boundParameters']))];
             $SQL .= "<p style='margin: 0 auto; display: flex; justify-content: space-between'><span title='{$binds}'>{$sql}</span><span>{$time}</span></p><hr>";
         }
-        $timeCost = round(microtime(true) - $startTime, 4);
+        $timeCost    = round(microtime(true) - $startTime, 4);
         $memoryUsage = round((memory_get_usage() - $startMemoryUsage) / 1024 / 1024, 3);
-        $files = '';
+        $files       = '';
         foreach (get_included_files() as $file) {
             $files .= $file . '<hr>';
         }

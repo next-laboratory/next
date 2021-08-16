@@ -17,7 +17,7 @@ use Max\Http\Request;
  * Class BasicAuth
  * @package App\Http\Middleware
  */
-class BasicAuth
+class BasicAuthentication
 {
 
     /**
