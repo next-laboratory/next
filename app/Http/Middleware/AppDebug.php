@@ -24,7 +24,13 @@ class AppDebug
         }
         echo <<<EOT
 <style>
-
+    *::-webkit-scrollbar {
+        width: 5px;
+    }
+    *::-webkit-scrollbar-thumb {
+        border-radius: 2px;
+        background-color: #333a41;
+    }
     #box {
         height: 40%; 
         width: 100%; 
@@ -44,7 +50,7 @@ class AppDebug
         text-align:center;
         font-weight:bolder;
         line-height: 40px;
-        background-color: dodgerblue;
+        background-color: #333a41;
         box-shadow: grey 0 0 3px 1px;
         border-radius: 50%;
         color:white;
@@ -99,7 +105,7 @@ class AppDebug
         <li class="item" data-name="files">Files</li>
         <span style="color: white; cursor: pointer; position: absolute; right: .8em; font-weight: bold" id="close">X</span>
     </ul>
-    <div id="debug-content" style="height: calc(100% - 2.5em); background-color: #ebeff8;padding:.5em .5em 0; overflow-y: scroll; font-size: .85em; box-sizing: border-box">
+    <div id="debug-content" style="height: calc(100% - 2.5em); background-color: #ebeff8;padding:.5em 0 .5em .5em; overflow-y: scroll; font-size: .85em; box-sizing: border-box">
         {$SQL}
     </div>
 </div>
