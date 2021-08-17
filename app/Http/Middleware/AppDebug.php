@@ -39,7 +39,7 @@ class AppDebug
         left:0;
         right: 0;
         display: none;
-        z-index: 9999;
+        z-index: 100001;
         margin: 0 auto;
         box-sizing: border-box;
     }
@@ -63,6 +63,7 @@ class AppDebug
     }
 
     .item {
+        font-size: .9em;
         width: 6em;
         text-decoration: none;
         color: white;
@@ -88,7 +89,7 @@ class AppDebug
 </style>
 <div style="position: fixed;
         bottom:.5em;
-        right: .5em; display: flex;">
+        right: .5em; display: flex; z-index: 100000">
 <div style="font-size: .8em; font-weight: bold;margin-right: .5em; line-height: 20px">
     {$timeCost}s
     <br>
@@ -103,9 +104,9 @@ class AppDebug
         <li class="item" data-name="database">Database</li>
         <li class="item" data-name="cache">Cache</li>
         <li class="item" data-name="files">Files</li>
-        <span style="color: white; cursor: pointer; position: absolute; right: .8em; font-weight: bold" id="close">X</span>
+        <span style="line-height: 2.3em; color: white; cursor: pointer; position: absolute; right: .8em; font-weight: bold" id="close">x</span>
     </ul>
-    <div id="debug-content" style="height: calc(100% - 2.5em); background-color: #ebeff8;padding:.5em 0 .5em .5em; overflow-y: scroll; font-size: .85em; box-sizing: border-box">
+    <div id="debug-content" style="height: calc(100% - 3em); background-color: #ebeff8;padding: .5em; overflow-y: scroll; font-size: .85em; box-sizing: border-box">
         {$SQL}
     </div>
 </div>
