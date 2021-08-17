@@ -19,14 +19,23 @@ class AppDebug
         $timeCost    = round(microtime(true) - $startTime, 4);
         $memoryUsage = round((memory_get_usage() - $startMemoryUsage) / 1024 / 1024, 3);
         $files       = '';
-        foreach (get_included_files() as $file) {
-            $files .= $file . '<hr>';
+        foreach (get_included_files() as $key => $file) {
+            $files .= $key + 1 . ': ' . $file . ' [' . round(filesize($file) / 1024, 3) . 'KB] <hr>';
         }
         echo <<<EOT
 <style>
 
     #box {
-        height: 40%; width: 100%; position: fixed; bottom: 0;  display: none;z-index: 9999;
+        height: 40%; 
+        width: 100%; 
+        position: fixed; 
+        bottom: 0;  
+        left:0;
+        right: 0;
+        display: none;
+        z-index: 9999;
+        margin: 0 auto;
+        box-sizing: border-box;
     }
 
     #btn {
@@ -48,24 +57,30 @@ class AppDebug
     }
 
     .item {
-        display: block;
-        width: 5em;
+        width: 6em;
         text-decoration: none;
         color: white;
-        font-weight: bold
+        text-align: center;
+        cursor:pointer;
+        display: inline-block;
+    }
+    .item:hover {
+           background-color: #181c21;
     }
 
     #title {
-        padding: 0 1em;
+        list-style-type: none;
+        padding: 0;
         line-height:2.5em;
         height: 2.5em;
         position: relative;
-        border-bottom: 2px solid #d5d5d5;
+        margin: 0;
         display: flex;
-        background-color: #708af5;
+        justify-content: center;
+        background-color: #333a41;
     }
 </style>
-<div style=" position: fixed;
+<div style="position: fixed;
         bottom:.5em;
         right: .5em; display: flex;">
 <div style="font-size: .8em; font-weight: bold;margin-right: .5em; line-height: 20px">
@@ -78,13 +93,13 @@ class AppDebug
 </div>
 </div>
 <div id="box">
-    <div id="title">
-        <a class="item" href="javascript:void(0)" data-name="database">数据库</a>
-        <a class="item" href="javascript:void(0)" data-name="cache">缓存</a>
-        <a class="item" href="javascript:void(0)" data-name="files">文件</a>
-        <span style="cursor: pointer; position: absolute; right: .8em; font-weight: bold" id="close">X</span>
-    </div>
-    <div id="debug-content" style="height: 100%;background-color: #ebeff8;padding: .5em; overflow-y: scroll">
+    <ul id="title">
+        <li class="item" data-name="database">Database</li>
+        <li class="item" data-name="cache">Cache</li>
+        <li class="item" data-name="files">Files</li>
+        <span style="color: white; cursor: pointer; position: absolute; right: .8em; font-weight: bold" id="close">X</span>
+    </ul>
+    <div id="debug-content" style="height: calc(100% - 2.5em); background-color: #ebeff8;padding:.5em .5em 0; overflow-y: scroll; font-size: .85em; box-sizing: border-box">
         {$SQL}
     </div>
 </div>
