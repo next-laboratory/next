@@ -88,7 +88,7 @@ class AppDebug
     }
 </style>
 <div style="position: fixed;
-        bottom:.5em;
+        bottom:.5em;padding: .5em; border-radius: 50px; background-color: rgba(255,255,255,0.76);
         right: .5em; display: flex; z-index: 100000">
 <div style="font-size: .8em; font-weight: bold;margin-right: .5em; line-height: 20px">
     {$timeCost}s

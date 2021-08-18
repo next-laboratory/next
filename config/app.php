@@ -11,12 +11,12 @@ return [
     'exception_handler' => \App\Http\Error::class,
     //类别名
     'aliases'           => [
+        'error'    => \Max\Error::class,
         'console'  => \App\Console\Kernel::class,
         'http'     => \App\Http\Kernel::class,
-        'log'      => \Max\Logger::class,
         'request'  => \Max\Http\Request::class,
-        'route'    => \Max\Http\Router::class,
-        'error'    => \Max\Error::class,
         'response' => \Max\Http\Response::class,
+        'route'    => \Max\Http\Router::class,
+        'log'      => \Max\Logger::class,
     ],
 ];
