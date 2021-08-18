@@ -2,7 +2,9 @@
 
 namespace App\Http;
 
-class Error extends \Max\Exception\Handler
+use Max\Exception\Handler;
+
+class Error extends Handler
 {
 
     public function __toString()

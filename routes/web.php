@@ -8,4 +8,4 @@ use \Max\Facade\Route;
 
 Route::get('/', 'App\Http\Controllers\Index@index')->alias('home')->cors('*');
 
-Route::get('/request', [\App\Http\Controllers\Index::class, 'request']);
+Route::get('/request', [\App\Http\Controllers\Index::class, 'request'])->middleware(\App\Http\Middleware\BasicAuthentication::class);

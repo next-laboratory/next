@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Max\Exception\HttpException;
 use Max\Http\Request;
 
 /**
@@ -43,12 +44,11 @@ class BasicAuthentication
     public function handle(Request $request, \Closure $next)
     {
         if (empty($this->users)) {
-            return response()->body('未找到配置文件auth.php, 请先新建配置文件。');
+            return response()->body(app('error')->getMessage(new \Exception('未找到配置文件auth.php, 请先新建配置文件。')));
         }
         if (!$request->hasHeader('Authorization')) {
-            return response()->body('401')
-                ->withHeader('WWW-Authenticate', 'Basic')
-                ->withStatus(401);
+            response()->withHeader('WWW-Authenticate', 'Basic');
+            throw new HttpException('请先通过Basic验证！', 401);
         }
         $user = explode(':', base64_decode(substr($request->header('authorization'), 6)));
         if (isset($this->users[$user[0]]) && $this->users[$user[0]] === $user[1]) {

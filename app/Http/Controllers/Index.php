@@ -15,6 +15,6 @@ class Index extends Controller
 
     public function request(UserRequest $request)
     {
-        dump($request->get(['id']));
+        dump($request->get('id'));
     }
 }
