@@ -29,6 +29,9 @@ class Make extends Command
         if ($input->hasOption('-mw')) {
             return $this->middleware();
         }
+        if ($input->hasOption('-r')) {
+            return $this->request();
+        }
         throw new \Max\Console\Exception\InvalidOptionException('Use `php max make --help` or `php max make -H` to look up for usable options.');
     }
 
@@ -79,14 +82,22 @@ class Make extends Command
         return $this->writeLine("暂时不支持创建中间件！", Style::STYLE_RB);
     }
 
+    public function request()
+    {
+        return $this->writeLine("暂时不支持创建请求类！", Style::STYLE_RB);
+    }
+
     public function help()
     {
         $name = str_pad("php max {$this->name} [option]", 33, ' ', STR_PAD_RIGHT);
         return <<<EOT
 \033[33m{$name}\033[0m           {$this->getDescription()}
 Options:  
-          -c <controller> [--rest]          Create a controller file (php max make -c index/index)
+          -c  <controller> [--rest]         Create a controller file (php max make -c index/index)
                                             Use [--rest] to create a restful controller
+          -m  <model>
+          -mw <middleware>
+          -r  <request>
 
 EOT;
     }

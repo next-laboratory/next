@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-class AppDebug
+class AppTrace
 {
     public function handle($request, \Closure $next)
     {
@@ -87,10 +87,8 @@ class AppDebug
         background-color: #333a41;
     }
 </style>
-<div style="position: fixed;
-        bottom:.5em;padding: .5em; border-radius: 50px; background-color: rgba(255,255,255,0.76);
-        right: .5em; display: flex; z-index: 100000">
-<div style="font-size: .8em; font-weight: bold;margin-right: .5em; line-height: 20px">
+<div style="position: fixed; bottom:.5em; border-radius: 50px; background-color: rgba(255,255,255,0.76); right: .5em; display: flex; z-index: 100000; padding-left: 1em">
+<div style="font-size: .5em; font-weight: bold;margin-right: .5em; line-height: 20px">
     {$timeCost}s
     <br>
     {$memoryUsage}MB
@@ -106,7 +104,7 @@ class AppDebug
         <li class="item" data-name="files">Files</li>
         <span style="line-height: 2.3em; color: white; cursor: pointer; position: absolute; right: .8em; font-weight: bold" id="close">x</span>
     </ul>
-    <div id="debug-content" style="height: calc(100% - 3em); background-color: #ebeff8;padding: .5em; overflow-y: scroll; font-size: .85em; box-sizing: border-box">
+    <div id="debug-content" style="height: calc(100% - 3em); background-color: #ebeff8;padding: .5em; overflow-y: scroll; font-size: .85em; box-sizing: border-box; word-break: break-all">
         {$SQL}
     </div>
 </div>
