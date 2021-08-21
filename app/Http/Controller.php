@@ -12,6 +12,10 @@ use Max\App;
 class Controller extends \Max\Http\Controller
 {
 
+    /**
+     * Controller constructor.
+     * @param App $app
+     */
     public function __construct(App $app)
     {
         $this->app     = $app;

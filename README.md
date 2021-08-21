@@ -55,10 +55,3 @@ composer create-project max/max:dev-master .
 <a href="https://www.chengyao.xyz/note/203.html">开发文档</a>
 
 > 官网：https://www.chengyao.xyz
-
-## 更新履历
-
-* 20210120 更名 MaxPHP 1.0.0版本发布
-* 20210815 开发版
-    新的中间件机制
-    路由，视图和Database功能优化
