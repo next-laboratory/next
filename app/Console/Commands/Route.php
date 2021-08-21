@@ -72,15 +72,18 @@ EOT;
     {
         $this->app->route->register()->routeCollection->append();
         echo self::SEPARATOR . "|" . $this->_format(' METHODS', 10) . " |" . $this->_format('URI', 45) . "|" . $this->_format('DESTINATION', 45) . "|  " . $this->_format('ALIAS', 14) . "|\n" . self::SEPARATOR;
-        foreach (\Max\Facade\Route::getAll() as $route) {
-            if (is_array($route->destination)) {
-                $location = implode('@', $route->destination);
-            } else if ($route->destination instanceof \Closure || 'C:' === substr($route->destination, 0, 2)) {
-                $location = '\Closure';
-            } else {
-                $location = $route->destination;
+        foreach (\Max\Facade\Route::getAll() as $routes) {
+            foreach($routes as $route){
+                if (is_array($route->destination)) {
+                    $location = implode('@', $route->destination);
+                } else if ($route->destination instanceof \Closure || 'C:' === substr($route->destination, 0, 2)) {
+                    $location = '\Closure';
+                } else {
+                    $location = $route->destination;
+                }
+                echo '|' . $this->_format(strtoupper(implode('|', $route->methods)), 11) . '|' . $this->_format($route->uri, 45) . '|' . $this->_format($location, 45) . '| ' . $this->_format($route->name ?? '', 15) . "|\n";
             }
-            echo '|' . $this->_format(strtoupper(implode('|', $route->methods)), 11) . '|' . $this->_format($route->uri, 45) . '|' . $this->_format($location, 45) . '| ' . $this->_format($route->name ?? '', 15) . "|\n";
+
         }
         exit(self::SEPARATOR);
     }
