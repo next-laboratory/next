@@ -73,7 +73,7 @@ EOT;
         $this->app->route->register()->routeCollection->append();
         echo self::SEPARATOR . "|" . $this->_format(' METHODS', 10) . " |" . $this->_format('URI', 45) . "|" . $this->_format('DESTINATION', 45) . "|  " . $this->_format('ALIAS', 14) . "|\n" . self::SEPARATOR;
         foreach (\Max\Facade\Route::getAll() as $routes) {
-            foreach($routes as $route){
+            foreach ($routes as $route) {
                 if (is_array($route->destination)) {
                     $location = implode('@', $route->destination);
                 } else if ($route->destination instanceof \Closure || 'C:' === substr($route->destination, 0, 2)) {
@@ -101,14 +101,14 @@ EOT;
             unlink($this->cacheFile);
         }
         \Max\Facade\Route::register();
-        $routes = \Max\Facade\Route::all();
+        $routes = \Max\Facade\Route::getAll();
         foreach ($routes as $method => $route) {
             foreach ($route as $path => $location) {
-                if (!isset($location['route'])) {
+                if (!isset($location->destination)) {
                     continue;
                 }
-                if ($location['route'] instanceof \Closure) {
-                    $routes[$method][$path]['route'] = \Opis\Closure\serialize($location['route']);
+                if ($location->destination instanceof \Closure) {
+                    $routes[$method][$path]->destination = \Opis\Closure\serialize($location->destination);
                 }
             }
         }
