@@ -90,16 +90,12 @@ EOT;
 
     /**
      * 生成路由缓存
-     * 因为php串行化闭包问题，如果路由中存在闭包会报错
+     * 现在还存在bug，list重复
      */
     public function createCache()
     {
-        if (!file_exists(dirname($this->cacheFile))) {
-            mkdir(dirname($this->cacheFile), 0755, true);
-        }
-        if (file_exists($this->cacheFile)) {
-            unlink($this->cacheFile);
-        }
+        file_exists(dirname($this->cacheFile)) || mkdir(dirname($this->cacheFile), 0755, true);
+        file_exists($this->cacheFile) && unlink($this->cacheFile);
         \Max\Facade\Route::register();
         $routes = \Max\Facade\Route::getAll();
         foreach ($routes as $method => $route) {
