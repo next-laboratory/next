@@ -35,20 +35,19 @@ PHP >= 7.2.0
 ```shell
 composer create-project --prefer-dist max/max .
 ```
-
 这行命令会在你命令执行目录安装框架
 
-> 你可以使用Git安装开发版，安装完成后会自动启动服务
+> 欢迎各位志同道合的朋友参与开发
+
+参与开发请安装开发版本
+> 你可以使用Git安装开发版
 
 ```shell
 git clone https://github.com/topyao/max.git .
 composer install
 ```
 
-> 欢迎各位志同道合的朋友参与开发
-
-参与开发请安装开发版本
-
+> 也可以用composer
 ```shell
 composer create-project max/max:dev-master .
 ```
