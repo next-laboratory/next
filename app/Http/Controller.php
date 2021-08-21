@@ -2,7 +2,21 @@
 
 namespace App\Http;
 
+use Max\App;
+
+/**
+ * 自定义基础控制器
+ * Class Controller
+ * @package App\Http
+ */
 class Controller extends \Max\Http\Controller
 {
-    // 用户自定义基础控制器
+
+    public function __construct(App $app)
+    {
+        $this->app     = $app;
+        $this->request = $app->request;
+    }
+
+
 }
