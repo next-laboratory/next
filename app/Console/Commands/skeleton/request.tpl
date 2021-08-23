@@ -14,4 +14,10 @@ class {{class}} extends Request
     */
     protected $rule = [];
 
+    /*
+    * 验证提示
+    * @var array
+    */
+    protected $message = [];
+
 }
