@@ -12,15 +12,15 @@ class Kernel extends Http
      * @var array
      */
     protected $middleware = [
+        // take effect when app start
         'app'   => [
-            // take effect when app start
             \App\Http\Middleware\AppTrace::class,
             \App\Http\Middleware\VariablesFilter::class,
 //            \App\Http\Middleware\BasicAuthentication::class,
             \App\Http\Middleware\AllowCrossDomain::class,
         ],
+        // take effect after route matched
         'route' => [
-            // take effect after route matched
         ],
     ];
 
