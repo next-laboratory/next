@@ -6,9 +6,9 @@ class AppTrace
 {
     public function handle($request, \Closure $next)
     {
-        //框架启动时间
+        //不准确的框架启动时间
         $startTime = microtime(true);
-        //框架运行初始内存
+        //不准确的框架运行初始内存
         $startMemoryUsage = memory_get_usage();
         $response         = $next($request);
         $SQL              = '';
