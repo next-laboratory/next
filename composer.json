@@ -20,7 +20,7 @@
       "App\\": "app/"
     },
     "files": [
-      "app/common.php"
+      "app/helpers.php"
     ]
   },
   "require": {
