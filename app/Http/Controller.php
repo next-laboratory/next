@@ -13,6 +13,16 @@ class Controller extends \Max\Http\Controller
 {
 
     /**
+     * @var App
+     */
+    protected $app;
+
+    /**
+     * @var \Max\Http\Request
+     */
+    protected $request;
+
+    /**
      * Controller constructor.
      * @param App $app
      */
