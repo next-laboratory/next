@@ -2,7 +2,7 @@
 
 return [
     //是否开启调试
-    'debug'             => env('app.debug', true),
+    'debug'             => env('debug', true),
     //是否记录日志
     'log'               => env('app.log', true),
     //默认时区
