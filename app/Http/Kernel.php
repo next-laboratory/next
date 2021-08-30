@@ -15,12 +15,13 @@ class Kernel extends Http
         // take effect when app start
         'app'   => [
             \App\Http\Middleware\VariablesFilter::class,
-            \App\Http\Middleware\AllowCrossDomain::class,
 //            \App\Http\Middleware\AppTrace::class,
 //            \App\Http\Middleware\BasicAuthentication::class,
         ],
         // take effect after route matched
-        'route' => [],
+        'route' => [
+//            \App\Http\Middleware\AllowCrossDomain::class,
+        ],
     ];
 
     /**
