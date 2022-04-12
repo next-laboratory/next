@@ -1,9 +1,43 @@
 {
   "name": "max/max",
+  "license": "Apache-2.0",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "description": "A lightweight, high-performance PHP framework based on swoole.",
+  "homepage": "https://github.com/topyao/max",
+  "keywords": [
+    "maxphp",
+    "flexible",
+    "php framework"
+  ],
   "autoload": {
     "psr-4": {
-      "Max\\": "src/"
-    }
+      "Max\\Cache\\": "src/cache/src",
+      "Max\\config\\": "src/config/src",
+      "Max\\console\\": "src/console/src",
+      "Max\\database\\": "src/database/src",
+      "Max\\di\\": "src/di/src",
+      "Max\\env\\": "src/env/src",
+      "Max\\event\\": "src/event/src",
+      "Max\\foundation\\": "src/foundation/src",
+      "Max\\http\\": "src/http/src",
+      "Max\\http-message\\": "src/http-message/src",
+      "Max\\http-server\\": "src/http-server/src",
+      "Max\\log\\": "src/log/src",
+      "Max\\queue\\": "src/queue/src",
+      "Max\\routing\\": "src/routing/src",
+      "Max\\server\\": "src/server/src",
+      "Max\\session\\": "src/session/src",
+      "Max\\swagger\\": "src/swagger/src",
+      "Max\\utils\\": "src/utils/src",
+      "Max\\validator\\": "src/validator/src",
+      "Max\\view\\": "src/view/src",
+      "Max\\websocket\\": "src/websocket/src"
+    },
+    "files": [
+      "src/di/src/helpers.php",
+      "src/utils/src/helpers.php"
+    ]
   },
   "authors": [
     {
@@ -11,7 +45,37 @@
       "email": "987861463@qq.com"
     }
   ],
+  "replace": {
+    "max/cache": "*",
+    "max/config": "*",
+    "max/console": "*",
+    "max/database": "*",
+    "max/di": "*",
+    "max/env": "*",
+    "max/event": "*",
+    "max/foundation": "*",
+    "max/http": "*",
+    "max/http-message": "*",
+    "max/http-server": "*",
+    "max/log": "*",
+    "max/queue": "*",
+    "max/routing": "*",
+    "max/server": "*",
+    "max/session": "*",
+    "max/swagger": "*",
+    "max/utils": "*",
+    "max/validator": "*",
+    "max/view": "*",
+    "max/websocket": "*"
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist"
+  },
   "require": {
-    "php": "^8.0"
+    "php": "^8.0",
+    "ext-swoole": ">=4.6",
+    "ext-pcntl": "*",
+    "ext-posix": "*"
   }
 }
