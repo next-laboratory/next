@@ -1,0 +1,33 @@
+{
+  "name": "max/server",
+  "description": "MaxPHP用于支持Swoole的包",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/topyao/max-server",
+  "authors": [
+    {
+      "name": "chengyao",
+      "email": "987861463@qq.com",
+      "homepage": "https://www.1kmb.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Max\\Server\\": "src/"
+    }
+  },
+  "require": {
+    "php": "^8.0",
+    "max/di": "dev-master",
+    "max/utils": "dev-master",
+    "max/http-server": "dev-master",
+    "max/routing": "dev-master",
+    "max/event": "dev-master",
+    "ext-json": "*",
+    "ext-swoole": ">=4.6"
+  },
+  "extra": {
+    "max": {
+      "config": "Max\\Server\\ConfigProvider"
+    }
+  }
+}

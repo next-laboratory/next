@@ -1,0 +1,1 @@
+这个包中的大部分代码均来自于laravel, 感谢laravel. 使用这个包让你在不使用laravel的场景下使用laravel中强大的辅助函数或类

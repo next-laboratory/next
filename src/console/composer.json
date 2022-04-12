@@ -1,0 +1,29 @@
+{
+    "name": "max/console",
+    "description": "Simple command line management tool.",
+    "homepage": "https://github.com/topyao/max-console",
+    "license": "Apache-2.0",
+    "keywords": [
+        "console",
+        "maxphp",
+        "cli"
+    ],
+    "authors": [
+        {
+            "name": "chengyao",
+            "email": "987861463@qq.com",
+            "homepage": "https://www.1kmb.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Max\\Console\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^7.4|^8.0"
+    },
+    "config": {
+        "preferred-install": "dist"
+    }
+}

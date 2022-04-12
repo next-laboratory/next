@@ -1,0 +1,23 @@
+{
+    "name": "max/validator",
+    "description": "A simple validator.",
+    "type": "library",
+    "license": "Apache-2.0",
+    "homepage": "https://github.com/topyao/max-validator",
+    "authors": [
+        {
+            "name": "chengyao",
+            "email": "987861463@qq.com",
+            "homepage": "https://www.1kmb.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Max\\Validator\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.0",
+        "ext-mbstring": "*"
+    }
+}

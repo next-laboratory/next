@@ -1,0 +1,26 @@
+{
+  "name": "max/http-message",
+  "description": "The Psr HTTP message implementation.",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/topyao/max-http-message",
+  "keywords": [
+    "http-message",
+    "maxphp"
+  ],
+  "authors": [
+    {
+      "name": "chengyao",
+      "email": "987861463@qq.com",
+      "homepage": "https://www.1kmb.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Max\\Http\\Message\\": "src/"
+    }
+  },
+  "require": {
+    "php": "^8.0",
+    "psr/http-message": "^1.0"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "max/websocket",
+  "description": "websocket",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/topyao/max-websocket",
+  "keywords": [
+    "http-message",
+    "maxphp"
+  ],
+  "authors": [
+    {
+      "name": "chengyao",
+      "email": "987861463@qq.com",
+      "homepage": "https://www.1kmb.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Max\\WebSocket\\": "src/"
+    }
+  },
+  "require": {
+    "php": "^8.0"
+  },
+  "extra": {
+    "max": {
+      "config": "Max\\Server\\ConfigProvider"
+    }
+  }
+}

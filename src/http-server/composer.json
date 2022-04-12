@@ -1,0 +1,28 @@
+{
+  "name": "max/http-server",
+  "description": "The Psr HTTP server implementation.",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/topyao/max-http-server",
+  "keywords": [
+    "http-server",
+    "maxphp"
+  ],
+  "authors": [
+    {
+      "name": "chengyao",
+      "email": "987861463@qq.com",
+      "homepage": "https://www.1kmb.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Max\\Http\\Server\\": "src/"
+    }
+  },
+  "require": {
+    "php": "^8.0",
+    "max/http-message": "dev-master",
+    "psr/http-server-middleware": "^1.0",
+    "psr/http-server-handler": "^1.0"
+  }
+}

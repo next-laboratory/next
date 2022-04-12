@@ -1,0 +1,22 @@
+{
+  "name": "max/env",
+  "license": "Apache-2.0",
+  "description": "A simple environment variable management tool.",
+  "homepage": "https://github.com/topyao/max-env",
+  "authors": [
+    {
+      "name": "chengyao",
+      "email": "987861463@qq.com",
+      "homepage": "https://www.1kmb.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Max\\Env\\": "src/"
+    }
+  },
+  "require": {
+    "php": "^7.4|^8.0",
+    "max/utils": "dev-master"
+  }
+}

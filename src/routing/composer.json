@@ -1,0 +1,23 @@
+{
+    "name": "max/routing",
+    "description": "A lightweight and fast routing component.",
+    "homepage": "https://github.com/topyao/max-routing",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "chengyao",
+            "email": "987861463@qq.com",
+            "homepage": "https://www.1kmb.com"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "max/utils": "dev-master",
+        "max/http-message": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Max\\Routing\\": "src/"
+        }
+    }
+}
