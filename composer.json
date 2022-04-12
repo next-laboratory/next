@@ -1,0 +1,32 @@
+{
+    "name": "max/utils",
+    "type": "library",
+    "license": "Apache-2.0",
+    "homepage": "https://github.com/topyao/max-utils",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "authors": [
+        {
+            "name": "chengyao",
+            "email": "987861463@qq.com",
+            "homepage": "https://www.1kmb.com"
+        }
+    ],
+    "autoload": {
+        "files": [
+            "src/helpers.php"
+        ],
+        "psr-4": {
+            "Max\\Utils\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.0"
+    },
+    "suggest": {
+        "ramsey/uuid": "^4.2",
+        "voku/portable-ascii": "^1.5",
+        "league/commonmark": "^2.0",
+        "symfony/var-dumper": "*"
+    }
+}
