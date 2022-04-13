@@ -14,12 +14,15 @@ declare(strict_types=1);
 namespace Max\View\Engines;
 
 use Exception;
+use Max\Utils\Traits\AutoFillProperties;
+use Max\View\Contracts\ViewEngineInterface;
 use Max\View\Engines\Blade\Compiler;
 use function func_get_arg;
 
-
-class Blade extends AbstractEngine
+class Blade implements ViewEngineInterface
 {
+    use AutoFillProperties;
+
     /**
      * 缓存
      *
@@ -34,13 +37,43 @@ class Blade extends AbstractEngine
      */
     protected string $suffix = '.blade.php';
 
-
     /**
      * 编译目录
      *
      * @var string
      */
     protected string $compileDir;
+
+    /**
+     * @var string
+     */
+    protected string $path;
+
+    /**
+     * @param array $options
+     */
+    public function __construct(array $options)
+    {
+        $this->fillProperties($options);
+    }
+
+    /**
+     * @param string $path
+     *
+     * @return void
+     */
+    public function setPath(string $path)
+    {
+        $this->path = $path;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPath(): string
+    {
+        return $this->path;
+    }
 
     /**
      * @return bool

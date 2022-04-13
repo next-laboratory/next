@@ -15,7 +15,6 @@ namespace Max\View;
 
 use Max\View\Contracts\ViewEngineInterface;
 
-
 class Renderer
 {
     /**
@@ -25,18 +24,6 @@ class Renderer
      */
     public function __construct(protected ViewEngineInterface $viewEngine)
     {
-    }
-
-    /**
-     * 设置模板目录
-     *
-     * @param string $path
-     *
-     * @return void
-     */
-    public function setPath(string $path)
-    {
-        $this->viewEngine->setPath($path);
     }
 
     /**

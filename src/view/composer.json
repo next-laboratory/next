@@ -2,7 +2,7 @@
   "name": "max/view",
   "license": "Apache-2.0",
   "homepage": "https://github.com/topyao/max-view",
-  "description": "A view engine that supports Blade, Smarty, twig, and can be extended.",
+  "description": "A simple blade view engine.",
   "authors": [
     {
       "name": "chengyao",
@@ -11,7 +11,8 @@
     }
   ],
   "require": {
-    "php": "^8.0"
+    "php": "^8.0",
+    "max/utils": "dev-master"
   },
   "autoload": {
     "psr-4": {

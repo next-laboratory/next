@@ -110,10 +110,11 @@ class Cookie
      */
     public function __toString(): string
     {
-        $str = $this->name . '=' . $this->value;
+        $str = $this->name . '=';
         if ($this->value === '') {
             $str .= 'deleted; expires=' . gmdate('D, d-M-Y H:i:s T', time() - 31536001) . '; max-age=-31536001';
         } else {
+            $str .= $this->value;
             if ($this->expires !== 0) {
                 $str .= '; expires=' . gmdate('D, d-m-Y H:i:s T', $this->expires) . '; max-age=' . $this->getMaxAge();
             }
