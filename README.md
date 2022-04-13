@@ -41,8 +41,8 @@ SWOOLE >= 4.6
 ### 安装
 
 ```shell
-composer create-project max/api-project max  // 安装api项目
-composer create-project max/web-project max  // 安装web项目
+composer create-project max/http-project max  // 安装http项目
+composer create-project max/websocket-project max  // 安装websocket项目(开发中)
 ```
 
 ### 启动服务
