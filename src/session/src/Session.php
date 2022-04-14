@@ -13,8 +13,9 @@ declare(strict_types=1);
 
 namespace Max\Session;
 
-use Exception;
+use InvalidArgumentException;
 use Max\Session\Context\Storage;
+use Max\Session\Exceptions\SessionException;
 use Max\Utils\Context;
 use SessionHandlerInterface;
 use Throwable;
@@ -24,7 +25,6 @@ use function microtime;
 use function serialize;
 use function session_create_id;
 use function unserialize;
-
 
 class Session
 {
@@ -37,27 +37,26 @@ class Session
 
     /**
      * @param array $config
-     *
-     * @throws Exception
      */
     public function __construct(array $config)
     {
         try {
-            $config = $config['stores'][$config['default']];
-            $handler = $config['handler'];
+            $config        = $config['stores'][$config['default']];
+            $handler       = $config['handler'];
             $this->handler = new $handler($config['options']);
         } catch (Throwable $throwable) {
-            throw new Exception('The configuration file may be incorrect: ' . $throwable->getMessage());
+            throw new InvalidArgumentException('The configuration file may be incorrect: ' . $throwable->getMessage());
         }
     }
 
     /**
-     * @param string $id
+     * @param ?string $id
      *
      * @return void
      */
-    public function start(string $id): void
+    public function start(?string $id = null): void
     {
+        $id   ??= $this->createId();
         $data = $this->handler->read($id);
         if (is_string($data)) {
             $data = unserialize($data) ?: [];
@@ -77,9 +76,17 @@ class Session
     }
 
     /**
+     * @return bool
+     */
+    public function close(): bool
+    {
+        return $this->getHandler()->close();
+    }
+
+    /**
      * @return SessionHandlerInterface
      */
-    public function getHandler(): SessionHandlerInterface
+    protected function getHandler(): SessionHandlerInterface
     {
         return $this->handler;
     }
@@ -96,7 +103,7 @@ class Session
 
     /**
      * @param string $key
-     * @param null $default
+     * @param null   $default
      *
      * @return mixed
      */
@@ -118,7 +125,7 @@ class Session
 
     /**
      * @param string $key
-     * @param null $default
+     * @param null   $default
      *
      * @return mixed
      */
@@ -162,23 +169,15 @@ class Session
      */
     public function getId(): string
     {
-        return Context::get(Storage::class)?->getId() ?? $this->refreshId();
+        return Context::get(Storage::class)?->getId() ?? throw new SessionException('The session is not started.');
     }
 
     /**
      * @return string
      */
-    public function refreshId(): string
+    protected function createId(): string
     {
         return md5(microtime(true) . session_create_id());
-    }
-
-    /**
-     * @param $maxLifeTime
-     */
-    public function gc($maxLifeTime)
-    {
-        $this->getHandler()->gc($maxLifeTime);
     }
 
     /**

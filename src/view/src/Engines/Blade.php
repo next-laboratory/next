@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace Max\View\Engines;
 
-use Exception;
 use Max\Utils\Traits\AutoFillProperties;
 use Max\View\Contracts\ViewEngineInterface;
 use Max\View\Engines\Blade\Compiler;
+use Max\View\Exceptions\ViewNotExistException;
 use function func_get_arg;
 
 class Blade implements ViewEngineInterface
@@ -100,12 +100,11 @@ class Blade implements ViewEngineInterface
     }
 
     /**
-     * 渲染
-     *
      * @param string $template
      * @param array  $arguments
      *
-     * @throws Exception
+     * @return void
+     * @throws ViewNotExistException
      */
     public function render(string $template, array $arguments = [])
     {
@@ -113,9 +112,8 @@ class Blade implements ViewEngineInterface
     }
 
     /**
-     * 渲染模板
-     *
-     * @throws Exception
+     * @return void
+     * @throws ViewNotExistException
      */
     protected function renderView()
     {

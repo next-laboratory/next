@@ -2,10 +2,11 @@
 
 namespace Max\Swagger\Api;
 
+use JsonSerializable;
 use Max\Swagger\Parameter;
 use Max\Swagger\Response;
 
-abstract class Api implements \JsonSerializable
+abstract class Api implements JsonSerializable
 {
     protected string $method = '';
 

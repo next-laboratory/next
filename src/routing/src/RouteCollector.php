@@ -112,13 +112,12 @@ class RouteCollector
             }
         }
 
+        $resolvedRoute = null;
         /* @var Route $route */
         foreach ($routes as $route) {
             // 相等匹配
             if ($route->getPath() === $path) {
                 $resolvedRoute = clone $route;
-                $resolvedRoute->setParameter('matchedDomain', $matchedDomain);
-                return $resolvedRoute;
             }
             // 正则匹配
             $regexp = $route->getRegexp();
@@ -131,6 +130,8 @@ class RouteCollector
                         }
                     }
                 }
+            }
+            if (!is_null($resolvedRoute)) {
                 $resolvedRoute->setParameter('matchedDomain', $matchedDomain);
                 return $resolvedRoute;
             }

@@ -59,12 +59,14 @@ class Compiler
      * @param $template
      *
      * @return false|string
-     * @throws Exception
+     * @throws ViewNotExistException
      */
-    protected function readFile($template)
+    protected function readFile($template): bool|string
     {
         if (file_exists($template)) {
-            return file_get_contents($template);
+            if ($content = file_get_contents($template)) {
+                return $content;
+            }
         }
         throw new ViewNotExistException('View ' . $template . ' does not exist');
     }
@@ -89,20 +91,20 @@ class Compiler
      * @param $template
      *
      * @return string
-     * @throws Exception
+     * @throws ViewNotExistException
      */
     public function compile($template): string
     {
-        $compileDir = $this->blade->getCompileDir();
+        $compileDir   = $this->blade->getCompileDir();
         $compiledFile = $compileDir . md5($template) . '.php';
 
         if (false === $this->blade->isCache() || false === file_exists($compiledFile)) {
             !is_dir($compileDir) && mkdir($compileDir, 0755, true);
             $stream = $this->compileView($template);
             while (isset($this->parent)) {
-                $parent = $this->parent;
+                $parent       = $this->parent;
                 $this->parent = null;
-                $stream = $this->compileView($parent);
+                $stream       = $this->compileView($parent);
             }
             file_put_contents($compiledFile, $stream, LOCK_EX);
         }
@@ -115,16 +117,16 @@ class Compiler
      *
      * @param string $file
      *
-     * @return array|string|string[]|null
-     * @throws Exception
+     * @return string
+     * @throws ViewNotExistException
      */
-    protected function compileView(string $file)
+    protected function compileView(string $file): string
     {
         return preg_replace_callback_array([
-            '/@(.*?)\((.*)?\)/' => [$this, 'compileFunc'],
-            '/\{!!([\s\S]*?)!!\}/' => [$this, 'compileRaw'],
-            '/\{\{((--)?)([\s\S]*?)\\1\}\}/' => [$this, 'compileEchos'],
-            '/@(section|switch)\((.*?)\)([\s\S]*?)@end\\1/' => [$this, 'compileParcel'],
+            '/@(.*?)\((.*)?\)/'                                                        => [$this, 'compileFunc'],
+            '/\{!!([\s\S]*?)!!\}/'                                                     => [$this, 'compileRaw'],
+            '/\{\{((--)?)([\s\S]*?)\\1\}\}/'                                           => [$this, 'compileEchos'],
+            '/@(section|switch)\((.*?)\)([\s\S]*?)@end\\1/'                            => [$this, 'compileParcel'],
             '/@(php|else|endphp|endforeach|endfor|endif|endunless|endempty|endisset)/' => [$this, 'compileDirective']
         ], $this->readFile($this->getRealPath($file)));
     }
@@ -200,8 +202,8 @@ class Compiler
      *
      * @param array $matches
      *
-     * @return array|mixed|string|string[]|void|null
-     * @throws Exception
+     * @return mixed|string|void
+     * @throws ViewNotExistException
      */
     protected function compileFunc(array $matches)
     {

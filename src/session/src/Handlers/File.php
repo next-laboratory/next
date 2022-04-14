@@ -20,7 +20,6 @@ use Generator;
 use Max\Utils\Traits\AutoFillProperties;
 use SessionHandlerInterface;
 use SplFileInfo;
-use Throwable;
 use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
@@ -31,7 +30,6 @@ use function random_int;
 use function rtrim;
 use function time;
 use function unlink;
-
 
 class File implements SessionHandlerInterface
 {
@@ -59,8 +57,6 @@ class File implements SessionHandlerInterface
 
     /**
      * @param array $options
-     *
-     * @throws Exception
      */
     public function __construct(array $options = [])
     {
@@ -76,8 +72,8 @@ class File implements SessionHandlerInterface
     #[\ReturnTypeWillChange]
     public function gc($maxLifeTime)
     {
-        $now = time();
-        $files = $this->findFiles($this->path, function (SplFileInfo $item) use ($maxLifeTime, $now) {
+        $now   = time();
+        $files = $this->findFiles($this->path, function(SplFileInfo $item) use ($maxLifeTime, $now) {
             return $now - $maxLifeTime > $item->getMTime();
         });
 
@@ -89,7 +85,7 @@ class File implements SessionHandlerInterface
     /**
      * 查找文件
      *
-     * @param string $root
+     * @param string  $root
      * @param Closure $filter
      *
      * @return Generator
@@ -111,10 +107,6 @@ class File implements SessionHandlerInterface
     }
 
     /**
-     * 删除Session
-     *
-     * @access public
-     *
      * @param string $id
      *
      * @return bool
@@ -130,8 +122,6 @@ class File implements SessionHandlerInterface
 
     /**
      * 判断文件是否存在后，删除
-     *
-     * @access private
      *
      * @param string $file
      *
@@ -149,7 +139,7 @@ class File implements SessionHandlerInterface
      */
     protected function getSessionFile($id): string
     {
-        return rtrim($this->path, '/\/') . '/sess_' . $id;
+        return rtrim($this->path, '/\\') . '/sess_' . $id;
     }
 
     /**
