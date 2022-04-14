@@ -1,10 +1,7 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Max\Swagger;
 
-#[\Attribute(\Attribute::TARGET_METHOD)]
 class Parameter implements \JsonSerializable
 {
     public function __construct(

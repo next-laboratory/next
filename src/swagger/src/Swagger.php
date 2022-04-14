@@ -12,7 +12,11 @@ class Swagger
      * @param string $version
      * @param string $output
      */
-    public function __construct(protected array $scanDir = [], protected string $version = '', protected string $output = __DIR__)
+    public function __construct(
+        protected array  $scanDir = [],
+        protected string $version = '',
+        protected string $output = __DIR__
+    )
     {
     }
 

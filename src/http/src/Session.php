@@ -5,16 +5,17 @@ namespace Max\Http;
 
 use Exception;
 use Max\Config\Repository;
+use Max\Session\Session as MaxSession;
 
-class Session extends \Max\Session\Session
+class Session extends MaxSession
 {
     /**
      * @param Repository $repository
      *
-     * @return \Max\Session\Session
+     * @return MaxSession
      * @throws Exception
      */
-    public static function __new(Repository $repository): \Max\Session\Session
+    public static function __new(Repository $repository): MaxSession
     {
         return new static($repository->get('session'));
     }

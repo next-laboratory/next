@@ -2,11 +2,10 @@
 
 namespace Max\Swagger\Api;
 
-use JsonSerializable;
 use Max\Swagger\Parameter;
 use Max\Swagger\Response;
 
-abstract class Api implements JsonSerializable
+abstract class Api implements \JsonSerializable
 {
     protected string $method = '';
 
@@ -37,6 +36,9 @@ abstract class Api implements JsonSerializable
         ];
         $jsonResponse = [];
         foreach ($this->responses as $response) {
+            if (!$response instanceof Response) {
+                throw new \InvalidArgumentException('The field responses must be a array of Response instances.');
+            }
             $jsonResponse[$response->getCode()] = $response;
         }
         $swagger['responses'] = $jsonResponse;

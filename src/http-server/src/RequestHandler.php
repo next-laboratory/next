@@ -99,11 +99,7 @@ class RequestHandler implements RequestHandlerInterface
         }
 
         if (is_string($middleware)) {
-            if (!is_null($this->container)) {
-                $middleware = $this->container->make($middleware, $addition);
-            } else {
-                $middleware = new $middleware(...$addition);
-            }
+            $middleware = is_null($this->container) ? new $middleware(...$addition) : $this->container->make($middleware, $addition);
         }
 
         if ($middleware instanceof MiddlewareInterface) {

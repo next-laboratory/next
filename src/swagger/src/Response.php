@@ -2,7 +2,6 @@
 
 namespace Max\Swagger;
 
-#[\Attribute(\Attribute::TARGET_METHOD)]
 class Response implements \JsonSerializable
 {
     public function __construct(protected int $code, protected string $description = '', ?Schema $schema = null)

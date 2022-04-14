@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace Max\Server;
 
+use http\Exception\InvalidArgumentException;
 use Max\Di\Exceptions\NotFoundException;
 use Psr\Container\ContainerExceptionInterface;
 use ReflectionException;
-use RuntimeException;
 use Swoole\Http\Server as SwooleHttpServer;
 use Swoole\Server as SwooleServer;
 use Swoole\WebSocket\Server as SwooleWebSocketServer;
@@ -59,11 +59,13 @@ class Server
     }
 
     /**
-     * @throws NotFoundException|ReflectionException|ContainerExceptionInterface
+     * @return void
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundException
+     * @throws ReflectionException
      */
     public function start()
     {
-        $table = "+--------------------+--------------------+\n|{$this->formatLength('name', 20)}|{$this->formatLength('listen', 20)}|\n+--------------------+--------------------+\n";
         foreach ($this->config['servers'] as $config) {
             $config   = new ServerConfig($config);
             $name     = $config->getName();
@@ -87,16 +89,9 @@ class Server
             foreach ($config->getCallbacks() as $event => $callback) {
                 $server->on($event, [make($callback[0]), $callback[1]]);
             }
-            $table .= "|{$this->formatLength($name, 20)}|{$this->formatLength($host.':'. $port, 20)}|\n";
+            echo 'Server "' . $name . '" listening at ' . $host . ':' . $port . PHP_EOL;
         }
-        $table .= "+--------------------+--------------------+\n";
-        echo $table;
         $this->server->start();
-    }
-
-    protected function formatLength($value, $length): string
-    {
-        return str_pad($value, $length, ' ', STR_PAD_BOTH);
     }
 
     /**
@@ -119,7 +114,7 @@ class Server
             self::SERVER_HTTP => SwooleHttpServer::class,
             self::SERVER_WEBSOCKET => SwooleWebSocketServer::class,
             self::SERVER_BASE => SwooleServer::class,
-            default => throw new RuntimeException('Server type is invalid.'),
+            default => throw new InvalidArgumentException('Server type is invalid.'),
         };
         /** @var SwooleServer $server */
         $server = new $server($host, $port, $mode, $sockType);
