@@ -23,6 +23,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 use Swoole\Http\{Request, Response};
 use Throwable;
 
@@ -36,7 +37,8 @@ class Server
     public function __construct(
         protected ServerRequestInterface    $request,
         protected RequestHandlerInterface   $requestHandler,
-        protected ?EventDispatcherInterface $eventDispatcher = null
+        protected ?EventDispatcherInterface $eventDispatcher = null,
+        protected ?LoggerInterface          $logger = null,
     )
     {
     }
@@ -73,7 +75,9 @@ class Server
             }
             $body?->close();
         } catch (Throwable $throwable) {
-            $response->end($throwable->getMessage());
+            $this->logger?->error($throwable::class . ':' . $throwable->getMessage() . ' in ' . $throwable->getFile() . $throwable->getLine(), $throwable->getTrace());
+            $response->header('Content-Type', 'application/json');
+            $response->end('{"code": 500, "message": "Internal error."}');
         } finally {
             Context::delete();
         }

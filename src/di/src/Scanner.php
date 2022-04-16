@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * This file is part of the Max package.
- * 这两个方法来自symfony/class-loader
+ * 部分方法来自symfony/class-loader
  * (c) Cheng Yao <987861463@qq.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -37,8 +37,33 @@ use const T_STRING;
 use const T_TRAIT;
 use const T_WHITESPACE;
 
-class Scanner
+final class Scanner
 {
+    /**
+     * @var string
+     */
+    protected string $runtimeDir;
+
+    /**
+     * @var string
+     */
+    protected string $proxyMap;
+
+    private static Scanner $scanner;
+
+    /**
+     * @param ClassLoader $loader
+     * @param array       $scanDir
+     * @param string      $runtimeDir
+     */
+    private function __construct(protected ClassLoader $loader, protected array $scanDir, string $runtimeDir)
+    {
+        $this->runtimeDir = $runtimeDir = rtrim($runtimeDir, '/\\') . '/di/';
+        is_dir($runtimeDir) || mkdir($runtimeDir, 0755, true);
+        $this->proxyMap = $proxyMap = $runtimeDir . 'proxymap.php';
+        file_exists($proxyMap) && unlink($proxyMap);
+    }
+
     /**
      * 根据绝对路径扫描完整类名[一个文件只能存放一个类，否则可能解析失败]
      *
@@ -142,34 +167,33 @@ class Scanner
      * @throws Exceptions\NotFoundException
      * @throws ReflectionException
      */
-    public static function init(ClassLoader $loader, string $proxyPath)
+    public static function init(ClassLoader $loader, array $scanDir, string $runtimeDir)
     {
-        file_exists($proxyPath) && unlink($proxyPath);
+        if (!isset(self::$scanner)) {
+            self::$scanner = new Scanner($loader, $scanDir, $runtimeDir);
+        }
         $pid = pcntl_fork();
         if ($pid == -1) {
             throw new \Exception('Process fork failed.');
         }
         pcntl_wait($pid);
-        $proxies = self::proxy($proxyPath);
-        $loader->addClassMap($proxies);
-        self::scanAnnotations();
+        $loader->addClassMap(self::$scanner->proxy());
+        self::$scanner->scanAnnotations();
     }
 
     /**
-     * @param string $proxiesMap
-     *
      * @return mixed|void
      * @throws ContainerExceptionInterface
      * @throws Exceptions\NotFoundException
      * @throws ReflectionException
      */
-    protected static function proxy(string $proxiesMap)
+    protected function proxy()
     {
-        if (!file_exists($proxiesMap)) {
-            $proxyDir = BASE_PATH . 'runtime/proxy/';
+        if (!file_exists($this->proxyMap)) {
+            $proxyDir = $this->runtimeDir . 'proxy/';
             file_exists($proxyDir) || mkdir($proxyDir, 0755, true);
             (new Filesystem())->cleanDirectory($proxyDir);
-            $classMap = self::scanAnnotations();
+            $classMap = $this->scanAnnotations();
             $scanMap  = [];
             foreach ($classMap as $class => $path) {
                 $reflectionClass = ReflectionManager::reflectClass($class);
@@ -194,7 +218,19 @@ class Scanner
                     $replacement[$code] = "        $return\$this->__callViaProxy(__FUNCTION__, function ($params) {\n$newCode        }, func_get_args());\n";
                 }
 
-                $constructor = $reflectionClass->hasMethod('__construct') ? '' : "\n    public function __construct() \n    {\n        \$this->__handleProperties();\n    }\n";
+                $parent         = '';
+                $param          = '';
+                $hasConstructor = $reflectionClass->hasMethod('__construct');
+                if ($parentClass = $reflectionClass->getParentClass()) {
+                    $classname          = $parentClass->getName();
+                    $parentClassPath    = $this->loader->getClassMap()[$classname];
+                    $parentClassContent = file_get_contents($parentClassPath);
+                    preg_match('/__construct\s*\(([\S\s]*)\)/iU', $parentClassContent, $matches);
+                    $parent = "    parent::__construct(...func_get_args());\n    ";
+                    $param  = $matches[1];
+                }
+
+                $constructor = "\n    public function __construct($param)\n    {\n        \$this->__handleProperties();\n    $parent}\n    ";
                 $codeString  = preg_replace('/\{/', <<<EOR
                 {
                     use \\Max\\Di\\Aop\\Traits\\ProxyHandler;
@@ -206,10 +242,10 @@ class Scanner
                 $scanMap[$class] = $proxyPath;
             }
 
-            file_put_contents($proxiesMap, sprintf("<?php \nreturn %s;", var_export($scanMap, true)));
+            file_put_contents($this->proxyMap, sprintf("<?php \nreturn %s;", var_export($scanMap, true)));
             exit;
         }
-        return include $proxiesMap;
+        return include $this->proxyMap;
     }
 
     /**
@@ -218,10 +254,10 @@ class Scanner
      * @throws Exceptions\NotFoundException
      * @throws ReflectionException
      */
-    protected static function scanAnnotations(): array
+    protected function scanAnnotations(): array
     {
         $proxies = [];
-        foreach (config('di.scanDir') as $dir) {
+        foreach ($this->scanDir as $dir) {
             foreach (self::scanDir($dir) as $class => $path) {
                 $proxy           = false;
                 $reflectionClass = ReflectionManager::reflectClass($class);
