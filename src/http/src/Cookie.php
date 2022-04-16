@@ -160,7 +160,7 @@ class Cookie
             'domain'   => '',
             'secure'   => false,
             'httponly' => false,
-            'samesite' => null,
+            'samesite' => '',
         ];
         foreach (explode(';', $str) as $part) {
             if (!str_contains($part, '=')) {
@@ -168,8 +168,8 @@ class Cookie
                 $value = true;
             } else {
                 [$key, $value] = explode('=', trim($part), 2);
+                $value = trim($value);
             }
-            $value = trim($value);
             switch ($key = trim(strtolower($key))) {
                 case 'max-age':
                     $parts['expires'] = time() + (int)$value;

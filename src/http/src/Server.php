@@ -75,7 +75,12 @@ class Server
             }
             $body?->close();
         } catch (Throwable $throwable) {
-            $this->logger?->error($throwable::class . ':' . $throwable->getMessage() . ' in ' . $throwable->getFile() . $throwable->getLine(), $throwable->getTrace());
+            $this->logger?->error(sprintf('%s:%s in %s +%d',
+                $throwable::class,
+                $throwable->getMessage(),
+                $throwable->getFile(),
+                $throwable->getLine()
+            ), $throwable->getTrace());
             $response->header('Content-Type', 'application/json');
             $response->end('{"code": 500, "message": "Internal error."}');
         } finally {

@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Max\Di;
 
 use Composer\Autoload\ClassLoader;
-use Max\Di\Annotations\Aspect;
 use Max\Di\Annotations\MethodAnnotation;
 use Max\Di\Contracts\ClassAttribute;
 use Max\Di\Contracts\MethodAttribute;
@@ -22,8 +21,8 @@ use Max\Utils\Filesystem;
 use Psr\Container\ContainerExceptionInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use ReflectionClass;
 use ReflectionException;
-use ReflectionMethod;
 use function in_array;
 use const PATHINFO_EXTENSION;
 use const T_CLASS;
@@ -217,19 +216,7 @@ final class Scanner
                     $return             = ($reflectionMethod->getReturnType() == 'void') ? '' : 'return ';
                     $replacement[$code] = "        $return\$this->__callViaProxy(__FUNCTION__, function ($params) {\n$newCode        }, func_get_args());\n";
                 }
-
-                $parent         = '';
-                $param          = '';
-                $hasConstructor = $reflectionClass->hasMethod('__construct');
-                if ($parentClass = $reflectionClass->getParentClass()) {
-                    $classname          = $parentClass->getName();
-                    $parentClassPath    = $this->loader->getClassMap()[$classname];
-                    $parentClassContent = file_get_contents($parentClassPath);
-                    preg_match('/__construct\s*\(([\S\s]*)\)/iU', $parentClassContent, $matches);
-                    $parent = "    parent::__construct(...func_get_args());\n    ";
-                    $param  = $matches[1];
-                }
-
+                [$parent, $param] = $this->getParentConstructor($reflectionClass);
                 $constructor = "\n    public function __construct($param)\n    {\n        \$this->__handleProperties();\n    $parent}\n    ";
                 $codeString  = preg_replace('/\{/', <<<EOR
                 {
@@ -246,6 +233,32 @@ final class Scanner
             exit;
         }
         return include $this->proxyMap;
+    }
+
+    /**
+     * @param ReflectionClass $reflectionClass
+     *
+     * @return string[]
+     */
+    protected function getParentConstructor(ReflectionClass $reflectionClass): array
+    {
+        if ($reflectionClass->hasMethod('__construct')) {
+            $constructor = $reflectionClass->getMethod('__construct');
+            $params      = '';
+            foreach ($constructor->getParameters() as $reflectionParameter) {
+                if ($reflectionParameter->hasType()) {
+                    $type = $reflectionParameter->getType();
+                    if (!$type->isBuiltin()) {
+                        $type = '\\' . $type;
+                    }
+                    $params .= $type . ' ';
+                }
+                $params .= '$' . $reflectionParameter->getName() . ',';
+            }
+            // TODO bug, 只有有父类的时候才加parent::construct
+            return ["    parent::__construct(...func_get_args());\n    ", $params];
+        }
+        return ['', ''];
     }
 
     /**

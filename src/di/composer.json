@@ -33,5 +33,10 @@
         "psr/container": "^2.0",
         "max/utils": "dev-master",
         "max/event": "dev-master"
+    },
+    "extra": {
+        "max": {
+            "config": "Max\\Di\\ConfigProvider"
+        }
     }
 }

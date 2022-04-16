@@ -38,7 +38,7 @@ class Listen implements ClassAttribute
     {
         $container = Context::getContainer();
         /** @var ListenerProvider $listenerProvider */
-        $listenerProvider = $container->get(ListenerProvider::class);
+        $listenerProvider = $container->make(ListenerProvider::class);
         $listenerProvider->addListener($container->make($reflectionClass->getName()));
     }
 }

@@ -11,26 +11,19 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Max\Cache;
+namespace Max\Di;
 
 class ConfigProvider
 {
     /**
-     * @return array
+     * @return string[][]
      */
     public function __invoke(): array
     {
         return [
-            'Psr\SimpleCache\CacheInterface' => 'Max\Cache\Cache',
+            'bindings' => [
+                'Psr\Container\ContainerInterface' => 'Max\Di\Container',
+            ]
         ];
-    }
-
-    /**
-     * publish
-     */
-    public function publish()
-    {
-        $to = dirname(__DIR__, 4) . '/config/cache.php';
-        file_exists($to) || copy(__DIR__ . '/../publish/cache.php', $to);
     }
 }
