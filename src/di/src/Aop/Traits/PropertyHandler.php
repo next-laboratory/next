@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Max\Di\Aop\Traits;
 
+use Max\Di\AnnotationManager;
 use Max\Di\Context;
 use Max\Di\Contracts\PropertyAttribute;
 use Max\Di\Exceptions\ContainerException;
@@ -27,20 +28,18 @@ trait PropertyHandler
      */
     protected function __handleProperties()
     {
-        $reflectionClass = ReflectionManager::reflectClass($this::class);
-        foreach ($reflectionClass->getProperties() as $property) {
+        $reflectionClass = ReflectionManager::reflectClass(static::class);
+        foreach ($reflectionClass->getProperties() as $reflectionProperty) {
             try {
-                foreach ($property->getAttributes() as $attribute) {
-                    $instance = $attribute->newInstance();
-                    if (!$instance instanceof PropertyAttribute) {
-                        throw new ContainerException('Attribute ' . $instance::class . ' must implements PropertyAttribute interface.');
+                foreach (AnnotationManager::getPropertyAnnotations($reflectionClass->getName(), $reflectionProperty->getName()) as $attribute) {
+                    if ($attribute instanceof PropertyAttribute) {
+                        $attribute->handle($reflectionClass, $reflectionProperty, $this);
                     }
-                    $instance->handle(Context::getContainer(), $property, $this);
                 }
             } catch (Throwable $throwable) {
                 throw new ContainerException(
-                    sprintf('Cannot inject Property %s into %s. (%s)',
-                        $property->getName(), $reflectionClass->getName(), $throwable->getMessage()
+                    sprintf('Cannot inject Property into %s. (%s)',
+                        $reflectionClass->getName(), $throwable->getMessage()
                     )
                 );
             }

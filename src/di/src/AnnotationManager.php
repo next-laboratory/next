@@ -1,19 +1,10 @@
 <?php
 
-declare(strict_types=1);
-
-/**
- * This file is part of the Max package.
- *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace Max\Di;
 
-use ReflectionException;
+use Max\Di\Contracts\ClassAttribute;
+use Max\Di\Contracts\MethodAttribute;
+use Max\Di\Contracts\PropertyAttribute;
 
 class AnnotationManager
 {
@@ -23,58 +14,79 @@ class AnnotationManager
     protected static array $container = [];
 
     /**
-     * @param      $class
-     * @param null $name
-     * @param int  $flags
+     * @param string $className
+     * @param string $property
+     * @param object $attribute
      *
-     * @return array
-     * @throws ReflectionException
+     * @return void
      */
-    public static function annotationClass($class, $name = null, int $flags = 0): array
+    public static function annotationProperty(string $className, string $property, object $attribute)
     {
-        return static::readAnnotation(ReflectionManager::reflectClass($class), $name, $flags);
+        self::$container['property'][$className][$property][] = $attribute;
     }
 
     /**
-     * @param      $class
-     * @param null $method
-     * @param null $name
-     * @param int  $flags
+     * @param string $className
+     * @param object $attribute
      *
-     * @return array
-     * @throws ReflectionException
+     * @return void
      */
-    public static function annotationMethod($class, $method = null, $name = null, int $flags = 0): array
+    public static function annotationClass(string $className, object $attribute)
     {
-        return static::readAnnotation(ReflectionManager::reflectMethod($class, $method), $name, $flags);
+        self::$container['class'][$className][] = $attribute;
     }
 
     /**
-     * @param      $reflection
-     * @param null $name
-     * @param int  $flags
+     * @param string $className
+     * @param string $method
+     * @param object $attribute
      *
-     * @return array
+     * @return void
      */
-    public static function readAnnotation($reflection, $name = null, int $flags = 0): array
+    public static function annotationMethod(string $className, string $method, object $attribute)
     {
-        $annotations = static::get($reflection, $name, $flags);
-        $entry       = [];
-        foreach ($annotations as $annotation) {
-            $entry[] = $annotation->newInstance();
-        }
-        return $entry;
+        self::$container['method'][$className][$method][] = $attribute;
     }
 
     /**
-     * @param      $reflection
-     * @param null $name
-     * @param int  $flags
+     * @param string $className
+     * @param string $property
      *
-     * @return mixed
+     * @return array|mixed
      */
-    public static function get($reflection, $name = null, int $flags = 0)
+    public static function getPropertyAnnotations(string $className, string $property)
     {
-        return $reflection->getAttributes($name, $flags);
+        return self::$container['property'][$className][$property] ?? [];
+    }
+
+    /**
+     * @param string $className
+     *
+     * @return array|mixed
+     */
+    public static function getClassAnnotations(string $className)
+    {
+        return self::$container['class'][$className] ?? [];
+    }
+
+    /**
+     * @param string $className
+     * @param string $method
+     *
+     * @return array|mixed
+     */
+    public static function getMethodAnnotations(string $className, string $method)
+    {
+        return self::getMethodsAnnotations()[$className][$method] ?? [];
+    }
+
+    public static function getMethodsAnnotations()
+    {
+        return self::$container['method'] ?? [];
+    }
+
+    public static function getPropertiesAnnotations()
+    {
+        return self::$container['property'] ?? [];
     }
 }

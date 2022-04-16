@@ -7,7 +7,6 @@ use Max\Config\Repository;
 use Max\Console\Application as ConsoleApplication;
 use Max\Console\Exceptions\UnNamedCommandException;
 use Max\Console\Output\ConsoleOutput;
-use Max\Di\Annotations\Inject;
 use Max\Di\Container;
 use Max\Di\Context;
 use Max\Di\Exceptions\NotFoundException;

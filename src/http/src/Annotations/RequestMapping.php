@@ -14,14 +14,22 @@ declare(strict_types=1);
 namespace Max\Http\Annotations;
 
 use Attribute;
-use Max\Di\Annotations\MethodAnnotation;
-use Max\Http\Contracts\MappingInterface;
+use Max\Di\Context;
+use Max\Di\Contracts\MethodAttribute;
+use Max\Routing\Route;
+use Max\Routing\RouteCollector;
+use Max\Routing\Router;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use ReflectionClass;
+use ReflectionMethod;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class RequestMapping extends MethodAnnotation implements MappingInterface
+class RequestMapping implements MethodAttribute
 {
     /**
      * 默认方法
+     *
      * @var array|string[]
      */
     protected array $methods = ['GET', 'POST', 'HEAD'];
@@ -45,34 +53,25 @@ class RequestMapping extends MethodAnnotation implements MappingInterface
     }
 
     /**
-     * @return string
+     * @param ReflectionClass $reflectionClass
+     * @param ReflectionMethod $reflectionMethod
+     *
+     * @return void
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
-    public function getPath(): string
+    public function handle(ReflectionClass $reflectionClass, ReflectionMethod $reflectionMethod)
     {
-        return $this->path;
-    }
-
-    /**
-     * @return array
-     */
-    public function getMiddlewares(): array
-    {
-        return $this->middlewares;
-    }
-
-    /**
-     * @return array
-     */
-    public function getMethods(): array
-    {
-        return $this->methods;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDomain(): string
-    {
-        return $this->domain;
+        $container = Context::getContainer();
+        $router = $container->get(Router::class);
+        $routeCollector = $container->get(RouteCollector::class);
+        // TODO 这块有问题，如果没有定义Controller注解，则会只用上一个文件的Controller参数
+        $routeCollector->add((new Route(
+            $this->methods,
+            $router->getPrefix() . $this->path,
+            $reflectionClass->getName() . '@' . $reflectionMethod->getName(),
+            $router,
+            $this->domain,
+        ))->middlewares($this->middlewares));
     }
 }

@@ -50,29 +50,6 @@ class Container implements ContainerInterface
      */
     protected const VIA = '__new';
 
-    public function __construct()
-    {
-        $this->afterResolving(function (ContainerInterface $container, ReflectionClass $reflectionClass, object $object) {
-            foreach ($reflectionClass->getProperties() as $property) {
-                try {
-                    foreach ($property->getAttributes() as $attribute) {
-                        $instance = $attribute->newInstance();
-                        if (!$instance instanceof PropertyAttribute) {
-                            throw new ContainerException('Attribute ' . $instance::class . ' must implements PropertyAttribute interface.');
-                        }
-                        $instance->handle($container, $property, $object);
-                    }
-                } catch (Throwable $throwable) {
-                    throw new ContainerException(
-                        sprintf('Cannot inject Property %s into %s. (%s)',
-                            $property->getName(), $reflectionClass->getName(), $throwable->getMessage()
-                        )
-                    );
-                }
-            }
-        });
-    }
-
     /**
      * 将实例化的类存放到数组中
      *
@@ -267,6 +244,7 @@ class Container implements ContainerInterface
     public function callFunc(Closure|string $function, array $arguments = []): mixed
     {
         $reflectFunction = ReflectionManager::reflectFunction($function);
+
         return $reflectFunction->invokeArgs(
             $this->getFuncArgs($reflectFunction, $arguments)
         );

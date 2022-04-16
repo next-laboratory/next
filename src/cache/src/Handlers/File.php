@@ -147,7 +147,7 @@ class File extends CacheHandler
     }
 
     /**
-     * 取得缓存内容，如果不存在会从文件中取得，否则在内存中取
+     * 取得缓存内容
      *
      * @param $cacheFile
      *

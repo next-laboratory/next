@@ -1,18 +1,18 @@
 <?php
 
-namespace Max\Foundation\Aspects;
+namespace Max\Cache\Aspects;
 
 use Closure;
-use Max\Di\Annotations\MethodAnnotation;
+use Max\Di\Annotations\Aspect;
 use Max\Di\Aop\JoinPoint;
-use Max\Di\Contracts\AspectInterface;
+use Max\Di\Context;
 use Max\Di\Exceptions\NotFoundException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\SimpleCache\CacheInterface;
 use ReflectionException as ReflectionExceptionAlias;
 
 #[\Attribute(\Attribute::TARGET_METHOD)]
-class Cacheable extends MethodAnnotation implements AspectInterface
+class Cacheable extends Aspect
 {
     /**
      * @var CacheInterface|mixed
@@ -21,15 +21,20 @@ class Cacheable extends MethodAnnotation implements AspectInterface
 
     /**
      * @param int         $ttl
+     * @param string      $prefix
      * @param string|null $key
      *
      * @throws ContainerExceptionInterface
      * @throws NotFoundException
      * @throws ReflectionExceptionAlias
      */
-    public function __construct(protected int $ttl = 0, protected string $prefix = '', protected ?string $key = null)
+    public function __construct(
+        protected int     $ttl = 0,
+        protected string  $prefix = '',
+        protected ?string $key = null
+    )
     {
-        $this->cache = make(CacheInterface::class);
+        $this->cache = Context::getContainer()->make(CacheInterface::class);
     }
 
     /**
@@ -38,7 +43,7 @@ class Cacheable extends MethodAnnotation implements AspectInterface
      *
      * @return mixed
      */
-    public function process(JoinPoint $joinPoint, Closure $next)
+    public function process(JoinPoint $joinPoint, Closure $next): mixed
     {
         return $this->cache->remember($this->getKey($joinPoint), fn() => $next($joinPoint), $this->ttl);
     }

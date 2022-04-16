@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Max\Http\Middlewares;
 
-use Max\Di\Annotations\Inject;
 use Max\Di\Exceptions\NotFoundException;
 use Max\Http\Exceptions\HttpException;
 use Max\Http\Exceptions\InvalidRequestHandlerException;
@@ -29,11 +28,15 @@ use ReflectionException;
 
 class RoutingMiddleware implements MiddlewareInterface
 {
-    #[Inject]
-    protected RouteCollector $routeCollector;
+    /**
+     * @param RouteCollector $routeCollector
+     */
+    public function __construct(protected RouteCollector $routeCollector)
+    {
+    }
 
     /**
-     * @param ServerRequestInterface $request
+     * @param ServerRequestInterface  $request
      * @param RequestHandlerInterface $handler
      *
      * @return ResponseInterface
@@ -50,6 +53,7 @@ class RoutingMiddleware implements MiddlewareInterface
         $route = $this->routeCollector->resolve($request);
         $request->route($route);
         $handler->unshift($route->getMiddlewares());
+
         return $handler->handle($request);
     }
 }

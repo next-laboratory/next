@@ -1,4 +1,4 @@
-一款简单的路由, 可以独立使用
+一款简单的路由
 
 ```php
 
@@ -30,24 +30,10 @@ var_dump($route);
 此外还有一系列方法，例如
 
 ```php
-Route::namespace('App\Http\Controllers')
-    ->get('/', 'Index@index');
+$router->namespace('App\Http\Controllers')->get('/', 'Index@index');
 ```
 
 - prefix
 - middleware
 - namespace
 - patterns
-
-如果你使用了MaxPHP，那么可以直接使用路由的门面
-
-```php
-use Max\Foundation\Facades\Route;
-
-Route::prefix('/blog/<id>.html')
-    ->namespace('App\\Http\\Controllers')
-    ->middleware('ai')
-    ->group(function(Router $router) {
-        $router->get('/', 'Blog@show');
-    });
-```

@@ -12,8 +12,8 @@ class ConfigProvider
     {
         return [
             'bindings' => [
-                'Psr\SimpleCache\CacheInterface'          => 'Max\Foundation\Cache\Cache',
-                'Psr\Container\ContainerInterface'        => 'Max\Di\Container',
+                'Psr\SimpleCache\CacheInterface'   => 'Max\Cache\Cache',
+                'Psr\Container\ContainerInterface' => 'Max\Di\Container',
             ]
         ];
     }

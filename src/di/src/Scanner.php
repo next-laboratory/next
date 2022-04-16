@@ -14,9 +14,10 @@ declare(strict_types=1);
 namespace Max\Di;
 
 use Composer\Autoload\ClassLoader;
-use Max\Di\Annotations\ClassAnnotation;
+use Max\Di\Annotations\Aspect;
 use Max\Di\Annotations\MethodAnnotation;
-use Max\Event\EventDispatcher;
+use Max\Di\Contracts\ClassAttribute;
+use Max\Di\Contracts\MethodAttribute;
 use Max\Utils\Filesystem;
 use Psr\Container\ContainerExceptionInterface;
 use RecursiveDirectoryIterator;
@@ -57,10 +58,9 @@ class Scanner
             if ('php' !== pathinfo($path, PATHINFO_EXTENSION)) {
                 continue;
             }
-            $classes = [...$classes, ...self::findClasses($path)];
+            $classes = array_merge($classes, self::findClasses($path));
             gc_mem_caches();
         }
-
         return $classes;
     }
 
@@ -124,7 +124,7 @@ class Scanner
                             break;
                         }
                     }
-                    $classes[] = ltrim($namespace . $class, '\\');
+                    $classes[ltrim($namespace . $class, '\\')] = $path;
                     break;
                 default:
                     break;
@@ -133,53 +133,52 @@ class Scanner
         return $classes;
     }
 
-    public static function init()
+    /**
+     * @param ClassLoader $loader
+     * @param string      $proxyPath 代理类地图
+     *
+     * @return void
+     * @throws ContainerExceptionInterface
+     * @throws Exceptions\NotFoundException
+     * @throws ReflectionException
+     */
+    public static function init(ClassLoader $loader, string $proxyPath)
     {
-        $path = BASE_PATH . 'runtime/app';
-        file_exists($path) || mkdir($path, 0755, true);
-        $proxyPath = BASE_PATH . 'runtime/app/proxies.php';
         file_exists($proxyPath) && unlink($proxyPath);
-        foreach (spl_autoload_functions() as $loader) {
-            if ($loader[0] instanceof ClassLoader) {
-                $pid = pcntl_fork();
-                if ($pid == -1) {
-                    throw new \Exception('Process fork failed.');
-                }
-                pcntl_wait($pid);
-                $proxiesMap = self::proxy($loader[0], $proxyPath);
-                $loader[0]->addClassMap($proxiesMap);
-            }
+        $pid = pcntl_fork();
+        if ($pid == -1) {
+            throw new \Exception('Process fork failed.');
         }
+        pcntl_wait($pid);
+        $proxies = self::proxy($proxyPath);
+        $loader->addClassMap($proxies);
         self::scanAnnotations();
     }
 
     /**
-     * @param $classLoader
-     * @param $proxiesPath
+     * @param string $proxiesMap
      *
      * @return mixed|void
+     * @throws ContainerExceptionInterface
+     * @throws Exceptions\NotFoundException
      * @throws ReflectionException
      */
-    protected static function proxy($classLoader, $proxiesPath)
+    protected static function proxy(string $proxiesMap)
     {
-        if (!file_exists($proxiesPath)) {
+        if (!file_exists($proxiesMap)) {
             $proxyDir = BASE_PATH . 'runtime/proxy/';
             file_exists($proxyDir) || mkdir($proxyDir, 0755, true);
             (new Filesystem())->cleanDirectory($proxyDir);
-            self::scanAnnotations();
-            $classMap = $classLoader->getClassMap();
+            $classMap = self::scanAnnotations();
             $scanMap  = [];
-            foreach (AspectManager::all() as $class => $aspects) {
+            foreach ($classMap as $class => $path) {
                 $reflectionClass = ReflectionManager::reflectClass($class);
-                $path            = $classMap[$class];
                 $proxyPath       = $proxyDir . str_replace('\\', '_', $class) . '_Proxy.php';
                 $codeString      = file_get_contents($path);
                 $file            = new \SplFileObject($path, 'r');
                 $replacement     = [];
-                /** @var MethodAnnotation $aspect */
-                foreach ($aspects as $aspect) {
-                    /** @var ReflectionMethod $reflectionMethod */
-                    $reflectionMethod = $aspect[0]->getReflectionMethod();
+                foreach (AnnotationManager::getMethodsAnnotations() as $method) {
+                    $reflectionMethod = ReflectionManager::reflectMethod($class, $method);
                     $startLine        = $reflectionMethod->getStartline();
                     $file->seek($startLine - 1);
                     preg_match('/function[\s\w]+\((.*)\)/', $file->getCurrentLine(), $matches);
@@ -203,46 +202,59 @@ class Scanner
                     $constructor
                 EOR
                     , $codeString, 1);
-
                 file_put_contents($proxyPath, str_replace(array_keys($replacement), array_values($replacement), $codeString));
                 $scanMap[$class] = $proxyPath;
             }
-            file_put_contents($proxiesPath, sprintf("<?php \nreturn %s;", var_export($scanMap, true)));
+
+            file_put_contents($proxiesMap, sprintf("<?php \nreturn %s;", var_export($scanMap, true)));
             exit;
         }
-        return include $proxiesPath;
+        return include $proxiesMap;
     }
 
     /**
-     * @param bool $onlyAspect
-     *
+     * @return array
+     * @throws ContainerExceptionInterface
      * @throws Exceptions\NotFoundException
      * @throws ReflectionException
-     * @throws ContainerExceptionInterface
      */
-    protected static function scanAnnotations(bool $onlyAspect = false)
+    protected static function scanAnnotations(): array
     {
-        $eventDispatcher = make(EventDispatcher::class);
+        $proxies = [];
         foreach (config('di.scanDir') as $dir) {
-            foreach (self::scanDir($dir) as $class) {
+            foreach (self::scanDir($dir) as $class => $path) {
+                $proxy           = false;
                 $reflectionClass = ReflectionManager::reflectClass($class);
                 foreach ($reflectionClass->getAttributes() as $attribute) {
                     $instance = $attribute->newInstance();
-                    if ($instance instanceof ClassAnnotation) {
-                        $instance->setReflection($reflectionClass);
-                        $eventDispatcher->dispatch($instance);
+                    if ($instance instanceof ClassAttribute) {
+                        $instance->handle($reflectionClass);
                     }
                 }
+
+                foreach ($reflectionClass->getProperties() as $reflectionProperty) {
+                    foreach ($reflectionProperty->getAttributes() as $attribute) {
+                        $proxy = true;
+                        AnnotationManager::annotationProperty(
+                            $reflectionClass->getName(), $reflectionProperty->getName(), $attribute->newInstance()
+                        );
+                    }
+                }
+
                 foreach ($reflectionClass->getMethods() as $reflectionMethod) {
                     foreach ($reflectionMethod->getAttributes() as $attribute) {
                         $instance = $attribute->newInstance();
-                        if ($instance instanceof MethodAnnotation) {
-                            $instance->setReflection($reflectionClass, $reflectionMethod);
+                        if ($instance instanceof MethodAttribute) {
+                            $proxy = true;
+                            $instance->handle($reflectionClass, $reflectionMethod);
                         }
-                        $eventDispatcher->dispatch($instance);
                     }
+                }
+                if ($proxy) {
+                    $proxies[$class] = $path;
                 }
             }
         }
+        return $proxies;
     }
 }

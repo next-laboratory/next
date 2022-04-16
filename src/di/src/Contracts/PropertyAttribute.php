@@ -13,10 +13,9 @@ declare(strict_types=1);
 
 namespace Max\Di\Contracts;
 
-use Psr\Container\ContainerInterface;
 use ReflectionProperty;
 
 interface PropertyAttribute
 {
-    public function handle(ContainerInterface $container, ReflectionProperty $property, object $object);
+    public function handle(\ReflectionClass $reflectionClass, ReflectionProperty $reflectionProperty, object $object);
 }

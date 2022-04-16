@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Max\Http;
 
-use Max\Di\Annotations\Inject;
 use Max\Di\Context;
 use Max\Di\Exceptions\NotFoundException;
 use Max\Http\Exceptions\InvalidRequestHandlerException;
@@ -39,9 +38,6 @@ class RequestHandler implements RequestHandlerInterface
      * @var Router
      */
     protected Router $router;
-
-    #[Inject]
-    protected Dispatcher $dispatcher;
 
     /**
      * @param RouteCollector $routeCollector
@@ -70,9 +66,10 @@ class RequestHandler implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        $container = Context::getContainer();
         return (new PsrRequestHandler())
-            ->setContainer(Context::getContainer())
-            ->setRequestHandler($this->dispatcher)
+            ->setContainer($container)
+            ->setRequestHandler($container->make(Dispatcher::class))
             ->setMiddlewares($this->middlewares)
             ->handle($request);
     }

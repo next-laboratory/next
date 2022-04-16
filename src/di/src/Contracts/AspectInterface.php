@@ -13,9 +13,10 @@ declare(strict_types=1);
 
 namespace Max\Di\Contracts;
 
+use Closure;
 use Max\Di\Aop\JoinPoint;
 
 interface AspectInterface
 {
-    public function process(JoinPoint $joinPoint, \Closure $next);
+    public function process(JoinPoint $joinPoint, Closure $next): mixed;
 }

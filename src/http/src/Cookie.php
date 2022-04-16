@@ -13,31 +13,33 @@ declare(strict_types=1);
 
 namespace Max\Http;
 
+use InvalidArgumentException;
+
 class Cookie
 {
     /**
-     * @param string      $name
-     * @param string      $value
-     * @param int         $expires
-     * @param string      $path
-     * @param string      $domain
-     * @param bool        $secure
-     * @param bool        $httponly
-     * @param string|null $samesite
+     * @param string $name
+     * @param string $value
+     * @param int    $expires
+     * @param string $path
+     * @param string $domain
+     * @param bool   $secure
+     * @param bool   $httponly
+     * @param string $samesite
      */
     public function __construct(
-        protected string  $name,
-        protected string  $value,
-        protected int     $expires = 0,
-        protected string  $path = '/',
-        protected string  $domain = '',
-        protected bool    $secure = false,
-        protected bool    $httponly = false,
-        protected ?string $samesite = null,
+        protected string $name,
+        protected string $value,
+        protected int    $expires = 0,
+        protected string $path = '/',
+        protected string $domain = '',
+        protected bool   $secure = false,
+        protected bool   $httponly = false,
+        protected string $samesite = '',
     )
     {
-        if (!in_array(strtolower($this->samesite), ['lax', 'none', 'strict'])) {
-            throw new \InvalidArgumentException('The "sameSite" parameter value is not valid.');
+        if ($this->samesite && !in_array(strtolower($samesite), ['lax', 'none', 'strict'])) {
+            throw new InvalidArgumentException('The "sameSite" parameter value is not valid.');
         }
     }
 
@@ -140,15 +142,17 @@ class Cookie
     /**
      * @return int
      */
-    public function getMaxAge()
+    public function getMaxAge(): int
     {
         return $this->expires !== 0 ? $this->expires - time() : 0;
     }
 
     /**
      * @param string $str
+     *
+     * @return Cookie
      */
-    public static function parse(string $str)
+    public static function parse(string $str): Cookie
     {
         $parts = [
             'expires'  => 0,
@@ -159,7 +163,7 @@ class Cookie
             'samesite' => null,
         ];
         foreach (explode(';', $str) as $part) {
-            if (false === strpos($part, '=')) {
+            if (!str_contains($part, '=')) {
                 $key   = $part;
                 $value = true;
             } else {

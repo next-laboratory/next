@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Max\View;
 
+use Max\Config\Repository;
 use Max\View\Contracts\ViewEngineInterface;
 
 class Renderer
@@ -27,8 +28,21 @@ class Renderer
     }
 
     /**
+     * @param Repository $repository
+     * @return static
+     */
+    public static function __new(Repository $repository): static
+    {
+        $config = $repository->get('view');
+        $engine = $config['default'];
+        $config = $config['engines'][$engine];
+        $engine = $config['engine'];
+        return new static(new $engine($config['options']));
+    }
+
+    /**
      * @param string $template
-     * @param array  $arguments
+     * @param array $arguments
      *
      * @return string
      */

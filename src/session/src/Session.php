@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Max\Session;
 
 use InvalidArgumentException;
+use Max\Config\Repository;
 use Max\Session\Context\Storage;
 use Max\Session\Exceptions\SessionException;
 use Max\Utils\Context;
@@ -41,12 +42,21 @@ class Session
     public function __construct(array $config)
     {
         try {
-            $config        = $config['stores'][$config['default']];
-            $handler       = $config['handler'];
+            $config = $config['stores'][$config['default']];
+            $handler = $config['handler'];
             $this->handler = new $handler($config['options']);
         } catch (Throwable $throwable) {
             throw new InvalidArgumentException('The configuration file may be incorrect: ' . $throwable->getMessage());
         }
+    }
+
+    /**
+     * @param Repository $repository
+     * @return static
+     */
+    public static function __new(Repository $repository)
+    {
+        return new static($repository->get('session'));
     }
 
     /**
@@ -56,7 +66,7 @@ class Session
      */
     public function start(?string $id = null): void
     {
-        $id   ??= $this->createId();
+        $id ??= $this->createId();
         $data = $this->handler->read($id);
         if (is_string($data)) {
             $data = unserialize($data) ?: [];
@@ -103,7 +113,7 @@ class Session
 
     /**
      * @param string $key
-     * @param null   $default
+     * @param null $default
      *
      * @return mixed
      */
@@ -125,7 +135,7 @@ class Session
 
     /**
      * @param string $key
-     * @param null   $default
+     * @param null $default
      *
      * @return mixed
      */

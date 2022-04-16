@@ -31,7 +31,7 @@ class Response implements ResponseInterface
     public function json($data): ResponseInterface
     {
         return $this->withHeader('Content-Type', 'application/json; charset=utf-8')
-            ->withBody(new StringStream(json_encode($data)));
+                    ->withBody(new StringStream(json_encode($data)));
     }
 
     /**
@@ -41,10 +41,11 @@ class Response implements ResponseInterface
      */
     public function withCookie(Cookie $cookie)
     {
-        if (!($bag = Context::get(CookieBag::class))) {
-            $bag = new CookieBag();
+        if (!($bag = Context::get($key = CookieBag::class))) {
+            $bag = new $key();
         }
         $bag->add($cookie);
+        Context::put($key, $bag);
 
         return $this;
     }
@@ -54,7 +55,7 @@ class Response implements ResponseInterface
      *
      * @return array
      */
-    public function getCookies()
+    public function getCookies(): array
     {
         if ($bag = Context::get(CookieBag::class)) {
             return $bag->all();
@@ -70,7 +71,7 @@ class Response implements ResponseInterface
     public function html(string $html): ResponseInterface
     {
         return $this->withHeader('Content-Type', 'text/html; charset=utf-8')
-            ->withBody(new StringStream($html));
+                    ->withBody(new StringStream($html));
     }
 
     /**

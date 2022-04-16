@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Max\Cache;
 
 use Closure;
+use Max\Config\Repository;
 use Max\Di\Context;
 use Max\Di\Exceptions\NotFoundException;
 use Psr\Container\ContainerExceptionInterface;
@@ -44,6 +45,20 @@ class Cache implements CacheInterface
     }
 
     /**
+     * @param Repository $repository
+     * @return Cache|static
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundException
+     * @throws ReflectionException
+     */
+    public static function __new(Repository $repository)
+    {
+        $cache = new static($repository->get('cache'));
+        $cache->withHandler('default');
+        return $cache;
+    }
+
+    /**
      * @param string $name
      *
      * @throws NotFoundException
@@ -57,7 +72,7 @@ class Cache implements CacheInterface
             $name = $this->config['default'];
         }
         if (!isset($this->handlers[$name])) {
-            $config  = $this->config['stores'][$name];
+            $config = $this->config['stores'][$name];
             $handler = $config['handler'];
             if (class_exists('Max\Di\Context')) {
                 static::$handlers[$name] = Context::getContainer()->make($handler, [$config['options']]);
@@ -87,7 +102,7 @@ class Cache implements CacheInterface
      * 记住缓存并返回
      *
      * @param          $key
-     * @param Closure  $callback
+     * @param Closure $callback
      * @param int|null $ttl
      *
      * @return mixed

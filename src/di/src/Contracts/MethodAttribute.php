@@ -11,15 +11,9 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Max\Http\Contracts;
+namespace Max\Di\Contracts;
 
-interface MappingInterface
+interface MethodAttribute
 {
-    public function getMethods(): array;
-
-    public function getPath(): string;
-
-    public function getMiddlewares(): array;
-
-    public function getDomain(): string;
+    public function handle(\ReflectionClass $reflectionClass, \ReflectionMethod $reflectionMethod);
 }

@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Max\Http;
 
-use Max\Di\Annotations\Inject;
 use Max\Http\Message\Response as Psr7Response;
 use Max\Http\Message\ServerRequest;
 use Max\Http\Message\Stream\FileStream;
@@ -29,17 +28,18 @@ use Throwable;
 
 class Server
 {
-    #[Inject]
-    protected ServerRequestInterface $request;
-
-    #[Inject]
-    protected ResponseInterface $response;
-
-    #[Inject]
-    protected EventDispatcherInterface $eventDispatcher;
-
-    #[Inject]
-    protected RequestHandlerInterface $requestHandler;
+    /**
+     * @param ServerRequestInterface        $request
+     * @param RequestHandlerInterface       $requestHandler
+     * @param EventDispatcherInterface|null $eventDispatcher
+     */
+    public function __construct(
+        protected ServerRequestInterface    $request,
+        protected RequestHandlerInterface   $requestHandler,
+        protected ?EventDispatcherInterface $eventDispatcher = null
+    )
+    {
+    }
 
     /**
      * Request事件回调
@@ -85,21 +85,31 @@ class Server
      */
     protected function setCookie(ResponseInterface &$psr7Response, Response $response)
     {
-        $cookies = [];
+        if (method_exists($psr7Response, 'getCookies') && $cookies = $psr7Response->getCookies()) {
+            foreach ($cookies as $cookie) {
+                $this->sendCookie($cookie, $response);
+            }
+        }
+
         foreach ($psr7Response->getHeader('Set-Cookie') as $str) {
-            $cookies[] = Cookie::parse($str);
+            $this->sendCookie(Cookie::parse($str), $response);
         }
         $psr7Response = $psr7Response->withoutHeader('Set-Cookie');
-        if (method_exists($psr7Response, 'getCookies')) {
-            $cookies = [...$psr7Response->getCookies()];
-        }
-        foreach ($cookies as $cookie) {
-            $response->cookie(
-                $cookie->getName(), $cookie->getValue(),
-                $cookie->getExpires(), $cookie->getPath(),
-                $cookie->getDomain(), $cookie->isSecure(),
-                $cookie->isHttponly(), $cookie->getSamesite()
-            );
-        }
+    }
+
+    /**
+     * @param Cookie   $cookie
+     * @param Response $response
+     *
+     * @return void
+     */
+    protected function sendCookie(Cookie $cookie, Response $response)
+    {
+        $response->cookie(
+            $cookie->getName(), $cookie->getValue(),
+            $cookie->getExpires(), $cookie->getPath(),
+            $cookie->getDomain(), $cookie->isSecure(),
+            $cookie->isHttponly(), $cookie->getSamesite()
+        );
     }
 }

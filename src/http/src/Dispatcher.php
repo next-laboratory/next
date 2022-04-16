@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace Max\Http;
 
-use JsonSerializable;
-use Max\Di\Annotations\Inject;
 use Max\Di\Exceptions\NotFoundException;
 use Max\Http\Exceptions\InvalidResponseBodyException;
 use Max\Routing\Route;
@@ -28,8 +26,12 @@ use Stringable;
 
 class Dispatcher implements RequestHandlerInterface
 {
-    #[Inject]
-    protected ResponseInterface $response;
+    /**
+     * @param ResponseInterface $response
+     */
+    public function __construct(protected ResponseInterface $response)
+    {
+    }
 
     /**
      * @param ServerRequestInterface $request
@@ -73,9 +75,12 @@ class Dispatcher implements RequestHandlerInterface
         };
 
         // 标量或null按照html输出，其他按照json输出，错误会被捕获
-        return match (true) {
+        $response = match (true) {
             is_scalar($response) || is_null($response) => $this->response->html((string)$response),
             default => $this->response->json($response),
         };
+        $this->response->setPsr7($response);
+
+        return $this->response;
     }
 }

@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Max\Http\Middlewares;
 
-use Max\Di\Annotations\Inject;
 use Max\Http\Exceptions\HttpException;
 use Max\Http\Message\Stream\StringStream;
 use Psr\Http\Message\ResponseInterface;
@@ -24,8 +23,12 @@ use Throwable;
 
 class ExceptionHandlerMiddleware implements MiddlewareInterface
 {
-    #[Inject]
-    protected ResponseInterface $response;
+    /**
+     * @param ResponseInterface $response
+     */
+    public function __construct(protected ResponseInterface $response)
+    {
+    }
 
     /**
      * @param ServerRequestInterface  $request

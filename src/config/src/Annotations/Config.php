@@ -15,10 +15,11 @@ namespace Max\Config\Annotations;
 
 use Attribute;
 use Max\Config\Repository;
+use Max\Di\Context;
 use Max\Di\Contracts\PropertyAttribute;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use ReflectionClass;
 use ReflectionProperty;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
@@ -33,15 +34,17 @@ class Config implements PropertyAttribute
     }
 
     /**
-     * @param ContainerInterface $container
-     * @param ReflectionProperty $property
+     * @param ReflectionClass    $reflectionClass
+     * @param ReflectionProperty $reflectionProperty
      * @param object             $object
      *
+     * @return void
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function handle(ContainerInterface $container, ReflectionProperty $property, object $object)
+    public function handle(ReflectionClass $reflectionClass, ReflectionProperty $reflectionProperty, object $object)
     {
-        $container->setValue($object, $property, $container->get(Repository::class)->get($this->key, $this->default));
+        $container = Context::getContainer();
+        $container->setValue($object, $reflectionProperty, $container->get(Repository::class)->get($this->key, $this->default));
     }
 }

@@ -73,9 +73,7 @@ class Memcached extends CacheHandler
     }
 
     /**
-     * 清空
-     *
-     * @return bool
+     * @inheritDoc
      */
     public function clear()
     {

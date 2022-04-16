@@ -18,5 +18,4 @@ use RuntimeException;
 
 class ContainerException extends RuntimeException implements ContainerExceptionInterface
 {
-
 }
