@@ -14,32 +14,32 @@ declare(strict_types=1);
 namespace Max\Di\Aop\Traits;
 
 use Max\Di\AnnotationManager;
-use Max\Di\Context;
 use Max\Di\Contracts\PropertyAttribute;
 use Max\Di\Exceptions\ContainerException;
 use Max\Di\ReflectionManager;
-use ReflectionException;
 use Throwable;
 
 trait PropertyHandler
 {
     /**
-     * @throws ReflectionException
+     * @return void
      */
-    protected function __handleProperties()
+    protected function __handleProperties(): void
     {
-        $reflectionClass = ReflectionManager::reflectClass(static::class);
-        foreach ($reflectionClass->getProperties() as $reflectionProperty) {
+        $class = static::class;
+        foreach (AnnotationManager::getPropertiesAnnotations($class) as $property => $attributes) {
             try {
-                foreach (AnnotationManager::getPropertyAnnotations($reflectionClass->getName(), $reflectionProperty->getName()) as $attribute) {
+                foreach ($attributes as $attribute) {
                     if ($attribute instanceof PropertyAttribute) {
-                        $attribute->handle($reflectionClass, $reflectionProperty, $this);
+                        $attribute->handle(
+                            ReflectionManager::reflectClass($class), ReflectionManager::reflectProperty($class, $property), $this
+                        );
                     }
                 }
             } catch (Throwable $throwable) {
                 throw new ContainerException(
-                    sprintf('Cannot inject Property into %s. (%s)',
-                        $reflectionClass->getName(), $throwable->getMessage()
+                    sprintf('Cannot inject Property %s into %s. (%s)',
+                        $property, $class, $throwable->getMessage()
                     )
                 );
             }

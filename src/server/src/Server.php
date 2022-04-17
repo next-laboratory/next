@@ -151,12 +151,12 @@ class Server
 
     /**
      * @param               $data
-     * @param int|null      $workerId
+     * @param int           $workerId
      * @param callable|null $callback
      *
      * @return mixed
      */
-    public function task($data, ?int $workerId = null, ?callable $callback = null): mixed
+    public function task($data, int $workerId = -1, ?callable $callback = null): mixed
     {
         return $this->getServer()->task($data, $workerId, $callback);
     }

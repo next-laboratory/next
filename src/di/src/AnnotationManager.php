@@ -1,10 +1,17 @@
 <?php
 
-namespace Max\Di;
+declare(strict_types=1);
 
-use Max\Di\Contracts\ClassAttribute;
-use Max\Di\Contracts\MethodAttribute;
-use Max\Di\Contracts\PropertyAttribute;
+/**
+ * This file is part of the Max package.
+ *
+ * (c) Cheng Yao <987861463@qq.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Max\Di;
 
 class AnnotationManager
 {
@@ -20,7 +27,7 @@ class AnnotationManager
      *
      * @return void
      */
-    public static function annotationProperty(string $className, string $property, object $attribute)
+    public static function annotationProperty(string $className, string $property, object $attribute): void
     {
         self::$container['property'][$className][$property][] = $attribute;
     }
@@ -31,7 +38,7 @@ class AnnotationManager
      *
      * @return void
      */
-    public static function annotationClass(string $className, object $attribute)
+    public static function annotationClass(string $className, object $attribute): void
     {
         self::$container['class'][$className][] = $attribute;
     }
@@ -43,7 +50,7 @@ class AnnotationManager
      *
      * @return void
      */
-    public static function annotationMethod(string $className, string $method, object $attribute)
+    public static function annotationMethod(string $className, string $method, object $attribute): void
     {
         self::$container['method'][$className][$method][] = $attribute;
     }
@@ -52,9 +59,9 @@ class AnnotationManager
      * @param string $className
      * @param string $property
      *
-     * @return array|mixed
+     * @return array
      */
-    public static function getPropertyAnnotations(string $className, string $property)
+    public static function getPropertyAnnotations(string $className, string $property): array
     {
         return self::$container['property'][$className][$property] ?? [];
     }
@@ -62,9 +69,9 @@ class AnnotationManager
     /**
      * @param string $className
      *
-     * @return array|mixed
+     * @return array
      */
-    public static function getClassAnnotations(string $className)
+    public static function getClassAnnotations(string $className): array
     {
         return self::$container['class'][$className] ?? [];
     }
@@ -73,20 +80,36 @@ class AnnotationManager
      * @param string $className
      * @param string $method
      *
-     * @return array|mixed
+     * @return array
      */
-    public static function getMethodAnnotations(string $className, string $method)
+    public static function getMethodAnnotations(string $className, string $method): array
     {
         return self::getMethodsAnnotations()[$className][$method] ?? [];
     }
 
-    public static function getMethodsAnnotations()
+    /**
+     * @param string|null $className
+     *
+     * @return array
+     */
+    public static function getMethodsAnnotations(?string $className = null): array
     {
+        if (isset($className)) {
+            return self::$container['method'][$className] ?? [];
+        }
         return self::$container['method'] ?? [];
     }
 
-    public static function getPropertiesAnnotations()
+    /**
+     * @param string|null $className
+     *
+     * @return array
+     */
+    public static function getPropertiesAnnotations(?string $className = null): array
     {
+        if (isset($className)) {
+            return self::$container['property'][$className] ?? [];
+        }
         return self::$container['property'] ?? [];
     }
 }

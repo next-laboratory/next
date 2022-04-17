@@ -32,8 +32,8 @@
         "php": "^8.0",
         "ext-pcntl": "*",
         "psr/container": "^2.0",
-        "max/utils": "dev-master",
-        "max/event": "dev-master"
+        "nikic/php-parser": "^4.13",
+        "max/utils": "dev-master"
     },
     "extra": {
         "max": {
