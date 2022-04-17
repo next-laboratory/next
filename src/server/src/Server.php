@@ -13,8 +13,13 @@ declare(strict_types=1);
 
 namespace Max\Server;
 
-use http\Exception\InvalidArgumentException;
+use InvalidArgumentException;
 use Max\Di\Exceptions\NotFoundException;
+use Max\Event\EventDispatcher;
+use Max\Server\Events\OnManagerStart;
+use Max\Server\Events\OnStart;
+use Max\Server\Events\OnWorkerStart;
+use Max\Server\Listeners\ServerListener;
 use Psr\Container\ContainerExceptionInterface;
 use ReflectionException;
 use Swoole\Http\Server as SwooleHttpServer;
@@ -40,6 +45,15 @@ class Server
     public const SERVER_BASE = 3;
 
     /**
+     * 默认事件
+     */
+    protected const DEFAULT_EVENTS = [
+        ServerListener::EVENT_START         => OnStart::class,
+        ServerListener::EVENT_MANAGER_START => OnManagerStart::class,
+        ServerListener::EVENT_WORKER_START  => OnWorkerStart::class
+    ];
+
+    /**
      * @var ?SwooleServer
      */
     protected ?SwooleServer $server = null;
@@ -50,12 +64,16 @@ class Server
     protected array $config;
 
     /**
-     * @param array $config
+     * @param array                $config
+     * @param EventDispatcher|null $eventDispatcher
      */
-    public function __construct(array $config)
+    public function __construct(array $config, protected ?EventDispatcher $eventDispatcher = null)
     {
         array_multisort(array_column($config['servers'], 'type'), SORT_DESC, $config['servers']);
         $this->config = $config;
+        if (!is_null($this->eventDispatcher)) {
+            $this->eventDispatcher->getListenerProvider()->addListener(new ServerListener());
+        }
     }
 
     /**
@@ -118,6 +136,13 @@ class Server
         };
         /** @var SwooleServer $server */
         $server = new $server($host, $port, $mode, $sockType);
+        if (!is_null($this->eventDispatcher)) {
+            foreach (self::DEFAULT_EVENTS as $key => $event) {
+                $server->on($key, function() use ($event) {
+                    $this->eventDispatcher->dispatch(new $event(...func_get_args()));
+                });
+            }
+        }
         foreach ($this->config['callbacks'] ?? [] as $event => $callback) {
             $server->on($event, [make($callback[0]), $callback[1]]);
         }

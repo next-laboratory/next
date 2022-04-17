@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "homepage": "https://github.com/topyao/max-websocket",
   "keywords": [
-    "http-message",
+    "websocket",
     "maxphp"
   ],
   "authors": [
@@ -21,10 +21,5 @@
   },
   "require": {
     "php": "^8.0"
-  },
-  "extra": {
-    "max": {
-      "config": "Max\\Server\\ConfigProvider"
-    }
   }
 }

@@ -30,8 +30,8 @@ use Throwable;
 class Server
 {
     /**
-     * @param ServerRequestInterface        $request
-     * @param RequestHandlerInterface       $requestHandler
+     * @param ServerRequestInterface $request
+     * @param RequestHandlerInterface $requestHandler
      * @param EventDispatcherInterface|null $eventDispatcher
      */
     public function __construct(
@@ -46,10 +46,10 @@ class Server
     /**
      * Request事件回调
      *
-     * @param Request  $request
+     * @param Request $request
      * @param Response $response
      */
-    public function request(Request $request, Response $response)
+    public function onRequest(Request $request, Response $response)
     {
         try {
             $start = microtime(true);
@@ -90,7 +90,7 @@ class Server
 
     /**
      * @param ResponseInterface $psr7Response
-     * @param Response          $response
+     * @param Response $response
      */
     protected function setCookie(ResponseInterface &$psr7Response, Response $response)
     {
@@ -107,7 +107,7 @@ class Server
     }
 
     /**
-     * @param Cookie   $cookie
+     * @param Cookie $cookie
      * @param Response $response
      *
      * @return void

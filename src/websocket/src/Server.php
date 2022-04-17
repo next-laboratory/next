@@ -28,32 +28,32 @@ class Server
     /**
      * @param EventDispatcher $eventDispatcher
      */
-    public function __construct(protected EventDispatcher $eventDispatcher)
+    public function __construct(protected ?EventDispatcher $eventDispatcher = null)
     {
     }
 
     /**
      * HandShake
      *
-     * @param Request  $request
+     * @param Request $request
      * @param Response $response
      */
-    public function handShake(Request $request, Response $response)
+    public function onHandShake(Request $request, Response $response)
     {
     }
 
     /**
      * @param SwooleServer $server
-     * @param Request      $request
+     * @param Request $request
      */
-    public function open(SwooleServer $server, Request $request)
+    public function onOpen(SwooleServer $server, Request $request)
     {
         $path = $request->server['request_uri'];
         /** @var WebSocketHandlerInterface $handler */
         if ($handler = RouteCollector::getRoute($path)) {
             Context::put($request->fd, RouteCollector::class, $path);
-            $handler->open($server, $request);
-            $this->eventDispatcher->dispatch(new OnOpen($server, $request));
+            $handler->onOpen($server, $request);
+            $this->eventDispatcher?->dispatch(new OnOpen($server, $request));
         } else {
             $server->push($request->fd, 'Not Found.');
             $server->close($request->fd);
@@ -62,31 +62,37 @@ class Server
 
     /**
      * @param SwooleServer $server
-     * @param Frame        $frame
+     * @param Frame $frame
      */
-    public function message(SwooleServer $server, Frame $frame)
+    public function onMessage(SwooleServer $server, Frame $frame)
     {
         if ($server->isEstablished($frame->fd) && $handler = $this->getHandler($frame->fd)) {
-            $handler->message($server, $frame);
-            $this->eventDispatcher->dispatch(new OnMessage($server, $frame));
+            $handler->onMessage($server, $frame);
+            $this->eventDispatcher?->dispatch(new OnMessage($server, $frame));
         }
     }
 
     /**
-     * @param SwooleServer             $server
+     * @param \Swoole\Server $server
      * @param                          $fd
      */
-    public function close(SwooleServer $server, $fd)
+    public function onClose(\Swoole\Server $server, $fd)
     {
         if ($handler = $this->getHandler($fd)) {
-            $handler->close($server, $fd);
+            $handler->onClose($server, $fd);
         }
-        $this->eventDispatcher->dispatch(new OnClose($server, $fd));
+        $this->eventDispatcher?->dispatch(new OnClose($server, $fd));
         Context::delete($fd);
     }
 
-    public function receive()
+    /**
+     * @param SwooleServer $server
+     * @param $fd
+     * @return void
+     */
+    public function onDisconnect(SwooleServer $server, $fd)
     {
+        Context::delete($fd);
     }
 
     /**

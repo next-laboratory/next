@@ -19,9 +19,9 @@ use Swoole\WebSocket\Server;
 
 interface WebSocketHandlerInterface
 {
-    public function open(Server $server, Request $request);
+    public function onOpen(Server $server, Request $request);
 
-    public function message(Server $server, Frame $frame);
+    public function onMessage(Server $server, Frame $frame);
 
-    public function close(Server $server, int $fd);
+    public function onClose(Server $server, int $fd);
 }

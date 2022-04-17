@@ -200,21 +200,23 @@ final class Scanner
                 $codeString      = file_get_contents($path);
                 $file            = new \SplFileObject($path, 'r');
                 $replacement     = [];
-                foreach (AnnotationManager::getMethodsAnnotations() as $method) {
-                    $reflectionMethod = ReflectionManager::reflectMethod($class, $method);
-                    $startLine        = $reflectionMethod->getStartline();
-                    $file->seek($startLine - 1);
-                    preg_match('/function[\s\w]+\((.*)\)/', $file->getCurrentLine(), $matches);
-                    $params  = $matches[1] ?? '';
-                    $endLine = $reflectionMethod->getEndLine();
-                    $file->seek($startLine + 1);
-                    $code = '';
-                    while ($startLine++ < $endLine - 2) {
-                        $code .= $file->fgets();
+                foreach (AnnotationManager::getMethodsAnnotations() as $class => $methods) {
+                    foreach ($methods as $method => $attributes) {
+                        $reflectionMethod = ReflectionManager::reflectMethod($class, $method);
+                        $startLine        = $reflectionMethod->getStartline();
+                        $file->seek($startLine - 1);
+                        preg_match('/function[\s\w]+\((.*)\)/', $file->getCurrentLine(), $matches);
+                        $params  = $matches[1] ?? '';
+                        $endLine = $reflectionMethod->getEndLine();
+                        $file->seek($startLine + 1);
+                        $code = '';
+                        while ($startLine++ < $endLine - 2) {
+                            $code .= $file->fgets();
+                        }
+                        $newCode            = str_replace('    ', '      ', $code);
+                        $return             = ($reflectionMethod->getReturnType() == 'void') ? '' : 'return ';
+                        $replacement[$code] = "        $return\$this->__callViaProxy(__FUNCTION__, function ($params) {\n$newCode        }, func_get_args());\n";
                     }
-                    $newCode            = str_replace('    ', '      ', $code);
-                    $return             = ($reflectionMethod->getReturnType() == 'void') ? '' : 'return ';
-                    $replacement[$code] = "        $return\$this->__callViaProxy(__FUNCTION__, function ($params) {\n$newCode        }, func_get_args());\n";
                 }
                 [$parent, $param] = $this->getParentConstructor($reflectionClass);
                 $constructor = "\n    public function __construct($param)\n    {\n        \$this->__handleProperties();\n    $parent}\n    ";

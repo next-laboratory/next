@@ -48,7 +48,7 @@ composer create-project max/websocket-project max  // 安装websocket项目(开�
 ### 启动服务
 
 ```shell
-php bin/max start
+php bin/max.php start
 ```
 
 这行命令会在你命令执行目录安装框架

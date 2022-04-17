@@ -17,8 +17,16 @@ use Max\WebSocket\Contracts\WebSocketHandlerInterface;
 
 class RouteCollector
 {
+    /**
+     * @var array
+     */
     protected static array $routes = [];
 
+    /**
+     * @param string $path
+     * @param WebSocketHandlerInterface $webSocketHandler
+     * @return void
+     */
     public static function addRoute(string $path, WebSocketHandlerInterface $webSocketHandler)
     {
         self::$routes[$path] = $webSocketHandler;

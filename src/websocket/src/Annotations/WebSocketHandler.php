@@ -14,10 +14,11 @@ declare(strict_types=1);
 namespace Max\WebSocket\Annotations;
 
 use Attribute;
-use Max\Di\Annotations\ClassAnnotation;
+use Max\Di\Contracts\ClassAttribute;
+use Max\WebSocket\RouteCollector;
 
 #[Attribute(Attribute::TARGET_CLASS)]
-class WebSocketHandler extends ClassAnnotation
+class WebSocketHandler implements ClassAttribute
 {
     /**
      * @param string $path 路径
@@ -27,10 +28,11 @@ class WebSocketHandler extends ClassAnnotation
     }
 
     /**
-     * @return string
+     * @param \ReflectionClass $reflectionClass
+     * @return void
      */
-    public function getPath(): string
+    public function handle(\ReflectionClass $reflectionClass)
     {
-        return $this->path;
+        RouteCollector::addRoute($this->path, new ($reflectionClass->getName()));
     }
 }

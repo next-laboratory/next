@@ -21,7 +21,9 @@ class ConfigProvider
     public function __invoke(): array
     {
         return [
-            'Psr\SimpleCache\CacheInterface' => 'Max\Cache\Cache',
+            'bindings' => [
+                'Psr\SimpleCache\CacheInterface' => 'Max\Cache\Cache',
+            ],
         ];
     }
 

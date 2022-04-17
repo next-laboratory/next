@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -11,6 +12,7 @@ declare(strict_types=1);
  */
 
 use Max\Http\Server;
+use Max\Server\Listeners\ServerListener;
 use Swoole\Constant;
 
 return [
@@ -25,10 +27,10 @@ return [
                 Constant::OPTION_OPEN_WEBSOCKET_PROTOCOL => true,
             ],
             'callbacks' => [
-                'open'    => [\Max\WebSocket\Server::class, 'open'],
-                'message' => [\Max\WebSocket\Server::class, 'message'],
-                'close'   => [\Max\WebSocket\Server::class, 'close'],
-                'receive' => [\Max\WebSocket\Server::class, 'receive']
+                ServerListener::EVENT_OPEN    => [\Max\WebSocket\Server::class, 'OnOpen'],
+                ServerListener::EVENT_MESSAGE => [\Max\WebSocket\Server::class, 'OnMessage'],
+                ServerListener::EVENT_CLOSE   => [\Max\WebSocket\Server::class, 'OnClose'],
+                ServerListener::EVENT_RECEIVE => [\Max\WebSocket\Server::class, 'OnReceive']
             ],
         ],
         [
@@ -41,7 +43,7 @@ return [
                 Constant::OPTION_OPEN_HTTP_PROTOCOL => true,
             ],
             'callbacks' => [
-                'request' => [Server::class, 'request'],
+                ServerListener::EVENT_REQUEST => [Server::class, 'onRequest'],
             ],
         ],
     ],
@@ -53,10 +55,7 @@ return [
         Constant::OPTION_TASK_ENABLE_COROUTINE => true,
     ],
     'callbacks' => [
-        'start'        => [\Max\Server\Callbacks::class, 'start'],
-        'workerStart'  => [\Max\Server\Callbacks::class, 'workerStart'],
-        'task'         => [\Max\Server\Callbacks::class, 'task'],
-        'finish'       => [\Max\Server\Callbacks::class, 'finish'],
-        'managerStart' => [\Max\Server\Callbacks::class, 'managerStart'],
+        ServerListener::EVENT_TASK   => [\Max\Server\Callbacks::class, 'onTask'],
+        ServerListener::EVENT_FINISH => [\Max\Server\Callbacks::class, 'onFinish'],
     ],
 ];

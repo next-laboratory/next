@@ -28,13 +28,4 @@ class ConfigProvider
             ]
         ];
     }
-
-    /**
-     * publish
-     */
-    public function publish()
-    {
-        $to = dirname(__DIR__, 4) . '/config/http.php';
-        file_exists($to) || copy(__DIR__ . '/../publish/http.php', $to);
-    }
 }

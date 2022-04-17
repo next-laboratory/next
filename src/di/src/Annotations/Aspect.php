@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Max\Di\Annotations;
 
-use Max\Di\AspectManager;
+use Max\Di\AnnotationManager;
 use Max\Di\Contracts\AspectInterface;
 use Max\Di\Contracts\MethodAttribute;
 
@@ -23,22 +23,23 @@ abstract class Aspect implements AspectInterface, MethodAttribute
      * @var \ReflectionClass
      */
     protected \ReflectionClass $reflectionClass;
-    
+
     /**
      * @var \ReflectionMethod
      */
     protected \ReflectionMethod $reflectionMethod;
 
     /**
-     * @param \ReflectionClass $reflectionClass
+     * @param \ReflectionClass  $reflectionClass
      * @param \ReflectionMethod $reflectionMethod
+     *
      * @return void
      */
     public function handle(\ReflectionClass $reflectionClass, \ReflectionMethod $reflectionMethod)
     {
-        $this->reflectionClass = $reflectionClass;
+        $this->reflectionClass  = $reflectionClass;
         $this->reflectionMethod = $reflectionMethod;
-        AspectManager::addMethodAspect($reflectionClass->getName(), $reflectionMethod->getName(), $this);
+        AnnotationManager::annotationMethod($reflectionClass->getName(), $reflectionMethod->getName(), $this);
     }
 
     /**
