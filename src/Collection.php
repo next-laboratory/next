@@ -808,7 +808,7 @@ class Collection implements ArrayAccess, Enumerable
         $results = [];
 
         foreach (range(1, $count) as $item) {
-            array_push($results, array_pop($this->items));
+            $results[] = array_pop($this->items);
         }
 
         return new static($results);
@@ -972,7 +972,7 @@ class Collection implements ArrayAccess, Enumerable
         $results = [];
 
         foreach (range(1, $count) as $item) {
-            array_push($results, array_shift($this->items));
+            $results[] = array_shift($this->items);
         }
 
         return new static($results);
