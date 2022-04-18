@@ -21,8 +21,6 @@
         "ext-swoole": ">=4.6",
         "max/di": "dev-master",
         "max/utils": "dev-master",
-        "max/http-server": "dev-master",
-        "max/routing": "dev-master",
         "max/event": "dev-master"
     },
     "extra": {

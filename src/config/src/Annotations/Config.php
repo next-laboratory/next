@@ -29,7 +29,10 @@ class Config implements PropertyAttribute
      * @param string     $key     键
      * @param mixed|null $default 默认值
      */
-    public function __construct(protected string $key, protected mixed $default = null)
+    public function __construct(
+        protected string $key,
+        protected mixed  $default = null
+    )
     {
     }
 
@@ -42,9 +45,17 @@ class Config implements PropertyAttribute
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function handle(ReflectionClass $reflectionClass, ReflectionProperty $reflectionProperty, object $object)
+    public function handle(
+        ReflectionClass    $reflectionClass,
+        ReflectionProperty $reflectionProperty,
+        object             $object
+    )
     {
         $container = Context::getContainer();
-        $container->setValue($object, $reflectionProperty, $container->get(Repository::class)->get($this->key, $this->default));
+        $container->setValue(
+            $object,
+            $reflectionProperty,
+            $container->get(Repository::class)->get($this->key, $this->default)
+        );
     }
 }

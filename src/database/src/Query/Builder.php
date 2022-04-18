@@ -256,7 +256,7 @@ class Builder
      *
      * @return void
      */
-    protected function addBindings($value)
+    protected function addBindings($value): void
     {
         if (is_array($value)) {
             array_push($this->bindings, ...$value);
@@ -278,7 +278,7 @@ class Builder
      *
      * @return void
      */
-    public function setBindings($bindings)
+    public function setBindings($bindings): void
     {
         if (is_array($bindings)) {
             $this->bindings = [...$this->bindings, ...$bindings];
@@ -387,7 +387,6 @@ class Builder
      * @param array $columns
      *
      * @return Collection
-     * @throws Exception
      * @throws Throwable
      */
     public function get(array $columns = ['*']): Collection
@@ -399,19 +398,17 @@ class Builder
      * @param string|int $column
      *
      * @return int
-     * @throws Exception
      * @throws Throwable
      */
     public function count(string|int $column = '*'): int
     {
-        return $this->aggregate("COUNT({$column})");
+        return $this->aggregate("COUNT($column)");
     }
 
     /**
      * @param $column
      *
      * @return int
-     * @throws Exception
      * @throws Throwable
      */
     public function sum($column): int
@@ -423,43 +420,39 @@ class Builder
      * @param $column
      *
      * @return int
-     * @throws Exception
      * @throws Throwable
      */
     public function max($column): int
     {
-        return $this->aggregate("MAX({$column})");
+        return $this->aggregate("MAX($column)");
     }
 
     /**
      * @param $column
      *
      * @return int
-     * @throws Exception
      * @throws Throwable
      */
     public function min($column): int
     {
-        return $this->aggregate("MIN({$column})");
+        return $this->aggregate("MIN($column)");
     }
 
     /**
      * @param $column
      *
      * @return int
-     * @throws Exception
      * @throws Throwable
      */
     public function avg($column): int
     {
-        return $this->aggregate("AVG({$column})");
+        return $this->aggregate("AVG($column)");
     }
 
     /**
      * @param string $expression
      *
      * @return int
-     * @throws Exception
      * @throws Throwable
      */
     protected function aggregate(string $expression): int
@@ -475,7 +468,6 @@ class Builder
 
     /**
      * @return bool
-     * @throws Exception
      * @throws Throwable
      */
     public function exists(): bool
@@ -494,7 +486,6 @@ class Builder
      * @param string|null $key
      *
      * @return Collection
-     * @throws Exception
      * @throws Throwable
      */
     public function column(string $column, ?string $key = null): Collection
@@ -516,7 +507,6 @@ class Builder
      * @param string|null $identifier
      *
      * @return mixed
-     * @throws Exception
      * @throws Throwable
      */
     public function find($id, array $columns = ['*'], ?string $identifier = null): mixed
@@ -528,19 +518,17 @@ class Builder
      * @param array $columns
      *
      * @return mixed
-     * @throws Exception
      * @throws Throwable
      */
     public function first(array $columns = ['*']): mixed
     {
         return $this->query->wrap(function($PDO) use ($columns) {
-            return $this->query->statement($PDO, $this->toSql($columns), $this->bindings,)->fetch(PDO::FETCH_ASSOC);
+            return $this->query->statement($PDO, $this->toSql($columns), $this->bindings)->fetch(PDO::FETCH_ASSOC);
         });
     }
 
     /**
      * @return int
-     * @throws Exception
      * @throws Throwable
      */
     public function delete(): int
@@ -558,7 +546,6 @@ class Builder
      * @param array $record
      *
      * @return int
-     * @throws Exception
      * @throws Throwable
      */
     public function insert(array $record): int
@@ -580,7 +567,6 @@ class Builder
      * @param array $records
      *
      * @return mixed
-     * @throws Exception
      * @throws Throwable
      */
     public function insertMany(array $records): mixed
@@ -591,7 +577,7 @@ class Builder
             $this->addBindings(array_values($record));
             $values[] = '(' . implode(',', array_fill(0, count($records), '?')) . ')';
         }
-        $query = sprintf('INSERT INTO %s (%s) VALUES %s', $this->from, implode(',', $this->column), implode(',', $values));
+        $query = sprintf('INSERT INTO %s (%s) VALUES %s', $this->from[0], implode(',', $this->column), implode(',', $values));
         return $this->query->wrap(function($PDO) use ($query) {
             $this->query->statement($PDO, $query, $this->bindings);
         });
@@ -601,7 +587,6 @@ class Builder
      * @param array $data
      *
      * @return array
-     * @throws Exception
      * @throws Throwable
      */
     public function insertAll(array $data): array
@@ -613,7 +598,6 @@ class Builder
      * @param array $data
      *
      * @return int
-     * @throws Exception
      * @throws Throwable
      */
     public function update(array $data): int

@@ -1,49 +1,80 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of the Max package.
+ *
+ * (c) Cheng Yao <987861463@qq.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Max\Di\Aop\NodeVisitor;
 
 use Max\Di\AnnotationManager;
 use Max\Di\Contracts\AspectInterface;
 use PhpParser\Node;
+use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
+use PhpParser\Node\Scalar\MagicConst\Function_;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Return_;
+use PhpParser\Node\Stmt\TraitUse;
 use PhpParser\NodeVisitorAbstract;
 
 class ProxyHandlerVisitor extends NodeVisitorAbstract
 {
+    /**
+     * @param Metadata $metadata
+     */
     public function __construct(protected Metadata $metadata)
     {
     }
 
+    /**
+     * @param Node $node
+     *
+     * @return void|null
+     */
     public function leaveNode(Node $node)
     {
-        if ($node instanceof Node\Stmt\Class_) {
+        if ($node instanceof Class_) {
             $node->stmts = array_merge(
-                [new Node\Stmt\TraitUse([new Node\Name('\Max\Di\Aop\Traits\ProxyHandler'),]),],
+                [new TraitUse([new Name('\Max\Di\Aop\Traits\ProxyHandler'),]),],
                 $node->stmts
             );
         }
-        if ($node instanceof Node\Stmt\ClassMethod) {
+        if ($node instanceof ClassMethod) {
             if (array_filter(
-                AnnotationManager::getMethodAnnotations($this->metadata->getClassName(), $node->name->toString()),
+                AnnotationManager::getMethodAnnotations($this->metadata->className, $node->name->toString()),
                 fn($attribute) => $attribute instanceof AspectInterface
             )) {
-                $methodCall = new Node\Expr\MethodCall(
-                    new Node\Expr\Variable(new Node\Name('this')),
+                $methodCall = new MethodCall(
+                    new Variable(new Name('this')),
                     '__callViaProxy',
                     [
-                        new Node\Arg(new Node\Scalar\MagicConst\Function_()),
-                        new Node\Arg(new Node\Expr\Closure([
+                        new Arg(new Function_()),
+                        new Arg(new Closure([
                             'params' => $node->getParams(),
                             'stmts'  => $node->stmts,
                         ])),
-                        new Node\Arg(new Node\Expr\FuncCall(new Node\Name('func_get_args')))
+                        new Arg(new FuncCall(new Name('func_get_args')))
                     ]
                 );
                 $returnType = $node->getReturnType();
-                if ($returnType instanceof Node\Identifier && $returnType->name === 'void') {
+                if ($returnType instanceof Identifier && $returnType->name === 'void') {
                     $node->stmts = [new Expression($methodCall)];
                 } else {
-                    $node->stmts = [new Node\Stmt\Return_($methodCall)];
+                    $node->stmts = [new Return_($methodCall)];
                 }
             }
         }

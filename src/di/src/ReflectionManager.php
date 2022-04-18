@@ -32,7 +32,6 @@ class ReflectionManager
      * @param string $className
      *
      * @return ReflectionClass
-     * @throws ReflectionException
      */
     public static function reflectClass(string $className): ReflectionClass
     {
@@ -89,7 +88,6 @@ class ReflectionManager
      * @param        $filter
      *
      * @return ReflectionProperty[]
-     * @throws ReflectionException
      */
     public static function reflectProperties(string $className, $filter = null): array
     {
@@ -100,7 +98,6 @@ class ReflectionManager
      * @param string $className
      *
      * @return mixed
-     * @throws ReflectionException
      */
     public static function reflectPropertyNames(string $className): mixed
     {
@@ -133,7 +130,7 @@ class ReflectionManager
      *
      * @return mixed|null
      */
-    public static function getPropertyDefaultValue(ReflectionProperty $property)
+    public static function getPropertyDefaultValue(ReflectionProperty $property): mixed
     {
         return method_exists($property, 'getDefaultValue')
             ? $property->getDefaultValue()

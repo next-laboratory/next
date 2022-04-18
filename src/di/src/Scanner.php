@@ -51,10 +51,13 @@ final class Scanner
 
     /**
      * @param ClassLoader $loader
-     * @param array       $scanDir
-     * @param string      $runtimeDir
+     * @param array       $scanDir    扫描路径
+     * @param string      $runtimeDir 缓存路径
      */
-    private function __construct(protected ClassLoader $loader, protected array $scanDir, string $runtimeDir)
+    private function __construct(
+        protected ClassLoader $loader,
+        protected array       $scanDir,
+        string                $runtimeDir)
     {
         $this->runtimeDir = $runtimeDir = rtrim($runtimeDir, '/\\') . '/di/';
         is_dir($runtimeDir) || mkdir($runtimeDir, 0755, true);

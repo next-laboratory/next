@@ -44,7 +44,7 @@ class Repository
      * @param string $key
      * @param        $value
      */
-    public function set(string $key, $value)
+    public function set(string $key, $value): void
     {
         Arr::set($this->items, $key, $value);
     }
@@ -64,7 +64,7 @@ class Repository
      *
      * @param array $map
      */
-    public function load(array $map)
+    public function load(array $map): void
     {
         foreach ($map as $item) {
             $this->loadOne($item);
@@ -76,7 +76,7 @@ class Repository
      *
      * @param string $config
      */
-    public function loadOne(string $config)
+    public function loadOne(string $config): void
     {
         $this->items[pathinfo($config, PATHINFO_FILENAME)] = include_once $config;
     }

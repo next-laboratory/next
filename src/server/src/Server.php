@@ -121,12 +121,12 @@ class Server
      * @param int    $mode
      * @param int    $sockType
      *
-     * @return mixed
+     * @return SwooleServer
      * @throws ContainerExceptionInterface
      * @throws NotFoundException
      * @throws ReflectionException
      */
-    protected function makeServer(int $server, string $host, int $port, int $mode, int $sockType): mixed
+    protected function makeServer(int $server, string $host, int $port, int $mode, int $sockType): SwooleServer
     {
         $server = match ($server) {
             self::SERVER_HTTP => SwooleHttpServer::class,

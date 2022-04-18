@@ -12,6 +12,11 @@
             "Max\\Config\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Max\\Config\\Tests\\": "tests/"
+        }
+    },
     "require": {
         "php": "^8.0",
         "max/utils": "dev-master"

@@ -15,19 +15,12 @@ namespace Max\Di;
 
 use BadMethodCallException;
 use Closure;
-use Max\Di\Container\DependencyFinder;
-use Max\Di\Container\PropertyModifier;
-use Max\Di\Container\ResolvingCallbacks;
-use Max\Di\Contracts\PropertyAttribute;
+use Max\Di\Container\{DependencyFinder, PropertyModifier, ResolvingCallbacks};
 use Max\Di\Exceptions\{ContainerException, NotFoundException};
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\ContainerInterface;
-use ReflectionClass;
+use Psr\Container\{ContainerExceptionInterface, ContainerInterface};
 use ReflectionException;
-use Throwable;
 use function is_object;
 use function is_string;
-use function sprintf;
 
 class Container implements ContainerInterface
 {

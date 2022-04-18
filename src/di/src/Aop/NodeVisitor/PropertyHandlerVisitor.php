@@ -1,39 +1,93 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of the Max package.
+ *
+ * (c) Cheng Yao <987861463@qq.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Max\Di\Aop\NodeVisitor;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Name;
+use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\If_;
+use PhpParser\Node\Stmt\TraitUse;
 use PhpParser\NodeVisitorAbstract;
 
 class PropertyHandlerVisitor extends NodeVisitorAbstract
 {
+    /**
+     * @param Metadata $metadata
+     */
     public function __construct(protected Metadata $metadata)
     {
     }
 
+    /**
+     * @param Node $node
+     *
+     * @return void|null
+     */
+    public function enterNode(Node $node)
+    {
+        if ($node instanceof ClassMethod && $node->name->toString() === '__construct') {
+            $this->metadata->hasConstructor = true;
+        }
+    }
+
+    /**
+     * @param Node $node
+     *
+     * @return void|null
+     */
     public function leaveNode(Node $node)
     {
-        if ($node instanceof Node\Stmt\Class_) {
-            $constructor        = new Node\Stmt\ClassMethod('__construct');
-            $constructor->flags = 1;
-            if ($node->extends) {
-                $constructor->stmts[] = new Node\Stmt\If_(new Node\Expr\FuncCall(new Node\Name('method_exists'), [
-                    new Node\Expr\ClassConstFetch(new Node\Name('parent'), 'class'),
-                    new Node\Scalar\String_('__construct'),
-                ]), [
-                    'stmts' => [
-                        new Node\Stmt\Expression(new Node\Expr\StaticCall(
-                            new Node\Expr\ConstFetch(new Node\Name('parent')), '__construct',
-                            [new Node\Arg(new Node\Expr\FuncCall(new Node\Name('func_get_args')), unpack: true),]
-                        ))
-                    ]
-                ]);
+        if ($node instanceof Class_) {
+            $c = [];
+            if (!$this->metadata->hasConstructor) {
+                $constructor        = new ClassMethod('__construct');
+                $constructor->flags = 1;
+                if ($node->extends) {
+                    $constructor->stmts[] = new If_(new FuncCall(new Name('method_exists'), [
+                        new ClassConstFetch(new Name('parent'), 'class'),
+                        new String_('__construct'),
+                    ]), [
+                        'stmts' => [
+                            new Expression(new StaticCall(
+                                new ConstFetch(new Name('parent')), '__construct',
+                                [new Arg(new FuncCall(new Name('func_get_args')), unpack: true),]
+                            ))
+                        ]
+                    ]);
+                }
+                $constructor->stmts[] = new Expression(new MethodCall(
+                    new Variable(new Name('this')), '__handleProperties'
+                ));
+                $c                    = [$constructor];
             }
 
-            $constructor->stmts[] = new Node\Stmt\Expression(new Node\Expr\MethodCall(
-                new Node\Expr\Variable(new Node\Name('this')), '__handleProperties'
-            ));
-            $node->stmts          = array_merge([new Node\Stmt\TraitUse([new Node\Name('\Max\Di\Aop\Traits\PropertyHandler'),])], [$constructor], $node->stmts);
+            $node->stmts = array_merge([new TraitUse([new Name('\Max\Di\Aop\Traits\PropertyHandler'),])], $c, $node->stmts);
+        }
+        if ($node instanceof ClassMethod && $node->name->toString() === '__construct') {
+            array_unshift($node->stmts,
+                new Expression(new MethodCall(new Variable(new Name('this')), '__handleProperties'))
+            );
         }
     }
 }

@@ -51,7 +51,7 @@ class Cache implements CacheInterface
      * @throws NotFoundException
      * @throws ReflectionException
      */
-    public static function __new(Repository $repository)
+    public static function __new(Repository $repository): Cache|static
     {
         $cache = new static($repository->get('cache'));
         $cache->withHandler('default');

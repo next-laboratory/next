@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Max\Di\Aop;
 
+use Closure;
 use Max\Di\Exceptions\NotFoundException;
 use Psr\Container\ContainerExceptionInterface;
 use ReflectionException;
@@ -23,13 +24,13 @@ class JoinPoint
      * @param object   $proxy
      * @param string   $function
      * @param array    $arguments
-     * @param \Closure $callback
+     * @param Closure $callback
      */
     public function __construct(
         protected object   $proxy,
         protected string   $function,
         protected array    $arguments,
-        protected \Closure $callback
+        protected Closure $callback
     )
     {
     }

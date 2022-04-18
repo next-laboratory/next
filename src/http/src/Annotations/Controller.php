@@ -32,10 +32,13 @@ class Controller implements ClassAttribute
     protected ContainerInterface $container;
 
     /**
-     * @param string $prefix 前缀
-     * @param array $middlewares 中间件
+     * @param string $prefix      前缀
+     * @param array  $middlewares 中间件
      */
-    public function __construct(protected string $prefix = '', protected array $middlewares = [])
+    public function __construct(
+        protected string $prefix = '',
+        protected array  $middlewares = []
+    )
     {
         $this->container = Context::getContainer();
         if (!$this->container->has(RouteCollector::class)) {
@@ -45,6 +48,7 @@ class Controller implements ClassAttribute
 
     /**
      * @param ReflectionClass $reflectionClass
+     *
      * @return void
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -52,7 +56,7 @@ class Controller implements ClassAttribute
     public function handle(ReflectionClass $reflectionClass)
     {
         $this->container->set(Router::class, new Router([
-            'prefix' => $this->prefix,
+            'prefix'      => $this->prefix,
             'middlewares' => $this->middlewares,
         ], $this->container->get(RouteCollector::class)));
     }

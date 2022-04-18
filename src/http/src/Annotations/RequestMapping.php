@@ -35,10 +35,10 @@ class RequestMapping implements MethodAttribute
     protected array $methods = ['GET', 'POST', 'HEAD'];
 
     /**
-     * @param string $path 路径
-     * @param array|string[] $methods 方法
-     * @param array $middlewares 中间件
-     * @param string $domain 域名
+     * @param string         $path        路径
+     * @param array|string[] $methods     方法
+     * @param array          $middlewares 中间件
+     * @param string         $domain      域名
      */
     public function __construct(
         protected string $path,
@@ -53,7 +53,7 @@ class RequestMapping implements MethodAttribute
     }
 
     /**
-     * @param ReflectionClass $reflectionClass
+     * @param ReflectionClass  $reflectionClass
      * @param ReflectionMethod $reflectionMethod
      *
      * @return void
@@ -62,8 +62,8 @@ class RequestMapping implements MethodAttribute
      */
     public function handle(ReflectionClass $reflectionClass, ReflectionMethod $reflectionMethod)
     {
-        $container = Context::getContainer();
-        $router = $container->get(Router::class);
+        $container      = Context::getContainer();
+        $router         = $container->get(Router::class);
         $routeCollector = $container->get(RouteCollector::class);
         // TODO 这块有问题，如果没有定义Controller注解，则会只用上一个文件的Controller参数
         $routeCollector->add((new Route(
