@@ -1,0 +1,105 @@
+{
+    "name": "max/websocket-project",
+    "license": "Apache-2.0",
+    "type": "project",
+    "description": "A lightweight, high-performance PHP framework based on swoole.",
+    "homepage": "https://github.com/topyao/max",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "keywords": [
+        "maxphp",
+        "flexible",
+        "php framework"
+    ],
+    "authors": [
+        {
+            "name": "chengyao",
+            "email": "987861463@qq.com",
+            "homepage": "https://www.1kmb.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        },
+        "files": [
+            "app/helpers.php"
+        ]
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist"
+    },
+    "require": {
+        "php": "^8.0",
+        "ext-swoole": ">=4.6",
+        "ext-posix": "*",
+        "ext-pcntl": "*",
+        "max/log": "dev-master",
+        "max/config": "dev-master",
+        "max/cache": "dev-master",
+        "max/database": "dev-master",
+        "max/server": "dev-master",
+        "max/env": "dev-master",
+        "max/websocket": "dev-master",
+        "max/utils": "dev-master",
+        "max/http": "dev-master",
+        "swoole/ide-helper": "^4.8"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "symfony/var-dumper": "*"
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "rm -rf runtime/proxy"
+        ],
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.example.env', '.env');\""
+        ],
+        "start": [
+            "php bin/max.php start"
+        ],
+        "stop": [
+            "php bin/max.php stop"
+        ]
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "D:\\Workspace\\Self\\vendor\\log"
+        },
+        {
+            "type": "path",
+            "url": "D:\\Workspace\\Self\\vendor\\config"
+        },
+        {
+            "type": "path",
+            "url": "D:\\Workspace\\Self\\vendor\\cache"
+        },
+        {
+            "type": "path",
+            "url": "D:\\Workspace\\Self\\vendor\\database"
+        },
+        {
+            "type": "path",
+            "url": "D:\\Workspace\\Self\\vendor\\server"
+        },
+        {
+            "type": "path",
+            "url": "D:\\Workspace\\Self\\vendor\\env"
+        },
+        {
+            "type": "path",
+            "url": "D:\\Workspace\\Self\\vendor\\websocket"
+        },
+        {
+            "type": "path",
+            "url": "D:\\Workspace\\Self\\vendor\\utils"
+        },
+        {
+            "type": "path",
+            "url": "D:\\Workspace\\Self\\vendor\\http"
+        }
+    ]
+}
