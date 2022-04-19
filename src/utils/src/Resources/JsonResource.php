@@ -6,7 +6,6 @@ use ArrayAccess;
 use JsonSerializable;
 use Max\Utils\Collection;
 use Max\Utils\Contracts\Arrayable;
-use ReturnTypeWillChange;
 
 class JsonResource implements Arrayable, JsonSerializable, ArrayAccess
 {
@@ -71,7 +70,7 @@ class JsonResource implements Arrayable, JsonSerializable, ArrayAccess
     /**
      * @return array
      */
-    #[ReturnTypeWillChange]
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return $this->toArray();
@@ -82,7 +81,7 @@ class JsonResource implements Arrayable, JsonSerializable, ArrayAccess
      *
      * @return bool
      */
-    #[ReturnTypeWillChange]
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->resource[$offset]);
@@ -93,7 +92,7 @@ class JsonResource implements Arrayable, JsonSerializable, ArrayAccess
      *
      * @return mixed|null
      */
-    #[ReturnTypeWillChange]
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->resource[$offset] ?? null;
@@ -103,7 +102,7 @@ class JsonResource implements Arrayable, JsonSerializable, ArrayAccess
      * @param mixed $offset
      * @param mixed $value
      */
-    #[ReturnTypeWillChange]
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         $this->resource[$offset] = $value;
@@ -112,7 +111,7 @@ class JsonResource implements Arrayable, JsonSerializable, ArrayAccess
     /**
      * @param mixed $offset
      */
-    #[ReturnTypeWillChange]
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->resource[$offset]);

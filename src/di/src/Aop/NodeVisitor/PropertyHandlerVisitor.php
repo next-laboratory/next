@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Max\Di\Aop\NodeVisitor;
 
+use Max\Di\ReflectionManager;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ClassConstFetch;
@@ -29,6 +30,9 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\TraitUse;
 use PhpParser\NodeVisitorAbstract;
+use PhpParser\ParserFactory;
+use ReflectionNamedType;
+use ReflectionUnionType;
 
 class PropertyHandlerVisitor extends NodeVisitorAbstract
 {
@@ -59,9 +63,44 @@ class PropertyHandlerVisitor extends NodeVisitorAbstract
     public function leaveNode(Node $node)
     {
         if ($node instanceof Class_) {
+            $params          = [];
+            $reflectionClass = ReflectionManager::reflectClass($this->metadata->className);
+            if ($reflectionConstructor = $reflectionClass->getConstructor()) {
+                $declaringClass = $reflectionConstructor->getDeclaringClass()->getName();
+                if ($classPath = $this->metadata->loader->findFile($declaringClass)) {
+                    $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
+                    $ast    = $parser->parse(file_get_contents($classPath));
+                    foreach ($ast as $stmt) {
+                        if ($stmt instanceof Node\Stmt\Namespace_) {
+                            foreach ($stmt->stmts as $subStmt) {
+                                if ($subStmt instanceof Class_) {
+                                    foreach ($subStmt->stmts as $internal) {
+                                        if ($internal instanceof ClassMethod && $internal->name->toString() === '__construct') {
+                                            $params = $internal->getParams();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                foreach ($reflectionConstructor->getParameters() as $key => $reflectionParameter) {
+                    $type = $reflectionParameter->getType();
+                    if (is_null($type)
+                        || ($type instanceof ReflectionNamedType && $type->isBuiltin())
+                        || $type instanceof ReflectionUnionType
+                        || ($type->getName()) === 'Closure') {
+                        continue;
+                    } else {
+                        $params[$key]->type = new Name('\\' . $type->getName());
+                    }
+                }
+            }
             $c = [];
             if (!$this->metadata->hasConstructor) {
-                $constructor        = new ClassMethod('__construct');
+                $constructor        = new ClassMethod('__construct', [
+                    'params' => $params,
+                ]);
                 $constructor->flags = 1;
                 if ($node->extends) {
                     $constructor->stmts[] = new If_(new FuncCall(new Name('method_exists'), [

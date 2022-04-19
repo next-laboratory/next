@@ -49,15 +49,15 @@ if (false === function_exists('call')) {
 if (false === function_exists('make')) {
     /**
      * @param string $id
-     * @param array  $arguments
+     * @param array  $parameters
      *
      * @return mixed
      * @throws NotFoundException
      * @throws ReflectionException|ContainerExceptionInterface
      */
-    function make(string $id, array $arguments = []): mixed
+    function make(string $id, array $parameters = []): mixed
     {
-        return container()->make($id, $arguments);
+        return container()->make($id, $parameters);
     }
 }
 

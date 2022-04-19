@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Max\Di\Aop\NodeVisitor;
 
+use Composer\Autoload\ClassLoader;
+
 class Metadata
 {
     /**
@@ -20,8 +22,9 @@ class Metadata
      * @param bool   $hasConstructor 是否有构造函数
      */
     public function __construct(
-        public string $className,
-        public bool   $hasConstructor = false
+        public ClassLoader $loader,
+        public string      $className,
+        public bool        $hasConstructor = false
     )
     {
     }

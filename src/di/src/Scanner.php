@@ -31,6 +31,7 @@ use Psr\Container\ContainerExceptionInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReflectionException;
+use Throwable;
 
 final class Scanner
 {
@@ -182,8 +183,8 @@ final class Scanner
         $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
         try {
             $ast       = $parser->parse(file_get_contents($path));
-            $traverser = new NodeTraverser;
-            $metadata  = new Metadata($class);
+            $traverser = new NodeTraverser();
+            $metadata  = new Metadata($this->loader, $class);
             $traverser->addVisitor(new PropertyHandlerVisitor($metadata));
             $traverser->addVisitor(new ProxyHandlerVisitor($metadata));
             $modifiedStmts = $traverser->traverse($ast);
@@ -197,7 +198,6 @@ final class Scanner
 
     /**
      * @return array
-     * @throws ReflectionException
      */
     protected function collect(): array
     {
@@ -207,9 +207,13 @@ final class Scanner
                 $proxy           = false;
                 $reflectionClass = ReflectionManager::reflectClass($class);
                 foreach ($reflectionClass->getAttributes() as $attribute) {
-                    $instance = $attribute->newInstance();
-                    if ($instance instanceof ClassAttribute) {
-                        $instance->handle($reflectionClass);
+                    try {
+                        $instance = $attribute->newInstance();
+                        if ($instance instanceof ClassAttribute) {
+                            $instance->handle($reflectionClass);
+                        }
+                    } catch (Throwable $throwable) {
+                        echo '[NOTICE] ' . $reflectionClass->getName() . ':' . $throwable->getMessage() . PHP_EOL;
                     }
                 }
 
@@ -221,13 +225,16 @@ final class Scanner
                         );
                     }
                 }
-
                 foreach ($reflectionClass->getMethods() as $reflectionMethod) {
                     foreach ($reflectionMethod->getAttributes() as $attribute) {
-                        $instance = $attribute->newInstance();
-                        if ($instance instanceof MethodAttribute) {
-                            $proxy = true;
-                            $instance->handle($reflectionClass, $reflectionMethod);
+                        try {
+                            $instance = $attribute->newInstance();
+                            if ($instance instanceof MethodAttribute) {
+                                $proxy = true;
+                                $instance->handle($reflectionClass, $reflectionMethod);
+                            }
+                        } catch (Throwable $throwable) {
+                            echo '[NOTICE] ' . $reflectionClass->getName() . ':' . $throwable->getMessage() . PHP_EOL;
                         }
                     }
                 }

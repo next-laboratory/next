@@ -20,6 +20,7 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionFunctionAbstract;
 use ReflectionNamedType;
+use ReflectionUnionType;
 use function array_shift;
 use function is_null;
 
@@ -29,7 +30,7 @@ trait DependencyFinder
      * 获取构造函数的参数
      *
      * @param ReflectionClass $reflectionClass
-     * @param array $arguments
+     * @param array           $arguments
      *
      * @return array
      * @throws NotFoundException
@@ -49,7 +50,7 @@ trait DependencyFinder
 
     /**
      * @param ReflectionFunctionAbstract $reflectionMethod 反射方法
-     * @param array $arguments 参数列表，支持关联数组，会自动按照变量名传入
+     * @param array                      $arguments        参数列表，支持关联数组，会自动按照变量名传入
      *
      * @return array
      * @throws NotFoundException
@@ -65,7 +66,10 @@ trait DependencyFinder
                 unset($arguments[$name]);
             } else {
                 $type = $parameter->getType();
-                if (is_null($type) || ($type instanceof ReflectionNamedType && $type->isBuiltin()) || ($typeName = $type->getName()) === 'Closure') {
+                if (is_null($type)
+                    || ($type instanceof ReflectionNamedType && $type->isBuiltin())
+                    || $type instanceof ReflectionUnionType
+                    || ($typeName = $type->getName()) === 'Closure') {
                     $funcArgs[] = $parameter->isOptional() ? $parameter->getDefaultValue() : null;
                 } else {
                     // 当接口注入后又传递参数的时候会报错
