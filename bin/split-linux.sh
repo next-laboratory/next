@@ -25,7 +25,7 @@ if [[ $# -eq 0 ]]; then
 fi
 
 for REPO in $REPOS ; do
-    remote $REPO git@github.com:topyao/$REPO.git
+    remote $REPO git@github.com:topyao/max-$REPO.git
 
     split "src/$REPO" $REPO
 done
