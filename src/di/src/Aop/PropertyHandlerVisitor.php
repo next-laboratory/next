@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Max\Di\Aop\NodeVisitor;
+namespace Max\Di\Aop;
 
 use Max\Di\ReflectionManager;
 use PhpParser\Node;
@@ -121,7 +121,7 @@ class PropertyHandlerVisitor extends NodeVisitorAbstract
                 $c                    = [$constructor];
             }
 
-            $node->stmts = array_merge([new TraitUse([new Name('\Max\Di\Aop\Traits\PropertyHandler'),])], $c, $node->stmts);
+            $node->stmts = array_merge([new TraitUse([new Name('\Max\Di\Aop\PropertyHandler'),])], $c, $node->stmts);
         }
         if ($node instanceof ClassMethod && $node->name->toString() === '__construct') {
             array_unshift($node->stmts,

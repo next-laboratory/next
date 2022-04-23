@@ -45,11 +45,7 @@ class Config implements PropertyAttribute
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function handle(
-        ReflectionClass    $reflectionClass,
-        ReflectionProperty $reflectionProperty,
-        object             $object
-    )
+    public function handle(ReflectionClass $reflectionClass, ReflectionProperty $reflectionProperty, object $object): void
     {
         $container = Context::getContainer();
         $container->setValue(

@@ -11,10 +11,9 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Max\Di\Aop\NodeVisitor;
+namespace Max\Di\Aop;
 
-use Max\Di\AnnotationManager;
-use Max\Di\Contracts\AspectInterface;
+use Max\Di\Annotation\Collector\AspectCollector;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Closure;
@@ -49,15 +48,12 @@ class ProxyHandlerVisitor extends NodeVisitorAbstract
     {
         if ($node instanceof Class_) {
             $node->stmts = array_merge(
-                [new TraitUse([new Name('\Max\Di\Aop\Traits\ProxyHandler'),]),],
+                [new TraitUse([new Name('\Max\Di\Aop\ProxyHandler'),]),],
                 $node->stmts
             );
         }
         if ($node instanceof ClassMethod) {
-            if (array_filter(
-                AnnotationManager::getMethodAnnotations($this->metadata->className, $node->name->toString()),
-                fn($attribute) => $attribute instanceof AspectInterface
-            )) {
+            if(AspectCollector::getMethodAspects($this->metadata->className, $node->name->toString())) {
                 $methodCall = new MethodCall(
                     new Variable(new Name('this')),
                     '__callViaProxy',

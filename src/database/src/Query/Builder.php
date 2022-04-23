@@ -17,7 +17,6 @@ use Max\Database\Collection;
 use Max\Database\Query;
 use Max\Utils\Traits\Conditionable;
 use PDO;
-use Swoole\Exception;
 use Throwable;
 
 class Builder
@@ -387,7 +386,8 @@ class Builder
      * @param array $columns
      *
      * @return Collection
-     * @throws Throwable
+     * @throws \Max\Database\Exceptions\PoolException
+     * @throws \Max\Database\Exceptions\QueryException
      */
     public function get(array $columns = ['*']): Collection
     {
@@ -398,7 +398,8 @@ class Builder
      * @param string|int $column
      *
      * @return int
-     * @throws Throwable
+     * @throws \Max\Database\Exceptions\PoolException
+     * @throws \Max\Database\Exceptions\QueryException
      */
     public function count(string|int $column = '*'): int
     {
@@ -409,7 +410,8 @@ class Builder
      * @param $column
      *
      * @return int
-     * @throws Throwable
+     * @throws \Max\Database\Exceptions\PoolException
+     * @throws \Max\Database\Exceptions\QueryException
      */
     public function sum($column): int
     {
@@ -420,7 +422,8 @@ class Builder
      * @param $column
      *
      * @return int
-     * @throws Throwable
+     * @throws \Max\Database\Exceptions\PoolException
+     * @throws \Max\Database\Exceptions\QueryException
      */
     public function max($column): int
     {
@@ -431,7 +434,8 @@ class Builder
      * @param $column
      *
      * @return int
-     * @throws Throwable
+     * @throws \Max\Database\Exceptions\PoolException
+     * @throws \Max\Database\Exceptions\QueryException
      */
     public function min($column): int
     {
@@ -442,7 +446,8 @@ class Builder
      * @param $column
      *
      * @return int
-     * @throws Throwable
+     * @throws \Max\Database\Exceptions\PoolException
+     * @throws \Max\Database\Exceptions\QueryException
      */
     public function avg($column): int
     {
@@ -453,7 +458,8 @@ class Builder
      * @param string $expression
      *
      * @return int
-     * @throws Throwable
+     * @throws \Max\Database\Exceptions\PoolException
+     * @throws \Max\Database\Exceptions\QueryException
      */
     protected function aggregate(string $expression): int
     {
@@ -468,7 +474,8 @@ class Builder
 
     /**
      * @return bool
-     * @throws Throwable
+     * @throws \Max\Database\Exceptions\PoolException
+     * @throws \Max\Database\Exceptions\QueryException
      */
     public function exists(): bool
     {
@@ -486,7 +493,8 @@ class Builder
      * @param string|null $key
      *
      * @return Collection
-     * @throws Throwable
+     * @throws \Max\Database\Exceptions\PoolException
+     * @throws \Max\Database\Exceptions\QueryException
      */
     public function column(string $column, ?string $key = null): Collection
     {
@@ -507,7 +515,8 @@ class Builder
      * @param string|null $identifier
      *
      * @return mixed
-     * @throws Throwable
+     * @throws \Max\Database\Exceptions\PoolException
+     * @throws \Max\Database\Exceptions\QueryException
      */
     public function find($id, array $columns = ['*'], ?string $identifier = null): mixed
     {
@@ -518,7 +527,8 @@ class Builder
      * @param array $columns
      *
      * @return mixed
-     * @throws Throwable
+     * @throws \Max\Database\Exceptions\PoolException
+     * @throws \Max\Database\Exceptions\QueryException
      */
     public function first(array $columns = ['*']): mixed
     {
@@ -529,7 +539,8 @@ class Builder
 
     /**
      * @return int
-     * @throws Throwable
+     * @throws \Max\Database\Exceptions\PoolException
+     * @throws \Max\Database\Exceptions\QueryException
      */
     public function delete(): int
     {
@@ -546,7 +557,8 @@ class Builder
      * @param array $record
      *
      * @return int
-     * @throws Throwable
+     * @throws \Max\Database\Exceptions\PoolException
+     * @throws \Max\Database\Exceptions\QueryException
      */
     public function insert(array $record): int
     {
@@ -567,7 +579,8 @@ class Builder
      * @param array $records
      *
      * @return mixed
-     * @throws Throwable
+     * @throws \Max\Database\Exceptions\PoolException
+     * @throws \Max\Database\Exceptions\QueryException
      */
     public function insertMany(array $records): mixed
     {

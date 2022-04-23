@@ -14,23 +14,10 @@ declare(strict_types=1);
 namespace Max\Http\Annotations;
 
 use Attribute;
-use Max\Di\Context;
-use Max\Di\Contracts\ClassAttribute;
-use Max\Routing\RouteCollector;
-use Max\Routing\Router;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
-use ReflectionClass;
 
 #[Attribute(Attribute::TARGET_CLASS)]
-class Controller implements ClassAttribute
+class Controller
 {
-    /**
-     * @var ContainerInterface
-     */
-    protected ContainerInterface $container;
-
     /**
      * @param string $prefix      前缀
      * @param array  $middlewares 中间件
@@ -40,24 +27,21 @@ class Controller implements ClassAttribute
         protected array  $middlewares = []
     )
     {
-        $this->container = Context::getContainer();
-        if (!$this->container->has(RouteCollector::class)) {
-            $this->container->set(RouteCollector::class, new RouteCollector());
-        }
     }
 
     /**
-     * @param ReflectionClass $reflectionClass
-     *
-     * @return void
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @return string
      */
-    public function handle(ReflectionClass $reflectionClass)
+    public function getPrefix(): string
     {
-        $this->container->set(Router::class, new Router([
-            'prefix'      => $this->prefix,
-            'middlewares' => $this->middlewares,
-        ], $this->container->get(RouteCollector::class)));
+        return $this->prefix;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMiddlewares(): array
+    {
+        return $this->middlewares;
     }
 }

@@ -31,7 +31,7 @@
     "require": {
         "php": "^8.0",
         "ext-pcntl": "*",
-        "psr/container": "^2.0",
+        "psr/container": "^1.0",
         "nikic/php-parser": "^4.13",
         "max/utils": "dev-master"
     },

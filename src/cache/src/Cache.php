@@ -14,12 +14,10 @@ declare(strict_types=1);
 namespace Max\Cache;
 
 use Closure;
+use Max\Cache\Exceptions\CacheException;
 use Max\Config\Repository;
 use Max\Di\Context;
-use Max\Di\Exceptions\NotFoundException;
-use Psr\Container\ContainerExceptionInterface;
 use Psr\SimpleCache\CacheInterface;
-use ReflectionException;
 
 class Cache implements CacheInterface
 {
@@ -46,10 +44,9 @@ class Cache implements CacheInterface
 
     /**
      * @param Repository $repository
+     *
      * @return Cache|static
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundException
-     * @throws ReflectionException
+     * @throws CacheException
      */
     public static function __new(Repository $repository): Cache|static
     {
@@ -61,35 +58,36 @@ class Cache implements CacheInterface
     /**
      * @param string $name
      *
-     * @throws NotFoundException
-     * @throws ContainerExceptionInterface
-     * @throws ReflectionException
+     * @return void
+     * @throws CacheException
      */
     protected function withHandler(string $name)
     {
-        $name = strtolower($name);
-        if ('default' === $name || !isset($this->config['stores'][$name])) {
-            $name = $this->config['default'];
-        }
-        if (!isset($this->handlers[$name])) {
-            $config = $this->config['stores'][$name];
-            $handler = $config['handler'];
-            if (class_exists('Max\Di\Context')) {
-                static::$handlers[$name] = Context::getContainer()->make($handler, [$config['options']]);
-            } else {
-                static::$handlers[$name] = new $handler($config['options']);
+        try {
+            $name = strtolower($name);
+            if ('default' === $name || !isset($this->config['stores'][$name])) {
+                $name = $this->config['default'];
             }
+            if (!isset($this->handlers[$name])) {
+                $config  = $this->config['stores'][$name];
+                $handler = $config['handler'];
+                if (class_exists('Max\Di\Context')) {
+                    static::$handlers[$name] = Context::getContainer()->make($handler, [$config['options']]);
+                } else {
+                    static::$handlers[$name] = new $handler($config['options']);
+                }
+            }
+            $this->handler = static::$handlers[$name];
+        } catch (\Throwable $throwable) {
+            throw new CacheException($throwable->getMessage(), $throwable->getCode(), $throwable);
         }
-        $this->handler = static::$handlers[$name];
     }
 
     /**
      * @param string $name
      *
      * @return CacheInterface
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundException
-     * @throws ReflectionException
+     * @throws CacheException
      */
     public function store(string $name = 'default'): CacheInterface
     {
@@ -102,7 +100,7 @@ class Cache implements CacheInterface
      * 记住缓存并返回
      *
      * @param          $key
-     * @param Closure $callback
+     * @param Closure  $callback
      * @param int|null $ttl
      *
      * @return mixed

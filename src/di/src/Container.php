@@ -57,7 +57,7 @@ class Container implements ContainerInterface
     /**
      * @inheritDoc
      */
-    public function get(string $id)
+    public function get($id)
     {
         if ($this->has($id)) {
             return $this->resolved[$this->getAlias($id)];
@@ -68,7 +68,7 @@ class Container implements ContainerInterface
     /**
      * @inheritDoc
      */
-    public function has(string $id): bool
+    public function has($id)
     {
         return isset($this->resolved[$this->getAlias($id)]);
     }

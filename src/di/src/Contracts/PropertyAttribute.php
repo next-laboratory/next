@@ -13,9 +13,10 @@ declare(strict_types=1);
 
 namespace Max\Di\Contracts;
 
+use ReflectionClass;
 use ReflectionProperty;
 
 interface PropertyAttribute
 {
-    public function handle(\ReflectionClass $reflectionClass, ReflectionProperty $reflectionProperty, object $object);
+    public function handle(ReflectionClass $reflectionClass, ReflectionProperty $reflectionProperty, object $object): void;
 }

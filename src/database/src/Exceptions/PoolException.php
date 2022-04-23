@@ -11,9 +11,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Max\Di\Contracts;
+namespace Max\Database\Exceptions;
 
-interface ClassAttribute
+class PoolException extends \Exception
 {
-    public function handle(\ReflectionClass $reflectionClass);
 }

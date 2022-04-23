@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * This file is part of the Max package.
- * 部分方法来自symfony/class-loader
+ *
  * (c) Cheng Yao <987861463@qq.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -14,17 +14,18 @@ declare(strict_types=1);
 namespace Max\Di;
 
 use Composer\Autoload\ClassLoader;
-use Max\Di\Aop\NodeVisitor\Metadata;
-use Max\Di\Aop\NodeVisitor\PropertyHandlerVisitor;
-use Max\Di\Aop\NodeVisitor\ProxyHandlerVisitor;
-use Max\Di\Contracts\ClassAttribute;
-use Max\Di\Contracts\MethodAttribute;
+use Max\Di\Annotation\Collector\AspectCollector;
+use Max\Di\Annotation\Collector\PropertyAttributeCollector;
+use Max\Di\Aop\Metadata;
+use Max\Di\Aop\PropertyHandlerVisitor;
+use Max\Di\Aop\ProxyHandlerVisitor;
 use Max\Di\Exceptions\ProcessException;
 use Max\Utils\Filesystem;
 use PhpParser\Error;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeTraverser;
+use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter\Standard;
 use Psr\Container\ContainerExceptionInterface;
@@ -45,6 +46,18 @@ final class Scanner
      */
     protected string $proxyMap;
 
+    protected array $classMap = [];
+
+    /**
+     * @var array|string[]
+     */
+    protected array $collectors = [
+        AspectCollector::class,
+        PropertyAttributeCollector::class
+    ];
+
+    protected Parser $parser;
+
     /**
      * @var Scanner
      */
@@ -52,11 +65,13 @@ final class Scanner
 
     /**
      * @param ClassLoader $loader
+     * @param array       $collectors
      * @param array       $scanDir    扫描路径
      * @param string      $runtimeDir 缓存路径
      */
     private function __construct(
         protected ClassLoader $loader,
+        array                 $collectors,
         protected array       $scanDir,
         string                $runtimeDir)
     {
@@ -64,31 +79,31 @@ final class Scanner
         is_dir($runtimeDir) || mkdir($runtimeDir, 0755, true);
         $this->proxyMap = $proxyMap = $runtimeDir . 'proxy.php';
         file_exists($proxyMap) && unlink($proxyMap);
+        array_push($this->collectors, ...$collectors);
+        $this->parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
     }
 
     /**
-     * 根据绝对路径扫描完整类名[一个文件只能存放一个类，否则可能解析失败]
+     * @param array $dirs
      *
-     * @param string $dir
-     *
-     * @return array
+     * @return void
      */
-    public static function scanDir(string $dir): array
+    public function scanDir(array $dirs): void
     {
-        $dir     = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
-        $classes = [];
-        foreach ($dir as $file) {
-            if (!$file->isFile()) {
-                continue;
+        foreach ($dirs as $dir) {
+            $dir = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
+            foreach ($dir as $file) {
+                if (!$file->isFile()) {
+                    continue;
+                }
+                $path = $file->getRealPath() ?: $file->getPathname();
+                if ('php' !== pathinfo($path, PATHINFO_EXTENSION)) {
+                    continue;
+                }
+                $this->classMap = array_merge($this->classMap, $this->findClasses($path));
+                gc_mem_caches();
             }
-            $path = $file->getRealPath() ?: $file->getPathname();
-            if ('php' !== pathinfo($path, PATHINFO_EXTENSION)) {
-                continue;
-            }
-            $classes = array_merge($classes, self::findClasses($path));
-            gc_mem_caches();
         }
-        return $classes;
     }
 
     /**
@@ -96,11 +111,10 @@ final class Scanner
      *
      * @return array
      */
-    protected static function findClasses(string $path): array
+    protected function findClasses(string $path): array
     {
         try {
-            $parser  = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
-            $ast     = $parser->parse(file_get_contents($path));
+            $ast     = $this->parser->parse(file_get_contents($path));
             $classes = [];
             foreach ($ast as $stmt) {
                 try {
@@ -125,6 +139,7 @@ final class Scanner
 
     /**
      * @param ClassLoader $loader
+     * @param array       $collectors
      * @param array       $scanDir
      * @param string      $runtimeDir
      *
@@ -133,10 +148,10 @@ final class Scanner
      * @throws Exceptions\NotFoundException
      * @throws ReflectionException
      */
-    public static function init(ClassLoader $loader, array $scanDir, string $runtimeDir): void
+    public static function init(ClassLoader $loader, array $collectors, array $scanDir, string $runtimeDir): void
     {
         if (!isset(self::$scanner)) {
-            self::$scanner = new Scanner($loader, $scanDir, $runtimeDir);
+            self::$scanner = new Scanner($loader, $collectors, $scanDir, $runtimeDir);
             if (($pid = pcntl_fork()) == -1) {
                 throw new ProcessException('Process fork failed.');
             }
@@ -159,11 +174,12 @@ final class Scanner
             $proxyDir = $this->runtimeDir . 'proxy/';
             $filesystem->makeDirectory($proxyDir, 0755, true, true);
             $filesystem->cleanDirectory($proxyDir);
-            $classMap = $this->collect();
-            $scanMap  = [];
-            foreach ($classMap as $class => $path) {
+            $this->collect();
+            $collectedClasses = array_unique([...AspectCollector::getCollectedClasses(), ...PropertyAttributeCollector::getCollectedClasses()]);
+            $scanMap          = [];
+            foreach ($collectedClasses as $class) {
                 $proxyPath = $proxyDir . str_replace('\\', '_', $class) . '_Proxy.php';
-                $filesystem->put($proxyPath, $this->parse($class, $path));
+                $filesystem->put($proxyPath, $this->parse($class, $this->classMap[$class]));
                 $scanMap[$class] = $proxyPath;
             }
             $filesystem->put($this->proxyMap, sprintf("<?php \nreturn %s;", var_export($scanMap, true)));
@@ -180,9 +196,8 @@ final class Scanner
      */
     protected function parse($class, $path): string
     {
-        $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
         try {
-            $ast       = $parser->parse(file_get_contents($path));
+            $ast       = $this->parser->parse(file_get_contents($path));
             $traverser = new NodeTraverser();
             $metadata  = new Metadata($this->loader, $class);
             $traverser->addVisitor(new PropertyHandlerVisitor($metadata));
@@ -197,53 +212,41 @@ final class Scanner
     }
 
     /**
-     * @return array
+     * @return void
      */
-    protected function collect(): array
+    protected function collect(): void
     {
-        $proxies = [];
-        foreach ($this->scanDir as $dir) {
-            foreach (self::scanDir($dir) as $class => $path) {
-                $proxy           = false;
-                $reflectionClass = ReflectionManager::reflectClass($class);
-                foreach ($reflectionClass->getAttributes() as $attribute) {
+        $this->scanDir($this->scanDir);
+        foreach ($this->classMap as $class => $path) {
+            $reflectionClass = ReflectionManager::reflectClass($class);
+            foreach ($reflectionClass->getAttributes() as $attribute) {
+                try {
+                    foreach ($this->collectors as $collector) {
+                        $collector::collectClass($class, $attribute->newInstance());
+                    }
+                } catch (Throwable $throwable) {
+                    echo '[NOTICE] ' . $class . ':' . $throwable->getMessage() . PHP_EOL;
+                }
+            }
+
+            foreach ($reflectionClass->getProperties() as $reflectionProperty) {
+                foreach ($reflectionProperty->getAttributes() as $attribute) {
+                    foreach ($this->collectors as $collector) {
+                        $collector::collectProperty($class, $reflectionProperty->getName(), $attribute->newInstance());
+                    }
+                }
+            }
+            foreach ($reflectionClass->getMethods() as $reflectionMethod) {
+                foreach ($reflectionMethod->getAttributes() as $attribute) {
                     try {
-                        $instance = $attribute->newInstance();
-                        if ($instance instanceof ClassAttribute) {
-                            $instance->handle($reflectionClass);
+                        foreach ($this->collectors as $collector) {
+                            $collector::collectMethod($class, $reflectionMethod->getName(), $attribute->newInstance());
                         }
                     } catch (Throwable $throwable) {
-                        echo '[NOTICE] ' . $reflectionClass->getName() . ':' . $throwable->getMessage() . PHP_EOL;
+                        echo '[NOTICE] ' . $class . ':' . $throwable->getMessage() . PHP_EOL;
                     }
-                }
-
-                foreach ($reflectionClass->getProperties() as $reflectionProperty) {
-                    foreach ($reflectionProperty->getAttributes() as $attribute) {
-                        $proxy = true;
-                        AnnotationManager::annotationProperty(
-                            $reflectionClass->getName(), $reflectionProperty->getName(), $attribute->newInstance()
-                        );
-                    }
-                }
-                foreach ($reflectionClass->getMethods() as $reflectionMethod) {
-                    foreach ($reflectionMethod->getAttributes() as $attribute) {
-                        try {
-                            $instance = $attribute->newInstance();
-                            if ($instance instanceof MethodAttribute) {
-                                $proxy = true;
-                                $instance->handle($reflectionClass, $reflectionMethod);
-                            }
-                        } catch (Throwable $throwable) {
-                            echo '[NOTICE] ' . $reflectionClass->getName() . ':' . $throwable->getMessage() . PHP_EOL;
-                        }
-                    }
-                }
-
-                if ($proxy) {
-                    $proxies[$class] = $path;
                 }
             }
         }
-        return $proxies;
     }
 }

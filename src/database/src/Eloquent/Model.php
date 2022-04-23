@@ -16,16 +16,12 @@ namespace Max\Database\Eloquent;
 use ArrayAccess;
 use JsonSerializable;
 use Max\Database\Collection;
+use Max\Database\Eloquent\Traits\Relations;
 use Max\Database\Exceptions\ModelNotFoundException;
 use Max\Database\Query;
-use Max\Di\Exceptions\NotFoundException;
 use Max\Utils\Arr;
-use Max\Database\Eloquent\Traits\Relations;
 use Max\Utils\Contracts\Arrayable;
 use Max\Utils\Str;
-use Psr\Container\ContainerExceptionInterface;
-use ReflectionException;
-use Swoole\Exception;
 use Throwable;
 
 /**
@@ -47,7 +43,14 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
      */
     protected ?string $connection = null;
 
+    /**
+     * @var string
+     */
     protected string $createdAt = 'created_at';
+
+    /**
+     * @var string
+     */
     protected string $updatedAt = 'updated_at';
 
     /**
@@ -142,13 +145,13 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
     }
 
     /**
-     * @param                $id
-     * @param array|string[] $columns
+     * @param       $id
+     * @param array $columns
      *
      * @return static
-     * @throws NotFoundException
-     * @throws ReflectionException
-     * @throws Throwable
+     * @throws ModelNotFoundException
+     * @throws \Max\Database\Exceptions\PoolException
+     * @throws \Max\Database\Exceptions\QueryException
      */
     public static function findOrFail($id, array $columns = ['*']): static
     {
@@ -204,10 +207,8 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
      * @param array $columns
      *
      * @return Collection
-     * @throws Exception
-     * @throws NotFoundException
-     * @throws ReflectionException
-     * @throws Throwable
+     * @throws \Max\Database\Exceptions\PoolException
+     * @throws \Max\Database\Exceptions\QueryException
      */
     public static function all(array $columns = ['*']): Collection
     {
@@ -216,7 +217,6 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
 
     /**
      * @return Builder
-     * @throws ReflectionException|NotFoundException|ContainerExceptionInterface
      */
     public static function query(): Builder
     {
@@ -225,23 +225,23 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
 
     /**
      * @return Builder
-     * @throws NotFoundException
-     * @throws ReflectionException|ContainerExceptionInterface
      */
     public function newQuery(): Builder
     {
-        /** @var Query $query */
-        $query   = make(Query::class);
-        $builder = new Builder($query->connection($this->connection));
-        return $builder->from($this->table)->setModel($this);
+        try {
+            /** @var Query $query */
+            $query   = make(Query::class);
+            $builder = new Builder($query->connection($this->connection));
+            return $builder->from($this->table)->setModel($this);
+        } catch (Throwable $throwable) {
+            throw new \RuntimeException($throwable->getMessage(), $throwable->getCode(), $throwable);
+        }
     }
 
     /**
      * @return int
-     * @throws Exception
-     * @throws NotFoundException
-     * @throws ReflectionException
-     * @throws Throwable
+     * @throws \Max\Database\Exceptions\PoolException
+     * @throws \Max\Database\Exceptions\QueryException
      */
     public function save(): int
     {
@@ -259,10 +259,8 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
      * @param array $attributes
      *
      * @return static|null
-     * @throws Exception
-     * @throws NotFoundException
-     * @throws ReflectionException
-     * @throws Throwable
+     * @throws \Max\Database\Exceptions\PoolException
+     * @throws \Max\Database\Exceptions\QueryException
      */
     public static function create(array $attributes): ?static
     {
@@ -380,7 +378,7 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
     /**
      * @param mixed $attributes
      *
-     * @throws Exception
+     * @return void
      */
     public function setAttributes(mixed $attributes): void
     {
@@ -388,7 +386,7 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
             $attributes = $attributes->toArray();
         }
         if (!is_array($attributes)) {
-            throw new Exception('Cannot assign none array attributes to entity.');
+            throw new \InvalidArgumentException('Cannot assign none array attributes to entity.');
         }
         $this->attributes = $attributes;
     }
@@ -485,8 +483,6 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
      * @param array  $arguments
      *
      * @return mixed
-     * @throws NotFoundException
-     * @throws ReflectionException|ContainerExceptionInterface
      */
     public static function __callStatic(string $name, array $arguments)
     {

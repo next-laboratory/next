@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Max\Database;
 
 use Closure;
-use Exception;
+use Max\Database\Exceptions\PoolException;
 use Max\Database\Pools\RedisPool;
 use Throwable;
 
@@ -58,13 +58,11 @@ class Redis
     }
 
     /**
-     * The function will be called in order to put the connection into pool after query.
-     *
      * @param $method
      * @param $arguments
      *
      * @return mixed
-     * @throws Exception|Throwable
+     * @throws PoolException
      */
     public function __call($method, $arguments)
     {
@@ -78,7 +76,7 @@ class Redis
      * @param string|null $connection
      *
      * @return mixed
-     * @throws Throwable
+     * @throws PoolException
      */
     protected function wrap(Closure $closure, ?string $connection = null): mixed
     {
@@ -90,7 +88,7 @@ class Redis
             return $result;
         } catch (Throwable $throwable) {
             $pool->put(null);
-            throw $throwable;
+            throw new PoolException($throwable->getMessage(), $throwable->getCode(), $throwable);
         }
     }
 }

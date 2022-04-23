@@ -30,8 +30,8 @@ use Throwable;
 class Server
 {
     /**
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $requestHandler
+     * @param ServerRequestInterface        $request
+     * @param RequestHandlerInterface       $requestHandler
      * @param EventDispatcherInterface|null $eventDispatcher
      */
     public function __construct(
@@ -46,7 +46,7 @@ class Server
     /**
      * Request事件回调
      *
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
      */
     public function onRequest(Request $request, Response $response)
@@ -55,6 +55,7 @@ class Server
             $start = microtime(true);
             Context::put(ServerRequestInterface::class, ServerRequest::createFromSwooleRequest($request));
             Context::put(ResponseInterface::class, new Psr7Response());
+            Context::put(Request::class, $request);
             $psr7Response = $this->requestHandler->handle($this->request);
             $this->eventDispatcher?->dispatch(new OnRequest($this->request, $psr7Response, microtime(true) - $start));
             $response->status($psr7Response->getStatusCode());
@@ -90,7 +91,7 @@ class Server
 
     /**
      * @param ResponseInterface $psr7Response
-     * @param Response $response
+     * @param Response          $response
      */
     protected function setCookie(ResponseInterface &$psr7Response, Response $response)
     {
@@ -107,7 +108,7 @@ class Server
     }
 
     /**
-     * @param Cookie $cookie
+     * @param Cookie   $cookie
      * @param Response $response
      *
      * @return void

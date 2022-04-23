@@ -17,7 +17,6 @@ use Max\Database\Collection;
 use Max\Database\Exceptions\ModelNotFoundException;
 use Max\Database\Query\Builder as QueryBuilder;
 use PDO;
-use Swoole\Exception;
 use Throwable;
 
 class Builder extends QueryBuilder
@@ -50,12 +49,12 @@ class Builder extends QueryBuilder
      * @param array $columns
      *
      * @return Collection
-     * @throws Exception
-     * @throws Throwable
+     * @throws \Max\Database\Exceptions\PoolException
+     * @throws \Max\Database\Exceptions\QueryException
      */
     public function get(array $columns = ['*']): Collection
     {
-        return $this->query->wrap(function ($PDO) use ($columns) {
+        return $this->query->wrap(function($PDO) use ($columns) {
             return Collection::make(
                 $this->query->statement($PDO, $this->toSql($columns), $this->bindings)->fetchAll(PDO::FETCH_CLASS, $this->class)
             );
@@ -77,15 +76,16 @@ class Builder extends QueryBuilder
     }
 
     /**
-     * @param array|string[] $columns
+     * @param array $columns
      *
      * @return Model
-     * @throws Exception
-     * @throws Throwable
+     * @throws ModelNotFoundException
+     * @throws \Max\Database\Exceptions\PoolException
+     * @throws \Max\Database\Exceptions\QueryException
      */
     public function firstOrFail(array $columns = ['*']): Model
     {
-        $model = $this->query->wrap(function ($PDO) use ($columns) {
+        $model = $this->query->wrap(function($PDO) use ($columns) {
             return $this->query->statement($PDO, $this->limit(1)->toSql($columns), $this->bindings)->fetchObject($this->class);
         });
         return $model ?: throw new ModelNotFoundException('No data was found.');
@@ -104,12 +104,14 @@ class Builder extends QueryBuilder
     }
 
     /**
-     * @param                $id
-     * @param array|string[] $columns
-     * @param string         $identifier
+     * @param        $id
+     * @param array  $columns
+     * @param string $identifier
      *
      * @return Model
-     * @throws Throwable
+     * @throws ModelNotFoundException
+     * @throws \Max\Database\Exceptions\PoolException
+     * @throws \Max\Database\Exceptions\QueryException
      */
     public function findOrFail($id, array $columns = ['*'], string $identifier = 'id'): Model
     {

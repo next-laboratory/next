@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace Max\Database\Pools;
 
 use Max\Config\Repository;
+use Max\Database\Exceptions\PoolException;
 use PDO;
 use Swoole\Database\PDOConfig;
 use Swoole\Database\PDOPool as SwoolePDOPool;
-use Swoole\Exception;
 
 class PDOPool
 {
@@ -75,28 +75,32 @@ class PDOPool
      * @param string|null $name
      *
      * @return SwoolePDOPool
-     * @throws Exception
+     * @throws PoolException
      */
     public function getPool(?string $name): SwoolePDOPool
     {
-        $name ??= $this->config['default'];
-        if (!$this->hasPool($name)) {
-            if (!isset($this->config['connections'][$name])) {
-                throw new Exception('配置不存在');
+        try {
+            $name ??= $this->config['default'];
+            if (!$this->hasPool($name)) {
+                if (!isset($this->config['connections'][$name])) {
+                    throw new \InvalidArgumentException('配置不存在');
+                }
+                $config              = array_replace_recursive(self::DEFAULT_PDO_OPTIONS, $this->config['connections'][$name] ?? []);
+                static::$pool[$name] = new SwoolePDOPool((new PDOConfig())
+                    ->withDriver($config['driver'])
+                    ->withHost($config['host'])
+                    ->withPort($config['port'])
+                    ->withUnixSocket($config['unixSocket'])
+                    ->withOptions($config['options'])
+                    ->withDbname($config['database'])
+                    ->withCharset($config['charset'])
+                    ->withUsername($config['user'])
+                    ->withPassword($config['password']));
             }
-            $config              = array_replace_recursive(self::DEFAULT_PDO_OPTIONS, $this->config['connections'][$name] ?? []);
-            static::$pool[$name] = new SwoolePDOPool((new PDOConfig())
-                ->withDriver($config['driver'])
-                ->withHost($config['host'])
-                ->withPort($config['port'])
-                ->withUnixSocket($config['unixSocket'])
-                ->withOptions($config['options'])
-                ->withDbname($config['database'])
-                ->withCharset($config['charset'])
-                ->withUsername($config['user'])
-                ->withPassword($config['password']));
-        }
 
-        return static::$pool[$name];
+            return static::$pool[$name];
+        } catch (\Throwable $throwable) {
+            throw  new PoolException($throwable->getMessage(), $throwable->getCode(), $throwable);
+        }
     }
 }

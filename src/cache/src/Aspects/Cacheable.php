@@ -14,16 +14,16 @@ declare(strict_types=1);
 namespace Max\Cache\Aspects;
 
 use Closure;
-use Max\Di\Annotations\Aspect;
 use Max\Di\Aop\JoinPoint;
 use Max\Di\Context;
+use Max\Di\Contracts\AspectInterface;
 use Max\Di\Exceptions\NotFoundException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\SimpleCache\CacheInterface;
 use ReflectionException as ReflectionExceptionAlias;
 
 #[\Attribute(\Attribute::TARGET_METHOD)]
-class Cacheable extends Aspect
+class Cacheable implements AspectInterface
 {
     /**
      * @var CacheInterface|mixed

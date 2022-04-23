@@ -14,31 +14,8 @@ declare(strict_types=1);
 namespace Max\Event\Annotations;
 
 use Attribute;
-use Max\Di\Context;
-use Max\Di\Contracts\ClassAttribute;
-use Max\Di\Exceptions\NotFoundException;
-use Max\Event\ListenerProvider;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
-use ReflectionException;
 
 #[Attribute(Attribute::TARGET_CLASS)]
-class Listen implements ClassAttribute
+class Listen
 {
-    /**
-     * @param \ReflectionClass $reflectionClass
-     *
-     * @return void
-     * @throws NotFoundException
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws ReflectionException
-     */
-    public function handle(\ReflectionClass $reflectionClass)
-    {
-        $container = Context::getContainer();
-        /** @var ListenerProvider $listenerProvider */
-        $listenerProvider = $container->make(ListenerProvider::class);
-        $listenerProvider->addListener($container->make($reflectionClass->getName()));
-    }
 }

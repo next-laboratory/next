@@ -15,6 +15,8 @@ namespace Max\Database;
 
 use Closure;
 use Max\Database\Events\QueryExecuted;
+use Max\Database\Exceptions\PoolException;
+use Max\Database\Exceptions\QueryException;
 use Max\Database\Pools\PDOPool;
 use Max\Database\Query\Builder;
 use PDO;
@@ -22,7 +24,6 @@ use PDOException;
 use PDOStatement;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Swoole\Database\PDOProxy;
-use Swoole\Exception;
 use Throwable;
 
 class Query
@@ -100,8 +101,9 @@ class Query
      * @param string $query
      * @param array  $bindings
      *
-     * @return array
-     * @throws Exception|Throwable
+     * @return mixed
+     * @throws PoolException
+     * @throws QueryException
      */
     public function select(string $query, array $bindings = [])
     {
@@ -128,8 +130,11 @@ class Query
     /**
      * Begin a new transaction, the transaction will roll back while it throws any exception.
      *
-     * @throws Throwable
-     * @throws Exception
+     * @param Closure $transaction
+     *
+     * @return mixed
+     * @throws PoolException
+     * @throws QueryException
      */
     public function transaction(Closure $transaction)
     {
@@ -156,8 +161,8 @@ class Query
      * @param array  $bindings
      *
      * @return mixed
-     * @throws Exception
-     * @throws Throwable
+     * @throws PoolException
+     * @throws QueryException
      */
     public function exec(string $query, array $bindings = [])
     {
@@ -195,8 +200,8 @@ class Query
      * @param Closure $closure
      *
      * @return mixed
-     * @throws Exception
-     * @throws Throwable
+     * @throws PoolException
+     * @throws QueryException
      */
     public function wrap(Closure $closure): mixed
     {
@@ -220,7 +225,7 @@ class Query
             if (++$retryTimes < 3) {
                 goto RETRY;
             }
-            throw $throwable;
+            throw new QueryException($throwable->getMessage(), $throwable->getCode(), $throwable);
         }
     }
 }

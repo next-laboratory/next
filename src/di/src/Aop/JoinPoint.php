@@ -21,15 +21,15 @@ use ReflectionException;
 class JoinPoint
 {
     /**
-     * @param object   $proxy
-     * @param string   $function
-     * @param array    $arguments
+     * @param object  $proxy
+     * @param string  $function
+     * @param array   $arguments
      * @param Closure $callback
      */
     public function __construct(
-        protected object   $proxy,
-        protected string   $function,
-        protected array    $arguments,
+        protected object  $proxy,
+        protected string  $function,
+        protected array   $arguments,
         protected Closure $callback
     )
     {
@@ -41,7 +41,7 @@ class JoinPoint
      * @throws ContainerExceptionInterface
      * @throws ReflectionException
      */
-    public function process()
+    public function process(): mixed
     {
         return call($this->callback, $this->arguments);
     }

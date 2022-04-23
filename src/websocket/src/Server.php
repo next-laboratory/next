@@ -35,7 +35,7 @@ class Server
     /**
      * HandShake
      *
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
      */
     public function onHandShake(Request $request, Response $response)
@@ -44,7 +44,7 @@ class Server
 
     /**
      * @param SwooleServer $server
-     * @param Request $request
+     * @param Request      $request
      */
     public function onOpen(SwooleServer $server, Request $request)
     {
@@ -62,7 +62,7 @@ class Server
 
     /**
      * @param SwooleServer $server
-     * @param Frame $frame
+     * @param Frame        $frame
      */
     public function onMessage(SwooleServer $server, Frame $frame)
     {
@@ -73,7 +73,7 @@ class Server
     }
 
     /**
-     * @param \Swoole\Server $server
+     * @param \Swoole\Server           $server
      * @param                          $fd
      */
     public function onClose(\Swoole\Server $server, $fd)
@@ -87,7 +87,8 @@ class Server
 
     /**
      * @param SwooleServer $server
-     * @param $fd
+     * @param              $fd
+     *
      * @return void
      */
     public function onDisconnect(SwooleServer $server, $fd)

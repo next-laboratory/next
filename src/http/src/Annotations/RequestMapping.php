@@ -14,18 +14,10 @@ declare(strict_types=1);
 namespace Max\Http\Annotations;
 
 use Attribute;
-use Max\Di\Context;
-use Max\Di\Contracts\MethodAttribute;
-use Max\Routing\Route;
-use Max\Routing\RouteCollector;
-use Max\Routing\Router;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
-use ReflectionClass;
-use ReflectionMethod;
+use Max\Http\Contracts\MappingInterface;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class RequestMapping implements MethodAttribute
+class RequestMapping implements MappingInterface
 {
     /**
      * 默认方法
@@ -53,25 +45,34 @@ class RequestMapping implements MethodAttribute
     }
 
     /**
-     * @param ReflectionClass  $reflectionClass
-     * @param ReflectionMethod $reflectionMethod
-     *
-     * @return void
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @return string
      */
-    public function handle(ReflectionClass $reflectionClass, ReflectionMethod $reflectionMethod)
+    public function getPath(): string
     {
-        $container      = Context::getContainer();
-        $router         = $container->get(Router::class);
-        $routeCollector = $container->get(RouteCollector::class);
-        // TODO 这块有问题，如果没有定义Controller注解，则会只用上一个文件的Controller参数
-        $routeCollector->add((new Route(
-            $this->methods,
-            $router->getPrefix() . $this->path,
-            $reflectionClass->getName() . '@' . $reflectionMethod->getName(),
-            $router,
-            $this->domain,
-        ))->middlewares($this->middlewares));
+        return $this->path;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMiddlewares(): array
+    {
+        return $this->middlewares;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDomain(): string
+    {
+        return $this->domain;
+    }
+
+    /**
+     * @return array|string[]
+     */
+    public function getMethods(): array
+    {
+        return $this->methods;
     }
 }

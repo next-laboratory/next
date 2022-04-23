@@ -15,7 +15,11 @@ namespace Max\Database\Events;
 
 class QueryExecuted
 {
-    public function __construct(public string $query, public array $bindings, public float $duration)
+    public function __construct(
+        public string $query,
+        public array  $bindings,
+        public float  $duration
+    )
     {
     }
 }

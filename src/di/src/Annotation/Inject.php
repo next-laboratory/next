@@ -11,14 +11,14 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Max\Di\Annotations;
+namespace Max\Di\Annotation;
 
 use Attribute;
 use Max\Di\Context;
 use Max\Di\Contracts\PropertyAttribute;
 use Max\Di\Exceptions\NotFoundException;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\ContainerInterface;
+use ReflectionClass;
 use ReflectionException;
 use ReflectionProperty;
 
@@ -33,7 +33,7 @@ class Inject implements PropertyAttribute
     }
 
     /**
-     * @param \ReflectionClass   $reflectionClass
+     * @param ReflectionClass   $reflectionClass
      * @param ReflectionProperty $reflectionProperty
      * @param object             $object
      *
@@ -42,7 +42,7 @@ class Inject implements PropertyAttribute
      * @throws NotFoundException
      * @throws ReflectionException
      */
-    public function handle(\ReflectionClass $reflectionClass, ReflectionProperty $reflectionProperty, object $object)
+    public function handle(ReflectionClass $reflectionClass, ReflectionProperty $reflectionProperty, object $object): void
     {
         $container = Context::getContainer();
         if ((!is_null($type = $reflectionProperty->getType()) && $type = $type->getName()) || $type = $this->id) {

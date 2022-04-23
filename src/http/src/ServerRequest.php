@@ -20,6 +20,7 @@ use Max\Routing\Route;
 use Max\Utils\Context;
 use Psr\{Http\Message\ServerRequestInterface, Http\Message\UriInterface};
 use RuntimeException;
+use Swoole\Http\Request;
 
 class ServerRequest implements ServerRequestInterface
 {
@@ -70,7 +71,7 @@ class ServerRequest implements ServerRequestInterface
     {
         return 0 === strcasecmp($method, $this->getMethod());
     }
-    
+
     /**
      * 获取请求的url
      *
@@ -406,5 +407,13 @@ class ServerRequest implements ServerRequestInterface
     public function setPsr7(ServerRequestInterface $serverRequest)
     {
         Context::put(ServerRequestInterface::class, $serverRequest);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSwooleRequest()
+    {
+        return Context::get(Request::class);
     }
 }

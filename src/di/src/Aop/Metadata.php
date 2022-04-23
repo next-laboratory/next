@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Max\Di\Aop\NodeVisitor;
+namespace Max\Di\Aop;
 
 use Composer\Autoload\ClassLoader;
 
