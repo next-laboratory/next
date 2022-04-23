@@ -37,7 +37,9 @@ class Dispatcher implements RequestHandlerInterface
      * @param ServerRequestInterface $request
      *
      * @return ResponseInterface
-     * @throws ReflectionException|ContainerExceptionInterface|InvalidResponseBodyException|NotFoundException
+     * @throws ContainerExceptionInterface
+     * @throws InvalidResponseBodyException
+     * @throws ReflectionException
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
@@ -69,13 +71,8 @@ class Dispatcher implements RequestHandlerInterface
         }
 
         $response = match (true) {
-            $response instanceof Arrayable => $response->toArray(),
-            $response instanceof Stringable => $response->__toString(),
-            default => $response,
-        };
-
-        // 标量或null按照html输出，其他按照json输出，错误会被捕获
-        $response = match (true) {
+            $response instanceof Arrayable => $this->response->json($response->toArray()),
+            $response instanceof Stringable => $this->response->html($response->__toString()),
             is_scalar($response) || is_null($response) => $this->response->html((string)$response),
             default => $this->response->json($response),
         };
