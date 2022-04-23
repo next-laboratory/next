@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Max\Di\Exceptions;
 
-class PropertyHandleException extends \RuntimeException
+use RuntimeException;
+
+class PropertyHandleException extends RuntimeException
 {
 }

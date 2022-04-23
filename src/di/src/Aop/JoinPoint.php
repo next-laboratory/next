@@ -21,21 +21,23 @@ use ReflectionException;
 class JoinPoint
 {
     /**
-     * @param object  $proxy
-     * @param string  $function
-     * @param array   $arguments
+     * @param object  $object     切入类的当前实例
+     * @param string  $method     切入的方法
+     * @param array   $parameters 当前方法传递的参数列表【索引数组】
      * @param Closure $callback
      */
     public function __construct(
-        protected object  $proxy,
-        protected string  $function,
-        protected array   $arguments,
+        public object     $object,
+        public string     $method,
+        public array      $parameters,
         protected Closure $callback
     )
     {
     }
 
     /**
+     * 执行代理方法
+     *
      * @return mixed
      * @throws NotFoundException
      * @throws ContainerExceptionInterface
@@ -43,30 +45,6 @@ class JoinPoint
      */
     public function process(): mixed
     {
-        return call($this->callback, $this->arguments);
-    }
-
-    /**
-     * @return object
-     */
-    public function getProxy(): object
-    {
-        return $this->proxy;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFunction(): string
-    {
-        return $this->function;
-    }
-
-    /**
-     * @return array
-     */
-    public function getArguments(): array
-    {
-        return $this->arguments;
+        return call($this->callback, $this->parameters);
     }
 }

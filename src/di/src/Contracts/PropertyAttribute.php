@@ -18,5 +18,12 @@ use ReflectionProperty;
 
 interface PropertyAttribute
 {
+    /**
+     * @param ReflectionClass    $reflectionClass
+     * @param ReflectionProperty $reflectionProperty
+     * @param object             $object
+     *
+     * @return void
+     */
     public function handle(ReflectionClass $reflectionClass, ReflectionProperty $reflectionProperty, object $object): void;
 }

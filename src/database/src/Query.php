@@ -60,7 +60,10 @@ class Query
      * @param PDOPool                       $PDOPool
      * @param EventDispatcherInterface|null $eventDispatcher
      */
-    public function __construct(protected PDOPool $PDOPool, protected ?EventDispatcherInterface $eventDispatcher = null)
+    public function __construct(
+        protected PDOPool                   $PDOPool,
+        protected ?EventDispatcherInterface $eventDispatcher = null
+    )
     {
     }
 
@@ -136,7 +139,7 @@ class Query
      * @throws PoolException
      * @throws QueryException
      */
-    public function transaction(Closure $transaction)
+    public function transaction(Closure $transaction): mixed
     {
         $new                = clone $this;
         $new->inTransaction = true;
@@ -185,7 +188,9 @@ class Query
             $PDOStatement = $PDO->prepare($query);
             $this->bindValue($PDOStatement, $bindings);
             $PDOStatement->execute();
-            $this->eventDispatcher?->dispatch(new QueryExecuted($query, $bindings, microtime(true) - $startTime));
+            $this->eventDispatcher?->dispatch(
+                new QueryExecuted($query, $bindings, microtime(true) - $startTime)
+            );
             return $PDOStatement;
         } catch (PDOException $PDOException) {
             throw new PDOException(

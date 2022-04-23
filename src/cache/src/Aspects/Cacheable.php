@@ -66,7 +66,7 @@ class Cacheable implements AspectInterface
      */
     protected function getKey(JoinPoint $joinPoint): string
     {
-        $key = $this->key ?? ($joinPoint->getProxy()::class . ':' . $joinPoint->getFunction() . ':' . serialize(array_filter($joinPoint->getArguments(), fn($item) => !is_object($item))));
+        $key = $this->key ?? ($joinPoint->object::class . ':' . $joinPoint->method . ':' . serialize(array_filter($joinPoint->parameters, fn($item) => !is_object($item))));
         return $this->prefix ? ($this->prefix . ':' . $key) : $key;
     }
 }

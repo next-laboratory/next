@@ -50,7 +50,7 @@ class Server
     {
         $path = $request->server['request_uri'];
         /** @var WebSocketHandlerInterface $handler */
-        if ($handler = RouteCollector::getRoute($path)) {
+        if ($handler = RouteCollector::getHandler($path)) {
             Context::put($request->fd, RouteCollector::class, $path);
             $handler->onOpen($server, $request);
             $this->eventDispatcher?->dispatch(new OnOpen($server, $request));
@@ -106,7 +106,7 @@ class Server
     protected function getHandler($fd): ?WebSocketHandlerInterface
     {
         if ($path = Context::get($fd, RouteCollector::class)) {
-            return RouteCollector::getRoute($path);
+            return RouteCollector::getHandler($path);
         }
         return null;
     }

@@ -113,7 +113,7 @@ class ServerRequest extends Request implements ServerRequestInterface
         $psrRequest->serverParams  = new ServerBag(array_change_key_case($server, CASE_UPPER));
         $psrRequest->parsedBody    = new InputBag($request->post ?? []);
         $psrRequest->body          = new StringStream($request->getContent());
-        $psrRequest->cookieParams  = new InputBag($request->cookie ?? []);
+        $psrRequest->cookieParams  = new InputBag(array_change_key_case($request->cookie ?? [], CASE_UPPER));
         $psrRequest->queryParams   = new InputBag($request->get ?? []);
         $psrRequest->uploadedFiles = new FileBag($request->files ?? []);
         $psrRequest->attributes    = new ParameterBag();
@@ -158,7 +158,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     {
         $new            = clone $this;
         $newCookieParam = clone $this->cookieParams;
-        $newCookieParam->add($cookies);
+        $newCookieParam->add(array_change_key_case($cookies, CASE_UPPER));
         $new->cookieParams = $newCookieParam;
 
         return $new;

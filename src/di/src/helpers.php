@@ -68,7 +68,7 @@ if (false === function_exists('resolve')) {
      *
      * @return object
      * @throws NotFoundException
-     * @throws ReflectionException
+     * @throws ReflectionException|ContainerExceptionInterface
      */
     function resolve($id, array $arguments = []): object
     {

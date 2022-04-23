@@ -23,6 +23,8 @@ class PropertyAttributeCollector extends AbstractCollector
     protected static array $container = [];
 
     /**
+     * 收集属性注解
+     *
      * @param string $class
      * @param string $property
      * @param object $attribute
@@ -35,6 +37,8 @@ class PropertyAttributeCollector extends AbstractCollector
     }
 
     /**
+     * 返回含有属性的类的所有属性和注解
+     *
      * @param string $class
      *
      * @return PropertyAttribute[]
@@ -45,6 +49,8 @@ class PropertyAttributeCollector extends AbstractCollector
     }
 
     /**
+     * 返回某一个类的某属性的注解
+     *
      * @param string $class
      * @param string $property
      *
@@ -56,6 +62,8 @@ class PropertyAttributeCollector extends AbstractCollector
     }
 
     /**
+     * 返回收集过的类
+     *
      * @return array
      */
     public static function getCollectedClasses(): array
@@ -64,6 +72,8 @@ class PropertyAttributeCollector extends AbstractCollector
     }
 
     /**
+     * 是否可以被收集
+     *
      * @param object $attribute
      *
      * @return bool

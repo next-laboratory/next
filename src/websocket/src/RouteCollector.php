@@ -13,32 +13,33 @@ declare(strict_types=1);
 
 namespace Max\WebSocket;
 
+use Max\Di\Annotation\Collector\AbstractCollector;
+use Max\Di\Contracts\CollectorInterface;
+use Max\WebSocket\Annotations\WebSocketHandler;
 use Max\WebSocket\Contracts\WebSocketHandlerInterface;
 
-class RouteCollector
+class RouteCollector extends AbstractCollector
 {
-    /**
-     * @var array
-     */
-    protected static array $routes = [];
+    protected static array $container = [];
 
-    /**
-     * @param string $path
-     * @param WebSocketHandlerInterface $webSocketHandler
-     * @return void
-     */
-    public static function addRoute(string $path, WebSocketHandlerInterface $webSocketHandler)
+    public static function collectClass(string $class, object $attribute): void
     {
-        self::$routes[$path] = $webSocketHandler;
+        if (self::isValid($attribute)) {
+            /** @var WebSocketHandler $attribute */
+            self::$container[$attribute->path] = $class;
+        }
     }
 
-    /**
-     * @param string $path
-     *
-     * @return mixed
-     */
-    public static function getRoute(string $path): mixed
+    public static function getHandler(string $path)
     {
-        return self::$routes[$path] ?? null;
+        if (isset(self::$container[$path])) {
+            return \Max\Di\Context::getContainer()->make(self::$container[$path]);
+        }
+        return null;
+    }
+
+    public static function isValid(object $attribute)
+    {
+        return $attribute instanceof WebSocketHandler;
     }
 }

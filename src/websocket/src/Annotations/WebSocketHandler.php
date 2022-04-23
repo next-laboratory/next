@@ -18,21 +18,12 @@ use Max\Di\Contracts\ClassAttribute;
 use Max\WebSocket\RouteCollector;
 
 #[Attribute(Attribute::TARGET_CLASS)]
-class WebSocketHandler implements ClassAttribute
+class WebSocketHandler
 {
     /**
      * @param string $path 路径
      */
-    public function __construct(protected string $path)
+    public function __construct(public string $path)
     {
-    }
-
-    /**
-     * @param \ReflectionClass $reflectionClass
-     * @return void
-     */
-    public function handle(\ReflectionClass $reflectionClass)
-    {
-        RouteCollector::addRoute($this->path, new ($reflectionClass->getName()));
     }
 }

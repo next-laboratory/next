@@ -33,7 +33,9 @@ class Inject implements PropertyAttribute
     }
 
     /**
-     * @param ReflectionClass   $reflectionClass
+     * 注入方法
+     *
+     * @param ReflectionClass    $reflectionClass
      * @param ReflectionProperty $reflectionProperty
      * @param object             $object
      *

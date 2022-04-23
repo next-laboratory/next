@@ -6,10 +6,8 @@ use Closure;
 use Psr\Container\ContainerInterface;
 
 /**
- * 这个类来自laravel
- * Class Pipeline
- *
- * @package Max
+ * Most of the methods in this file come from illuminate
+ * thanks Laravel Team provide such a useful class.
  */
 class Pipeline
 {

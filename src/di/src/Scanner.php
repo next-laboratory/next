@@ -46,9 +46,14 @@ final class Scanner
      */
     protected string $proxyMap;
 
+    /**
+     * @var array
+     */
     protected array $classMap = [];
 
     /**
+     * 注解收集器
+     *
      * @var array|string[]
      */
     protected array $collectors = [
@@ -175,7 +180,7 @@ final class Scanner
             $filesystem->makeDirectory($proxyDir, 0755, true, true);
             $filesystem->cleanDirectory($proxyDir);
             $this->collect();
-            $collectedClasses = array_unique([...AspectCollector::getCollectedClasses(), ...PropertyAttributeCollector::getCollectedClasses()]);
+            $collectedClasses = array_unique(array_merge(AspectCollector::getCollectedClasses(), PropertyAttributeCollector::getCollectedClasses()));
             $scanMap          = [];
             foreach ($collectedClasses as $class) {
                 $proxyPath = $proxyDir . str_replace('\\', '_', $class) . '_Proxy.php';
@@ -206,7 +211,7 @@ final class Scanner
             $prettyPrinter = new Standard;
             return $prettyPrinter->prettyPrintFile($modifiedStmts);
         } catch (Error $error) {
-            echo "Parse error: {$error->getMessage()}\n";
+            echo "[ERROR] Parse error: {$error->getMessage()}\n";
             return '';
         }
     }
@@ -219,6 +224,7 @@ final class Scanner
         $this->scanDir($this->scanDir);
         foreach ($this->classMap as $class => $path) {
             $reflectionClass = ReflectionManager::reflectClass($class);
+            // 收集类注解
             foreach ($reflectionClass->getAttributes() as $attribute) {
                 try {
                     foreach ($this->collectors as $collector) {
@@ -228,7 +234,7 @@ final class Scanner
                     echo '[NOTICE] ' . $class . ':' . $throwable->getMessage() . PHP_EOL;
                 }
             }
-
+            //收集属性注解
             foreach ($reflectionClass->getProperties() as $reflectionProperty) {
                 foreach ($reflectionProperty->getAttributes() as $attribute) {
                     foreach ($this->collectors as $collector) {
@@ -236,6 +242,7 @@ final class Scanner
                     }
                 }
             }
+            // 收集方法注解
             foreach ($reflectionClass->getMethods() as $reflectionMethod) {
                 foreach ($reflectionMethod->getAttributes() as $attribute) {
                     try {

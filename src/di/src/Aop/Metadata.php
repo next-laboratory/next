@@ -18,6 +18,7 @@ use Composer\Autoload\ClassLoader;
 class Metadata
 {
     /**
+     * TODO update
      * @param string $className      类名
      * @param bool   $hasConstructor 是否有构造函数
      */

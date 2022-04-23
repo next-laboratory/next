@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Max\Http;
 
 use InvalidArgumentException;
-use Max\Http\Message\Bags\CookieBag;
 use Max\Http\Message\UploadedFile;
 use Max\Routing\Route;
 use Max\Utils\Context;

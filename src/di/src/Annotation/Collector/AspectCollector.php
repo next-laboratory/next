@@ -23,6 +23,8 @@ class AspectCollector extends AbstractCollector
     protected static array $container = [];
 
     /**
+     * 收集方法切面
+     *
      * @param string $class
      * @param string $method
      * @param object $attribute
@@ -37,6 +39,8 @@ class AspectCollector extends AbstractCollector
     }
 
     /**
+     * 收集类切面
+     *
      * @param string $class
      * @param object $attribute
      *
@@ -50,6 +54,8 @@ class AspectCollector extends AbstractCollector
     }
 
     /**
+     * 返回某个类方法的切面
+     *
      * @param string $class
      * @param string $method
      *
@@ -61,6 +67,8 @@ class AspectCollector extends AbstractCollector
     }
 
     /**
+     * 返回某个类的切面
+     *
      * @param string $class
      *
      * @return array
@@ -71,6 +79,8 @@ class AspectCollector extends AbstractCollector
     }
 
     /**
+     * 返回被收集过的类
+     *
      * @return array
      */
     public static function getCollectedClasses(): array
@@ -79,6 +89,8 @@ class AspectCollector extends AbstractCollector
     }
 
     /**
+     * 是否可以被收集
+     *
      * @param object $attribute
      *
      * @return bool
