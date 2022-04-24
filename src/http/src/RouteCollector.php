@@ -31,6 +31,13 @@ class RouteCollector extends AbstractCollector
     protected static ?Router $router = null;
 
     /**
+     * 当前控制器的类名
+     *
+     * @var string
+     */
+    protected static string $class = '';
+
+    /**
      * @param string $class
      * @param object $attribute
      *
@@ -42,6 +49,7 @@ class RouteCollector extends AbstractCollector
     public static function collectClass(string $class, object $attribute): void
     {
         if ($attribute instanceof Controller) {
+            self::$class  = $class;
             self::$router = new Router([
                 'prefix'      => $attribute->getPrefix(),
                 'middlewares' => $attribute->getMiddlewares(),
@@ -61,7 +69,7 @@ class RouteCollector extends AbstractCollector
      */
     public static function collectMethod(string $class, string $method, object $attribute): void
     {
-        if ($attribute instanceof MappingInterface && !is_null(self::$router)) {
+        if ($attribute instanceof MappingInterface && self::$class === $class && !is_null(self::$router)) {
             /** @var \Max\Routing\RouteCollector $routeCollector */
             $routeCollector = Context::getContainer()->make(\Max\Routing\RouteCollector::class);
             $routeCollector->add((new Route(
