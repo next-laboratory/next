@@ -42,11 +42,6 @@ final class Scanner
     protected string $runtimeDir;
 
     /**
-     * @var string
-     */
-    protected string $proxyMap;
-
-    /**
      * @var array
      */
     protected array $classMap = [];
@@ -61,6 +56,9 @@ final class Scanner
         PropertyAttributeCollector::class
     ];
 
+    /**
+     * @var Parser
+     */
     protected Parser $parser;
 
     /**
@@ -68,23 +66,28 @@ final class Scanner
      */
     private static Scanner $scanner;
 
+    protected array $scanDir = [];
+
+    protected bool   $cache = false;
+    protected string $proxyMap;
+
     /**
      * @param ClassLoader $loader
-     * @param array       $collectors
-     * @param array       $scanDir    扫描路径
-     * @param string      $runtimeDir 缓存路径
+     * @param array       $options
      */
     private function __construct(
         protected ClassLoader $loader,
-        array                 $collectors,
-        protected array       $scanDir,
-        string                $runtimeDir)
+        array                 $options,
+    )
     {
-        $this->runtimeDir = $runtimeDir = rtrim($runtimeDir, '/\\') . '/di/';
+        $this->runtimeDir = $runtimeDir = rtrim($options['runtimeDir'] ?? '', '/\\') . '/di/';
+        $this->cache      = $cache = $options['cache'] ?? false;
         is_dir($runtimeDir) || mkdir($runtimeDir, 0755, true);
-        $this->proxyMap = $proxyMap = $runtimeDir . 'proxy.php';
-        file_exists($proxyMap) && unlink($proxyMap);
-        array_push($this->collectors, ...$collectors);
+        $this->proxyMap = $proxyMap = $this->runtimeDir . 'proxy.php';
+        if (!$cache && file_exists($proxyMap)) {
+            unlink($proxyMap);
+        }
+        array_push($this->collectors, ...($options['collectors'] ?? []));
         $this->parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
     }
 
@@ -144,25 +147,23 @@ final class Scanner
 
     /**
      * @param ClassLoader $loader
-     * @param array       $collectors
-     * @param array       $scanDir
-     * @param string      $runtimeDir
+     * @param array       $options
      *
      * @return void
      * @throws ContainerExceptionInterface
-     * @throws Exceptions\NotFoundException
      * @throws ReflectionException
      */
-    public static function init(ClassLoader $loader, array $collectors, array $scanDir, string $runtimeDir): void
+    public static function init(ClassLoader $loader, array $options = []): void
     {
         if (!isset(self::$scanner)) {
-            self::$scanner = new Scanner($loader, $collectors, $scanDir, $runtimeDir);
+            self::$scanner = new Scanner($loader, $options);
+            $scanDir       = $options['paths'] ?? [];
             if (($pid = pcntl_fork()) == -1) {
                 throw new ProcessException('Process fork failed.');
             }
             pcntl_wait($pid);
-            $loader->addClassMap(self::$scanner->proxy());
-            self::$scanner->collect();
+            $loader->addClassMap(self::$scanner->proxy($scanDir));
+            self::$scanner->collect($scanDir);
         }
     }
 
@@ -172,14 +173,14 @@ final class Scanner
      * @throws Exceptions\NotFoundException
      * @throws ReflectionException
      */
-    protected function proxy()
+    protected function proxy(array $scanDir)
     {
         $filesystem = new Filesystem();
         if (!$filesystem->exists($this->proxyMap)) {
             $proxyDir = $this->runtimeDir . 'proxy/';
             $filesystem->makeDirectory($proxyDir, 0755, true, true);
             $filesystem->cleanDirectory($proxyDir);
-            $this->collect();
+            $this->collect($scanDir);
             $collectedClasses = array_unique(array_merge(AspectCollector::getCollectedClasses(), PropertyAttributeCollector::getCollectedClasses()));
             $scanMap          = [];
             foreach ($collectedClasses as $class) {
@@ -217,11 +218,13 @@ final class Scanner
     }
 
     /**
+     * @param $scanDir
+     *
      * @return void
      */
-    protected function collect(): void
+    protected function collect($scanDir): void
     {
-        $this->scanDir($this->scanDir);
+        $this->scanDir($scanDir);
         foreach ($this->classMap as $class => $path) {
             $reflectionClass = ReflectionManager::reflectClass($class);
             // 收集类注解
