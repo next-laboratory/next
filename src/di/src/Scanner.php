@@ -234,14 +234,18 @@ final class Scanner
                         $collector::collectClass($class, $attribute->newInstance());
                     }
                 } catch (Throwable $throwable) {
-                    echo '[NOTICE] ' . $class . ':' . $throwable->getMessage() . PHP_EOL;
+                    echo '[NOTICE] ' . $class . ': ' . $throwable->getMessage() . PHP_EOL;
                 }
             }
             //收集属性注解
             foreach ($reflectionClass->getProperties() as $reflectionProperty) {
                 foreach ($reflectionProperty->getAttributes() as $attribute) {
-                    foreach ($this->collectors as $collector) {
-                        $collector::collectProperty($class, $reflectionProperty->getName(), $attribute->newInstance());
+                    try {
+                        foreach ($this->collectors as $collector) {
+                            $collector::collectProperty($class, $reflectionProperty->getName(), $attribute->newInstance());
+                        }
+                    } catch (Throwable $throwable) {
+                        echo '[NOTICE] ' . $class . ': ' . $throwable->getMessage() . PHP_EOL;
                     }
                 }
             }
@@ -253,7 +257,7 @@ final class Scanner
                             $collector::collectMethod($class, $reflectionMethod->getName(), $attribute->newInstance());
                         }
                     } catch (Throwable $throwable) {
-                        echo '[NOTICE] ' . $class . ':' . $throwable->getMessage() . PHP_EOL;
+                        echo '[NOTICE] ' . $class . ': ' . $throwable->getMessage() . PHP_EOL;
                     }
                 }
             }
