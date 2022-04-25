@@ -14,9 +14,6 @@ declare(strict_types=1);
 namespace Max\Di\Aop;
 
 use Closure;
-use Max\Di\Exceptions\NotFoundException;
-use Psr\Container\ContainerExceptionInterface;
-use ReflectionException;
 
 class JoinPoint
 {
@@ -39,12 +36,9 @@ class JoinPoint
      * 执行代理方法
      *
      * @return mixed
-     * @throws NotFoundException
-     * @throws ContainerExceptionInterface
-     * @throws ReflectionException
      */
     public function process(): mixed
     {
-        return call($this->callback, $this->parameters);
+        return call_user_func_array($this->callback, $this->parameters);
     }
 }
