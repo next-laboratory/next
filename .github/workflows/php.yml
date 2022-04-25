@@ -18,7 +18,7 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: auto push
-      run: bash ./bin/split-linux.sh
+      run: chmod -R 0777 ./* && bash ./bin/split-linux.sh
 
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
