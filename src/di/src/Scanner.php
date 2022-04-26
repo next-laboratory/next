@@ -65,7 +65,7 @@ final class Scanner
      * @var Scanner
      */
     private static Scanner $scanner;
-    
+
     /**
      * @var bool|mixed
      */
@@ -142,7 +142,7 @@ final class Scanner
      * @param string $path
      * @return void
      */
-    protected function findClasses(string $path)
+    protected function findClasses(string $path): void
     {
         try {
             $ast = $this->parser->parse(file_get_contents($path));
