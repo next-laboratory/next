@@ -78,7 +78,7 @@ final class Scanner
 
     /**
      * @param ClassLoader $loader
-     * @param array $options
+     * @param array       $options
      *
      * @return void
      * @throws ContainerExceptionInterface
@@ -99,12 +99,12 @@ final class Scanner
 
     /**
      * @param ClassLoader $loader
-     * @param array $options
+     * @param array       $options
      */
     private function __construct(protected ClassLoader $loader, array $options,)
     {
         $this->runtimeDir = $runtimeDir = rtrim($options['runtimeDir'] ?? '', '/\\') . '/di/';
-        $this->cache = $cache = $options['cache'] ?? false;
+        $this->cache      = $cache = $options['cache'] ?? false;
         is_dir($runtimeDir) || mkdir($runtimeDir, 0755, true);
         $this->proxyMap = $proxyMap = $this->runtimeDir . 'proxy.php';
         if (!$cache && file_exists($proxyMap)) {
@@ -140,6 +140,7 @@ final class Scanner
 
     /**
      * @param string $path
+     *
      * @return void
      */
     protected function findClasses(string $path): void
@@ -176,7 +177,7 @@ final class Scanner
             $filesystem->cleanDirectory($proxyDir);
             $this->collect();
             $collectedClasses = array_unique(array_merge(AspectCollector::getCollectedClasses(), PropertyAttributeCollector::getCollectedClasses()));
-            $scanMap = [];
+            $scanMap          = [];
             foreach ($collectedClasses as $class) {
                 $proxyPath = $proxyDir . str_replace('\\', '_', $class) . '_Proxy.php';
                 $filesystem->put($proxyPath, $this->parse($class, $this->classMap[$class]));
@@ -197,9 +198,9 @@ final class Scanner
     protected function parse($class, $path): string
     {
         try {
-            $ast = $this->parser->parse(file_get_contents($path));
+            $ast       = $this->parser->parse(file_get_contents($path));
             $traverser = new NodeTraverser();
-            $metadata = new Metadata($this->loader, $class);
+            $metadata  = new Metadata($this->loader, $class);
             $traverser->addVisitor(new PropertyHandlerVisitor($metadata));
             $traverser->addVisitor(new ProxyHandlerVisitor($metadata));
             $modifiedStmts = $traverser->traverse($ast);

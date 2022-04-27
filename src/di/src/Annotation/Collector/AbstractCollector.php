@@ -54,4 +54,26 @@ class AbstractCollector implements CollectorInterface
     public static function collectProperty(string $class, string $property, object $attribute): void
     {
     }
+
+    /**
+     * 缓存
+     *
+     * @param string $dir
+     *
+     * @return void
+     */
+    public static function export(string $dir): void
+    {
+    }
+
+    /**
+     * 从缓存恢复
+     *
+     * @param string $dir
+     *
+     * @return void
+     */
+    public static function import(string $dir): void
+    {
+    }
 }

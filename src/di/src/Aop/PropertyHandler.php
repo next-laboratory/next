@@ -18,12 +18,6 @@ use Max\Di\Exceptions\PropertyHandleException;
 use Max\Di\ReflectionManager;
 use Throwable;
 
-/**
- * 用于处理实例化属性的Trait
- * 该Trait会被切入的类引入，并且在构造方法中调用下列方法来处理对象的属性
- * 能够用于属性的注解必须实现\Max\Di\Contracts\PropertyAttribute接口
- * 适用于容器实例化的类或者new关键字实例化的类
- */
 trait PropertyHandler
 {
     /**

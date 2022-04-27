@@ -18,12 +18,6 @@ use Max\Di\Annotation\Collector\AspectCollector;
 use Max\Di\Context;
 use Max\Utils\Pipeline;
 
-/**
- * 方法代理Trait
- * 当一个类被代理，并且某个方法被切入，这个方法体就会被该方法包裹
- * 切面类必须实现\Max\Di\Contracts\PropertyAttribute接口
- * 支持多个切面注解类，执行逻辑类似中间件
- */
 trait ProxyHandler
 {
     /**
