@@ -1,5 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of the Max package.
+ *
+ * (c) Cheng Yao <987861463@qq.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Max\Utils\Resources;
 
 use Max\Utils\Collection;
@@ -7,13 +18,37 @@ use Max\Utils\Collection;
 class Pagination implements \JsonSerializable
 {
     /**
-     * @param Collection $resources
-     * @param int        $total
-     * @param int        $page
-     * @param int        $perpage
+     * @var Collection
      */
-    public function __construct(protected Collection $resources, protected int $total, protected int $page, protected int $perpage)
+    protected Collection $resources;
+
+    /**
+     * @var int
+     */
+    protected int $total;
+
+    /**
+     * @var int
+     */
+    protected int $page;
+
+    /**
+     * @var int
+     */
+    protected int $perpage;
+
+    /**
+     * @param Collection $resources 集合
+     * @param int        $total     总数
+     * @param int        $page      当前页
+     * @param int        $perpage   分页数量
+     */
+    public function __construct(Collection $resources, int $total, int $page = 1, int $perpage = 15)
     {
+        $this->resources = $resources;
+        $this->total     = $total;
+        $this->page      = $page;
+        $this->perpage   = $perpage;
     }
 
     /**

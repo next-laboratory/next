@@ -1,5 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of the Max package.
+ *
+ * (c) Cheng Yao <987861463@qq.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Max\Utils\Resources;
 
 use ArrayAccess;
@@ -10,10 +21,16 @@ use Max\Utils\Contracts\Arrayable;
 class JsonResource implements Arrayable, JsonSerializable, ArrayAccess
 {
     /**
+     * @var
+     */
+    protected $resource;
+
+    /**
      * @param $resource
      */
-    public function __construct(public $resource)
+    public function __construct($resource)
     {
+        $this->resource = $resource;
     }
 
     /**
@@ -34,7 +51,7 @@ class JsonResource implements Arrayable, JsonSerializable, ArrayAccess
         if (!$resources instanceof Collection) {
             $resources = Collection::make($resources);
         }
-        return new ResourceCollection($resources->map(function ($resource) {
+        return new ResourceCollection($resources->map(function($resource) {
             return new static($resource);
         }));
     }
@@ -42,19 +59,19 @@ class JsonResource implements Arrayable, JsonSerializable, ArrayAccess
     /**
      * 分页
      *
-     * @param     $resuorces
+     * @param     $resources
      * @param int $page
      * @param int $perpage
      *
      * @return Pagination
      */
-    public static function paginate($resuorces, int $page = 1, int $perpage = 15)
+    public static function paginate($resources, int $page = 1, int $perpage = 15): Pagination
     {
-        if (!$resuorces instanceof Collection) {
-            $resuorces = Collection::make($resuorces);
+        if (!$resources instanceof Collection) {
+            $resources = Collection::make($resources);
         }
 
-        return new Pagination($resuorces->forPage($page, $perpage)->map(fn($resource) => new static($resource)), $resuorces->count(), $page, $perpage);
+        return new Pagination($resources->forPage($page, $perpage)->map(fn($resource) => new static($resource)), $resources->count(), $page, $perpage);
     }
 
     /**

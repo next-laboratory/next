@@ -26,7 +26,7 @@ class Collection implements ArrayAccess, Enumerable
      *
      * @var array
      */
-    protected $items = [];
+    protected array $items = [];
 
     /**
      * Create a new collection.
