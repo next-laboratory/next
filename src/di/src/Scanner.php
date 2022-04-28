@@ -16,6 +16,7 @@ namespace Max\Di;
 use Composer\Autoload\ClassLoader;
 use Max\Di\Annotation\Collector\AspectCollector;
 use Max\Di\Annotation\Collector\PropertyAttributeCollector;
+use Max\Di\Aop\AstManager;
 use Max\Di\Aop\Metadata;
 use Max\Di\Aop\PropertyHandlerVisitor;
 use Max\Di\Aop\ProxyHandlerVisitor;
@@ -29,9 +30,8 @@ use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter\Standard;
 use Psr\Container\ContainerExceptionInterface;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
 use ReflectionException;
+use Symfony\Component\Finder\Finder;
 use Throwable;
 
 final class Scanner
@@ -74,7 +74,8 @@ final class Scanner
     /**
      * @var string
      */
-    protected string $proxyMap;
+    protected string   $proxyMap;
+    protected AstManager $astManager;
 
     /**
      * @param ClassLoader $loader
@@ -101,7 +102,7 @@ final class Scanner
      * @param ClassLoader $loader
      * @param array       $options
      */
-    private function __construct(protected ClassLoader $loader, array $options,)
+    private function __construct(protected ClassLoader $loader, array $options)
     {
         $this->runtimeDir = $runtimeDir = rtrim($options['runtimeDir'] ?? '', '/\\') . '/di/';
         $this->cache      = $cache = $options['cache'] ?? false;
@@ -111,31 +112,58 @@ final class Scanner
             unlink($proxyMap);
         }
         array_push($this->collectors, ...($options['collectors'] ?? []));
-        $this->parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
-        $this->scanDir($options['paths'] ?? []);
+        $this->parser     = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
+        $this->astManager = new AstManager();
+        $this->classMap   = $this->scanDir($options['paths'] ?? []);
     }
 
     /**
      * @param array $dirs
      *
-     * @return void
+     * @return array
      */
-    public function scanDir(array $dirs): void
+    public function scanDir(array $dirs): array
     {
-        foreach ($dirs as $dir) {
-            $dir = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
-            foreach ($dir as $file) {
-                if (!$file->isFile()) {
-                    continue;
-                }
-                $path = $file->getRealPath() ?: $file->getPathname();
-                if ('php' !== pathinfo($path, PATHINFO_EXTENSION)) {
-                    continue;
-                }
-                $this->findClasses($path);
-                gc_mem_caches();
+        $finder   = new Finder();
+        $files    = $finder->in($dirs)->name('*.php')->files();
+        $classMap = [];
+        foreach ($files as $file) {
+            $realPath = $file->getRealPath();
+            foreach ($this->astManager->getClassesByRealPath($realPath) as $class) {
+                $classMap[$class] = $realPath;
             }
+//            try {
+//                $ast = $this->parser->parse($file->getContents());
+//                foreach ($ast as $stmt) {
+//                    if ($stmt instanceof Namespace_) {
+//                        $namespace = $stmt->name->toCodeString();
+//                        foreach ($stmt->stmts as $subStmt) {
+//                            // TODO 不支持Trait
+//                            if ($subStmt instanceof Class_) {
+//                                $classMap[$namespace . '\\' . $subStmt->name->toString()] = $realPath;
+//                            }
+//                        }
+//                    }
+//                }
+//            } catch (Error $error) {
+//                echo $error->getMessage() . PHP_EOL;
+//            }
         }
+        return $classMap;
+        //        foreach ($dirs as $dir) {
+        //            $dir = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
+        //            foreach ($dir as $file) {
+        //                if (!$file->isFile()) {
+        //                    continue;
+        //                }
+        //                $path = $file->getRealPath() ?: $file->getPathname();
+        //                if ('php' !== pathinfo($path, PATHINFO_EXTENSION)) {
+        //                    continue;
+        //                }
+        //                $this->findClasses($path);
+        //                gc_mem_caches();
+        //            }
+        //        }
     }
 
     /**
@@ -143,24 +171,24 @@ final class Scanner
      *
      * @return void
      */
-    protected function findClasses(string $path): void
-    {
-        try {
-            $ast = $this->parser->parse(file_get_contents($path));
-            foreach ($ast as $stmt) {
-                if ($stmt instanceof Namespace_) {
-                    $namespace = $stmt->name->toCodeString();
-                    foreach ($stmt->stmts as $subStmt) {
-                        if ($subStmt instanceof Class_) {
-                            $this->classMap[$namespace . '\\' . $subStmt->name->toString()] = $path;
-                        }
-                    }
-                }
-            }
-        } catch (Error $error) {
-            echo $error->getMessage() . PHP_EOL;
-        }
-    }
+    //    protected function findClasses(string $path): void
+    //    {
+    //        try {
+    //            $ast = $this->parser->parse(file_get_contents($path));
+    //            foreach ($ast as $stmt) {
+    //                if ($stmt instanceof Namespace_) {
+    //                    $namespace = $stmt->name->toCodeString();
+    //                    foreach ($stmt->stmts as $subStmt) {
+    //                        if ($subStmt instanceof Class_) {
+    //                            $this->classMap[$namespace . '\\' . $subStmt->name->toString()] = $path;
+    //                        }
+    //                    }
+    //                }
+    //            }
+    //        } catch (Error $error) {
+    //            echo $error->getMessage() . PHP_EOL;
+    //        }
+    //    }
 
     /**
      * @return mixed|void
