@@ -23,25 +23,9 @@ class Controller
      * @param array  $middlewares 中间件
      */
     public function __construct(
-        protected string $prefix = '',
-        protected array  $middlewares = []
+        public string $prefix = '',
+        public array  $middlewares = []
     )
     {
-    }
-
-    /**
-     * @return string
-     */
-    public function getPrefix(): string
-    {
-        return $this->prefix;
-    }
-
-    /**
-     * @return array
-     */
-    public function getMiddlewares(): array
-    {
-        return $this->middlewares;
     }
 }

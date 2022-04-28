@@ -18,5 +18,8 @@ use Attribute;
 #[Attribute(Attribute::TARGET_METHOD)]
 class DeleteMapping extends RequestMapping
 {
-    protected array $methods = ['DELETE'];
+    /**
+     * @var array|string[]
+     */
+    public array $methods = ['DELETE'];
 }

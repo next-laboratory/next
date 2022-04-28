@@ -21,5 +21,5 @@ class PutMapping extends RequestMapping
     /**
      * @var array
      */
-    protected array $methods = ['PUT'];
+    public array $methods = ['PUT'];
 }

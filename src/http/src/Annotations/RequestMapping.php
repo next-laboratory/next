@@ -24,7 +24,7 @@ class RequestMapping implements MappingInterface
      *
      * @var array|string[]
      */
-    protected array $methods = ['GET', 'POST', 'HEAD'];
+    public array $methods = ['GET', 'POST', 'HEAD'];
 
     /**
      * @param string         $path        路径
@@ -33,46 +33,14 @@ class RequestMapping implements MappingInterface
      * @param string         $domain      域名
      */
     public function __construct(
-        protected string $path,
-        array            $methods = [],
-        protected array  $middlewares = [],
-        protected string $domain = ''
+        public string $path,
+        array         $methods = [],
+        public array  $middlewares = [],
+        public string $domain = ''
     )
     {
         if (!empty($methods)) {
             $this->methods = $methods;
         }
-    }
-
-    /**
-     * @return string
-     */
-    public function getPath(): string
-    {
-        return $this->path;
-    }
-
-    /**
-     * @return array
-     */
-    public function getMiddlewares(): array
-    {
-        return $this->middlewares;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDomain(): string
-    {
-        return $this->domain;
-    }
-
-    /**
-     * @return array|string[]
-     */
-    public function getMethods(): array
-    {
-        return $this->methods;
     }
 }

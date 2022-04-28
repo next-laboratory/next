@@ -21,5 +21,5 @@ class PostMapping extends RequestMapping
     /**
      * @var array
      */
-    protected array $methods = ['POST'];
+    public array $methods = ['POST'];
 }

@@ -51,8 +51,8 @@ class RouteCollector extends AbstractCollector
         if ($attribute instanceof Controller) {
             self::$class  = $class;
             self::$router = new Router([
-                'prefix'      => $attribute->getPrefix(),
-                'middlewares' => $attribute->getMiddlewares(),
+                'prefix'      => $attribute->prefix,
+                'middlewares' => $attribute->middlewares,
             ], Context::getContainer()->make(\Max\Routing\RouteCollector::class));
         }
     }
@@ -73,12 +73,12 @@ class RouteCollector extends AbstractCollector
             /** @var \Max\Routing\RouteCollector $routeCollector */
             $routeCollector = Context::getContainer()->make(\Max\Routing\RouteCollector::class);
             $routeCollector->add((new Route(
-                $attribute->getMethods(),
-                self::$router->getPrefix() . $attribute->getPath(),
+                $attribute->methods,
+                self::$router->getPrefix() . $attribute->path,
                 [$class, $method],
                 self::$router,
-                $attribute->getDomain(),
-            ))->middlewares($attribute->getMiddlewares()));
+                $attribute->domain,
+            ))->middlewares($attribute->middlewares));
         }
     }
 }

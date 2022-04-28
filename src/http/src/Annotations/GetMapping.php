@@ -21,5 +21,5 @@ class GetMapping extends RequestMapping
     /**
      * @var array|string[]
      */
-    protected array $methods = ['GET', 'HEAD'];
+    public array $methods = ['GET', 'HEAD'];
 }

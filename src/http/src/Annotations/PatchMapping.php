@@ -21,5 +21,5 @@ class PatchMapping extends RequestMapping
     /**
      * @var array|string[]
      */
-    protected array $methods = ['PATCH'];
+    public array $methods = ['PATCH'];
 }

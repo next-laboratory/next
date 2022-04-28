@@ -15,23 +15,4 @@ namespace Max\Http\Contracts;
 
 interface MappingInterface
 {
-    /**
-     * @return string
-     */
-    public function getPath(): string;
-
-    /**
-     * @return string
-     */
-    public function getDomain(): string;
-
-    /**
-     * @return array
-     */
-    public function getMiddlewares(): array;
-
-    /**
-     * @return array
-     */
-    public function getMethods(): array;
 }
