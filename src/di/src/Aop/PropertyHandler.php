@@ -28,7 +28,7 @@ trait PropertyHandler
         foreach (PropertyAttributeCollector::getClassPropertyAttributes($class) as $property => $attributes) {
             try {
                 foreach ($attributes as $attribute) {
-                    $attribute->handle($property, $this);
+                    $attribute->handle($this, $property);
                 }
             } catch (Throwable $throwable) {
                 throw new PropertyHandleException('Property handle failed. ' . $throwable->getMessage());
