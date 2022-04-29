@@ -17,10 +17,8 @@ use Attribute;
 use Max\Config\Repository;
 use Max\Di\Context;
 use Max\Di\Contracts\PropertyAttribute;
+use Max\Di\ReflectionManager;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
-use ReflectionClass;
-use ReflectionProperty;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Config implements PropertyAttribute
@@ -37,21 +35,17 @@ class Config implements PropertyAttribute
     }
 
     /**
-     * @param ReflectionClass    $reflectionClass
-     * @param ReflectionProperty $reflectionProperty
-     * @param object             $object
+     * @param string $property
+     * @param object $object
      *
      * @return void
      * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws \ReflectionException
      */
-    public function handle(ReflectionClass $reflectionClass, ReflectionProperty $reflectionProperty, object $object): void
+    public function handle(object $object, string $property): void
     {
-        $container = Context::getContainer();
-        $container->setValue(
-            $object,
-            $reflectionProperty,
-            $container->get(Repository::class)->get($this->key, $this->default)
-        );
+        $container          = Context::getContainer();
+        $reflectionProperty = ReflectionManager::reflectProperty($object::class, $property);
+        $container->setValue($object, $reflectionProperty, $container->make(Repository::class)->get($this->key, $this->default));
     }
 }

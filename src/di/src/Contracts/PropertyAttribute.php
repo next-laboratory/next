@@ -19,11 +19,10 @@ use ReflectionProperty;
 interface PropertyAttribute
 {
     /**
-     * @param ReflectionClass    $reflectionClass
-     * @param ReflectionProperty $reflectionProperty
-     * @param object             $object
+     * @param object $object   对象
+     * @param string $property 属性
      *
      * @return void
      */
-    public function handle(ReflectionClass $reflectionClass, ReflectionProperty $reflectionProperty, object $object): void;
+    public function handle(object $object, string $property): void;
 }

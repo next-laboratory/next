@@ -15,7 +15,6 @@ namespace Max\Di\Aop;
 
 use Max\Di\Annotation\Collector\PropertyAttributeCollector;
 use Max\Di\Exceptions\PropertyHandleException;
-use Max\Di\ReflectionManager;
 use Throwable;
 
 trait PropertyHandler
@@ -29,9 +28,7 @@ trait PropertyHandler
         foreach (PropertyAttributeCollector::getClassPropertyAttributes($class) as $property => $attributes) {
             try {
                 foreach ($attributes as $attribute) {
-                    $attribute->handle(
-                        ReflectionManager::reflectClass($class), ReflectionManager::reflectProperty($class, $property), $this
-                    );
+                    $attribute->handle($property, $this);
                 }
             } catch (Throwable $throwable) {
                 throw new PropertyHandleException('Property handle failed. ' . $throwable->getMessage());

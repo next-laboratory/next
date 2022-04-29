@@ -41,7 +41,7 @@ class PropertyAttributeCollector extends AbstractCollector
      *
      * @param string $class
      *
-     * @return PropertyAttribute[]
+     * @return PropertyAttribute[][]
      */
     public static function getClassPropertyAttributes(string $class): array
     {

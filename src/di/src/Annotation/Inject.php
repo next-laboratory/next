@@ -16,11 +16,9 @@ namespace Max\Di\Annotation;
 use Attribute;
 use Max\Di\Context;
 use Max\Di\Contracts\PropertyAttribute;
-use Max\Di\Exceptions\NotFoundException;
+use Max\Di\ReflectionManager;
 use Psr\Container\ContainerExceptionInterface;
-use ReflectionClass;
 use ReflectionException;
-use ReflectionProperty;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Inject implements PropertyAttribute
@@ -33,20 +31,17 @@ class Inject implements PropertyAttribute
     }
 
     /**
-     * 注入方法
-     *
-     * @param ReflectionClass    $reflectionClass
-     * @param ReflectionProperty $reflectionProperty
-     * @param object             $object
+     * @param object $object
+     * @param string $property
      *
      * @return void
      * @throws ContainerExceptionInterface
-     * @throws NotFoundException
      * @throws ReflectionException
      */
-    public function handle(ReflectionClass $reflectionClass, ReflectionProperty $reflectionProperty, object $object): void
+    public function handle(object $object, string $property): void
     {
-        $container = Context::getContainer();
+        $container          = Context::getContainer();
+        $reflectionProperty = ReflectionManager::reflectProperty($object::class, $property);
         if ((!is_null($type = $reflectionProperty->getType()) && $type = $type->getName()) || $type = $this->id) {
             $container->setValue($object, $reflectionProperty, $container->make($type));
         }
