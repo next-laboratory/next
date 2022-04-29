@@ -18,7 +18,7 @@ use Max\Http\Message\ServerRequest;
 use Max\Http\Message\Stream\FileStream;
 use Max\Http\Message\Stream\StringStream;
 use Max\Server\Events\OnRequest;
-use Max\Utils\Context;
+use Max\Context\Context;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

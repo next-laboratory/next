@@ -1,26 +1,27 @@
 {
-  "name": "max/session",
-  "license": "Apache-2.0",
-  "homepage": "https://github.com/topyao/max-session",
-  "authors": [
-    {
-      "name": "chengyao",
-      "email": "987861463@qq.com",
-      "homepage": "https://www.1kmb.com"
+    "name": "max/session",
+    "license": "Apache-2.0",
+    "homepage": "https://github.com/topyao/max-session",
+    "authors": [
+        {
+            "name": "chengyao",
+            "email": "987861463@qq.com",
+            "homepage": "https://www.1kmb.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Max\\Session\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.0",
+        "max/context": "dev-master",
+        "max/utils": "dev-master"
+    },
+    "extra": {
+        "max": {
+            "config": "Max\\Session\\ConfigProvider"
+        }
     }
-  ],
-  "autoload": {
-    "psr-4": {
-      "Max\\Session\\": "src/"
-    }
-  },
-  "require": {
-    "php": "^8.0",
-    "max/utils": "dev-master"
-  },
-  "extra": {
-    "max": {
-      "config": "Max\\Session\\ConfigProvider"
-    }
-  }
 }

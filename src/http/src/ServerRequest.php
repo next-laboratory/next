@@ -16,7 +16,7 @@ namespace Max\Http;
 use InvalidArgumentException;
 use Max\Http\Message\UploadedFile;
 use Max\Routing\Route;
-use Max\Utils\Context;
+use Max\Context\Context;
 use Psr\{Http\Message\ServerRequestInterface, Http\Message\UriInterface};
 use RuntimeException;
 use Swoole\Http\Request;

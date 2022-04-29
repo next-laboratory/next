@@ -17,7 +17,7 @@ use InvalidArgumentException;
 use Max\Config\Repository;
 use Max\Session\Context\Storage;
 use Max\Session\Exceptions\SessionException;
-use Max\Utils\Context;
+use Max\Context\Context;
 use SessionHandlerInterface;
 use Throwable;
 use function is_string;
@@ -134,8 +134,8 @@ class Session
     }
 
     /**
-     * @param string $key
-     * @param null $default
+     * @param string     $key
+     * @param mixed|null $default
      *
      * @return mixed
      */
@@ -169,7 +169,7 @@ class Session
      *
      * @return void
      */
-    public function setHandler(SessionHandlerInterface $handler)
+    public function setHandler(SessionHandlerInterface $handler): void
     {
         $this->handler = $handler;
     }
@@ -195,7 +195,7 @@ class Session
      *
      * @return void
      */
-    public function setId(string $id)
+    public function setId(string $id): void
     {
         Context::get(Storage::class)?->setId($id);
     }

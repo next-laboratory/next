@@ -15,7 +15,7 @@ namespace Max\Http;
 
 use Max\Http\Message\Bags\CookieBag;
 use Max\Http\Message\Stream\StringStream;
-use Max\Utils\Context;
+use Max\Context\Context;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 
