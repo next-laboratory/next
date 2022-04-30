@@ -14,8 +14,6 @@ declare(strict_types=1);
 namespace Max\Di\Aop;
 
 use Max\Di\Annotation\Collector\PropertyAttributeCollector;
-use Max\Di\Exceptions\PropertyHandleException;
-use Throwable;
 
 trait PropertyHandler
 {
@@ -24,14 +22,9 @@ trait PropertyHandler
      */
     protected function __handleProperties(): void
     {
-        $class = static::class;
-        foreach (PropertyAttributeCollector::getClassPropertyAttributes($class) as $property => $attributes) {
-            try {
-                foreach ($attributes as $attribute) {
-                    $attribute->handle($this, $property);
-                }
-            } catch (Throwable $throwable) {
-                throw new PropertyHandleException('Property handle failed. ' . $throwable->getMessage());
+        foreach (PropertyAttributeCollector::getClassPropertyAttributes(static::class) as $property => $attributes) {
+            foreach ($attributes as $attribute) {
+                $attribute->handle($this, $property);
             }
         }
     }

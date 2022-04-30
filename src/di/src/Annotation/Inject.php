@@ -16,9 +16,9 @@ namespace Max\Di\Annotation;
 use Attribute;
 use Max\Di\Context;
 use Max\Di\Contracts\PropertyAttribute;
+use Max\Di\Exceptions\PropertyHandleException;
 use Max\Di\ReflectionManager;
-use Psr\Container\ContainerExceptionInterface;
-use ReflectionException;
+use Throwable;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Inject implements PropertyAttribute
@@ -35,15 +35,17 @@ class Inject implements PropertyAttribute
      * @param string $property
      *
      * @return void
-     * @throws ContainerExceptionInterface
-     * @throws ReflectionException
      */
     public function handle(object $object, string $property): void
     {
-        $container          = Context::getContainer();
-        $reflectionProperty = ReflectionManager::reflectProperty($object::class, $property);
-        if ((!is_null($type = $reflectionProperty->getType()) && $type = $type->getName()) || $type = $this->id) {
-            $container->setValue($object, $reflectionProperty, $container->make($type));
+        try {
+            $container          = Context::getContainer();
+            $reflectionProperty = ReflectionManager::reflectProperty($object::class, $property);
+            if ((!is_null($type = $reflectionProperty->getType()) && $type = $type->getName()) || $type = $this->id) {
+                $container->setValue($object, $reflectionProperty, $container->make($type));
+            }
+        } catch (Throwable $throwable) {
+            throw new PropertyHandleException('Property assign failed. ' . $throwable->getMessage());
         }
     }
 }

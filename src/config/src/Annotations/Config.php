@@ -17,8 +17,8 @@ use Attribute;
 use Max\Config\Repository;
 use Max\Di\Context;
 use Max\Di\Contracts\PropertyAttribute;
+use Max\Di\Exceptions\PropertyHandleException;
 use Max\Di\ReflectionManager;
-use Psr\Container\ContainerExceptionInterface;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Config implements PropertyAttribute
@@ -35,17 +35,19 @@ class Config implements PropertyAttribute
     }
 
     /**
-     * @param string $property
      * @param object $object
+     * @param string $property
      *
      * @return void
-     * @throws ContainerExceptionInterface
-     * @throws \ReflectionException
      */
     public function handle(object $object, string $property): void
     {
-        $container          = Context::getContainer();
-        $reflectionProperty = ReflectionManager::reflectProperty($object::class, $property);
-        $container->setValue($object, $reflectionProperty, $container->make(Repository::class)->get($this->key, $this->default));
+        try {
+            $container          = Context::getContainer();
+            $reflectionProperty = ReflectionManager::reflectProperty($object::class, $property);
+            $container->setValue($object, $reflectionProperty, $container->make(Repository::class)->get($this->key, $this->default));
+        } catch (\Throwable $throwable) {
+            throw new PropertyHandleException('Property assign failed. ' . $throwable->getMessage());
+        }
     }
 }
