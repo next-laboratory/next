@@ -22,6 +22,7 @@
         "php": "^8.0",
         "max/context": "dev-master",
         "max/http-server": "dev-master",
+        "max/utils": "dev-master",
         "max/routing": "dev-master"
     },
     "extra": {

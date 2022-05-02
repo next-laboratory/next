@@ -16,10 +16,13 @@ namespace Max\Http;
 use Max\Di\Annotation\Collector\AbstractCollector;
 use Max\Di\Context;
 use Max\Di\Exceptions\NotFoundException;
+use Max\Di\ReflectionManager;
+use Max\Http\Annotations\AutoController;
 use Max\Http\Annotations\Controller;
 use Max\Http\Contracts\MappingInterface;
 use Max\Routing\Route;
 use Max\Routing\Router;
+use Max\Utils\Str;
 use Psr\Container\ContainerExceptionInterface;
 use ReflectionException;
 
@@ -54,6 +57,25 @@ class RouteCollector extends AbstractCollector
                 'prefix'      => $attribute->prefix,
                 'middlewares' => $attribute->middlewares,
             ], Context::getContainer()->make(\Max\Routing\RouteCollector::class));
+        }
+        if ($attribute instanceof AutoController) {
+            $router = new Router([
+                'prefix'      => $attribute->prefix,
+                'middlewares' => $attribute->middlewares,
+            ]);
+            foreach (ReflectionManager::reflectClass($class)->getMethods() as $reflectionMethod) {
+                if ($reflectionMethod->isPublic() && !$reflectionMethod->isStatic() && !$reflectionMethod->isAbstract()) {
+                    $action = $reflectionMethod->getName();
+                    /** @var \Max\Routing\RouteCollector $routeCollector */
+                    $routeCollector = Context::getContainer()->make(\Max\Routing\RouteCollector::class);
+                    $routeCollector->add((new Route(
+                        $attribute->methods,
+                        $attribute->prefix . Str::snake($action, '-'),
+                        [$class, $action],
+                        $router,
+                    )));
+                }
+            }
         }
     }
 
