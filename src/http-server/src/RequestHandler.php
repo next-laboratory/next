@@ -65,7 +65,9 @@ class RequestHandler implements RequestHandlerInterface
      * @param ServerRequestInterface $request
      *
      * @return ResponseInterface
+     * @throws ContainerExceptionInterface
      * @throws InvalidRequestHandlerException
+     * @throws ReflectionException
      */
     protected function handleRequest(ServerRequestInterface $request): ResponseInterface
     {

@@ -123,7 +123,7 @@ class Route
      */
     public function compile()
     {
-        $regexp = preg_replace_callback('/[<\[](.+?)[>\]]/', function ($matches) {
+        $regexp = preg_replace_callback('/[<\[](.+?)[>\]]/', function($matches) {
             [$match, $name] = $matches;
             $hasSlash = '/' === $name[0];
             $newName  = trim($name, '/');
@@ -208,7 +208,7 @@ class Route
      *
      * @return void
      */
-    public function setParameter(string $name, $value)
+    public function setParameter(string $name, $value): void
     {
         $this->parameters[$name] = $value;
     }
@@ -220,7 +220,7 @@ class Route
      *
      * @return void
      */
-    public function setParameters(array $parameters)
+    public function setParameters(array $parameters): void
     {
         $this->parameters = $parameters;
     }
@@ -321,7 +321,7 @@ class Route
      */
     public function getMiddlewares(): array
     {
-        $middlewares = array_unique([...$this->router->getMiddlewares(), ...$this->middlewares]);
+        $middlewares = array_unique([...($this->router?->getMiddlewares() ?? []), ...$this->middlewares]);
 
         return array_diff($middlewares, $this->withoutMiddleware);
     }
