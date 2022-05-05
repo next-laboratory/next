@@ -55,7 +55,7 @@ class RequestHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         /** @var MiddlewareInterface $middleware */
-        if (empty($this->middlewares)) {
+        if ([] === $this->middlewares) {
             return $this->handleRequest($request);
         }
         return $this->handleMiddleware(array_shift($this->middlewares), $request);
