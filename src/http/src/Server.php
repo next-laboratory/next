@@ -56,6 +56,7 @@ class Server
             Context::put(ServerRequestInterface::class, ServerRequest::createFromSwooleRequest($request));
             Context::put(ResponseInterface::class, new Psr7Response());
             Context::put(Request::class, $request);
+            Context::put(Response::class, $response);
             $psr7Response = $this->requestHandler->handle($this->request);
             $this->eventDispatcher?->dispatch(new OnRequest($this->request, $psr7Response, microtime(true) - $start));
             $response->status($psr7Response->getStatusCode());
