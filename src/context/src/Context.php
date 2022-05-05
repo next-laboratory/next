@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Max\Context;
 
-use Max\Context\Coroutine\Context as CoContext;
 use Swoole\Coroutine;
 
 class Context
@@ -21,7 +20,7 @@ class Context
     /**
      * @var array
      */
-    protected static array $pool = [];
+    protected static array $container = [];
 
     /**
      * @param $key
@@ -30,11 +29,10 @@ class Context
      */
     public static function get($key): mixed
     {
-        $cid = Coroutine::getCid();
-        if ($cid < 0) {
-            return self::$pool[$key] ?? null;
+        if (($cid = self::getCid()) < 0) {
+            return self::$container[$key] ?? null;
         }
-        return CoContext::get($cid, $key);
+        return self::for($cid)[$key] ?? null;
     }
 
     /**
@@ -45,11 +43,10 @@ class Context
      */
     public static function put($key, $item): void
     {
-        $cid = Coroutine::getCid();
-        if ($cid > 0) {
-            CoContext::put($cid, $key, $item);
+        if (($cid = self::getCid()) > 0) {
+            self::for($cid)[$key] = $item;
         } else {
-            self::$pool[$key] = $item;
+            self::$container[$key] = $item;
         }
     }
 
@@ -60,14 +57,15 @@ class Context
      */
     public static function delete($key = null): void
     {
-        $cid = Coroutine::getCid();
-        if ($cid > 0) {
-            CoContext::delete($cid, $key);
+        if (($cid = self::getCid()) > 0) {
+            if (!is_null($key)) {
+                unset(self::for($cid)[$key]);
+            }
         } else {
             if ($key) {
-                unset(self::$pool[$key]);
+                unset(self::$container[$key]);
             } else {
-                self::$pool = [];
+                self::$container = [];
             }
         }
     }
@@ -79,10 +77,27 @@ class Context
      */
     public static function has($key): bool
     {
-        $cid = Coroutine::getCid();
-        if ($cid > 0) {
-            return CoContext::has($cid, $key);
+        if (($cid = self::getCid()) > 0) {
+            return isset(self::for($cid)[$key]);
         }
-        return isset(self::$pool[$key]);
+        return isset(self::$container[$key]);
+    }
+
+    /**
+     * @param int|null $cid
+     *
+     * @return mixed
+     */
+    public static function for(?int $cid = null): mixed
+    {
+        return Coroutine::getContext($cid);
+    }
+
+    /**
+     * @return mixed
+     */
+    protected static function getCid(): mixed
+    {
+        return Coroutine::getCid();
     }
 }
