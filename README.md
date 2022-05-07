@@ -42,7 +42,6 @@ SWOOLE >= 4.6
 
 ```shell
 composer create-project max/http-project max  // 安装http项目
-composer create-project max/websocket-project max  // 安装websocket项目(开发中)
 ```
 
 ### 启动服务
