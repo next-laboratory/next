@@ -33,6 +33,7 @@ class Server
      * @param ServerRequestInterface        $request
      * @param RequestHandlerInterface       $requestHandler
      * @param EventDispatcherInterface|null $eventDispatcher
+     * @param LoggerInterface|null          $logger
      */
     public function __construct(
         protected ServerRequestInterface    $request,
@@ -49,7 +50,7 @@ class Server
      * @param Request  $request
      * @param Response $response
      */
-    public function onRequest(Request $request, Response $response)
+    public function onRequest(Request $request, Response $response): void
     {
         try {
             $start = microtime(true);
@@ -94,7 +95,7 @@ class Server
      * @param ResponseInterface $psr7Response
      * @param Response          $response
      */
-    protected function setCookie(ResponseInterface &$psr7Response, Response $response)
+    protected function setCookie(ResponseInterface &$psr7Response, Response $response): void
     {
         if (method_exists($psr7Response, 'getCookies') && $cookies = $psr7Response->getCookies()) {
             foreach ($cookies as $cookie) {
@@ -114,7 +115,7 @@ class Server
      *
      * @return void
      */
-    protected function sendCookie(Cookie $cookie, Response $response)
+    protected function sendCookie(Cookie $cookie, Response $response): void
     {
         $response->cookie(
             $cookie->getName(), $cookie->getValue(),

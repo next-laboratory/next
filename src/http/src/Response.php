@@ -13,26 +13,14 @@ declare(strict_types=1);
 
 namespace Max\Http;
 
-use Max\Http\Message\Bags\CookieBag;
-use Max\Http\Message\Stream\StringStream;
 use Max\Context\Context;
+use Max\Http\Message\Bags\CookieBag;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 
 class Response implements ResponseInterface
 {
     use Message;
-
-    /**
-     * @param $data
-     *
-     * @return ResponseInterface
-     */
-    public function json($data): ResponseInterface
-    {
-        return $this->withHeader('Content-Type', 'application/json; charset=utf-8')
-                    ->withBody(new StringStream(json_encode($data)));
-    }
 
     /**
      * TODO
@@ -61,17 +49,6 @@ class Response implements ResponseInterface
             return $bag->all();
         }
         return [];
-    }
-
-    /**
-     * @param string $html
-     *
-     * @return ResponseInterface
-     */
-    public function html(string $html): ResponseInterface
-    {
-        return $this->withHeader('Content-Type', 'text/html; charset=utf-8')
-                    ->withBody(new StringStream($html));
     }
 
     /**
@@ -107,13 +84,5 @@ class Response implements ResponseInterface
             return $psr7Response;
         }
         throw new RuntimeException('There is no response instance in the context.');
-    }
-
-    /**
-     * @param ResponseInterface $response
-     */
-    public function setPsr7(ResponseInterface $response)
-    {
-        Context::put(ResponseInterface::class, $response);
     }
 }

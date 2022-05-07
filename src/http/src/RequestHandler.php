@@ -17,6 +17,7 @@ use Max\Di\Context;
 use Max\Di\Exceptions\NotFoundException;
 use Max\Http\Exceptions\InvalidRequestHandlerException;
 use Max\Http\Exceptions\InvalidResponseBodyException;
+use Max\Http\Message\Stream\StringStream;
 use Max\Http\Server\RequestHandler as PsrRequestHandler;
 use Max\Routing\Route;
 use Max\Routing\RouteCollector;
@@ -68,9 +69,8 @@ class RequestHandler implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $container = Context::getContainer();
         return (new PsrRequestHandler())
-            ->setContainer($container)
+            ->setContainer(Context::getContainer())
             ->setRequestHandler(\Closure::fromCallable([$this, 'handleRequest']))
             ->setMiddlewares($this->middlewares)
             ->handle($request);
@@ -87,7 +87,7 @@ class RequestHandler implements RequestHandlerInterface
     protected function handleRequest(ServerRequestInterface $request)
     {
         /** @var Route $route */
-        $route  = $request->route();
+        $route  = \Max\Context\Context::get(Route::class);
         $action = $route->getAction();
         $params = $route->getParameters();
         if (is_string($action)) {
@@ -95,7 +95,7 @@ class RequestHandler implements RequestHandlerInterface
         }
         if (is_array($action)) {
             [$controller, $action] = $action;
-            $action = [make($controller), $action];
+            $action = [Context::getContainer()->make($controller), $action];
         }
 
         return $this->autoResponse(call($action, array_filter($params, fn($value) => !is_null($value))));
@@ -109,19 +109,41 @@ class RequestHandler implements RequestHandlerInterface
      */
     protected function autoResponse($response): ResponseInterface
     {
-        if ($response instanceof ResponseInterface) {
-            return $response;
+        if (!$response instanceof ResponseInterface) {
+            $response = match (true) {
+                $response instanceof Arrayable => $this->jsonResponse($response->toArray()),
+                $response instanceof Stringable => $this->htmlResponse($response->__toString()),
+                is_scalar($response) || is_null($response) => $this->htmlResponse((string)$response),
+                default => $this->jsonResponse($response),
+            };
         }
-
-        $response = match (true) {
-            $response instanceof Arrayable => $this->response->json($response->toArray()),
-            $response instanceof Stringable => $this->response->html($response->__toString()),
-            is_scalar($response) || is_null($response) => $this->response->html((string)$response),
-            default => $this->response->json($response),
-        };
-        $this->response->setPsr7($response);
+        \Max\Context\Context::put(ResponseInterface::class, $response);
 
         return $this->response;
+    }
+
+    /**
+     * @param $data
+     *
+     * @return mixed|ResponseInterface|ServerRequestInterface
+     */
+    protected function jsonResponse($data)
+    {
+        return $this->response
+            ->withHeader('Content-Type', 'application/json; charset=utf-8')
+            ->withBody(new StringStream(json_encode($data)));
+    }
+
+    /**
+     * @param $data
+     *
+     * @return mixed|ResponseInterface|ServerRequestInterface
+     */
+    protected function htmlResponse($data)
+    {
+        return $this->response
+            ->withHeader('Content-Type', 'text/html; charset=utf-8')
+            ->withBody(new StringStream($data));
     }
 
     /**

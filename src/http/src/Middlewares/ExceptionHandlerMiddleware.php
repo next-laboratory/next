@@ -52,7 +52,7 @@ class ExceptionHandlerMiddleware implements MiddlewareInterface
      *
      * @return void
      */
-    protected function reportException(Throwable $throwable, ServerRequestInterface $request)
+    protected function reportException(Throwable $throwable, ServerRequestInterface $request): void
     {
 
     }
@@ -82,19 +82,6 @@ class ExceptionHandlerMiddleware implements MiddlewareInterface
     {
         return $this->response
             ->withBody(new StringStream($throwable->getMessage()))
-            ->withStatus($this->getCode($throwable));
-    }
-
-    /**
-     * HttpCode
-     *
-     * @param Throwable $throwable
-     * @param int       $default
-     *
-     * @return int
-     */
-    protected function getCode(Throwable $throwable, int $default = 400): int
-    {
-        return $throwable instanceof HttpException ? $throwable->getCode() : $default;
+            ->withStatus($throwable instanceof HttpException ? $throwable->getCode() : 400);
     }
 }

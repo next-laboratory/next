@@ -13,11 +13,13 @@ declare(strict_types=1);
 
 namespace Max\Http\Middlewares;
 
+use Max\Context\Context;
 use Max\Di\Exceptions\NotFoundException;
 use Max\Http\Exceptions\HttpException;
 use Max\Http\Exceptions\InvalidRequestHandlerException;
 use Max\Routing\Exceptions\MethodNotAllowedException;
 use Max\Routing\Exceptions\RouteNotFoundException;
+use Max\Routing\Route;
 use Max\Routing\RouteCollector;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -50,8 +52,7 @@ class RoutingMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $route = $this->routeCollector->resolve($request);
-        $request->route($route);
+        Context::put(Route::class, $route = $this->routeCollector->resolve($request));;
         $handler->unshift($route->getMiddlewares());
 
         return $handler->handle($request);
