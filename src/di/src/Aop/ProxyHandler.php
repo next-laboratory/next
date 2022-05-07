@@ -15,6 +15,7 @@ namespace Max\Di\Aop;
 
 use Closure;
 use Max\Di\Annotation\Collector\AspectCollector;
+use Max\Di\Contracts\AspectInterface;
 
 trait ProxyHandler
 {
@@ -27,13 +28,10 @@ trait ProxyHandler
      */
     protected function __callViaProxy(string $method, Closure $callback, array $parameters): mixed
     {
+        /** @var AspectInterface $aspect */
         $pipeline = array_reduce(
             array_reverse([...AspectCollector::getClassAspects(__CLASS__), ...AspectCollector::getMethodAspects(__CLASS__, $method)]),
-            function($stack, $aspect) {
-                return function($joinPoint) use ($stack, $aspect) {
-                    return $aspect->process($joinPoint, $stack);
-                };
-            },
+            fn($stack, $aspect) => fn(JoinPoint $joinPoint) => $aspect->process($joinPoint, $stack),
             fn(JoinPoint $joinPoint) => $joinPoint->process()
         );
         return $pipeline(new JoinPoint($this, $method, $parameters, $callback));
