@@ -13,9 +13,10 @@ declare(strict_types=1);
 
 namespace Max\Utils\Resources;
 
+use JsonSerializable;
 use Max\Utils\Collection;
 
-class Pagination implements \JsonSerializable
+class Pagination implements JsonSerializable
 {
     /**
      * @var Collection
@@ -63,13 +64,6 @@ class Pagination implements \JsonSerializable
                 'total'   => $this->getTotal(),
                 'page'    => $this->getPage(),
                 'perpage' => $this->getPerpage(),
-                'links'   => [
-                    'first'   => '',
-                    'last'    => '',
-                    'current' => '',
-                    'next'    => '',
-                    'end'     => '',
-                ],
             ],
         ];
     }
