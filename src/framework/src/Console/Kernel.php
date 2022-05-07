@@ -61,8 +61,4 @@ class Kernel extends Application
             $this->add(new $command);
         }
     }
-
-    protected function register()
-    {
-    }
 }
