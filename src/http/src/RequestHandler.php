@@ -48,7 +48,6 @@ class RequestHandler implements RequestHandlerInterface
     public function __construct(RouteCollector $routeCollector, protected ResponseInterface $response)
     {
         $this->map($this->router = new Router([], $routeCollector));
-        $routeCollector->compile();
     }
 
     /**
