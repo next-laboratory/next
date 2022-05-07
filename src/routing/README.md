@@ -11,18 +11,18 @@ $router->get('index/<name>', function($name) {    // 必选name
 // 路由分组示例
 $router->prefix('api')
     ->middleware('api')
+    ->pattterns(['id' => '\d+'])
     ->group(function(Router $router) {
-        $router->get('/user[/id]', function($id = 0) {   //可选id
+        $router->get('/user/<id>', function($id = 0) {   //可选id
             var_dump('user');
-        })->middleware('auth')->patterns(['id' => '\d+']);
+        })->middleware('auth');
         $router->middleware('user')->group(function() {
             //
         }
     });
-// 路由注册完之后编译路由
-RouteCollector::compile();
+
 // 解析路由，返回匹配到的Route对象
-$route = RouteCollector::resolve('GET', '/');
+$route = $router->getRouteCollector()->resolve('GET', '/');
 
 var_dump($route);
 ```

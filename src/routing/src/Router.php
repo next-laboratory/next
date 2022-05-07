@@ -193,7 +193,7 @@ class Router
      *
      * @param Closure $group
      */
-    public function group(Closure $group)
+    public function group(Closure $group): void
     {
         $group($this);
     }
@@ -273,5 +273,13 @@ class Router
         $new->namespace = sprintf('%s\\%s', $this->namespace, $namespace);
 
         return $new;
+    }
+
+    /**
+     * @return RouteCollector
+     */
+    public function getRouteCollector(): RouteCollector
+    {
+        return $this->routeCollector;
     }
 }

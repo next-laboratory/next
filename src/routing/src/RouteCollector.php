@@ -31,36 +31,18 @@ class RouteCollector
     protected array $routes = [];
 
     /**
-     * 编译后的路由
-     *
-     * @var array
-     */
-    protected array $compiled = [];
-
-    /**
      * 添加一个路由
      *
      * @param Route $route
      *
      * @return void
      */
-    public function add(Route $route)
+    public function add(Route $route): void
     {
-        $this->routes[] = $route;
-    }
-
-    /**
-     * @param string $method
-     *
-     * @return array
-     * @throws MethodNotAllowedException
-     */
-    public function getByMethod(string $method): array
-    {
-        if (isset($this->compiled[$method])) {
-            return $this->compiled[$method];
+        $domain = $route->getCompiledDomain();
+        foreach ($route->getMethods() as $method) {
+            $this->routes[$method][$domain][] = $route;
         }
-        throw new MethodNotAllowedException('Method not allowed: ' . $method, 405);
     }
 
     /**
@@ -70,22 +52,7 @@ class RouteCollector
      */
     public function all(): array
     {
-        return $this->compiled;
-    }
-
-    /**
-     * 编译路由
-     */
-    public function compile()
-    {
-        /** @var Route $route */
-        foreach ($this->routes as $key => $route) {
-            $route->compile();
-            foreach ($route->getMethods() as $method) {
-                $this->compiled[$method][$route->getCompiledDomain()][] = $route;
-            }
-            unset($this->routes[$key]);
-        }
+        return $this->routes;
     }
 
     /**
@@ -99,7 +66,7 @@ class RouteCollector
     public function resolve(ServerRequestInterface $request): Route
     {
         $path          = '/' . trim($request->getUri()->getPath(), '/');
-        $map           = $this->getByMethod($request->getMethod());
+        $map           = $this->routes[$request->getMethod()] ?? throw new MethodNotAllowedException('Method not allowed: ' . $method, 405);
         $routes        = $map[''] ?? [];
         $matchedDomain = '';
         foreach ($map as $domain => $item) {

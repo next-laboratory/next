@@ -50,11 +50,6 @@ class Route
     protected array $middlewares = [];
 
     /**
-     * @var array
-     */
-    protected array $patterns = [];
-
-    /**
      * @var string
      */
     protected string $compiledDomain = '';
@@ -106,7 +101,14 @@ class Route
     public function setPath(string $path): Route
     {
         $this->path = '/' . trim($path, '/');
-
+        $regexp     = preg_replace_callback('/<(.+?)>/', function($matches) {
+            [, $name] = $matches;
+            $this->setParameter($name, null);
+            return sprintf('(?P<%s>%s%s)%s', $name, '', $this->getPattern($name), '');
+        }, $this->path);
+        if ($regexp !== $this->path) {
+            $this->regexp = sprintf('#^%s$#iU', $regexp);
+        }
         return $this;
     }
 
@@ -116,25 +118,6 @@ class Route
     public function getCompiledDomain(): string
     {
         return $this->compiledDomain;
-    }
-
-    /**
-     * 如果设置的uri可编译就编译为正则
-     */
-    public function compile()
-    {
-        $regexp = preg_replace_callback('/[<\[](.+?)[>\]]/', function($matches) {
-            [$match, $name] = $matches;
-            $hasSlash = '/' === $name[0];
-            $newName  = trim($name, '/');
-            $nullable = '[' == $match[0];
-            $this->setParameter($newName, null);
-
-            return sprintf('(?P<%s>%s%s)%s', $hasSlash ? $newName : $name, $hasSlash ? '/' : '', $this->getPattern($newName), $nullable ? '?' : '');
-        }, $this->path);
-        if ($regexp !== $this->path) {
-            $this->regexp = sprintf('#^%s$#iU', $regexp);
-        }
     }
 
     /**
@@ -158,18 +141,6 @@ class Route
     public function getDomain(): string
     {
         return $this->domain;
-    }
-
-    /**
-     * @param array $patterns
-     *
-     * @return $this
-     */
-    public function patterns(array $patterns): Route
-    {
-        $this->patterns = array_merge($this->patterns, $patterns);
-
-        return $this;
     }
 
     /**
@@ -197,7 +168,7 @@ class Route
      */
     public function getPatterns(): array
     {
-        return array_replace($this->router->getPatterns(), $this->patterns);
+        return $this->router->getPatterns();
     }
 
     /**
