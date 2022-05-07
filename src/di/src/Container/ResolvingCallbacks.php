@@ -64,7 +64,7 @@ trait ResolvingCallbacks
      * @param               $abstract
      * @param Closure|null  $callback
      */
-    public function afterResolving($abstract, ?Closure $callback = null)
+    public function afterResolving($abstract, ?Closure $callback = null): void
     {
         if ($abstract instanceof Closure && is_null($callback)) {
             $this->globalResolvingCallbacks[] = $abstract;

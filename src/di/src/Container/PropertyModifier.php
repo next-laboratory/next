@@ -32,7 +32,7 @@ trait PropertyModifier
      *
      * @throws ReflectionException|NotFoundException|ContainerExceptionInterface
      */
-    public function setProperty($object, string $property, $value = null)
+    public function setProperty($object, string $property, $value = null): void
     {
         $reflectionClass = ReflectionManager::reflectClass($object);
         if ($reflectionClass->hasProperty($property)) {
@@ -63,6 +63,7 @@ trait PropertyModifier
      * @param $property
      *
      * @return mixed
+     * @throws ContainerExceptionInterface
      */
     public function getProperty($object, $property): mixed
     {
@@ -84,7 +85,7 @@ trait PropertyModifier
      * @param ReflectionProperty  $reflectionProperty
      * @param                     $value
      */
-    public function setValue(object $object, ReflectionProperty $reflectionProperty, $value)
+    public function setValue(object $object, ReflectionProperty $reflectionProperty, $value): void
     {
         $this->setAccessible($reflectionProperty)->setValue($object, $value);
     }

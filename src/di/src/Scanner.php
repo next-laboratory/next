@@ -74,7 +74,7 @@ final class Scanner
     /**
      * @var string
      */
-    protected string   $proxyMap;
+    protected string     $proxyMap;
     protected AstManager $astManager;
 
     /**
@@ -132,22 +132,22 @@ final class Scanner
             foreach ($this->astManager->getClassesByRealPath($realPath) as $class) {
                 $classMap[$class] = $realPath;
             }
-//            try {
-//                $ast = $this->parser->parse($file->getContents());
-//                foreach ($ast as $stmt) {
-//                    if ($stmt instanceof Namespace_) {
-//                        $namespace = $stmt->name->toCodeString();
-//                        foreach ($stmt->stmts as $subStmt) {
-//                            // TODO 不支持Trait
-//                            if ($subStmt instanceof Class_) {
-//                                $classMap[$namespace . '\\' . $subStmt->name->toString()] = $realPath;
-//                            }
-//                        }
-//                    }
-//                }
-//            } catch (Error $error) {
-//                echo $error->getMessage() . PHP_EOL;
-//            }
+            //            try {
+            //                $ast = $this->parser->parse($file->getContents());
+            //                foreach ($ast as $stmt) {
+            //                    if ($stmt instanceof Namespace_) {
+            //                        $namespace = $stmt->name->toCodeString();
+            //                        foreach ($stmt->stmts as $subStmt) {
+            //                            // TODO 不支持Trait
+            //                            if ($subStmt instanceof Class_) {
+            //                                $classMap[$namespace . '\\' . $subStmt->name->toString()] = $realPath;
+            //                            }
+            //                        }
+            //                    }
+            //                }
+            //            } catch (Error $error) {
+            //                echo $error->getMessage() . PHP_EOL;
+            //            }
         }
         return $classMap;
         //        foreach ($dirs as $dir) {

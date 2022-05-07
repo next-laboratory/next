@@ -27,11 +27,9 @@ class Container implements ContainerInterface
     use ResolvingCallbacks, PropertyModifier, DependencyFinder;
 
     /**
-     * 别名
-     *
      * @var array
      */
-    protected array $alias = [];
+    protected array $bindings = [];
 
     /**
      * @var array
@@ -51,7 +49,7 @@ class Container implements ContainerInterface
      */
     public function set(string $id, object $instance)
     {
-        $this->resolved[$this->getAlias($id)] = $instance;
+        $this->resolved[$this->getBinding($id)] = $instance;
     }
 
     /**
@@ -60,7 +58,7 @@ class Container implements ContainerInterface
     public function get(string $id)
     {
         if ($this->has($id)) {
-            return $this->resolved[$this->getAlias($id)];
+            return $this->resolved[$this->getBinding($id)];
         }
         throw new NotFoundException('No instance found: ' . $id);
     }
@@ -70,58 +68,50 @@ class Container implements ContainerInterface
      */
     public function has(string $id)
     {
-        return isset($this->resolved[$this->getAlias($id)]);
+        return isset($this->resolved[$this->getBinding($id)]);
     }
 
     /**
-     * 添加绑定
-     *
      * @param string $id
      * @param string $class
      *
      * @return void
      */
-    public function alias(string $id, string $class): void
+    public function bind(string $id, string $class): void
     {
-        $this->alias[$id] = $class;
+        $this->bindings[$id] = $class;
     }
 
     /**
-     * 移除别名
-     *
      * @param string $id
      *
      * @return void
      */
-    public function unAlias(string $id): void
+    public function unBind(string $id): void
     {
-        if ($this->hasAlias($id)) {
-            unset($this->alias[$id]);
+        if ($this->bound($id)) {
+            unset($this->bindings[$id]);
         }
     }
 
     /**
-     * 判断是否有别名
-     *
      * @param string $id
      *
      * @return bool
      */
-    public function hasAlias(string $id): bool
+    public function bound(string $id): bool
     {
-        return isset($this->alias[$id]);
+        return isset($this->bindings[$id]);
     }
 
     /**
-     * 通过标识获取别名
-     *
      * @param string $id
      *
      * @return string
      */
-    public function getAlias(string $id): string
+    public function getBinding(string $id): string
     {
-        return $this->alias[$id] ?? $id;
+        return $this->bindings[$id] ?? $id;
     }
 
     /**
@@ -150,7 +140,7 @@ class Container implements ContainerInterface
      */
     public function remove(string $id): void
     {
-        $id = $this->getAlias($id);
+        $id = $this->getBinding($id);
         if ($this->has($id)) {
             unset($this->resolved[$id]);
         }
@@ -165,14 +155,14 @@ class Container implements ContainerInterface
      */
     public function resolve(string $id, array $arguments = []): object
     {
-        $id              = $this->getAlias($id);
+        $id              = $this->getBinding($id);
         $reflectionClass = ReflectionManager::reflectClass($id);
         if ($reflectionClass->isInterface()) {
-            if (!$this->hasAlias($id)) {
+            if (!$this->bound($id)) {
                 throw new ContainerException('The ' . $id . ' has no implementation class. ', 600);
             }
             // TODO 当绑定的类并没有实现该接口
-            $reflectionClass = ReflectionManager::reflectClass($this->getAlias($id));
+            $reflectionClass = ReflectionManager::reflectClass($this->getBinding($id));
         }
 
         if ($reflectionClass->hasMethod(static::VIA)) {
@@ -207,7 +197,7 @@ class Container implements ContainerInterface
             return $this->callFunc($callable, $arguments);
         }
         [$id, $method] = $callable;
-        $id               = is_object($id) ? $id::class : $this->getAlias($id);
+        $id               = is_object($id) ? $id::class : $this->getBinding($id);
         $reflectionMethod = ReflectionManager::reflectMethod($id, $method);
         if (false === $reflectionMethod->isAbstract()) {
             $funcArgs = $this->getFuncArgs($reflectionMethod, $arguments);
