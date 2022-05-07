@@ -21,7 +21,7 @@ use ReflectionFunction;
 use ReflectionMethod;
 use ReflectionProperty;
 
-class ReflectionManager
+final class ReflectionManager
 {
     /**
      * @var array
@@ -35,13 +35,13 @@ class ReflectionManager
      */
     public static function reflectClass(string $className): ReflectionClass
     {
-        if (!isset(static::$container['class'][$className])) {
+        if (!isset(self::$container['class'][$className])) {
             if (!class_exists($className) && !interface_exists($className) && !trait_exists($className)) {
                 throw new InvalidArgumentException("Class {$className} not exist");
             }
-            static::$container['class'][$className] = new ReflectionClass($className);
+            self::$container['class'][$className] = new ReflectionClass($className);
         }
-        return static::$container['class'][$className];
+        return self::$container['class'][$className];
     }
 
     /**
@@ -54,14 +54,14 @@ class ReflectionManager
     public static function reflectMethod(string $className, string $method): ReflectionMethod
     {
         $key = $className . '::' . $method;
-        if (!isset(static::$container['method'][$key])) {
+        if (!isset(self::$container['method'][$key])) {
             // TODO check interface_exist
             if (!class_exists($className)) {
                 throw new InvalidArgumentException("Class {$className} not exist");
             }
-            static::$container['method'][$key] = static::reflectClass($className)->getMethod($method);
+            self::$container['method'][$key] = self::reflectClass($className)->getMethod($method);
         }
-        return static::$container['method'][$key];
+        return self::$container['method'][$key];
     }
 
     /**
@@ -74,13 +74,13 @@ class ReflectionManager
     public static function reflectProperty(string $className, string $property): ReflectionProperty
     {
         $key = $className . '::' . $property;
-        if (!isset(static::$container['property'][$key])) {
+        if (!isset(self::$container['property'][$key])) {
             if (!class_exists($className)) {
                 throw new InvalidArgumentException("Class {$className} not exist");
             }
-            static::$container['property'][$key] = static::reflectClass($className)->getProperty($property);
+            self::$container['property'][$key] = self::reflectClass($className)->getProperty($property);
         }
-        return static::$container['property'][$key];
+        return self::$container['property'][$key];
     }
 
     /**
@@ -91,7 +91,7 @@ class ReflectionManager
      */
     public static function reflectProperties(string $className, $filter = null): array
     {
-        return static::reflectClass($className)->getProperties($filter);
+        return self::reflectClass($className)->getProperties($filter);
     }
 
     /**
@@ -102,15 +102,15 @@ class ReflectionManager
     public static function reflectPropertyNames(string $className): mixed
     {
         $key = $className;
-        if (!isset(static::$container['property_names'][$key])) {
+        if (!isset(self::$container['property_names'][$key])) {
             if (!class_exists($className) && !interface_exists($className) && !trait_exists($className)) {
                 throw new InvalidArgumentException("Class {$className} not exist");
             }
-            static::$container['property_names'][$key] = value(fn($className) => array_map(
-                fn($property) => $property->getName(), static::reflectProperties($className))
+            self::$container['property_names'][$key] = value(fn($className) => array_map(
+                fn($property) => $property->getName(), self::reflectProperties($className))
             );
         }
-        return static::$container['property_names'][$key];
+        return self::$container['property_names'][$key];
     }
 
     /**
@@ -121,7 +121,7 @@ class ReflectionManager
     public static function clear(?string $key = null): void
     {
         if ($key === null) {
-            static::$container = [];
+            self::$container = [];
         }
     }
 

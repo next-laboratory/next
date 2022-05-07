@@ -23,11 +23,7 @@ use Max\Di\Aop\ProxyHandlerVisitor;
 use Max\Di\Exceptions\ProcessException;
 use Max\Utils\Filesystem;
 use PhpParser\Error;
-use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeTraverser;
-use PhpParser\Parser;
-use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter\Standard;
 use Psr\Container\ContainerExceptionInterface;
 use ReflectionException;
@@ -57,19 +53,9 @@ final class Scanner
     ];
 
     /**
-     * @var Parser
-     */
-    protected Parser $parser;
-
-    /**
      * @var Scanner
      */
     private static Scanner $scanner;
-
-    /**
-     * @var bool|mixed
-     */
-    protected bool $cache = false;
 
     /**
      * @var string
@@ -88,33 +74,35 @@ final class Scanner
     public static function init(ClassLoader $loader, array $options = []): void
     {
         if (!isset(self::$scanner)) {
-            $scanner = self::$scanner = new Scanner($loader, $options);
-            if (($pid = pcntl_fork()) == -1) {
-                throw new ProcessException('Process fork failed.');
-            }
-            pcntl_wait($pid);
-            $loader->addClassMap($scanner->proxy());
-            $scanner->collect();
+            self::$scanner = new Scanner($loader, $options);
         }
     }
 
     /**
      * @param ClassLoader $loader
      * @param array       $options
+     *
+     * @throws ContainerExceptionInterface
+     * @throws ReflectionException
      */
     private function __construct(protected ClassLoader $loader, array $options)
     {
         $this->runtimeDir = $runtimeDir = rtrim($options['runtimeDir'] ?? '', '/\\') . '/di/';
-        $this->cache      = $cache = $options['cache'] ?? false;
-        is_dir($runtimeDir) || mkdir($runtimeDir, 0755, true);
-        $this->proxyMap = $proxyMap = $this->runtimeDir . 'proxy.php';
-        if (!$cache && file_exists($proxyMap)) {
-            unlink($proxyMap);
-        }
+        $cache            = $options['cache'] ?? false;
         array_push($this->collectors, ...($options['collectors'] ?? []));
-        $this->parser     = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
+        is_dir($runtimeDir) || mkdir($runtimeDir, 0755, true);
         $this->astManager = new AstManager();
         $this->classMap   = $this->scanDir($options['paths'] ?? []);
+        $this->proxyMap   = $proxyMap = $this->runtimeDir . 'proxy.php';
+        if (!$cache || !file_exists($proxyMap)) {
+            file_exists($proxyMap) && unlink($proxyMap);
+            if (($pid = pcntl_fork()) == -1) {
+                throw new ProcessException('Process fork failed.');
+            }
+            pcntl_wait($pid);
+        }
+        $loader->addClassMap($this->getProxyMap());
+        $this->collect();
     }
 
     /**
@@ -124,71 +112,16 @@ final class Scanner
      */
     public function scanDir(array $dirs): array
     {
-        $finder   = new Finder();
-        $files    = $finder->in($dirs)->name('*.php')->files();
-        $classMap = [];
+        $files   = (new Finder())->in($dirs)->name('*.php')->files();
+        $classes = [];
         foreach ($files as $file) {
             $realPath = $file->getRealPath();
             foreach ($this->astManager->getClassesByRealPath($realPath) as $class) {
-                $classMap[$class] = $realPath;
+                $classes[$class] = $realPath;
             }
-            //            try {
-            //                $ast = $this->parser->parse($file->getContents());
-            //                foreach ($ast as $stmt) {
-            //                    if ($stmt instanceof Namespace_) {
-            //                        $namespace = $stmt->name->toCodeString();
-            //                        foreach ($stmt->stmts as $subStmt) {
-            //                            // TODO 不支持Trait
-            //                            if ($subStmt instanceof Class_) {
-            //                                $classMap[$namespace . '\\' . $subStmt->name->toString()] = $realPath;
-            //                            }
-            //                        }
-            //                    }
-            //                }
-            //            } catch (Error $error) {
-            //                echo $error->getMessage() . PHP_EOL;
-            //            }
         }
-        return $classMap;
-        //        foreach ($dirs as $dir) {
-        //            $dir = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
-        //            foreach ($dir as $file) {
-        //                if (!$file->isFile()) {
-        //                    continue;
-        //                }
-        //                $path = $file->getRealPath() ?: $file->getPathname();
-        //                if ('php' !== pathinfo($path, PATHINFO_EXTENSION)) {
-        //                    continue;
-        //                }
-        //                $this->findClasses($path);
-        //                gc_mem_caches();
-        //            }
-        //        }
+        return $classes;
     }
-
-    /**
-     * @param string $path
-     *
-     * @return void
-     */
-    //    protected function findClasses(string $path): void
-    //    {
-    //        try {
-    //            $ast = $this->parser->parse(file_get_contents($path));
-    //            foreach ($ast as $stmt) {
-    //                if ($stmt instanceof Namespace_) {
-    //                    $namespace = $stmt->name->toCodeString();
-    //                    foreach ($stmt->stmts as $subStmt) {
-    //                        if ($subStmt instanceof Class_) {
-    //                            $this->classMap[$namespace . '\\' . $subStmt->name->toString()] = $path;
-    //                        }
-    //                    }
-    //                }
-    //            }
-    //        } catch (Error $error) {
-    //            echo $error->getMessage() . PHP_EOL;
-    //        }
-    //    }
 
     /**
      * @return mixed|void
@@ -196,7 +129,7 @@ final class Scanner
      * @throws Exceptions\NotFoundException
      * @throws ReflectionException
      */
-    protected function proxy()
+    protected function getProxyMap()
     {
         $filesystem = new Filesystem();
         if (!$filesystem->exists($this->proxyMap)) {
@@ -208,7 +141,7 @@ final class Scanner
             $scanMap          = [];
             foreach ($collectedClasses as $class) {
                 $proxyPath = $proxyDir . str_replace('\\', '_', $class) . '_Proxy.php';
-                $filesystem->put($proxyPath, $this->parse($class, $this->classMap[$class]));
+                $filesystem->put($proxyPath, $this->generateProxyClass($class, $this->classMap[$class]));
                 $scanMap[$class] = $proxyPath;
             }
             $filesystem->put($this->proxyMap, sprintf("<?php \nreturn %s;", var_export($scanMap, true)));
@@ -223,10 +156,10 @@ final class Scanner
      *
      * @return string
      */
-    protected function parse($class, $path): string
+    protected function generateProxyClass($class, $path): string
     {
         try {
-            $ast       = $this->parser->parse(file_get_contents($path));
+            $ast       = $this->astManager->getNodes($path);
             $traverser = new NodeTraverser();
             $metadata  = new Metadata($this->loader, $class);
             $traverser->addVisitor(new PropertyHandlerVisitor($metadata));

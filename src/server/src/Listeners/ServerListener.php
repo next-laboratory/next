@@ -4,23 +4,34 @@ declare(strict_types=1);
 
 namespace Max\Server\Listeners;
 
+use Max\Console\Output\Formatter;
 use Max\Event\Contracts\EventListenerInterface;
+use Max\Server\Events\OnBeforeShutdown;
 use Max\Server\Events\OnManagerStart;
+use Max\Server\Events\OnManagerStop;
+use Max\Server\Events\OnShutdown;
 use Max\Server\Events\OnStart;
+use Max\Server\Events\OnWorkerExit;
 use Max\Server\Events\OnWorkerStart;
+use Max\Server\Events\OnWorkerStop;
 
 class ServerListener implements EventListenerInterface
 {
-    public const EVENT_START         = 'start';
-    public const EVENT_WORKER_START  = 'workerStart';
-    public const EVENT_MANAGER_START = 'managerStart';
-    public const EVENT_TASK          = 'task';
-    public const EVENT_CLOSE         = 'close';
-    public const EVENT_FINISH        = 'finish';
-    public const EVENT_MESSAGE       = 'message';
-    public const EVENT_OPEN          = 'open';
-    public const EVENT_REQUEST       = 'request';
-    public const EVENT_RECEIVE       = 'receive';
+    public const EVENT_START           = 'start';
+    public const EVENT_WORKER_START    = 'workerStart';
+    public const EVENT_MANAGER_START   = 'managerStart';
+    public const EVENT_MANAGER_STOP    = 'managerStop';
+    public const EVENT_WORKER_STOP     = 'workerStop';
+    public const EVENT_WORKER_EXIT     = 'workerExit';
+    public const EVENT_BEFORE_SHUTDOWN = 'beforeShutdown';
+    public const EVENT_SHUTDOWN        = 'shutdown';
+    public const EVENT_TASK            = 'task';
+    public const EVENT_CLOSE           = 'close';
+    public const EVENT_FINISH          = 'finish';
+    public const EVENT_MESSAGE         = 'message';
+    public const EVENT_OPEN            = 'open';
+    public const EVENT_REQUEST         = 'request';
+    public const EVENT_RECEIVE         = 'receive';
 
     /**
      * @return iterable
@@ -31,6 +42,10 @@ class ServerListener implements EventListenerInterface
             OnStart::class,
             OnManagerStart::class,
             OnWorkerStart::class,
+            OnManagerStop::class,
+            OnShutdown::class,
+            OnBeforeShutdown::class,
+            OnWorkerExit::class,
         ];
     }
 
@@ -53,6 +68,20 @@ class ServerListener implements EventListenerInterface
             case $event instanceof OnWorkerStart:
                 $task = $event->server->taskworker ? 'task-' : '';
                 swoole_set_process_name('max-php-' . $task . 'worker-' . $event->workerId);
+                break;
+            case $event instanceof OnManagerStop:
+                $pid = '/var/run/max-php-manager.pid';
+                file_exists($pid) && unlink($pid);
+                break;
+            case $event instanceof OnWorkerExit:
+                break;
+            case $event instanceof OnShutdown:
+                $pid = '/var/run/max-php-master.pid';
+                file_exists($pid) && unlink($pid);
+                echo (new Formatter())->setForeground('red')
+                                      ->apply('Server stopped.') . PHP_EOL;
+                break;
+            case $event instanceof OnBeforeShutdown:
         }
     }
 }

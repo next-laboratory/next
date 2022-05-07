@@ -40,6 +40,19 @@ class Server extends Command
      */
     public function run()
     {
+        echo <<<EOT
+,--.   ,--.                  ,------. ,--.  ,--.,------.  
+|   `.'   | ,--,--.,--.  ,--.|  .--. '|  '--'  ||  .--. ' 
+|  |'.'|  |' ,-.  | \  `'  / |  '--' ||  .--.  ||  '--' | 
+|  |   |  |\ '-'  | /  /.  \ |  | --' |  |  |  ||  | --'  
+`--'   `--' `--`--''--'  '--'`--'     `--'  `--'`--' 
+
+EOT;
+
+        if (posix_getuid() > 0) {
+            exec('whoami', $user);
+            $this->output->debug('建议使用root用户启动服务，当前用户：' . $user[0]);
+        }
         echo 'PHP:' . PHP_VERSION . PHP_EOL;
         echo 'swoole:' . SWOOLE_VERSION . PHP_EOL;
         $container       = Context::getContainer();
@@ -49,6 +62,7 @@ class Server extends Command
             case 'start':
                 $server = new \Max\Server\Server($repository->get('server'), $eventDispatcher);
                 $container->set(\Max\Server\Server::class, $server);
+                $this->output->debug('Server started.');
                 $server->start();
                 break;
             case 'stop':
@@ -63,10 +77,10 @@ class Server extends Command
                     posix_kill((int)file_get_contents($pid), SIGTERM);
                     unlink($pid);
                 }
-                echo 'Server stopped!' . PHP_EOL;
+                $this->output->notice('Server stopped!');
                 break;
             default:
-                echo 'Please input action \'start\' or \'stop\'' . PHP_EOL;
+                $this->output->warning('Please input action \'start\' or \'stop\'');
         }
     }
 }

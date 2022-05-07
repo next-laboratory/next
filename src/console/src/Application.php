@@ -125,7 +125,7 @@ class Application
             return 0;
         } catch (Throwable $throwable) {
             $output->error($throwable::class . ':' . $throwable->getMessage() . ' at ' . $throwable->getFile() . '+' . $throwable->getLine());
-            $output->warning($throwable->getTraceAsString());
+            echo $throwable->getTraceAsString() . PHP_EOL;
             return 1;
         }
     }

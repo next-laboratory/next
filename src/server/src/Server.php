@@ -16,13 +16,19 @@ namespace Max\Server;
 use InvalidArgumentException;
 use Max\Di\Exceptions\NotFoundException;
 use Max\Event\EventDispatcher;
+use Max\Server\Events\OnBeforeShutdown;
 use Max\Server\Events\OnManagerStart;
+use Max\Server\Events\OnManagerStop;
+use Max\Server\Events\OnShutdown;
 use Max\Server\Events\OnStart;
 use Max\Server\Events\OnWorkerStart;
+use Max\Server\Events\OnWorkerStop;
 use Max\Server\Listeners\ServerListener;
 use Psr\Container\ContainerExceptionInterface;
 use ReflectionException;
+use RuntimeException;
 use Swoole\Http\Server as SwooleHttpServer;
+use Swoole\Process;
 use Swoole\Server as SwooleServer;
 use Swoole\WebSocket\Server as SwooleWebSocketServer;
 use function array_replace_recursive;
@@ -48,9 +54,14 @@ class Server
      * 默认事件
      */
     protected const DEFAULT_EVENTS = [
-        ServerListener::EVENT_START         => OnStart::class,
-        ServerListener::EVENT_MANAGER_START => OnManagerStart::class,
-        ServerListener::EVENT_WORKER_START  => OnWorkerStart::class
+        ServerListener::EVENT_START           => OnStart::class,
+        ServerListener::EVENT_MANAGER_START   => OnManagerStart::class,
+        ServerListener::EVENT_WORKER_START    => OnWorkerStart::class,
+        ServerListener::EVENT_MANAGER_STOP    => OnManagerStop::class,
+        ServerListener::EVENT_WORKER_STOP     => OnWorkerStop::class,
+        ServerListener::EVENT_WORKER_EXIT     => OnWorkerExit::class,
+        ServerListener::EVENT_BEFORE_SHUTDOWN => OnBeforeShutdown::class,
+        ServerListener::EVENT_SHUTDOWN        => OnShutdown::class,
     ];
 
     /**
@@ -110,6 +121,21 @@ class Server
             echo 'Server "' . $name . '" listening at ' . $host . ':' . $port . PHP_EOL;
         }
         $this->server->start();
+    }
+
+    public function stop()
+    {
+        $pids = [
+            '/var/run/max-php-manager.pid',
+            '/var/run/max-php-master.pid',
+        ];
+        foreach ($pids as $pid) {
+            if (!file_exists($pid)) {
+                throw new RuntimeException('服务没有运行');
+            }
+            Process::kill((int)file_get_contents($pid), SIGTERM);
+            unlink($pid);
+        }
     }
 
     /**
