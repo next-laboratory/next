@@ -17,9 +17,15 @@ use ArrayAccess;
 use JsonSerializable;
 use Max\Utils\Collection;
 use Max\Utils\Contracts\Arrayable;
+use Psr\Http\Message\ServerRequestInterface;
 
-class JsonResource implements Arrayable, JsonSerializable, ArrayAccess
+abstract class JsonResource implements Arrayable, JsonSerializable, ArrayAccess
 {
+    protected int $perpage = 15;
+    protected int $page    = 1;
+    protected const PAGE    = 'page';
+    protected const PERPAGE = 'perpage';
+
     /**
      * @var
      */
@@ -28,7 +34,7 @@ class JsonResource implements Arrayable, JsonSerializable, ArrayAccess
     /**
      * @param $resource
      */
-    public function __construct($resource)
+    public function __construct($resource = null)
     {
         $this->resource = $resource;
     }
@@ -59,19 +65,50 @@ class JsonResource implements Arrayable, JsonSerializable, ArrayAccess
     /**
      * 分页
      *
-     * @param     $resources
-     * @param int $page
-     * @param int $perpage
+     * @param                             $resources
+     * @param ServerRequestInterface|null $request
      *
      * @return Pagination
      */
-    public static function paginate($resources, int $page = 1, int $perpage = 15): Pagination
+    public static function paginate($resources, ?ServerRequestInterface $request = null): Pagination
     {
         if (!$resources instanceof Collection) {
             $resources = Collection::make($resources);
         }
+        $resource = new static();
+        $page     = $resource->getPage();
+        $perpage  = $resource->getPerpage();
+        if (!is_null($request)) {
+            $page    = $request->getParsedBody()[static::PAGE] ?? ($request->getQueryParams()[static::PAGE] ?? $page);
+            $perpage = $request->getParsedBody()[static::PERPAGE] ?? ($request->getQueryParams()[static::PERPAGE] ?? $perpage);
+        }
+        $page    = max(0, (int)$page);
+        $perpage = max(0, (int)$perpage);
+        return new Pagination($resources->forPage($page, $perpage)->map(fn($resource) => new static($resource))->values(), $resources->count(), $page, $perpage, $request);
+    }
 
-        return new Pagination($resources->forPage($page, $perpage)->map(fn($resource) => new static($resource)), $resources->count(), $page, $perpage);
+    /**
+     * @return int
+     */
+    public function getPerpage(): int
+    {
+        return $this->perpage;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPage(): int
+    {
+        return $this->page;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getResource()
+    {
+        return $this->resource;
     }
 
     /**
@@ -79,7 +116,8 @@ class JsonResource implements Arrayable, JsonSerializable, ArrayAccess
      *
      * @return mixed
      */
-    public function __get(string $name)
+    public
+    function __get(string $name)
     {
         return $this->resource->{$name};
     }
@@ -87,7 +125,8 @@ class JsonResource implements Arrayable, JsonSerializable, ArrayAccess
     /**
      * @return array
      */
-    #[\ReturnTypeWillChange]
+    #[
+        \ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return $this->toArray();
