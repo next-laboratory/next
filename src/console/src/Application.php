@@ -113,7 +113,7 @@ class Application
     {
         $input  ??= new ArgvInput();
         $output ??= new ConsoleOutput();
-        if (!$name = $input->getFirstArgument()) {
+        if (!$name = $input->getCommand()) {
             $name = 'help';
         }
         if (!$this->has($name)) {

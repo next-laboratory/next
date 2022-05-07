@@ -30,9 +30,17 @@ abstract class Input implements InputInterface
     /**
      * @return string|null
      */
-    public function getFirstArgument(): ?string
+    public function getCommand(): ?string
     {
         return $this->arguments[0] ?? null;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFirstArgument(): ?string
+    {
+        return $this->arguments[1] ?? null;
     }
 
     /**
