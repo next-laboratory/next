@@ -7,7 +7,6 @@ use Max\Console\Commands\Command;
 use Max\Di\Exceptions\NotFoundException;
 use ReflectionException;
 
-#[\Max\Console\Annotations\Command]
 class Queue extends Command
 {
     /**

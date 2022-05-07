@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Max\Framework\Console\Commands;
 
+use Max\Console\Commands\Command;
 use Throwable;
 
-#[\Max\Console\Annotations\Command]
 class VendorPublish extends Command
 {
     /**

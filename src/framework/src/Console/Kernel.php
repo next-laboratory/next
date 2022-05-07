@@ -46,7 +46,11 @@ class Kernel extends Application
         foreach ($bindings ?? [] as $id => $binding) {
             $container->bind($id, $binding);
         }
+
         Scanner::init($loader, $repository->get('di.scanner'));
+        foreach ($config['commands'] ?? [] as $command) {
+            $this->add(new $command());
+        }
         /** @var EventDispatcher $eventDispatcher */
         $eventDispatcher  = $container->make(EventDispatcher::class);
         $listenerProvider = $eventDispatcher->getListenerProvider();

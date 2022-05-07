@@ -11,7 +11,6 @@ use Max\Utils\Exceptions\FileNotFoundException;
 use Max\Utils\Filesystem;
 use Psr\Http\Message\ServerRequestInterface;
 
-#[\Max\Console\Annotations\Command]
 class Make extends Command
 {
     /**

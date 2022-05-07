@@ -21,7 +21,6 @@ use Psr\Container\ContainerExceptionInterface;
 use ReflectionException;
 use RuntimeException;
 
-#[\Max\Console\Annotations\Command]
 class Server extends Command
 {
     /**

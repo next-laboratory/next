@@ -13,7 +13,6 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use ReflectionException;
 
-#[\Max\Console\Annotations\Command]
 class RouteList extends Command
 {
     /**
