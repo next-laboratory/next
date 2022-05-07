@@ -57,8 +57,8 @@ class RouteList extends Command
     protected function getRoutes(): Collection
     {
         /** @var RouteCollector $routeCollector */
+        make(RequestHandlerInterface::class);
         $routeCollector = make(RouteCollector::class);
-        $routeCollector->compile();
         $routes         = [];
         foreach ($routeCollector->all() as $registeredRoute) {
             foreach ($registeredRoute as $route) {
