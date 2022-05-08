@@ -53,7 +53,12 @@ class ProxyHandlerVisitor extends NodeVisitorAbstract
             );
         }
         if ($node instanceof ClassMethod) {
-            if(AspectCollector::getMethodAspects($this->metadata->className, $node->name->toString())) {
+            $methodName = $node->name->toString();
+            if($methodName === '__construct') {
+                $this->metadata->hasConstructor = true;
+                return;
+            }
+            if(AspectCollector::getMethodAspects($this->metadata->className, $methodName)) {
                 $methodCall = new MethodCall(
                     new Variable(new Name('this')),
                     '__callViaProxy',
