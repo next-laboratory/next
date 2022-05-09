@@ -21,7 +21,7 @@ use function apc_fetch;
 use function apc_inc;
 use function apc_store;
 
-class Apc extends CacheHandler
+class ApcHandler extends CacheHandler
 {
     /**
      * @inheritDoc

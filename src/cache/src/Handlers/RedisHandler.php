@@ -15,7 +15,7 @@ namespace Max\Cache\Handlers;
 
 use Max\Database\Redis as DatabaseRedis;
 
-class Redis extends CacheHandler
+class RedisHandler extends CacheHandler
 {
     /**
      * 初始化

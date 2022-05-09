@@ -15,7 +15,7 @@ namespace Max\Cache\Handlers;
 
 use Max\Utils\Traits\AutoFillProperties;
 
-class Memcached extends CacheHandler
+class MemcachedHandler extends CacheHandler
 {
     use AutoFillProperties;
 

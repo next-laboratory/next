@@ -33,7 +33,7 @@ use function serialize;
 use function strtolower;
 use function unlink;
 
-class File extends CacheHandler
+class FileHandler extends CacheHandler
 {
     /**
      * 缓存路径
