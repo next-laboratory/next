@@ -13,43 +13,40 @@ declare(strict_types=1);
 
 namespace Max\View;
 
-use Max\Config\Repository;
+use Max\Config\Contracts\ConfigInterface;
 use Max\View\Contracts\ViewEngineInterface;
 
 class Renderer
 {
     /**
-     * Renderer constructor.
-     *
-     * @param ViewEngineInterface $viewEngine
+     * @var ViewEngineInterface|mixed
      */
-    public function __construct(protected ViewEngineInterface $viewEngine)
-    {
-    }
+    protected ViewEngineInterface $engine;
 
     /**
-     * @param Repository $repository
-     * @return static
+     * Renderer constructor.
+     *
+     * @param ConfigInterface $config
      */
-    public static function __new(Repository $repository): static
+    public function __construct(ConfigInterface $config)
     {
-        $config = $repository->get('view');
-        $engine = $config['default'];
-        $config = $config['engines'][$engine];
-        $engine = $config['engine'];
-        return new static(new $engine($config['options']));
+        $config       = $config->get('view');
+        $engine       = $config['default'];
+        $config       = $config['engines'][$engine];
+        $engine       = $config['engine'];
+        $this->engine = new $engine($config['options']);
     }
 
     /**
      * @param string $template
-     * @param array $arguments
+     * @param array  $arguments
      *
      * @return string
      */
     public function render(string $template, array $arguments = []): string
     {
         ob_start();
-        echo (string)$this->viewEngine->render($template, $arguments);
+        echo (string)$this->engine->render($template, $arguments);
         return (string)ob_get_clean();
     }
 }
