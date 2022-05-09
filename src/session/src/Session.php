@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace Max\Session;
 
 use InvalidArgumentException;
-use Max\Config\Repository;
+use Max\Config\Contracts\ConfigInterface;
+use Max\Context\Context;
 use Max\Session\Context\Storage;
 use Max\Session\Exceptions\SessionException;
-use Max\Context\Context;
 use SessionHandlerInterface;
 use Throwable;
 use function is_string;
@@ -30,33 +30,25 @@ use function unserialize;
 class Session
 {
     /**
-     * Session句柄
+     * Session Handler
      *
      * @var SessionHandlerInterface
      */
     protected SessionHandlerInterface $handler;
 
     /**
-     * @param array $config
+     * @param ConfigInterface $config
      */
-    public function __construct(array $config)
+    public function __construct(ConfigInterface $config)
     {
+        $config = $config->get('session');
         try {
-            $config = $config['stores'][$config['default']];
-            $handler = $config['handler'];
+            $config        = $config['stores'][$config['default']];
+            $handler       = $config['handler'];
             $this->handler = new $handler($config['options']);
         } catch (Throwable $throwable) {
             throw new InvalidArgumentException('The configuration file may be incorrect: ' . $throwable->getMessage());
         }
-    }
-
-    /**
-     * @param Repository $repository
-     * @return static
-     */
-    public static function __new(Repository $repository)
-    {
-        return new static($repository->get('session'));
     }
 
     /**
@@ -66,7 +58,7 @@ class Session
      */
     public function start(?string $id = null): void
     {
-        $id ??= $this->createId();
+        $id   ??= $this->createId();
         $data = $this->handler->read($id);
         if (is_string($data)) {
             $data = unserialize($data) ?: [];
@@ -90,15 +82,7 @@ class Session
      */
     public function close(): bool
     {
-        return $this->getHandler()->close();
-    }
-
-    /**
-     * @return SessionHandlerInterface
-     */
-    protected function getHandler(): SessionHandlerInterface
-    {
-        return $this->handler;
+        return $this->handler->close();
     }
 
     /**
@@ -113,7 +97,7 @@ class Session
 
     /**
      * @param string $key
-     * @param null $default
+     * @param null   $default
      *
      * @return mixed
      */
@@ -162,16 +146,6 @@ class Session
         $storage = Context::get(Storage::class);
         $this->handler->destroy($storage->getId());
         Context::delete(Storage::class);
-    }
-
-    /**
-     * @param SessionHandlerInterface $handler
-     *
-     * @return void
-     */
-    public function setHandler(SessionHandlerInterface $handler): void
-    {
-        $this->handler = $handler;
     }
 
     /**

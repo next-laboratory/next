@@ -17,7 +17,8 @@
     "require": {
         "php": "^8.0",
         "max/context": "dev-master",
-        "max/utils": "dev-master"
+        "max/utils": "dev-master",
+        "max/config": "dev-master"
     },
     "extra": {
         "max": {

@@ -31,7 +31,7 @@ use function rtrim;
 use function time;
 use function unlink;
 
-class File implements SessionHandlerInterface
+class FileHandler implements SessionHandlerInterface
 {
     use AutoFillProperties;
 
