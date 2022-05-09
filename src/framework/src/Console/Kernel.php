@@ -24,7 +24,7 @@ class Kernel extends Application
         $env->load(new IniFileLoader('./.env'));
         /** @var Repository $repository */
         $repository = $container->make(Repository::class);
-        $repository->load(glob(base_path('config/*.php')));
+        $repository->scan(base_path('config'));
         $bindings = $repository->get('di.bindings', []);
 
         $installed = json_decode(file_get_contents(BASE_PATH . '/vendor/composer/installed.json'), true);
