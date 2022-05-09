@@ -20,5 +20,10 @@
     "require": {
         "php": "^8.0",
         "max/utils": "dev-master"
+    },
+    "extra": {
+        "max": {
+            "config": "Max\\Config\\ConfigProvider"
+        }
     }
 }

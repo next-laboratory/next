@@ -13,10 +13,14 @@ declare(strict_types=1);
 
 namespace Max\Config;
 
+use Max\Config\Contracts\ConfigInterface;
 use Max\Utils\Arr;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use SplFileInfo;
 use function pathinfo;
 
-class Repository
+class Repository implements ConfigInterface
 {
     /**
      * 配置数组
@@ -50,6 +54,32 @@ class Repository
     }
 
     /**
+     * 扫描目录
+     *
+     * @param string|array $dirs
+     *
+     * @return void
+     */
+    public function scan(string|array $dirs): void
+    {
+        foreach ((array)$dirs as $dir) {
+            $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
+            /** @var SplFileInfo $file */
+            foreach ($files as $file) {
+                if (!$file->isFile()) {
+                    continue;
+                }
+                $path = $file->getRealPath() ?: $file->getPathname();
+                if ('php' !== pathinfo($path, PATHINFO_EXTENSION)) {
+                    continue;
+                }
+                $this->loadOne($path);
+                gc_mem_caches();
+            }
+        }
+    }
+
+    /**
      * 全部
      *
      * @return array
@@ -62,22 +92,32 @@ class Repository
     /**
      * 加载多个配文件
      *
-     * @param array $map
+     * @param string|array $files
      */
-    public function load(array $map): void
+    public function load(string|array $files): void
     {
-        foreach ($map as $item) {
-            $this->loadOne($item);
+        is_array($files) ? $this->loadMany($files) : $this->loadOne($files);
+    }
+
+    /**
+     * @param array $files
+     *
+     * @return void
+     */
+    public function loadMany(array $files): void
+    {
+        foreach ($files as $file) {
+            $this->loadOne($file);
         }
     }
 
     /**
      * 加载一个配置文件
      *
-     * @param string $config
+     * @param string $file
      */
-    public function loadOne(string $config): void
+    public function loadOne(string $file): void
     {
-        $this->items[pathinfo($config, PATHINFO_FILENAME)] = include_once $config;
+        $this->items[pathinfo($file, PATHINFO_FILENAME)] = include_once $file;
     }
 }
