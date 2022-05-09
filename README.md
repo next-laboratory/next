@@ -47,7 +47,7 @@ composer create-project max/http-project max  // 安装http项目
 ### 启动服务
 
 ```shell
-php bin/max.php start
+php max start
 ```
 
 这行命令会在你命令执行目录安装框架
