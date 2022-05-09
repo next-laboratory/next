@@ -20,6 +20,7 @@
         "ext-json": "*",
         "ext-swoole": ">=4.6",
         "max/di": "dev-master",
+        "max/config": "dev-master",
         "max/utils": "dev-master",
         "max/event": "dev-master"
     },

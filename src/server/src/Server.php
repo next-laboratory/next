@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Max\Server;
 
 use InvalidArgumentException;
+use Max\Config\Contracts\ConfigInterface;
 use Max\Di\Exceptions\NotFoundException;
 use Max\Event\EventDispatcher;
 use Max\Server\Events\OnBeforeShutdown;
@@ -78,19 +79,17 @@ class Server
      * @param array                $config
      * @param EventDispatcher|null $eventDispatcher
      */
-    public function __construct(array $config, protected ?EventDispatcher $eventDispatcher = null)
+    public function __construct(ConfigInterface $config, protected ?EventDispatcher $eventDispatcher = null)
     {
-        array_multisort(array_column($config['servers'], 'type'), SORT_DESC, $config['servers']);
-        $this->config = $config;
-        if (!is_null($this->eventDispatcher)) {
-            $this->eventDispatcher->getListenerProvider()->addListener(new ServerListener());
-        }
+        $this->config = $config->get('server');
+        $servers      = $this->config['servers'];
+        array_multisort(array_column($servers, 'type'), SORT_DESC, $servers);
+        $this->eventDispatcher?->getListenerProvider()->addListener(new ServerListener());
     }
 
     /**
      * @return void
      * @throws ContainerExceptionInterface
-     * @throws NotFoundException
      * @throws ReflectionException
      */
     public function start()
@@ -123,7 +122,7 @@ class Server
         $this->server->start();
     }
 
-    public function stop()
+    public function stop(): void
     {
         $pids = [
             '/var/run/max-php-manager.pid',
