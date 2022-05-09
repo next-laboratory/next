@@ -1,0 +1,15 @@
+{
+    "name": "max/redis",
+    "autoload": {
+        "psr-4": {
+            "Max\\Redis\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "chengyao",
+            "email": "987861463@qq.com"
+        }
+    ],
+    "require": {}
+}
