@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Max\View\Exceptions;
 
-use Exception;
+use RuntimeException;
 
-class ViewNotExistException extends Exception
+class ViewNotExistException extends RuntimeException
 {
 }

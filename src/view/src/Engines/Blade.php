@@ -62,7 +62,7 @@ class Blade implements ViewEngineInterface
      *
      * @return void
      */
-    public function setPath(string $path)
+    public function setPath(string $path): void
     {
         $this->path = $path;
     }
