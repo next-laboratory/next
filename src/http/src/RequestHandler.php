@@ -117,9 +117,8 @@ class RequestHandler implements RequestHandlerInterface
                 default => $this->jsonResponse($response),
             };
         }
-        \Max\Context\Context::put(ResponseInterface::class, $response);
 
-        return $this->response;
+        return $response;
     }
 
     /**

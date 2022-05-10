@@ -89,19 +89,26 @@ class RequestHandler implements RequestHandlerInterface
      */
     protected function handleMiddleware(object|array|string $middleware, ServerRequestInterface $request): ResponseInterface
     {
-        $addition = [];
+        $parameters = [];
+
+        /**
+         * 数组方式传递中间件，[中间件，参数数组]
+         */
         if (is_array($middleware)) {
-            [$middleware, $addition] = $middleware;
+            [$middleware, $parameters] = $middleware;
         }
 
-        $addition = is_array($addition) ? $addition : [$addition];
+        $parameters = is_array($parameters) ? $parameters : [$parameters];
 
+        /**
+         * 闭包中间件
+         */
         if ($middleware instanceof Closure) {
-            return $middleware($request, $this, ...$addition);
+            return $middleware($request, $this, ...$parameters);
         }
 
         if (is_string($middleware)) {
-            $middleware = is_null($this->container) ? new $middleware(...$addition) : $this->container->make($middleware, $addition);
+            $middleware = is_null($this->container) ? new $middleware(...$parameters) : $this->container->make($middleware, $parameters);
         }
 
         if ($middleware instanceof MiddlewareInterface) {
