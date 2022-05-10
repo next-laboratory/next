@@ -37,7 +37,7 @@ class Repository implements ConfigInterface
      *
      * @return mixed
      */
-    public function get(string $key = null, $default = null): mixed
+    public function get(string $key, $default = null): mixed
     {
         return Arr::get($this->items, $key, $default);
     }
