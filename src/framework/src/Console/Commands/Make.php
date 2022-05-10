@@ -77,17 +77,15 @@ class Make extends Command
 
         $path           = base_path('app/Http/Controllers/' . str_replace('\\', '/', $namespace) . '/');
         $fileSystem     = new Filesystem();
-        $controllerFile = $path . $controller . '.php';
+        $controllerFile = $path . $controller . 'Controller.php';
         if ($fileSystem->exists($controllerFile)) {
             $this->output->warning('控制器已经存在!');
             return;
         }
 
         $fileSystem->exists($path) || $fileSystem->makeDirectory($path, 0777, true);
-
-        $file = str_replace(['{{namespace}}', '{{class}}'], ['App\\Http\\Controllers' . $namespace, $controller], $fileSystem->get($file));
-        $fileSystem->put($path . $controller . '.php', $file);
-        $this->output->debug("控制器App\\Http\\Controllers{$namespace}\\{$controller}创建成功！");
+        $fileSystem->put($controllerFile, str_replace(['{{namespace}}', '{{class}}', '{{path}}'], ['App\\Http\\Controllers' . $namespace, $controller . 'Controller', strtolower($controller)], $fileSystem->get($file)));
+        $this->output->debug("控制器App\\Http\\Controllers{$namespace}\\{$controller}Controller创建成功！");
     }
 
     /**

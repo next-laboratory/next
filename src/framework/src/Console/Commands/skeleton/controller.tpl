@@ -7,7 +7,7 @@ namespace {{namespace}};
 use Max\Http\Annotations\Controller;
 use Max\Http\Annotations\GetMapping;
 
-#[Controller(prefix: '/')]
+#[Controller(prefix: '/{{path}}')]
 class {{class}}
 {
     #[GetMapping(path: '/')]

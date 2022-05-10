@@ -9,7 +9,7 @@ use Max\Http\Annotations\GetMapping;
 use Max\Http\Annotations\DeleteMapping;
 use Max\Http\Annotations\RequestMapping;
 
-#[Controller(prefix: '/')]
+#[Controller(prefix: '/{{path}}')]
 class {{class}}
 {
     #[GetMapping(path: '/')]
