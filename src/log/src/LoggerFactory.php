@@ -13,7 +13,8 @@ declare(strict_types=1);
 
 namespace Max\Log;
 
-use Max\Config\Repository;
+use RuntimeException;
+use Max\Config\Contracts\ConfigInterface;
 use Monolog\Logger as MonologLogger;
 use Psr\Log\LoggerInterface;
 
@@ -30,19 +31,11 @@ class LoggerFactory
     protected array $config;
 
     /**
-     * @param array $config
+     * @param ConfigInterface $config
      */
-    public function __construct(array $config)
+    public function __construct(ConfigInterface $config)
     {
-        $this->config = $config;
-    }
-
-    /**
-     * @return static
-     */
-    public static function __new(Repository $repository)
-    {
-        return new static($repository->get('logger'));
+        $this->config = $config->get('logger');
     }
 
     /**
@@ -52,17 +45,24 @@ class LoggerFactory
      *
      * @return LoggerInterface
      */
-    public function get(string $name = 'default'): LoggerInterface
+    public function get(?string $name = null): LoggerInterface
     {
-        $name = ('default' === $name) ? $this->config[$name] : $name;
+        $name ??= $this->config['default'] ?? null;
+        if (is_null($name)) {
+            throw new \InvalidArgumentException('日志配置文件有误');
+        }
+        $name = strtolower($name);
         if (!$this->has($name)) {
+            if (!isset($this->config['logger'][$name])) {
+                throw new RuntimeException('日志句柄不存在');
+            }
             $logger  = new MonologLogger($name);
-            $options = $this->config['logger'][isset($this->config['logger'][$name]) ? $name : $this->config['default']];
+            $options = $this->config['logger'][$name];
             $handler = $options['handler'];
             $logger->pushHandler(new $handler(...$options['options']));
-            $this->set(strtolower($name), $logger);
+            $this->set($name, $logger);
         }
-        return $this->logger[strtolower($name)];
+        return $this->logger[$name];
     }
 
     /**
@@ -85,5 +85,4 @@ class LoggerFactory
     {
         $this->logger[strtolower($name)] = $logger;
     }
-
 }

@@ -129,5 +129,4 @@ class Logger implements LoggerInterface
     {
         $this->logger->log($message, $context);
     }
-
 }
