@@ -1,12 +1,21 @@
 <?php
-declare(strict_types=1);
+
+declare (strict_types=1);
+
+/**
+ * This file is part of the Max package.
+ *
+ * (c) Cheng Yao <987861463@qq.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Max\Framework\Console\Commands;
 
 use Exception;
 use Max\Console\Commands\Command;
 use Max\Console\Exceptions\InvalidOptionException;
-use Max\Di\Annotation\Inject;
 use Max\Utils\Exceptions\FileNotFoundException;
 use Max\Utils\Filesystem;
 use Psr\Http\Message\ServerRequestInterface;
@@ -33,24 +42,27 @@ class Make extends Command
     /**
      * @var string
      */
-    protected string $skeletonPath = __DIR__ . '/../Commands/skeleton/';
+    protected string $skeletonPath = __DIR__ . '/skeleton/';
 
     /**
      * @return void
      * @throws InvalidOptionException|FileNotFoundException
+     * @throws Exception
      */
     public function run()
     {
         if ($this->input->hasArgument('--help') || $this->input->hasArgument('-H')) {
             echo $this->getHelp();
+        } else {
+            if ($this->input->hasOption('-c')) {
+                $this->makeController();
+            } else if ($this->input->hasOption('-mw')) {
+                $this->makeMiddleware();
+            } else {
+                throw new InvalidOptionException('Use `php max make --help` or `php max make -H` to look up for usable options.');
+            }
         }
-        if ($this->input->hasOption('-c')) {
-            return $this->makeController();
-        }
-        if ($this->input->hasOption('-mw')) {
-            return $this->makeMiddleware();
-        }
-        throw new InvalidOptionException('Use `php max make --help` or `php max make -H` to look up for usable options.');
+
     }
 
     /**
@@ -58,7 +70,7 @@ class Make extends Command
      * @throws FileNotFoundException
      * @throws Exception
      */
-    public function makeController()
+    public function makeController(): void
     {
         $file = $this->skeletonPath . ($this->input->hasArgument('--rest') ? 'controller_rest.tpl' : 'controller.tpl');
         [$namespace, $controller] = $this->parse($this->input->getOption('-c'));
@@ -79,18 +91,19 @@ class Make extends Command
     }
 
     /**
-     * @return mixed
+     * @return void
      * @throws Exception
      */
-    public function makeMiddleware()
+    public function makeMiddleware(): void
     {
         $file = $this->skeletonPath . 'middleware.tpl';
         [$namespace, $middleware] = $this->parse($this->input->getOption('-mw'));
-        $stream = str_replace(['{{namespace}}', '{{class}}'], ['App\\Http\\Middlewares' . $namespace, $middleware], file_get_contents($file));
-        $path   = base_path('app/Http/Middlewares/' . str_replace('\\', '/', $namespace) . '/');
-        Filesystem::exists($path) || Filesystem::makeDirectory($path, 0777, true);
-        file_put_contents($path . $middleware . '.php', $stream);
-        return $this->output->debug("中间件App\\Http\\Middlewares{$namespace}\\{$middleware}创建成功！");
+        $stream     = str_replace(['{{namespace}}', '{{class}}'], ['App\\Http\\Middlewares' . $namespace, $middleware], file_get_contents($file));
+        $path       = base_path('app/Http/Middlewares/' . str_replace('\\', '/', $namespace) . '/');
+        $fileSystem = new Filesystem();
+        $fileSystem->exists($path) || $fileSystem->makeDirectory($path, 0777, true);
+        $fileSystem->put($path . $middleware . '.php', $stream);
+        $this->output->debug("中间件App\\Http\\Middlewares{$namespace}\\{$middleware}创建成功！");
     }
 
     /**
@@ -98,7 +111,7 @@ class Make extends Command
      *
      * @return array
      */
-    protected function parse($input)
+    protected function parse($input): array
     {
         $array     = explode('/', $input);
         $class     = ucfirst(array_pop($array));
