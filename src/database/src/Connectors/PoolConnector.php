@@ -74,7 +74,7 @@ class PoolConnector implements ConnectorInterface, PoolInterface
      */
     protected function create()
     {
-        return new PDO($this->config->getDsn(), $this->config->getUser(), $this->config->getPassword(), $this->config->getOptions());;
+        return new PDO($this->config->getDsn(), $this->config->getUser(), $this->config->getPassword(), $this->config->getOptions());
     }
 
     /**

@@ -20,7 +20,8 @@
         "php": "^8.0",
         "ext-pdo": "*",
         "ext-json": "*",
-        "max/utils": "dev-master"
+        "max/utils": "dev-master",
+        "max/config": "dev-master"
     },
     "extra": {
         "max": {
