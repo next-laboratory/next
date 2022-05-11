@@ -56,7 +56,7 @@ class Manager
         }
         return $this->connections->offsetGet($name)->get();
     }
-
+    
     /**
      * @param string $name
      * @param array  $arguments

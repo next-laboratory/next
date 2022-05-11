@@ -2,6 +2,7 @@
 
 namespace Max\Redis\Connectors;
 
+use Max\Context\Context;
 use Max\Redis\Context\Connection;
 use Max\Redis\RedisConfig;
 use Swoole\Coroutine\Channel;

@@ -11,11 +11,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Max\Redis\Connectors\PoolConnector;
+
 return [
     'default'     => 'redis',
     'connections' => [
         'redis' => [
-            'connector' => \Max\Redis\Connectors\PoolConnector::class,
+            'connector' => PoolConnector::class,
             'options'   => [
                 'host'          => '127.0.0.1',
                 'port'          => 6379,

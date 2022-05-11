@@ -11,6 +11,10 @@ class RedisConfig
     /**
      * @var string
      */
+    protected string $name;
+    /**
+     * @var string
+     */
     protected string $host = '127.0.0.1';
 
     /**
@@ -49,6 +53,11 @@ class RedisConfig
     protected int $poolSize = 64;
 
     /**
+     * @var bool
+     */
+    protected bool $autofill = false;
+
+    /**
      * @param array $config
      */
     public function __construct(array $config)
@@ -62,6 +71,14 @@ class RedisConfig
     public function getAuth(): string
     {
         return $this->auth;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAutofill(): bool
+    {
+        return $this->autofill;
     }
 
     /**
@@ -97,6 +114,14 @@ class RedisConfig
     }
 
     /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
      * @return ?string
      */
     public function getReserved(): ?string
@@ -128,5 +153,4 @@ class RedisConfig
     {
         return $this->port;
     }
-
 }
