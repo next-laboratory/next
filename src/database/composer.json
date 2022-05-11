@@ -1,31 +1,30 @@
 {
-  "name": "max/database",
-  "type": "library",
-  "license": "Apache-2.0",
-  "description": "MaxPHP数据库操作组件！",
-  "homepage": "https://github.com/topyao/max-database",
-  "authors": [
-    {
-      "name": "chengyao",
-      "email": "987861463@qq.com",
-      "homepage": "https://www.1kmb.com"
+    "name": "max/database",
+    "type": "library",
+    "license": "Apache-2.0",
+    "description": "MaxPHP数据库操作组件！",
+    "homepage": "https://github.com/topyao/max-database",
+    "authors": [
+        {
+            "name": "chengyao",
+            "email": "987861463@qq.com",
+            "homepage": "https://www.1kmb.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Max\\Database\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.0",
+        "ext-pdo": "*",
+        "ext-json": "*",
+        "max/utils": "dev-master"
+    },
+    "extra": {
+        "max": {
+            "config": "Max\\Database\\ConfigProvider"
+        }
     }
-  ],
-  "autoload": {
-    "psr-4": {
-      "Max\\Database\\": "src/"
-    }
-  },
-  "require": {
-    "php": "^8.0",
-    "ext-pdo": "*",
-    "ext-json": "*",
-    "ext-redis": "*",
-    "max/utils": "dev-master"
-  },
-  "extra": {
-    "max": {
-      "config": "Max\\Database\\ConfigProvider"
-    }
-  }
 }

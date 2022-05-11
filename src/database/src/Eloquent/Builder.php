@@ -49,16 +49,12 @@ class Builder extends QueryBuilder
      * @param array $columns
      *
      * @return Collection
-     * @throws \Max\Database\Exceptions\PoolException
-     * @throws \Max\Database\Exceptions\QueryException
      */
     public function get(array $columns = ['*']): Collection
     {
-        return $this->query->wrap(function($PDO) use ($columns) {
-            return Collection::make(
-                $this->query->statement($PDO, $this->toSql($columns), $this->bindings)->fetchAll(PDO::FETCH_CLASS, $this->class)
-            );
-        });
+        return Collection::make(
+            $this->query->statement($this->toSql($columns), $this->bindings)->fetchAll(PDO::FETCH_CLASS, $this->class)
+        );
     }
 
     /**
@@ -80,15 +76,12 @@ class Builder extends QueryBuilder
      *
      * @return Model
      * @throws ModelNotFoundException
-     * @throws \Max\Database\Exceptions\PoolException
-     * @throws \Max\Database\Exceptions\QueryException
      */
     public function firstOrFail(array $columns = ['*']): Model
     {
-        $model = $this->query->wrap(function($PDO) use ($columns) {
-            return $this->query->statement($PDO, $this->limit(1)->toSql($columns), $this->bindings)->fetchObject($this->class);
-        });
-        return $model ?: throw new ModelNotFoundException('No data was found.');
+        return $this->query->statement(
+            $this->limit(1)->toSql($columns), $this->bindings
+        )->fetchObject($this->class) ?: throw new ModelNotFoundException('No data was found.');
     }
 
     /**
@@ -96,7 +89,7 @@ class Builder extends QueryBuilder
      * @param array       $columns
      * @param string|null $identifier
      *
-     * @return ?Model
+     * @return Model|null
      */
     public function find($id, array $columns = ['*'], ?string $identifier = null): ?Model
     {
@@ -110,8 +103,6 @@ class Builder extends QueryBuilder
      *
      * @return Model
      * @throws ModelNotFoundException
-     * @throws \Max\Database\Exceptions\PoolException
-     * @throws \Max\Database\Exceptions\QueryException
      */
     public function findOrFail($id, array $columns = ['*'], string $identifier = 'id'): Model
     {

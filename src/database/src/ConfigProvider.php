@@ -24,7 +24,5 @@ class ConfigProvider
     {
         $to = dirname(__DIR__, 4) . '/config/database.php';
         file_exists($to) || copy(__DIR__ . '/../publish/database.php', $to);
-        $to = dirname(__DIR__, 4) . '/config/redis.php';
-        file_exists($to) || copy(__DIR__ . '/../publish/redis.php', $to);
     }
 }

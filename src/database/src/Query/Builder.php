@@ -14,10 +14,9 @@ declare(strict_types=1);
 namespace Max\Database\Query;
 
 use Max\Database\Collection;
-use Max\Database\Query;
+use Max\Database\Contracts\QueryInterface;
 use Max\Utils\Traits\Conditionable;
 use PDO;
-use Throwable;
 
 class Builder
 {
@@ -96,16 +95,10 @@ class Builder
     protected array $column;
 
     /**
-     * @var Query
+     * @param QueryInterface $query
      */
-    protected Query $query;
-
-    /**
-     * @param Query $query
-     */
-    public function __construct(Query $query)
+    public function __construct(protected QueryInterface $query)
     {
-        $this->query = $query;
     }
 
     /**
@@ -386,8 +379,6 @@ class Builder
      * @param array $columns
      *
      * @return Collection
-     * @throws \Max\Database\Exceptions\PoolException
-     * @throws \Max\Database\Exceptions\QueryException
      */
     public function get(array $columns = ['*']): Collection
     {
@@ -398,8 +389,6 @@ class Builder
      * @param string|int $column
      *
      * @return int
-     * @throws \Max\Database\Exceptions\PoolException
-     * @throws \Max\Database\Exceptions\QueryException
      */
     public function count(string|int $column = '*'): int
     {
@@ -410,8 +399,6 @@ class Builder
      * @param $column
      *
      * @return int
-     * @throws \Max\Database\Exceptions\PoolException
-     * @throws \Max\Database\Exceptions\QueryException
      */
     public function sum($column): int
     {
@@ -422,8 +409,6 @@ class Builder
      * @param $column
      *
      * @return int
-     * @throws \Max\Database\Exceptions\PoolException
-     * @throws \Max\Database\Exceptions\QueryException
      */
     public function max($column): int
     {
@@ -434,8 +419,6 @@ class Builder
      * @param $column
      *
      * @return int
-     * @throws \Max\Database\Exceptions\PoolException
-     * @throws \Max\Database\Exceptions\QueryException
      */
     public function min($column): int
     {
@@ -446,8 +429,6 @@ class Builder
      * @param $column
      *
      * @return int
-     * @throws \Max\Database\Exceptions\PoolException
-     * @throws \Max\Database\Exceptions\QueryException
      */
     public function avg($column): int
     {
@@ -458,34 +439,23 @@ class Builder
      * @param string $expression
      *
      * @return int
-     * @throws \Max\Database\Exceptions\PoolException
-     * @throws \Max\Database\Exceptions\QueryException
      */
     protected function aggregate(string $expression): int
     {
-        return (int)$this->query->wrap(function($PDO) use ($expression) {
-            return $this->query->statement(
-                $PDO,
-                $this->toSql((array)($expression . ' AS AGGREGATE')),
-                $this->bindings
-            )->fetchColumn();
-        });
+        return (int)$this->query->statement(
+            $this->toSql((array)($expression . ' AS AGGREGATE')),
+            $this->bindings
+        )->fetchColumn();
     }
 
     /**
      * @return bool
-     * @throws \Max\Database\Exceptions\PoolException
-     * @throws \Max\Database\Exceptions\QueryException
      */
     public function exists(): bool
     {
-        return $this->query->wrap(function($PDO) {
-            return (bool)$this->query->statement(
-                $PDO,
-                sprintf('SELECT EXISTS(%s) AS MAX_EXIST', $this->toSql()),
-                $this->bindings,
-            )->fetchColumn();
-        });
+        return (bool)$this->query->statement(
+            sprintf('SELECT EXISTS(%s) AS MAX_EXIST', $this->toSql()), $this->bindings
+        )->fetchColumn();
     }
 
     /**
@@ -493,94 +463,65 @@ class Builder
      * @param string|null $key
      *
      * @return Collection
-     * @throws \Max\Database\Exceptions\PoolException
-     * @throws \Max\Database\Exceptions\QueryException
      */
     public function column(string $column, ?string $key = null): Collection
     {
-        return $this->query->wrap(function($PDO) use ($column, $key) {
-            $result = $this->query->statement(
-                $PDO,
-                $this->toSql(array_filter([$column, $key])),
-                $this->bindings,
-            )->fetchAll();
-
-            return Collection::make($result ?: [])->pluck($column, $key);
-        });
+        return Collection::make(
+            $this->query->statement($this->toSql(array_filter([$column, $key])), $this->bindings,)->fetchAll() ?: []
+        )->pluck($column, $key);
     }
 
     /**
-     * @param             $id
-     * @param array       $columns
-     * @param string|null $identifier
+     * @param        $id
+     * @param array  $columns
+     * @param string $identifier
      *
      * @return mixed
-     * @throws \Max\Database\Exceptions\PoolException
-     * @throws \Max\Database\Exceptions\QueryException
      */
-    public function find($id, array $columns = ['*'], ?string $identifier = null): mixed
+    public function find($id, array $columns = ['*'], string $identifier = 'id'): mixed
     {
-        return $this->where($identifier, $identifier ?? 'id')->first($columns);
+        return $this->where($identifier, $id)->first($columns);
     }
 
     /**
      * @param array $columns
      *
      * @return mixed
-     * @throws \Max\Database\Exceptions\PoolException
-     * @throws \Max\Database\Exceptions\QueryException
      */
     public function first(array $columns = ['*']): mixed
     {
-        return $this->query->wrap(function($PDO) use ($columns) {
-            return $this->query->statement($PDO, $this->toSql($columns), $this->bindings)->fetch(PDO::FETCH_ASSOC);
-        });
+        return $this->query->statement($this->limit(1)->toSql($columns), $this->bindings)->fetch(PDO::FETCH_ASSOC);
     }
 
     /**
      * @return int
-     * @throws \Max\Database\Exceptions\PoolException
-     * @throws \Max\Database\Exceptions\QueryException
      */
     public function delete(): int
     {
-        return $this->query->wrap(function($PDO) {
-            return $this->query->statement(
-                $PDO,
-                $this->generateDeleteQuery(),
-                $this->bindings,
-            )->rowCount();
-        });
+        return $this->query->statement($this->generateDeleteQuery(), $this->bindings,)->rowCount();
     }
 
     /**
      * @param array $record
      *
      * @return int
-     * @throws \Max\Database\Exceptions\PoolException
-     * @throws \Max\Database\Exceptions\QueryException
      */
     public function insert(array $record): int
     {
         $this->column   = array_keys($record);
         $this->bindings = array_values($record);
-        return $this->query->wrap(function($PDO) {
-            $this->query->statement(
-                $PDO,
-                $this->generateInsertQuery(),
-                $this->bindings,
-            );
+        $this->query->statement(
+            $this->generateInsertQuery(),
+            $this->bindings,
+        );
 
-            return (int)$PDO->lastInsertId();
-        });
+        return (int)$this->query->getPdo()->lastInsertId();
     }
 
     /**
      * @param array $records
      *
      * @return mixed
-     * @throws \Max\Database\Exceptions\PoolException
-     * @throws \Max\Database\Exceptions\QueryException
      */
     public function insertMany(array $records): mixed
     {
@@ -591,16 +532,13 @@ class Builder
             $values[] = '(' . implode(',', array_fill(0, count($records), '?')) . ')';
         }
         $query = sprintf('INSERT INTO %s (%s) VALUES %s', $this->from[0], implode(',', $this->column), implode(',', $values));
-        return $this->query->wrap(function($PDO) use ($query) {
-            $this->query->statement($PDO, $query, $this->bindings);
-        });
+        return $this->query->statement($query, $this->bindings);
     }
 
     /**
      * @param array $data
      *
      * @return array
-     * @throws Throwable
      */
     public function insertAll(array $data): array
     {
@@ -611,14 +549,10 @@ class Builder
      * @param array $data
      *
      * @return int
-     * @throws Throwable
      */
     public function update(array $data): int
     {
-        $query = $this->generateUpdateQuery($data);
-        return $this->query->wrap(function($PDO) use ($query) {
-            return $this->query->statement($PDO, $query, $this->bindings)->rowCount();
-        });
+        return $this->query->statement($this->generateUpdateQuery($data), $this->bindings)->rowCount();
     }
 
     /**

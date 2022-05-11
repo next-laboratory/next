@@ -18,6 +18,7 @@ use JsonSerializable;
 use Max\Database\Collection;
 use Max\Database\Eloquent\Traits\Relations;
 use Max\Database\Exceptions\ModelNotFoundException;
+use Max\Database\Manager;
 use Max\Database\Query;
 use Max\Utils\Arr;
 use Max\Utils\Contracts\Arrayable;
@@ -107,7 +108,7 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
      *
      * @return array
      */
-    protected function fillableFromArray(array $attributes)
+    protected function fillableFromArray(array $attributes): array
     {
         if (count($this->getFillable()) > 0) {
             return array_intersect_key($attributes, array_flip($this->getFillable()));
@@ -150,8 +151,6 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
      *
      * @return static
      * @throws ModelNotFoundException
-     * @throws \Max\Database\Exceptions\PoolException
-     * @throws \Max\Database\Exceptions\QueryException
      */
     public static function findOrFail($id, array $columns = ['*']): static
     {
@@ -207,8 +206,6 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
      * @param array $columns
      *
      * @return Collection
-     * @throws \Max\Database\Exceptions\PoolException
-     * @throws \Max\Database\Exceptions\QueryException
      */
     public static function all(array $columns = ['*']): Collection
     {
@@ -229,8 +226,8 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
     public function newQuery(): Builder
     {
         try {
-            /** @var Query $query */
-            $query   = make(Query::class);
+            /** @var Manager $query */
+            $query   = make(Manager::class);
             $builder = new Builder($query->connection($this->connection));
             return $builder->from($this->table)->setModel($this);
         } catch (Throwable $throwable) {
@@ -240,8 +237,6 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
 
     /**
      * @return int
-     * @throws \Max\Database\Exceptions\PoolException
-     * @throws \Max\Database\Exceptions\QueryException
      */
     public function save(): int
     {
@@ -259,8 +254,6 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
      * @param array $attributes
      *
      * @return static|null
-     * @throws \Max\Database\Exceptions\PoolException
-     * @throws \Max\Database\Exceptions\QueryException
      */
     public static function create(array $attributes): ?static
     {
@@ -323,7 +316,7 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
      *
      * @return void
      */
-    public function setAttribute($key, $value)
+    public function setAttribute($key, $value): void
     {
         if ($this->hasCast($key)) {
             $value = $this->cast($value, $this->getCast($key));
