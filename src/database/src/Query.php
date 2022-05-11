@@ -2,18 +2,18 @@
 
 namespace Max\Database;
 
+use Closure;
 use Max\Database\Contracts\QueryInterface;
 use Max\Database\Events\QueryExecuted;
 use Max\Database\Query\Builder;
 use PDO;
 use PDOException;
-use PhpParser\Node\Expr\Closure;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Query implements QueryInterface
 {
     /**
-     * @param PDO                           $PDO
+     * @param PDO $PDO
      * @param EventDispatcherInterface|null $eventDispatcher
      */
     public function __construct(
@@ -25,14 +25,14 @@ class Query implements QueryInterface
 
     /**
      * @param string $query
-     * @param array  $bindings
+     * @param array $bindings
      *
      * @return false|\PDOStatement
      */
     public function statement(string $query, array $bindings = [])
     {
         try {
-            $startTime    = microtime(true);
+            $startTime = microtime(true);
             $PDOStatement = $this->PDO->prepare($query);
             foreach ($bindings as $key => $value) {
                 $PDOStatement->bindValue(
@@ -65,8 +65,8 @@ class Query implements QueryInterface
 
     /**
      * @param string $query
-     * @param array  $bindings
-     * @param int    $mode
+     * @param array $bindings
+     * @param int $mode
      * @param        ...$args
      *
      * @return bool|array
@@ -78,8 +78,8 @@ class Query implements QueryInterface
 
     /**
      * @param string $query
-     * @param array  $bindings
-     * @param int    $mode
+     * @param array $bindings
+     * @param int $mode
      * @param        ...$args
      *
      * @return mixed
@@ -90,7 +90,7 @@ class Query implements QueryInterface
     }
 
     /**
-     * @param string      $table
+     * @param string $table
      * @param string|null $alias
      *
      * @return Builder
@@ -102,7 +102,7 @@ class Query implements QueryInterface
 
     /**
      * @param string $query
-     * @param array  $bindings
+     * @param array $bindings
      *
      * @return int
      */
@@ -113,7 +113,7 @@ class Query implements QueryInterface
 
     /**
      * @param string $query
-     * @param array  $bindings
+     * @param array $bindings
      *
      * @return int
      */
@@ -123,8 +123,8 @@ class Query implements QueryInterface
     }
 
     /**
-     * @param string      $query
-     * @param array       $bindings
+     * @param string $query
+     * @param array $bindings
      * @param string|null $id
      *
      * @return bool|string
