@@ -21,9 +21,8 @@
 - 基于 Psr14 的事件
 - 基于 Psr15 的中间件
 - 基于 Psr16 的缓存组件，支持 File,Memcached,Redis,APC[可扩展]
-- 方便的数据库操作方法，支持 MySQL、PostgreSQL 等[可扩展]
-- 支持路由功能
-- 验证器
+- max/database 支持连接池
+- AOP，支持路由功能，验证器，swagger，blade视图
 
 ## 贡献一览
 
