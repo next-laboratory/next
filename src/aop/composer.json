@@ -12,6 +12,13 @@
     }
   ],
   "require": {
-    "max/container": "dev-master"
+    "php": "^8.0",
+    "ext-pcntl": "*",
+    "max/container": "dev-master",
+    "max/utils": "dev-master",
+    "nikic/php-parser": "^4.13",
+    "symfony/polyfill-php80": "^1.25",
+    "symfony/polyfill-php81": "^1.25",
+    "symfony/finder": "^6.0"
   }
 }

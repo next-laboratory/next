@@ -81,7 +81,7 @@ class Container implements ContainerInterface
     /**
      * @inheritDoc
      */
-    public function has(string $id)
+    public function has(string $id): bool
     {
         return isset($this->resolved[$this->getBinding($id)]);
     }
