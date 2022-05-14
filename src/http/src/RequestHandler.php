@@ -23,6 +23,7 @@ use Max\Routing\Route;
 use Max\Routing\RouteCollector;
 use Max\Routing\Router;
 use Max\Utils\Contracts\Arrayable;
+use Max\Utils\Stringable;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -45,6 +46,7 @@ class RequestHandler implements RequestHandlerInterface
 
     /**
      * @param RouteCollector $routeCollector
+     * @param ResponseInterface $response
      */
     public function __construct(RouteCollector $routeCollector, protected ResponseInterface $response)
     {
@@ -87,7 +89,7 @@ class RequestHandler implements RequestHandlerInterface
     protected function handleRequest(ServerRequestInterface $request)
     {
         /** @var Route $route */
-        $route  = \Max\Context\Context::get(Route::class);
+        $route = \Max\Context\Context::get(Route::class);
         $action = $route->getAction();
         $params = $route->getParameters();
         if (is_string($action)) {
@@ -105,7 +107,6 @@ class RequestHandler implements RequestHandlerInterface
      * @param $response
      *
      * @return ResponseInterface
-     * @throws InvalidResponseBodyException
      */
     protected function autoResponse($response): ResponseInterface
     {
@@ -117,7 +118,6 @@ class RequestHandler implements RequestHandlerInterface
                 default => $this->jsonResponse($response),
             };
         }
-
         return $response;
     }
 
@@ -138,7 +138,7 @@ class RequestHandler implements RequestHandlerInterface
      *
      * @return mixed|ResponseInterface|ServerRequestInterface
      */
-    protected function htmlResponse($data)
+    protected function htmlResponse($data): mixed
     {
         return $this->response
             ->withHeader('Content-Type', 'text/html; charset=utf-8')
@@ -147,7 +147,7 @@ class RequestHandler implements RequestHandlerInterface
 
     /**
      * @param string $name
-     * @param array  $arguments
+     * @param array $arguments
      *
      * @return mixed
      */

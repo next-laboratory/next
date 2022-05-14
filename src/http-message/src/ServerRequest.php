@@ -122,6 +122,23 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
+     * @param \Workerman\Protocols\Http\Request $request
+     * @return static
+     */
+    public static function createFromWorkermanRequest($request)
+    {
+        $psrRequest = new static(
+            $request->method(),
+            new Uri($request->uri()),
+            $request->header(),
+            $request->rawBody()
+        );
+        $psrRequest->queryParams = new InputBag($request->get());
+        $psrRequest->parsedBody = new InputBag($request->post());
+        return $psrRequest;
+    }
+
+    /**
      * @return array
      */
     public function getServerParams()
