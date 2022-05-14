@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace Max\Http;
 
-use Max\Di\Annotation\Collector\AbstractCollector;
-use Max\Di\Context;
-use Max\Di\Exceptions\NotFoundException;
-use Max\Di\ReflectionManager;
+use Max\Aop\Annotation\Collector\AbstractCollector;
+use Max\Container\Context;
+use Max\Container\Exceptions\NotFoundException;
+use Max\Container\ReflectionManager;
 use Max\Http\Annotations\AutoController;
 use Max\Http\Annotations\Controller;
 use Max\Http\Contracts\MappingInterface;

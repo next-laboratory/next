@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Max\Http;
 
-use Max\Di\Context;
-use Max\Di\Exceptions\NotFoundException;
+use Max\Container\Context;
+use Max\Container\Exceptions\NotFoundException;
 use Max\Http\Exceptions\InvalidRequestHandlerException;
 use Max\Http\Exceptions\InvalidResponseBodyException;
 use Max\Http\Message\Stream\StringStream;

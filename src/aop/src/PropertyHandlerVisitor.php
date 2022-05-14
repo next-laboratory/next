@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Max\Aop;
 
-use Max\Di\ReflectionManager;
+use Max\Container\ReflectionManager;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ClassConstFetch;

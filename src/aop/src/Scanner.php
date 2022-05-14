@@ -14,13 +14,10 @@ declare(strict_types=1);
 namespace Max\Aop;
 
 use Composer\Autoload\ClassLoader;
-use Max\Di\Annotation\Collector\AspectCollector;
-use Max\Di\Annotation\Collector\PropertyAttributeCollector;
-use Max\Aop\AstManager;
-use Max\Aop\Metadata;
-use Max\Aop\PropertyHandlerVisitor;
-use Max\Aop\ProxyHandlerVisitor;
-use Max\Di\Exceptions\ProcessException;
+use Max\Aop\Annotation\Collector\AspectCollector;
+use Max\Aop\Annotation\Collector\PropertyAttributeCollector;
+use Max\Container\Exceptions\ProcessException;
+use Max\Container\ReflectionManager;
 use Max\Utils\Filesystem;
 use PhpParser\Error;
 use PhpParser\NodeTraverser;

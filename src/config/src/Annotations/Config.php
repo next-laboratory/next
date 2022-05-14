@@ -15,10 +15,10 @@ namespace Max\Config\Annotations;
 
 use Attribute;
 use Max\Config\Repository;
-use Max\Di\Context;
-use Max\Di\Contracts\PropertyAttribute;
-use Max\Di\Exceptions\PropertyHandleException;
-use Max\Di\ReflectionManager;
+use Max\Container\Context;
+use Max\Aop\Contracts\PropertyAttribute;
+use Max\Container\Exceptions\PropertyHandleException;
+use Max\Container\ReflectionManager;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Config implements PropertyAttribute

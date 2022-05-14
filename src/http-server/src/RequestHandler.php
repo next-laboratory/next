@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Max\Http\Server;
 
 use Closure;
-use Max\Di\Exceptions\NotFoundException;
+use Max\Container\Exceptions\NotFoundException;
 use Max\Http\Exceptions\InvalidRequestHandlerException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;

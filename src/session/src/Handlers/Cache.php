@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Max\Session\Handlers;
 
-use Max\Di\Exceptions\NotFoundException;
+use Max\Container\Exceptions\NotFoundException;
 use Max\Utils\Traits\AutoFillProperties;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\SimpleCache\CacheInterface;

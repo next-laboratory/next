@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Max\WebSocket\Annotations;
 
 use Attribute;
-use Max\Di\Contracts\ClassAttribute;
+use Max\Aop\Contracts\ClassAttribute;
 use Max\WebSocket\RouteCollector;
 
 #[Attribute(Attribute::TARGET_CLASS)]

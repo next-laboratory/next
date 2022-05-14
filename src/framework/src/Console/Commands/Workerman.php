@@ -3,7 +3,7 @@
 namespace Max\Framework\Console\Commands;
 
 use Max\Console\Commands\Command;
-use Max\Di\Context;
+use Max\Container\Context;
 use Max\Http\Message\ServerRequest;
 use Psr\Http\Message\ServerRequestInterface;
 use Workerman\Protocols\Http\Request;

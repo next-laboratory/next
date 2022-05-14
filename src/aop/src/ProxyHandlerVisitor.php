@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Max\Aop;
 
-use Max\Di\Annotation\Collector\AspectCollector;
+use Max\Aop\Annotation\Collector\AspectCollector;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Closure;

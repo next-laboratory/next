@@ -5,9 +5,9 @@ namespace Max\Framework\Console;
 use Composer\Autoload\ClassLoader;
 use Max\Config\Repository;
 use Max\Console\Application;
-use Max\Di\Container;
-use Max\Di\Context;
-use Max\Di\Scanner;
+use Max\Container\Container;
+use Max\Container\Context;
+use Max\Aop\Scanner;
 use Max\Env\Env;
 use Max\Env\Loader\IniFileLoader;
 use Max\Event\EventDispatcher;
@@ -29,7 +29,7 @@ class Kernel extends Application
 
         $installed = json_decode(file_get_contents(BASE_PATH . '/vendor/composer/installed.json'), true);
         $installed = $installed['packages'] ?? $installed;
-        $config    = [];
+        $config = [];
         foreach ($installed as $package) {
             if (isset($package['extra']['max']['config'])) {
                 $configProvider = $package['extra']['max']['config'];
@@ -52,7 +52,7 @@ class Kernel extends Application
             $this->add(new $command());
         }
         /** @var EventDispatcher $eventDispatcher */
-        $eventDispatcher  = $container->make(EventDispatcher::class);
+        $eventDispatcher = $container->make(EventDispatcher::class);
         $listenerProvider = $eventDispatcher->getListenerProvider();
         foreach (ListenerCollector::getListeners() as $listener) {
             $listenerProvider->addListener($container->make($listener));

@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Max\Event;
 
-use Max\Di\Annotation\Collector\AbstractCollector;
+use Max\Aop\Annotation\Collector\AbstractCollector;
 use Max\Event\Annotations\Listen;
 
 class ListenerCollector extends AbstractCollector

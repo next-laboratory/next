@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace Max\Aop\Annotation;
 
 use Attribute;
-use Max\Di\Context;
 use Max\Aop\Contracts\PropertyAttribute;
 use Max\Aop\Exceptions\PropertyHandleException;
-use Max\Di\ReflectionManager;
+use Max\Container\Context;
+use Max\Container\ReflectionManager;
 use Throwable;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]

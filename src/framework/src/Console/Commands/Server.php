@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Max\Framework\Console\Commands;
 
 use Max\Console\Commands\Command;
-use Max\Di\Context;
+use Max\Container\Context;
 use Psr\Container\ContainerExceptionInterface;
 use ReflectionException;
 

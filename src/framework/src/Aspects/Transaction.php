@@ -4,8 +4,8 @@ namespace Max\Framework\Aspects;
 
 use Closure;
 use Max\Database\Manager;
-use Max\Di\Aop\JoinPoint;
-use Max\Di\Contracts\AspectInterface;
+use Max\Aop\JoinPoint;
+use Max\Aop\Contracts\AspectInterface;
 use ReflectionException;
 
 #[\Attribute(\Attribute::TARGET_METHOD)]

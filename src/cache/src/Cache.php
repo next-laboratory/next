@@ -16,7 +16,7 @@ namespace Max\Cache;
 use Closure;
 use Max\Cache\Exceptions\CacheException;
 use Max\Config\Repository;
-use Max\Di\Context;
+use Max\Container\Context;
 use Psr\SimpleCache\CacheInterface;
 
 class Cache implements CacheInterface
@@ -71,7 +71,7 @@ class Cache implements CacheInterface
             if (!isset($this->handlers[$name])) {
                 $config  = $this->config['stores'][$name];
                 $handler = $config['handler'];
-                if (class_exists('Max\Di\Context')) {
+                if (class_exists('Max\Container\Context')) {
                     static::$handlers[$name] = Context::getContainer()->make($handler, [$config['options']]);
                 } else {
                     static::$handlers[$name] = new $handler($config['options']);

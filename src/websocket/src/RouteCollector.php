@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Max\WebSocket;
 
-use Max\Di\Annotation\Collector\AbstractCollector;
-use Max\Di\Contracts\CollectorInterface;
+use Max\Aop\Annotation\Collector\AbstractCollector;
+use Max\Aop\Contracts\CollectorInterface;
 use Max\WebSocket\Annotations\WebSocketHandler;
 use Max\WebSocket\Contracts\WebSocketHandlerInterface;
 
@@ -33,7 +33,7 @@ class RouteCollector extends AbstractCollector
     public static function getHandler(string $path)
     {
         if (isset(self::$container[$path])) {
-            return \Max\Di\Context::getContainer()->make(self::$container[$path]);
+            return \Max\Contain\Context::getContainer()->make(self::$container[$path]);
         }
         return null;
     }
