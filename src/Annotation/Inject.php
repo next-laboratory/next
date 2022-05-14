@@ -16,8 +16,8 @@ namespace Max\Aop\Annotation;
 use Attribute;
 use Max\Aop\Contracts\PropertyAttribute;
 use Max\Aop\Exceptions\PropertyHandleException;
-use Max\Container\Context;
-use Max\Container\ReflectionManager;
+use Max\Di\Context;
+use Max\Di\ReflectionManager;
 use Throwable;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
