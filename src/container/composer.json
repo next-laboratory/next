@@ -1,0 +1,15 @@
+{
+  "name": "max/container",
+  "autoload": {
+    "psr-4": {
+      "Max\\Container\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "chengyao",
+      "email": "987861463@qq.com"
+    }
+  ],
+  "require": {}
+}
