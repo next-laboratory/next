@@ -1,0 +1,17 @@
+{
+  "name": "max/aop",
+  "autoload": {
+    "psr-4": {
+      "Max\\Aop\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "chengyao",
+      "email": "987861463@qq.com"
+    }
+  ],
+  "require": {
+    "max/container": "dev-master"
+  }
+}
