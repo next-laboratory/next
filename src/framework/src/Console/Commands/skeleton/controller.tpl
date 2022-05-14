@@ -11,7 +11,7 @@ use Max\Http\Annotations\GetMapping;
 class {{class}}
 {
     #[GetMapping(path: '/')]
-    public function index() {
-        //
+    public function index()
+    {
     }
 }

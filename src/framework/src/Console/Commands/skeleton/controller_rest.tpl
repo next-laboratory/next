@@ -13,22 +13,22 @@ use Max\Http\Annotations\RequestMapping;
 class {{class}}
 {
     #[GetMapping(path: '/')]
-    public function index() {
-        //
+    public function index()
+    {
     }
 
     #[GetMapping(path: '/<id>')]
-    public function show($id) {
-        //
+    public function show($id)
+    {
     }
 
     #[DeleteMapping(path: '/<id>')]
-    public function delete($id) {
-        //
+    public function delete($id)
+    {
     }
 
     #[RequestMapping(path: '/<id>', methods: ['PUT', 'PATCH'])]
-    public function update() {
-        //
+    public function update($id)
+    {
     }
 }
