@@ -15,7 +15,7 @@ declare (strict_types=1);
 namespace Max\Framework\Console\Commands;
 
 use Max\Console\Commands\Command;
-use Max\Container\Exceptions\NotFoundException;
+use Max\Di\Exceptions\NotFoundException;
 use ReflectionException;
 
 class Queue extends Command

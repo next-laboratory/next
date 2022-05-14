@@ -15,9 +15,9 @@ namespace Max\Cache\Aspects;
 
 use Closure;
 use Max\Aop\JoinPoint;
-use Max\Container\Context;
+use Max\Di\Context;
 use Max\Aop\Contracts\AspectInterface;
-use Max\Container\Exceptions\NotFoundException;
+use Max\Di\Exceptions\NotFoundException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\SimpleCache\CacheInterface;
 use ReflectionException as ReflectionExceptionAlias;

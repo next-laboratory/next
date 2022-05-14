@@ -15,7 +15,9 @@ namespace Max\Di;
 
 use BadMethodCallException;
 use Closure;
-use Max\Di\Container\{DependencyFinder, PropertyModifier, ResolvingCallbacks};
+use Max\Di\Container\DependencyFinder;
+use Max\Di\Container\PropertyModifier;
+use Max\Di\Container\ResolvingCallbacks;
 use Max\Di\Exceptions\{ContainerException, NotFoundException};
 use Psr\Container\{ContainerExceptionInterface, ContainerInterface};
 use ReflectionException;
@@ -44,7 +46,7 @@ class Container implements ContainerInterface
     /**
      * 将实例化的类存放到数组中
      *
-     * @param string $id       标识
+     * @param string $id 标识
      * @param object $instance 实例
      */
     public function set(string $id, object $instance)
@@ -66,7 +68,7 @@ class Container implements ContainerInterface
     /**
      * @inheritDoc
      */
-    public function has(string $id)
+    public function has(string $id): bool
     {
         return isset($this->resolved[$this->getBinding($id)]);
     }
@@ -117,8 +119,8 @@ class Container implements ContainerInterface
     /**
      * 注入的外部接口方法
      *
-     * @param string $id        类标识
-     * @param array  $arguments 参数列表
+     * @param string $id 类标识
+     * @param array $arguments 参数列表
      *
      * @return mixed
      * @throws ReflectionException|NotFoundException|ContainerExceptionInterface
@@ -148,14 +150,14 @@ class Container implements ContainerInterface
 
     /**
      * @param string $id
-     * @param array  $arguments
+     * @param array $arguments
      *
      * @return object
      * @throws ReflectionException|NotFoundException|ContainerExceptionInterface
      */
     public function resolve(string $id, array $arguments = []): object
     {
-        $id              = $this->getBinding($id);
+        $id = $this->getBinding($id);
         $reflectionClass = ReflectionManager::reflectClass($id);
         if ($reflectionClass->isInterface()) {
             if (!$this->bound($id)) {
@@ -184,8 +186,8 @@ class Container implements ContainerInterface
     /**
      * 调用类的方法
      *
-     * @param array|Closure|string $callable  可调用的类或者实例和方法数组
-     * @param array                $arguments 给方法传递的参数
+     * @param array|Closure|string $callable 可调用的类或者实例和方法数组
+     * @param array $arguments 给方法传递的参数
      *
      * @return mixed
      * @throws NotFoundException
@@ -197,7 +199,7 @@ class Container implements ContainerInterface
             return $this->callFunc($callable, $arguments);
         }
         [$id, $method] = $callable;
-        $id               = is_object($id) ? $id::class : $this->getBinding($id);
+        $id = is_object($id) ? $id::class : $this->getBinding($id);
         $reflectionMethod = ReflectionManager::reflectMethod($id, $method);
         if (false === $reflectionMethod->isAbstract()) {
             $funcArgs = $this->getFuncArgs($reflectionMethod, $arguments);
@@ -219,7 +221,7 @@ class Container implements ContainerInterface
      * 调用闭包
      *
      * @param Closure|string $function
-     * @param array          $arguments
+     * @param array $arguments
      *
      * @return mixed
      * @throws ReflectionException|NotFoundException|ContainerExceptionInterface

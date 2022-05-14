@@ -19,7 +19,7 @@
         "php": "^8.0",
         "ext-json": "*",
         "ext-swoole": ">=4.6",
-        "max/container": "dev-master",
+        "max/di": "dev-master",
         "max/config": "dev-master",
         "max/utils": "dev-master",
         "max/event": "dev-master"

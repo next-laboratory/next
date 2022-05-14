@@ -25,7 +25,7 @@ class ConfigProvider
                 'Max\Framework\Console\Commands\Make',
                 'Max\Framework\Console\Commands\Queue',
                 'Max\Framework\Console\Commands\RouteList',
-                'Max\Framework\Console\Commands\Server',
+                'Max\Framework\Console\Commands\Swoole',
                 'Max\Framework\Console\Commands\VendorPublish',
                 'Max\Framework\Console\Commands\Workerman',
             ]

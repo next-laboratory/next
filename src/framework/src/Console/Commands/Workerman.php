@@ -3,7 +3,7 @@
 namespace Max\Framework\Console\Commands;
 
 use Max\Console\Commands\Command;
-use Max\Container\Context;
+use Max\Di\Context;
 use Max\Http\Message\ServerRequest;
 use Psr\Http\Message\ServerRequestInterface;
 use Workerman\Protocols\Http\Request;
@@ -11,8 +11,19 @@ use Workerman\Worker;
 
 class Workerman extends Command
 {
+    /**
+     * @var string
+     */
     protected string $name = 'workerman';
 
+    /**
+     * @var string
+     */
+    protected string $description = 'Manage the workerman server.';
+
+    /**
+     * @return void
+     */
     public function run()
     {
         if (!class_exists('Workerman\Worker')) {

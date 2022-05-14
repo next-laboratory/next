@@ -14,7 +14,7 @@
   "require": {
     "php": "^8.0",
     "ext-pcntl": "*",
-    "max/container": "dev-master",
+    "max/di": "dev-master",
     "max/utils": "dev-master",
     "nikic/php-parser": "^4.13",
     "symfony/polyfill-php80": "^1.25",

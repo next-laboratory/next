@@ -15,7 +15,7 @@ namespace Max\Server;
 
 use InvalidArgumentException;
 use Max\Config\Contracts\ConfigInterface;
-use Max\Container\Exceptions\NotFoundException;
+use Max\Di\Exceptions\NotFoundException;
 use Max\Event\EventDispatcher;
 use Max\Server\Events\OnBeforeShutdown;
 use Max\Server\Events\OnManagerStart;

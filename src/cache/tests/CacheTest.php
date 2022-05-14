@@ -3,7 +3,7 @@
 namespace Max\Cache\Tests;
 
 use Max\Cache\Cache;
-use Max\Container\Exceptions\NotFoundException;
+use Max\Di\Exceptions\NotFoundException;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\SimpleCache\CacheInterface;

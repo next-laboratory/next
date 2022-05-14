@@ -14,16 +14,16 @@ declare(strict_types=1);
 namespace Max\Framework\Console\Commands;
 
 use Max\Console\Commands\Command;
-use Max\Container\Context;
+use Max\Di\Context;
 use Psr\Container\ContainerExceptionInterface;
 use ReflectionException;
 
-class Server extends Command
+class Swoole extends Command
 {
     /**
      * @var string
      */
-    protected string $name = 'server';
+    protected string $name = 'swoole';
 
     /**
      * @var string

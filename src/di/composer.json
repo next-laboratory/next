@@ -1,46 +1,35 @@
 {
-    "name": "max/di",
-    "description": "A lightweight dependency injection tool, container based on the PSR-11 specification.",
-    "homepage": "https://github.com/topyao/max-di",
-    "license": "Apache-2.0",
-    "keywords": [
-        "container",
-        "maxphp",
-        "dependence injection"
-    ],
-    "authors": [
-        {
-            "name": "chengyao",
-            "email": "987861463@qq.com",
-            "homepage": "https://www.1kmb.com"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "Max\\Di\\": "src/"
-        },
-        "files": [
-            "src/helpers.php"
-        ]
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Max\\Di\\Tests\\": "tests/"
-        }
-    },
-    "require": {
-        "php": "^8.0",
-        "ext-pcntl": "*",
-        "psr/container": "^1.0",
-        "nikic/php-parser": "^4.13",
-        "symfony/polyfill-php80": "^1.25",
-        "symfony/polyfill-php81": "^1.25",
-        "symfony/finder": "^6.0",
-        "max/utils": "dev-master"
-    },
-    "extra": {
-        "max": {
-            "config": "Max\\Di\\ConfigProvider"
-        }
+  "name": "max/di",
+  "description": "A lightweight dependency injection tool, container based on the PSR-11 specification.",
+  "homepage": "https://github.com/topyao/max-di",
+  "license": "Apache-2.0",
+  "keywords": [
+    "container",
+    "maxphp",
+    "dependence injection"
+  ],
+  "authors": [
+    {
+      "name": "chengyao",
+      "email": "987861463@qq.com",
+      "homepage": "https://www.1kmb.com"
     }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Max\\Di\\": "src/"
+    },
+    "files": [
+      "src/helpers.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Max\\Di\\Tests\\": "tests/"
+    }
+  },
+  "require": {
+    "php": "^8.0",
+    "psr/container": "^2.0"
+  }
 }

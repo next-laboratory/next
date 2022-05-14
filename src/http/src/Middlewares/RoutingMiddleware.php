@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Max\Http\Middlewares;
 
 use Max\Context\Context;
-use Max\Container\Exceptions\NotFoundException;
+use Max\Di\Exceptions\NotFoundException;
 use Max\Http\Exceptions\HttpException;
 use Max\Http\Exceptions\InvalidRequestHandlerException;
 use Max\Routing\Exceptions\MethodNotAllowedException;

@@ -15,7 +15,7 @@ namespace Max\Framework\Console\Commands;
 
 use Closure;
 use Max\Console\Commands\Command;
-use Max\Container\Exceptions\NotFoundException;
+use Max\Di\Exceptions\NotFoundException;
 use Max\Routing\Route;
 use Max\Routing\RouteCollector;
 use Max\Utils\Collection;
