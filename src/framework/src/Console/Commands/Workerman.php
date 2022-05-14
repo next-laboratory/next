@@ -6,6 +6,7 @@ use Max\Console\Commands\Command;
 use Max\Di\Context;
 use Max\Http\Message\ServerRequest;
 use Psr\Http\Message\ServerRequestInterface;
+use Throwable;
 use Workerman\Protocols\Http\Request;
 use Workerman\Worker;
 
@@ -48,6 +49,14 @@ class Workerman extends Command
             }
         };
 
+        echo <<<EOT
+,--.   ,--.                  ,------. ,--.  ,--.,------.  
+|   `.'   | ,--,--.,--.  ,--.|  .--. '|  '--'  ||  .--. ' 
+|  |'.'|  |' ,-.  | \  `'  / |  '--' ||  .--.  ||  '--' | 
+|  |   |  |\ '-'  | /  /.  \ |  | --' |  |  |  ||  | --'  
+`--'   `--' `--`--''--'  '--'`--'     `--'  `--'`--' 
+
+EOT;
         Worker::runAll();
     }
 }
