@@ -27,6 +27,7 @@ class ConfigProvider
                 'Max\Framework\Console\Commands\RouteList',
                 'Max\Framework\Console\Commands\Server',
                 'Max\Framework\Console\Commands\VendorPublish',
+                'Max\Framework\Console\Commands\Workerman',
             ]
         ];
     }
