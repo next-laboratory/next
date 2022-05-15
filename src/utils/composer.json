@@ -25,6 +25,7 @@
         "symfony/finder": "^6.0"
     },
     "suggest": {
+        "symfony/mime": "*",
         "ramsey/uuid": "^4.2",
         "voku/portable-ascii": "^1.5",
         "league/commonmark": "^2.0",
