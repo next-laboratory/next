@@ -1,0 +1,17 @@
+{
+  "name": "max/workerman",
+  "autoload": {
+    "psr-4": {
+      "Max\\Workerman\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "chengyao",
+      "email": "987861463@qq.com"
+    }
+  ],
+  "require": {
+    "workerman/workerman": "^4.0"
+  }
+}
