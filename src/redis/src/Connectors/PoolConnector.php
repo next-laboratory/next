@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Max\Redis\Connectors;
 
+use ArrayObject;
 use Max\Context\Context;
 use Max\Redis\Context\Connection;
 use Max\Redis\RedisConfig;
@@ -59,22 +60,24 @@ class PoolConnector
     {
         $name = $this->config->getName();
         $key  = Connection::class;
-        // TODO 连接出错
         if (!Context::has($key)) {
-            $connection = new Connection();
+            Context::put($key, new Connection());
+        }
+        /** @var ArrayObject $connection */
+        $connection = Context::get($key);
+        if (!$connection->offsetExists($name)) {
             if ($this->size < $this->capacity) {
-                $PDO = $this->create();
+                $redis = $this->create();
                 $this->size++;
             } else {
-                $PDO = $this->pool->pop(3);
+                $redis = $this->pool->pop(3);
             }
             $connection->offsetSet($name, [
                 'pool' => $this,
-                'item' => $PDO,
+                'item' => $redis,
             ]);
-            Context::put($key, $connection);
         }
-        return Context::get($key)[$name]['item'];
+        return $connection->offsetGet($name)['item'];
     }
 
     /**

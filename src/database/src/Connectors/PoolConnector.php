@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Max\Database\Connectors;
 
+use ArrayObject;
 use Max\Context\Context;
 use Max\Database\Context\Connection;
 use Max\Database\Contracts\ConnectorInterface;
@@ -62,22 +63,22 @@ class PoolConnector implements ConnectorInterface, PoolInterface
     {
         $name = $this->config->getName();
         $key  = Connection::class;
-        // TODO 连接出错
         if (!Context::has($key)) {
-            $connection = new Connection();
-            if ($this->size < $this->capacity) {
-                $PDO = $this->create();
-                $this->size++;
-            } else {
-                $PDO = $this->pool->pop(3);
-            }
-            $connection->offsetSet($name, [
-                'pool' => $this,
-                'item' => $PDO,
-            ]);
-            Context::put($key, $connection);
+            Context::put($key, new Connection());
         }
-        return Context::get($key)[$name]['item'];
+        /** @var ArrayObject $connection */
+        $connection = Context::get($key);
+        if ($this->size < $this->capacity) {
+            $PDO = $this->create();
+            $this->size++;
+        } else {
+            $PDO = $this->pool->pop(3);
+        }
+        $connection->offsetSet($name, [
+            'pool' => $this,
+            'item' => $PDO,
+        ]);
+        return $connection->offsetGet($name)['item'];
     }
 
     /**
