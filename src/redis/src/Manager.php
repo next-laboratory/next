@@ -39,7 +39,7 @@ class Manager
     /**
      * @param string|null $name
      *
-     * @return Query
+     * @return \Redis
      */
     public function connection(?string $name = null)
     {
@@ -56,7 +56,7 @@ class Manager
         }
         return $this->connections->offsetGet($name)->get();
     }
-    
+
     /**
      * @param string $name
      * @param array  $arguments
