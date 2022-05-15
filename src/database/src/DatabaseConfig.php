@@ -9,13 +9,27 @@ class DatabaseConfig
 {
     use AutoFillProperties;
 
+    public const OPTION_NAME = 'name';
+    public const OPTION_DRIVER = 'driver';
+    public const OPTION_HOST = 'host';
+    public const OPTION_PORT = 'post';
+    public const OPTION_USER = 'user';
+    public const OPTION_PASSWORD = 'password';
+    public const OPTION_DB_NAME = 'database';
+    public const OPTION_CHARSET = 'charset';
+    public const OPTION_POOL_SIZE = 'poolSize';
+    public const OPTION_OPTIONS = 'options';
+    public const OPTION_UNIX_SOCKET = 'unixSocket';
+    public const OPTION_DSN = 'dsb';
+    public const OPTION_AUTO_FILL = 'autofill';
+
     /**
      * 默认配置
      */
     protected const DEFAULT_OPTIONS = [
         PDO::ATTR_PERSISTENT => true,
-        PDO::ATTR_CASE       => PDO::CASE_NATURAL,
-        PDO::ATTR_ERRMODE    => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_CASE => PDO::CASE_NATURAL,
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         //        PDO::ATTR_ORACLE_NULLS => PDO::NULL_NATURAL,
         //        PDO::ATTR_STRINGIFY_FETCHES => false,
         //        PDO::ATTR_EMULATE_PREPARES  => false,
