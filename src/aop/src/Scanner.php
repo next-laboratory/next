@@ -16,7 +16,7 @@ namespace Max\Aop;
 use Composer\Autoload\ClassLoader;
 use Max\Aop\Annotation\Collector\AspectCollector;
 use Max\Aop\Annotation\Collector\PropertyAttributeCollector;
-use Max\Di\Exceptions\ProcessException;
+use Max\Aop\Exceptions\ProcessException;
 use Max\Di\ReflectionManager;
 use Max\Utils\Filesystem;
 use PhpParser\Error;
@@ -84,7 +84,7 @@ final class Scanner
      */
     private function __construct(protected ClassLoader $loader, array $options)
     {
-        $this->runtimeDir = $runtimeDir = rtrim($options['runtimeDir'] ?? '', '/\\') . '/di/';
+        $this->runtimeDir = $runtimeDir = rtrim($options['runtimeDir'] ?? '', '/\\') . '/aop/';
         $cache = $options['cache'] ?? false;
         array_push($this->collectors, ...($options['collectors'] ?? []));
         is_dir($runtimeDir) || mkdir($runtimeDir, 0755, true);
