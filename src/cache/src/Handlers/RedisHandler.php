@@ -13,19 +13,32 @@ declare(strict_types=1);
 
 namespace Max\Cache\Handlers;
 
-use Max\Database\Redis as DatabaseRedis;
+use Max\Redis\Manager;
+use Max\Utils\Traits\AutoFillProperties;
+use Psr\Container\ContainerExceptionInterface;
+use ReflectionException;
 
 class RedisHandler extends CacheHandler
 {
+    use AutoFillProperties;
+
     /**
-     * 初始化
-     * Redis constructor.
-     *
-     * @param DatabaseRedis $redis
+     * @var string
      */
-    public function __construct(DatabaseRedis $redis)
+    protected string $connection;
+
+    /**
+     * @param array $config
+     *
+     * @throws ContainerExceptionInterface
+     * @throws ReflectionException
+     */
+    public function __construct(array $config)
     {
-        $this->handler = $redis;
+        $this->fillProperties($config);
+        /** @var Manager $manager */
+        $manager       = make(Manager::class);
+        $this->handler = $manager->connection($this->connection);
     }
 
     /**

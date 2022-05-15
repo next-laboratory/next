@@ -13,21 +13,16 @@ declare(strict_types=1);
 
 namespace Max\Cache;
 
-use Closure;
-use Max\Cache\Exceptions\CacheException;
-use Max\Config\Repository;
-use Max\Di\Context;
+use ArrayObject;
+use InvalidArgumentException;
+use Max\Config\Contracts\ConfigInterface;
 use Psr\SimpleCache\CacheInterface;
 
+/**
+ * @mixin CacheInterface
+ */
 class Cache implements CacheInterface
 {
-    /**
-     * 所有缓存句柄
-     *
-     * @var CacheInterface[]
-     */
-    protected static array $handlers = [];
-
     /**
      * 当前缓存句柄
      *
@@ -36,179 +31,141 @@ class Cache implements CacheInterface
     protected CacheInterface $handler;
 
     /**
-     * @param array $config
+     * @var string|mixed
      */
-    public function __construct(protected array $config)
+    protected string $defaultStore;
+
+    /**
+     * @var ArrayObject
+     */
+    protected ArrayObject $stores;
+
+    /**
+     * @var array|mixed
+     */
+    protected array $config = [];
+
+    /**
+     * @param ConfigInterface $config
+     */
+    public function __construct(ConfigInterface $config)
     {
+        $config             = $config->get('cache');
+        $this->defaultStore = $config['default'];
+        $this->config       = $config['stores'];
+        $this->stores       = new ArrayObject();
     }
 
     /**
-     * @param Repository $repository
+     * @param string|null $name
      *
-     * @return Cache|static
-     * @throws CacheException
+     * @return false|mixed
      */
-    public static function __new(Repository $repository): Cache|static
+    public function store(?string $name = null)
     {
-        $cache = new static($repository->get('cache'));
-        $cache->withHandler('default');
-        return $cache;
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return void
-     * @throws CacheException
-     */
-    protected function withHandler(string $name)
-    {
-        try {
-            $name = strtolower($name);
-            if ('default' === $name || !isset($this->config['stores'][$name])) {
-                $name = $this->config['default'];
+        $name ??= $this->defaultStore;
+        if (!$this->stores->offsetExists($name)) {
+            if (!isset($this->config[$name])) {
+                throw new InvalidArgumentException('配置不正确');
             }
-            if (!isset($this->handlers[$name])) {
-                $config  = $this->config['stores'][$name];
-                $handler = $config['handler'];
-                if (class_exists('Max\Di\Context')) {
-                    static::$handlers[$name] = Context::getContainer()->make($handler, [$config['options']]);
-                } else {
-                    static::$handlers[$name] = new $handler($config['options']);
-                }
-            }
-            $this->handler = static::$handlers[$name];
-        } catch (\Throwable $throwable) {
-            throw new CacheException($throwable->getMessage(), $throwable->getCode(), $throwable);
+            $config  = $this->config[$name];
+            $handler = $config['handler'];
+            $this->stores->offsetSet($name, new ($handler)($config['options']));
         }
+        return $this->stores->offsetGet($name);
     }
 
     /**
-     * @param string $name
-     *
-     * @return CacheInterface
-     * @throws CacheException
-     */
-    public function store(string $name = 'default'): CacheInterface
-    {
-        $new = clone $this;
-        $new->withHandler($name);
-        return $new;
-    }
-
-    /**
-     * 记住缓存并返回
-     *
-     * @param          $key
-     * @param Closure  $callback
-     * @param int|null $ttl
-     *
-     * @return mixed
-     */
-    public function remember($key, Closure $callback, ?int $ttl = null): mixed
-    {
-        return $this->handler->remember($key, $callback, $ttl);
-    }
-
-    /**
-     * 自增
-     *
-     * @param     $key
-     * @param int $step
-     *
-     * @return bool
-     */
-    public function incr($key, int $step = 1): bool
-    {
-        return (bool)$this->handler->incr($key, $step);
-    }
-
-    /**
-     * 自减去
-     *
-     * @param     $key
-     * @param int $step
-     *
-     * @return bool
-     */
-    public function decr($key, int $step = 1): bool
-    {
-        return (bool)$this->handler->decr($key, $step);
-    }
-
-    /**
-     * 取出并删除
-     *
      * @param $key
+     * @param $default
      *
      * @return mixed
-     */
-    public function pull($key): mixed
-    {
-        return $this->handler->pull($key);
-    }
-
-    /**
-     * @inheritDoc
      */
     public function get($key, $default = null)
     {
-        return $this->handler->get($key, $default);
+        return $this->__call(__FUNCTION__, func_get_args());
     }
 
     /**
-     * @inheritDoc
+     * @param $key
+     * @param $value
+     * @param $ttl
+     *
+     * @return bool|mixed
      */
     public function set($key, $value, $ttl = null)
     {
-        return $this->handler->set($key, $value, $ttl);
+        return $this->__call(__FUNCTION__, func_get_args());
     }
 
     /**
-     * @inheritDoc
+     * @param $key
+     *
+     * @return bool|mixed
      */
-    public function delete($key): bool
+    public function delete($key)
     {
-        return $this->handler->delete($key);
+        return $this->__call(__FUNCTION__, func_get_args());
     }
 
     /**
-     * @inheritDoc
+     * @return bool|mixed
      */
     public function clear()
     {
-        return $this->handler->clear();
+        return $this->__call(__FUNCTION__, func_get_args());
     }
 
     /**
-     * @inheritDoc
+     * @param $keys
+     * @param $default
+     *
+     * @return iterable|mixed
      */
     public function getMultiple($keys, $default = null)
     {
-        return $this->handler->getMultiple($keys, $default);
+        return $this->__call(__FUNCTION__, func_get_args());
     }
 
     /**
-     * @inheritDoc
+     * @param $values
+     * @param $ttl
+     *
+     * @return bool|mixed
      */
     public function setMultiple($values, $ttl = null)
     {
-        return $this->handler->setMultiple($values, $ttl);
+        return $this->__call(__FUNCTION__, func_get_args());
     }
 
     /**
-     * @inheritDoc
+     * @param $keys
+     *
+     * @return bool|mixed
      */
     public function deleteMultiple($keys)
     {
-        return $this->handler->deleteMultiple($keys);
+        return $this->__call(__FUNCTION__, func_get_args());
     }
 
     /**
-     * @inheritDoc
+     * @param $key
+     *
+     * @return bool|mixed
      */
     public function has($key)
     {
-        return $this->handler->has($key);
+        return $this->__call(__FUNCTION__, func_get_args());
+    }
+
+    /**
+     * @param string $name
+     * @param array  $arguments
+     *
+     * @return mixed
+     */
+    public function __call(string $name, array $arguments)
+    {
+        return $this->store()->{$name}(...$arguments);
     }
 }

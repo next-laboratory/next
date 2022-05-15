@@ -15,7 +15,7 @@ namespace Max\Cache\Handlers;
 
 use Closure;
 use Exception;
-use Psr\SimpleCache\CacheInterface;
+use Max\Cache\Contracts\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 
 abstract class CacheHandler implements CacheInterface
