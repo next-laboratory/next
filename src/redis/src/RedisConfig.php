@@ -1,5 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of the Max package.
+ *
+ * (c) Cheng Yao <987861463@qq.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Max\Redis;
 
 use Max\Utils\Traits\AutoFillProperties;
@@ -8,17 +19,17 @@ class RedisConfig
 {
     use AutoFillProperties;
 
-    public const OPTION_NAME = 'name';
-    public const OPTION_HOST = 'host';
-    public const OPTION_PORT = 'port';
-    public const OPTION_AUTH = 'auth';
-    public const OPTION_DATABASE = 'database';
-    public const OPTION_TIMEOUT = 'timeout';
-    public const OPTION_READ_TIMEOUT = 'readTimeout';
+    public const OPTION_NAME           = 'name';
+    public const OPTION_HOST           = 'host';
+    public const OPTION_PORT           = 'port';
+    public const OPTION_AUTH           = 'auth';
+    public const OPTION_DATABASE       = 'database';
+    public const OPTION_TIMEOUT        = 'timeout';
+    public const OPTION_READ_TIMEOUT   = 'readTimeout';
     public const OPTION_RETRY_INTERVAL = 'retryInterval';
-    public const OPTION_RESERVED = 'reserved';
-    public const OPTION_POOL_SIZE = 'poolSize';
-    public const OPTION_AUTO_FILL = 'autofill';
+    public const OPTION_RESERVED       = 'reserved';
+    public const OPTION_POOL_SIZE      = 'poolSize';
+    public const OPTION_AUTO_FILL      = 'autofill';
 
     /**
      * @var string
