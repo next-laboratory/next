@@ -28,6 +28,7 @@ class ConfigProvider
                 'Max\Framework\Console\Commands\Swoole',
                 'Max\Framework\Console\Commands\VendorPublish',
                 'Max\Framework\Console\Commands\Workerman',
+                'Max\Framework\Console\Commands\Swagger',
             ]
         ];
     }

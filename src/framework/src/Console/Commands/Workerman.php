@@ -7,6 +7,7 @@ use Max\Di\Context;
 use Max\Http\Message\ServerRequest;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
+use Workerman\Connection\TcpConnection;
 use Workerman\Protocols\Http\Request;
 use Workerman\Worker;
 
@@ -33,7 +34,7 @@ class Workerman extends Command
 
         $worker = new Worker('http://0.0.0.0:8989');
 
-        $worker->onMessage = function (\Workerman\Connection\TcpConnection $tcpConnection, \Workerman\Protocols\Http\Request $request) {
+        $worker->onMessage = function (TcpConnection $tcpConnection, \Workerman\Protocols\Http\Request $request) {
             try {
                 $psrRequest = ServerRequest::createFromWorkermanRequest($request);
                 \Max\Context\Context::put(ServerRequestInterface::class, $psrRequest);
@@ -46,6 +47,8 @@ class Workerman extends Command
                 $body?->close();
             } catch (Throwable $throwable) {
                 dump($throwable);
+            } finally {
+                \Max\Context\Context::delete();
             }
         };
 
