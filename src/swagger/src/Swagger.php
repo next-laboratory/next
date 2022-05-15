@@ -4,6 +4,7 @@ namespace Max\Swagger;
 
 use Max\Aop\Scanner;
 use Max\Swagger\Api\Api;
+use Max\Utils\Classes;
 
 class Swagger
 {
@@ -18,6 +19,14 @@ class Swagger
         protected string $output = __DIR__
     )
     {
+    }
+
+    /**
+     * @param string $output
+     */
+    public function setOutput(string $output): void
+    {
+        $this->output = $output;
     }
 
     /**
@@ -43,10 +52,7 @@ class Swagger
      */
     public function generateJson()
     {
-        $classes = [];
-        foreach ($this->scanDir as $dir) {
-            $classes = array_merge(Scanner::scanDir($dir));
-        }
+        $classes = Classes::findInDirs($this->scanDir);
         $paths = [];
         foreach ($classes as $class) {
             $reflectionClass = new \ReflectionClass($class);

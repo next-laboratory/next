@@ -4,7 +4,16 @@ namespace Max\Swagger;
 
 class Response implements \JsonSerializable
 {
-    public function __construct(protected int $code, protected string $description = '', ?Schema $schema = null)
+    /**
+     * @param int $code
+     * @param string $description
+     * @param Schema|null $schema
+     */
+    public function __construct(
+        protected int    $code,
+        protected string $description = '',
+        ?Schema          $schema = null
+    )
     {
     }
 
