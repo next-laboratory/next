@@ -15,6 +15,7 @@ namespace Max\Utils\Resources;
 
 use JsonSerializable;
 use Max\Utils\Collection;
+use Psr\Http\Message\ServerRequestInterface;
 
 class Pagination implements JsonSerializable
 {
@@ -44,7 +45,7 @@ class Pagination implements JsonSerializable
      * @param int        $page      当前页
      * @param int        $perpage   分页数量
      */
-    public function __construct(Collection $resources, int $total, int $page = 1, int $perpage = 15)
+    public function __construct(Collection $resources, int $total, int $page = 1, int $perpage = 15, protected ?ServerRequestInterface $request = null)
     {
         $this->resources = $resources;
         $this->total     = $total;
