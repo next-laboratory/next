@@ -135,9 +135,27 @@ class ServerRequest extends Request implements ServerRequestInterface
         );
         $psrRequest->queryParams = new InputBag($request->get());
         $psrRequest->parsedBody = new InputBag($request->post());
-
         $psrRequest->cookieParams = new InputBag($request->cookie());
         $psrRequest->uploadedFiles = new FileBag($request->file());
+
+        return $psrRequest;
+    }
+
+    /**
+     * @return static
+     */
+    public static function createFromGlobals()
+    {
+        $psrRequest = new static(
+            $_SERVER['REQUEST_METHOD'],
+            $_SERVER['REQUEST_URI'],
+            apache_request_headers(),
+            file_get_contents('php://input')
+        );
+        $psrRequest->queryParams = new InputBag($_GET);
+        $psrRequest->parsedBody = new InputBag($_POST);
+        $psrRequest->uploadedFiles = new FileBag($_FILES);
+        $psrRequest->cookieParams = new InputBag($_COOKIE);
 
         return $psrRequest;
     }
