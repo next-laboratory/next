@@ -3,15 +3,22 @@
 namespace Max\Workerman\Http;
 
 use Max\Di\Context;
+use Max\Http\Cookie;
 use Max\Http\Message\ServerRequest;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 use Workerman\Connection\TcpConnection;
 use Workerman\Protocols\Http\Request;
+use Workerman\Protocols\Http\Response;
 
 class Server
 {
+    /**
+     * @param TcpConnection $tcpConnection
+     * @param Request $request
+     * @return void
+     */
     public function onMessage(TcpConnection $tcpConnection, Request $request)
     {
         try {
@@ -21,12 +28,41 @@ class Server
             \Max\Context\Context::put(\Psr\Http\Message\ResponseInterface::class, new \Max\Http\Message\Response());
             $requestHandler = Context::getContainer()->make(\Psr\Http\Server\RequestHandlerInterface::class);
             $psr7Response = $requestHandler->handle(Context::getContainer()->make(ServerRequestInterface::class));
-            $tcpConnection->send($this->convertToRaw($psr7Response), true);
+            $tcpConnection->send($this->convertToWorkermanResponse($psr7Response));
         } catch (Throwable $throwable) {
-            dump($throwable);
+            var_dump($throwable);
         } finally {
             \Max\Context\Context::delete();
         }
+    }
+
+    /**
+     * @param ResponseInterface $psrResponse
+     * @return Response
+     */
+    public function convertToWorkermanResponse(ResponseInterface $psrResponse): Response
+    {
+        $response = new Response($psrResponse->getStatusCode());
+        foreach ($psrResponse->getHeaders() as $name => $values) {
+            if (0 === strcasecmp('Set-Cookie', $name)) {
+                foreach ($values as $value) {
+                    $cookie = Cookie::parse($value);
+                    $response->cookie(
+                        $cookie->getName(),
+                        $cookie->getValue(),
+                        $cookie->getMaxAge(),
+                        $cookie->getPath(),
+                        $cookie->getDomain(),
+                        $cookie->isSecure(),
+                        $cookie->isHttponly(),
+                        $cookie->getSamesite()
+                    );
+                }
+            } else {
+                $response->header($name, implode(', ', $values));
+            }
+        }
+        return $response->withBody((string)$psrResponse->getBody()?->getContents());
     }
 
     /**
