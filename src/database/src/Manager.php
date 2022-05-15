@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Max\Database;
 
 use ArrayObject;
+use InvalidArgumentException;
 use Max\Config\Contracts\ConfigInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
@@ -59,7 +60,7 @@ class Manager
         $name ??= $this->defaultConnection;
         if (!$this->connections->offsetExists($name)) {
             if (!isset($this->config[$name])) {
-                throw new \InvalidArgumentException('没有相关数据库连接');
+                throw new InvalidArgumentException('没有相关数据库连接');
             }
             $config          = $this->config[$name];
             $connector       = $config['connector'];
