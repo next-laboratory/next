@@ -75,7 +75,7 @@ class Queue
      * @param string|object|array $job
      * @param string              $queue
      */
-    public function push($job, string $queue = 'default')
+    public function push($job, string $queue = 'default'): void
     {
         $this->handler->enqueue($queue, serialize($job));
     }
@@ -84,7 +84,7 @@ class Queue
      * @param DelayedJob $delayJob
      * @param float      $delay 延时时长/秒
      */
-    public function later(DelayedJob $delayJob, float $delay = 15)
+    public function later(DelayedJob $delayJob, float $delay = 15): void
     {
         $delayJob->handleTime = microtime(true) + $delay;
         $this->handler->enqueue('delay', serialize($delayJob));
@@ -93,7 +93,7 @@ class Queue
     /**
      * @param string|null $queue
      */
-    public function work(?string $queue)
+    public function work(?string $queue): void
     {
         while (true) {
             try {
@@ -114,7 +114,7 @@ class Queue
      * @return false|Job
      * @throws InvalidJobException
      */
-    protected function dequeueJob($queue)
+    protected function dequeueJob($queue): Job|bool
     {
         if ($job = $this->handler->dequeue($queue)) {
             $job    = unserialize($job);
@@ -134,9 +134,9 @@ class Queue
     }
 
     /**
-     * @param JobInterface $job
+     * @param Job $job
      */
-    protected function handleJob(Job $job)
+    protected function handleJob(Job $job): void
     {
         try {
             if ($job instanceof DelayedJob && ($leftTime = $job->leftTime()) > 0) {
