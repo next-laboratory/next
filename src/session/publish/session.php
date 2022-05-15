@@ -23,10 +23,11 @@ return [
                 'gcMaxLifetime' => 1440,
             ],
         ],
-        'cache' => [
-            'handler' => 'Max\Session\Handlers\Cache',
+        'redis' => [
+            'handler' => 'Max\Session\Handlers\RedisHandler',
             'options' => [
-                'ttl' => 3600,
+                'connection' => 'redis',
+                'expire'     => 3600,
             ]
         ]
     ],

@@ -60,6 +60,9 @@ class Session
     {
         $id   ??= $this->createId();
         $data = $this->handler->read($id);
+        if (!$data) {
+            $data = [];
+        }
         if (is_string($data)) {
             $data = unserialize($data) ?: [];
         }
