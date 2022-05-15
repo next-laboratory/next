@@ -62,16 +62,16 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public static function createFromSwooleRequest($request): ServerRequest
     {
-        $server  = $request->server;
-        $header  = $request->header;
-        $uri     = (new Uri())->withScheme(isset($server['https']) && $server['https'] !== 'off' ? 'https' : 'http');
+        $server = $request->server;
+        $header = $request->header;
+        $uri = (new Uri())->withScheme(isset($server['https']) && $server['https'] !== 'off' ? 'https' : 'http');
         $hasPort = false;
         if (isset($server['http_host'])) {
             $hostHeaderParts = explode(':', $server['http_host']);
-            $uri             = $uri->withHost($hostHeaderParts[0]);
+            $uri = $uri->withHost($hostHeaderParts[0]);
             if (isset($hostHeaderParts[1])) {
                 $hasPort = true;
-                $uri     = $uri->withPort($hostHeaderParts[1]);
+                $uri = $uri->withPort($hostHeaderParts[1]);
             }
         } else if (isset($server['server_name'])) {
             $uri = $uri->withHost($server['server_name']);
@@ -98,10 +98,10 @@ class ServerRequest extends Request implements ServerRequestInterface
         $hasQuery = false;
         if (isset($server['request_uri'])) {
             $requestUriParts = explode('?', $server['request_uri']);
-            $uri             = $uri->withPath($requestUriParts[0]);
+            $uri = $uri->withPath($requestUriParts[0]);
             if (isset($requestUriParts[1])) {
                 $hasQuery = true;
-                $uri      = $uri->withQuery($requestUriParts[1]);
+                $uri = $uri->withQuery($requestUriParts[1]);
             }
         }
 
@@ -109,14 +109,14 @@ class ServerRequest extends Request implements ServerRequestInterface
             $uri = $uri->withQuery($server['query_string']);
         }
 
-        $psrRequest                = new static($request->getMethod(), $uri, $header);
-        $psrRequest->serverParams  = new ServerBag(array_change_key_case($server, CASE_UPPER));
-        $psrRequest->parsedBody    = new InputBag($request->post ?? []);
-        $psrRequest->body          = new StringStream($request->getContent());
-        $psrRequest->cookieParams  = new InputBag(array_change_key_case($request->cookie ?? [], CASE_UPPER));
-        $psrRequest->queryParams   = new InputBag($request->get ?? []);
+        $psrRequest = new static($request->getMethod(), $uri, $header);
+        $psrRequest->serverParams = new ServerBag(array_change_key_case($server, CASE_UPPER));
+        $psrRequest->parsedBody = new InputBag($request->post ?? []);
+        $psrRequest->body = new StringStream($request->getContent());
+        $psrRequest->cookieParams = new InputBag(array_change_key_case($request->cookie ?? [], CASE_UPPER));
+        $psrRequest->queryParams = new InputBag($request->get ?? []);
         $psrRequest->uploadedFiles = new FileBag($request->files ?? []);
-        $psrRequest->attributes    = new ParameterBag();
+        $psrRequest->attributes = new ParameterBag();
 
         return $psrRequest;
     }
@@ -135,6 +135,10 @@ class ServerRequest extends Request implements ServerRequestInterface
         );
         $psrRequest->queryParams = new InputBag($request->get());
         $psrRequest->parsedBody = new InputBag($request->post());
+
+        $psrRequest->cookieParams = new InputBag($request->cookie());
+        $psrRequest->uploadedFiles = new FileBag($request->file());
+
         return $psrRequest;
     }
 
@@ -153,7 +157,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function withServerParams(array $serverParams)
     {
-        $new               = clone $this;
+        $new = clone $this;
         $new->serverParams = new ServerBag($serverParams);
         return $new;
     }
@@ -173,7 +177,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function withCookieParams(array $cookies)
     {
-        $new            = clone $this;
+        $new = clone $this;
         $newCookieParam = clone $this->cookieParams;
         $newCookieParam->add(array_change_key_case($cookies, CASE_UPPER));
         $new->cookieParams = $newCookieParam;
@@ -196,7 +200,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function withQueryParams(array $query)
     {
-        $new            = clone $this;
+        $new = clone $this;
         $newQueryParams = clone $this->queryParams;
         $newQueryParams->add($query);
         $new->queryParams = $newQueryParams;
@@ -219,7 +223,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function withUploadedFiles(array $uploadedFiles)
     {
-        $new              = clone $this;
+        $new = clone $this;
         $newUploadedFiles = clone $this->uploadedFiles;
         $newUploadedFiles->replace(array_merge($newUploadedFiles->all(), $uploadedFiles));
         $new->uploadedFiles = $newUploadedFiles;
@@ -242,7 +246,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function withParsedBody($data)
     {
-        $new             = clone $this;
+        $new = clone $this;
         $new->parsedBody = new InputBag($data);
 
         return $new;
@@ -275,7 +279,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function withAttribute($name, $value)
     {
-        $new          = clone $this;
+        $new = clone $this;
         $newAttribute = clone $this->attributes;
         $newAttribute->set($name, $value);
         $new->attributes = $newAttribute;
@@ -290,7 +294,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function withoutAttribute($name)
     {
-        $new          = clone $this;
+        $new = clone $this;
         $newAttribute = clone $this->attributes;
         $newAttribute->remove($name);
         $new->attributes = $newAttribute;

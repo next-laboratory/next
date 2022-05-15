@@ -22,6 +22,7 @@ use Max\Server\Events\OnManagerStart;
 use Max\Server\Events\OnManagerStop;
 use Max\Server\Events\OnShutdown;
 use Max\Server\Events\OnStart;
+use Max\Server\Events\OnWorkerExit;
 use Max\Server\Events\OnWorkerStart;
 use Max\Server\Events\OnWorkerStop;
 use Max\Server\Listeners\ServerListener;
@@ -76,7 +77,7 @@ class Server
     protected array $config;
 
     /**
-     * @param array                $config
+     * @param ConfigInterface $config
      * @param EventDispatcher|null $eventDispatcher
      */
     public function __construct(ConfigInterface $config, protected ?EventDispatcher $eventDispatcher = null)
