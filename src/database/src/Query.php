@@ -3,6 +3,7 @@
 namespace Max\Database;
 
 use Closure;
+use Max\Database\Contracts\ConnectorInterface;
 use Max\Database\Contracts\QueryInterface;
 use Max\Database\Events\QueryExecuted;
 use Max\Database\Query\Builder;
@@ -13,14 +14,20 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 class Query implements QueryInterface
 {
     /**
-     * @param PDO $PDO
+     * @var PDO
+     */
+    protected PDO $PDO;
+
+    /**
+     * @param ConnectorInterface $connector
      * @param EventDispatcherInterface|null $eventDispatcher
      */
     public function __construct(
-        protected PDO                       $PDO,
+        protected ConnectorInterface        $connector,
         protected ?EventDispatcherInterface $eventDispatcher = null
     )
     {
+        $this->PDO = $this->connector->get();
     }
 
     /**

@@ -2,9 +2,9 @@
 
 namespace Max\Database\Connectors;
 
-use Max\Context\Context;
 use Max\Database\Contracts\ConnectorInterface;
 use Max\Database\DatabaseConfig;
+use PDO;
 
 class BaseConnector implements ConnectorInterface
 {
@@ -16,10 +16,10 @@ class BaseConnector implements ConnectorInterface
     }
 
     /**
-     * @return \PDO
+     * @return PDO
      */
     public function get()
     {
-        return new \PDO($this->config->getDsn(), $this->config->getUser(), $this->config->getPassword(), $this->config->getOptions());
+        return new PDO($this->config->getDsn(), $this->config->getUser(), $this->config->getPassword(), $this->config->getOptions());
     }
 }

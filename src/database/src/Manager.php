@@ -56,7 +56,7 @@ class Manager
             $options['name'] = $name;
             $this->connections->offsetSet($name, new $connector(new DatabaseConfig($options)));
         }
-        return new Query($this->connections->offsetGet($name)->get(), $this->eventDispatcher);
+        return new Query($this->connections->offsetGet($name), $this->eventDispatcher);
     }
 
     /**
