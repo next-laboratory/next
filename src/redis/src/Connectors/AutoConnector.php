@@ -13,10 +13,11 @@ declare(strict_types=1);
 
 namespace Max\Redis\Connectors;
 
+use Max\Redis\Contracts\ConnectorInterface;
 use Max\Redis\RedisConfig;
 use Swoole\Coroutine;
 
-class AutoConnector
+class AutoConnector implements ConnectorInterface
 {
     /**
      * @var array|string[]

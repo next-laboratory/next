@@ -17,7 +17,7 @@ use ArrayObject;
 use Max\Config\Contracts\ConfigInterface;
 
 /**
- * @mixin \Redis
+ * @mixin Redis
  */
 class Manager
 {
@@ -50,7 +50,7 @@ class Manager
     /**
      * @param string|null $name
      *
-     * @return \Redis
+     * @return Redis
      */
     public function connection(?string $name = null)
     {
@@ -65,7 +65,7 @@ class Manager
             $options['name'] = $name;
             $this->connections->offsetSet($name, new $connector(new RedisConfig($options)));
         }
-        return $this->connections->offsetGet($name)->get();
+        return new Redis($this->connections->offsetGet($name));
     }
 
     /**

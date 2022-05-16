@@ -16,10 +16,12 @@ namespace Max\Redis\Connectors;
 use ArrayObject;
 use Max\Context\Context;
 use Max\Redis\Context\Connection;
+use Max\Redis\Contracts\ConnectorInterface;
 use Max\Redis\RedisConfig;
+use Redis;
 use Swoole\Coroutine\Channel;
 
-class PoolConnector
+class PoolConnector implements ConnectorInterface
 {
     /**
      * @var Channel
@@ -68,24 +70,40 @@ class PoolConnector
         if (!$connection->offsetExists($name)) {
             if ($this->size < $this->capacity) {
                 $redis = $this->create();
-                $this->size++;
             } else {
+                /** @var Redis $redis */
                 $redis = $this->pool->pop(3);
+                if (!$redis->isConnected()) {
+                    $this->connect($redis);
+                }
             }
+
             $connection->offsetSet($name, [
                 'pool' => $this,
                 'item' => $redis,
             ]);
         }
+
         return $connection->offsetGet($name)['item'];
     }
 
     /**
-     * @return \Redis
+     * @return Redis
      */
     protected function create()
     {
-        $redis = new \Redis();
+        $this->connect($redis = new Redis());
+        $this->size++;
+        return $redis;
+    }
+
+    /**
+     * @param Redis $redis
+     *
+     * @return void
+     */
+    protected function connect(Redis $redis): void
+    {
         $redis->connect(
             $this->config->getHost(),
             $this->config->getPort(),
@@ -98,7 +116,6 @@ class PoolConnector
         if ($auth = $this->config->getAuth()) {
             $redis->auth($auth);
         }
-        return $redis;
     }
 
     /**

@@ -68,15 +68,9 @@ class PoolConnector implements ConnectorInterface, PoolInterface
         }
         /** @var ArrayObject $connection */
         $connection = Context::get($key);
-        if ($this->size < $this->capacity) {
-            $PDO = $this->create();
-            $this->size++;
-        } else {
-            $PDO = $this->pool->pop(3);
-        }
         $connection->offsetSet($name, [
             'pool' => $this,
-            'item' => $PDO,
+            'item' => $this->size < $this->capacity ? $this->create() : $this->pool->pop(3),
         ]);
         return $connection->offsetGet($name)['item'];
     }
@@ -86,7 +80,15 @@ class PoolConnector implements ConnectorInterface, PoolInterface
      */
     protected function create()
     {
-        return new PDO($this->config->getDsn(), $this->config->getUser(), $this->config->getPassword(), $this->config->getOptions());
+        $PDO = new PDO(
+            $this->config->getDsn(),
+            $this->config->getUser(),
+            $this->config->getPassword(),
+            $this->config->getOptions()
+        );
+        $this->size++;
+
+        return $PDO;
     }
 
     /**

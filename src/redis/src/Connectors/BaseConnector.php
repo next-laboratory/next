@@ -13,9 +13,10 @@ declare(strict_types=1);
 
 namespace Max\Redis\Connectors;
 
+use Max\Redis\Contracts\ConnectorInterface;
 use Max\Redis\RedisConfig;
 
-class BaseConnector
+class BaseConnector implements ConnectorInterface
 {
     /**
      * @param RedisConfig $config
