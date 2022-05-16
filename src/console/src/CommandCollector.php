@@ -31,7 +31,19 @@ class CommandCollector extends AbstractCollector
      */
     public static function collectClass(string $class, object $attribute): void
     {
-        if ($attribute instanceof Command && !in_array($class, self::$container)) {
+        if ($attribute instanceof Command) {
+            self::add($class);
+        }
+    }
+
+    /**
+     * @param string $class
+     *
+     * @return void
+     */
+    public static function add(string $class): void
+    {
+        if (!in_array($class, self::$container)) {
             self::$container[] = $class;
         }
     }
@@ -39,7 +51,7 @@ class CommandCollector extends AbstractCollector
     /**
      * @return array
      */
-    public static function all()
+    public static function all(): array
     {
         return self::$container;
     }
