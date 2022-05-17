@@ -50,7 +50,7 @@ class BaseConnector implements ConnectorInterface
             $this->config->getPassword(),
             $this->config->getOptions()
         );
-        if ($PDO->exec('SELECT 1')) {
+        if ($PDO->query('SELECT 1')) {
             return $PDO;
         }
         $this->pool->offsetUnset($this->config->getName());
