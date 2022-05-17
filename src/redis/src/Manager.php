@@ -16,6 +16,7 @@ namespace Max\Redis;
 use ArrayObject;
 use InvalidArgumentException;
 use Max\Config\Contracts\ConfigInterface;
+use Max\Pool\Contracts\Poolable;
 use Max\Pool\Contracts\PoolInterface;
 use Max\Pool\PoolManager;
 
@@ -30,11 +31,6 @@ class Manager
     protected string $defaultConnection;
 
     /**
-     * @var ArrayObject
-     */
-    protected ArrayObject $connections;
-
-    /**
      * @var array|mixed
      */
     protected array $config = [];
@@ -47,27 +43,29 @@ class Manager
         $config                  = $config->get('redis');
         $this->defaultConnection = $config['default'];
         $this->config            = $config['connections'] ?? [];
+        PoolManager::init();
     }
 
     /**
      * @param string|null $name
      *
-     * @return PoolInterface
+     * @return Redis
      */
-    public function connection(?string $name = null): PoolInterface
+    public function connection(?string $name = null): Poolable
     {
         $name ??= 'redis.' . $this->defaultConnection;
         if (!PoolManager::has($name)) {
             if (!isset($this->config[$name])) {
                 throw new InvalidArgumentException('没有相关数据库连接');
             }
-            $config    = $this->config[$name];
-            $connector = $config['connector'];
-            $options   = $config['options'];
+            $config          = $this->config[$name];
+            $connector       = $config['connector'];
+            $options         = $config['options'];
+            $options['name'] = $name;
             PoolManager::set($name, new $connector(new RedisConfig($options)));
         }
 
-        return PoolManager::get($name);
+        return PoolManager::get($name)->get();
     }
 
     /**
@@ -78,6 +76,6 @@ class Manager
      */
     public function __call(string $name, array $arguments)
     {
-        return $this->connection($this->defaultConnection)->get()->{$name}(...$arguments);
+        return $this->connection($this->defaultConnection)->{$name}(...$arguments);
     }
 }

@@ -11,10 +11,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Max\Swoole\Http\Exceptions;
+namespace Max\Swoole\Exceptions;
 
-use Exception;
-
-class InvalidResponseBodyException extends Exception
+class WebSocketException extends \Exception
 {
 }

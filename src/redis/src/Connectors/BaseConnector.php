@@ -15,6 +15,7 @@ namespace Max\Redis\Connectors;
 
 use Max\Pool\Contracts\Poolable;
 use Max\Pool\Contracts\PoolInterface;
+use Max\Redis\Redis;
 use Max\Redis\RedisConfig;
 
 class BaseConnector implements PoolInterface
@@ -45,7 +46,7 @@ class BaseConnector implements PoolInterface
             $redis->auth($auth);
         }
 
-        return $redis;
+        return new Redis($this, $redis);
     }
 
     public function open()
@@ -63,13 +64,7 @@ class BaseConnector implements PoolInterface
         // TODO: Implement gc() method.
     }
 
-    public function release()
+    public function release(?Poolable $poolable)
     {
-        // TODO: Implement release() method.
-    }
-
-    public function put(Poolable $poolable)
-    {
-        // TODO: Implement put() method.
     }
 }

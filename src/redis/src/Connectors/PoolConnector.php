@@ -13,11 +13,9 @@ declare(strict_types=1);
 
 namespace Max\Redis\Connectors;
 
-use ArrayObject;
 use Max\Context\Context;
 use Max\Pool\Contracts\Poolable;
 use Max\Pool\Contracts\PoolInterface;
-use Max\Redis\Context\Connection;
 use Max\Redis\RedisConfig;
 use Redis;
 use Swoole\Coroutine\Channel;
@@ -57,55 +55,41 @@ class PoolConnector implements PoolInterface
     /**
      * 取
      *
-     * @return mixed
+     * @return \Max\Redis\Redis
      */
     public function get(): Poolable
     {
-        $name = $this->config->getName();
-        $key  = Connection::class;
+        // TOOD 多携程，多配置下会有问题
+        $key = \Max\Redis\Redis::class;
         if (!Context::has($key)) {
-            Context::put($key, new Connection());
-        }
-        /** @var ArrayObject $connection */
-        $connection = Context::get($key);
-        if (!$connection->offsetExists($name)) {
             if ($this->size < $this->capacity) {
                 $redis = $this->create();
             } else {
-                /** @var Redis $redis */
                 $redis = $this->pool->pop(3);
-                if (!$redis->isConnected()) {
-                    $this->connect($redis);
-                }
+                dump(spl_object_hash($redis));
             }
-
-            $connection->offsetSet($name, [
-                'pool' => $this,
-                'item' => $redis,
-            ]);
+            Context::put($key, $redis);
         }
-
-        return $connection->offsetGet($name)['item'];
+        return Context::get($key);
     }
 
     /**
-     * @return Poolable
+     * @return \Max\Redis\Redis
      */
     protected function create()
     {
-        $redis = new Redis();
+        $redis = new \Redis();
         $this->connect($redis);
         $this->size++;
-
         return new \Max\Redis\Redis($this, $redis);
     }
 
     /**
-     * @param Redis $redis
+     * @param \Redis $redis
      *
      * @return void
      */
-    protected function connect(Redis $redis): void
+    protected function connect(\Redis $redis): void
     {
         $redis->connect(
             $this->config->getHost(),
@@ -122,26 +106,12 @@ class PoolConnector implements PoolInterface
     }
 
     /**
-     * 归还连接，如果连接不能使用则归还null
-     *
-     * @param $redis
-     */
-    public function put($redis)
-    {
-        if (is_null($redis)) {
-            $this->size--;
-        } else if (!$this->pool->isFull()) {
-            $this->pool->push($redis);
-        }
-    }
-
-    /**
      * 填充连接池
      */
     public function fill()
     {
         for ($i = 0; $i < $this->capacity; $i++) {
-            $this->put($this->create());
+            $this->release($this->create());
         }
         $this->size = $this->capacity;
     }
@@ -161,8 +131,12 @@ class PoolConnector implements PoolInterface
         // TODO: Implement gc() method.
     }
 
-    public function release()
+    public function release(?Poolable $poolable)
     {
-        $this->size--;
+        if (is_null($poolable)) {
+            $this->size--;
+        } else if (!$this->pool->isFull()) {
+            $this->pool->push($poolable);
+        }
     }
 }

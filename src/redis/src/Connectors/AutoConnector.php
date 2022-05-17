@@ -68,13 +68,8 @@ class AutoConnector implements PoolInterface
         // TODO: Implement gc() method.
     }
 
-    public function release(Poolable $poolable)
+    public function release(?Poolable $poolable)
     {
         // TODO: Implement release() method.
-    }
-
-    public function put(Poolable $poolable)
-    {
-        // TODO: Implement put() method.
     }
 }

@@ -15,8 +15,8 @@ namespace Max\Swoole\Http;
 
 use Max\Di\Context;
 use Max\Di\Exceptions\NotFoundException;
-use Max\Swoole\Http\Exceptions\InvalidRequestHandlerException;
-use Max\Swoole\Http\Exceptions\InvalidResponseBodyException;
+use Max\Swoole\Exceptions\InvalidRequestHandlerException;
+use Max\Swoole\Exceptions\InvalidResponseBodyException;
 use Max\Http\Message\Stream\StringStream;
 use Max\Http\Server\RequestHandler as PsrRequestHandler;
 use Max\Routing\Route;

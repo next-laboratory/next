@@ -42,13 +42,9 @@ class Session
     public function __construct(ConfigInterface $config)
     {
         $config = $config->get('session');
-        try {
-            $config        = $config['stores'][$config['default']];
-            $handler       = $config['handler'];
-            $this->handler = new $handler($config['options']);
-        } catch (Throwable $throwable) {
-            throw new InvalidArgumentException('The configuration file may be incorrect: ' . $throwable->getMessage());
-        }
+        $config = $config['stores'][$config['default']];
+        $handler = $config['handler'];
+        $this->handler = new $handler($config['options']);
     }
 
     /**
@@ -58,7 +54,7 @@ class Session
      */
     public function start(?string $id = null): void
     {
-        $id   ??= $this->createId();
+        $id ??= $this->createId();
         $data = $this->handler->read($id);
         if (!$data) {
             $data = [];
@@ -100,7 +96,7 @@ class Session
 
     /**
      * @param string $key
-     * @param null   $default
+     * @param null $default
      *
      * @return mixed
      */
@@ -121,7 +117,7 @@ class Session
     }
 
     /**
-     * @param string     $key
+     * @param string $key
      * @param mixed|null $default
      *
      * @return mixed

@@ -11,15 +11,21 @@ use Max\Pool\Contracts\PoolInterface;
 class Redis implements Poolable
 {
     /**
-     * @param PoolInterface $pool
+     * @var int
      */
-    public function __construct(protected PoolInterface $pool)
+    protected int $commandProcessed = 0;
+
+    /**
+     * @param PoolInterface $pool
+     * @param \Redis $redis
+     */
+    public function __construct(protected PoolInterface $pool, protected \Redis $redis)
     {
     }
 
     /**
      * @param string $name
-     * @param array  $arguments
+     * @param array $arguments
      *
      * @return mixed
      * @throws \RedisException
@@ -27,13 +33,18 @@ class Redis implements Poolable
     public function __call(string $name, array $arguments)
     {
         try {
-            $redis  = $this->pool->get();
-            $result = $redis->{$name}(...$arguments);
-            $this->pool->put($redis);
+            $result = $this->redis->{$name}(...$arguments);
+            $this->pool->release($this);
+            $this->commandProcessed++;
             return $result;
         } catch (\RedisException $redisException) {
-            $this->pool->release();
+            $this->pool->release(null);
             throw $redisException;
         }
+    }
+
+    public function __destruct()
+    {
+        $this->pool->release(null);
     }
 }

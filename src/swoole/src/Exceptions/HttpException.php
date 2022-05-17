@@ -11,11 +11,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Max\Swoole\Http\Exceptions;
+namespace Max\Swoole\Exceptions;
 
 use Exception;
 
 class HttpException extends Exception
 {
-    protected $code = 500;
 }

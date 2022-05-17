@@ -10,9 +10,7 @@ interface PoolInterface
 
     public function get(): Poolable;
 
-    public function put(Poolable $poolable);
-
     public function gc();
 
-    public function release();
+    public function release(?Poolable $poolable);
 }
