@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace {{namespace}};
 
-use Max\Http\Annotations\Controller;
-use Max\Http\Annotations\GetMapping;
-use Max\Http\Annotations\DeleteMapping;
-use Max\Http\Annotations\RequestMapping;
+use Max\Routing\Annotations\Controller;
+use Max\Routing\Annotations\GetMapping;
+use Max\Routing\Annotations\DeleteMapping;
+use Max\Routing\Annotations\RequestMapping;
 
 #[Controller(prefix: '/{{path}}')]
 class {{class}}

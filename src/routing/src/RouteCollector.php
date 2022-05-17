@@ -15,7 +15,7 @@ namespace Max\Routing;
 
 use Max\Routing\Exceptions\MethodNotAllowedException;
 use Max\Routing\Exceptions\RouteNotFoundException;
-use Max\Http\Exceptions\HttpException;
+use Max\Swoole\Exceptions\HttpException;
 use Psr\Http\Message\ServerRequestInterface;
 use function array_key_exists;
 use function is_null;
