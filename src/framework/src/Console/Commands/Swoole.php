@@ -53,8 +53,8 @@ EOT;
         echo 'PHP:' . PHP_VERSION . PHP_EOL;
         echo 'swoole:' . SWOOLE_VERSION . PHP_EOL;
         $container = Context::getContainer();
-        /** @var \Max\Server\Server $server */
-        $server = $container->make(\Max\Server\Server::class);
+        /** @var \Max\Swoole\Server $server */
+        $server = $container->make(\Max\Swoole\Server::class);
         switch ($this->input->getFirstArgument()) {
             case 'start':
                 $this->output->debug('Server started.');

@@ -20,7 +20,6 @@ use PDO;
 
 class BaseConnector implements ConnectorInterface
 {
-
     protected ArrayObject $pool;
 
     /**

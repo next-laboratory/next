@@ -19,7 +19,6 @@ use Max\Database\Collection;
 use Max\Database\Eloquent\Traits\Relations;
 use Max\Database\Exceptions\ModelNotFoundException;
 use Max\Database\Manager;
-use Max\Database\Query;
 use Max\Utils\Arr;
 use Max\Utils\Contracts\Arrayable;
 use Max\Utils\Str;

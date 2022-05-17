@@ -15,13 +15,14 @@ namespace Max\Redis\Connectors;
 
 use ArrayObject;
 use Max\Context\Context;
+use Max\Pool\Contracts\Poolable;
+use Max\Pool\Contracts\PoolInterface;
 use Max\Redis\Context\Connection;
-use Max\Redis\Contracts\ConnectorInterface;
 use Max\Redis\RedisConfig;
 use Redis;
 use Swoole\Coroutine\Channel;
 
-class PoolConnector implements ConnectorInterface
+class PoolConnector implements PoolInterface
 {
     /**
      * @var Channel
@@ -58,7 +59,7 @@ class PoolConnector implements ConnectorInterface
      *
      * @return mixed
      */
-    public function get()
+    public function get(): Poolable
     {
         $name = $this->config->getName();
         $key  = Connection::class;
@@ -88,13 +89,15 @@ class PoolConnector implements ConnectorInterface
     }
 
     /**
-     * @return Redis
+     * @return Poolable
      */
     protected function create()
     {
-        $this->connect($redis = new Redis());
+        $redis = new Redis();
+        $this->connect($redis);
         $this->size++;
-        return $redis;
+
+        return new \Max\Redis\Redis($this, $redis);
     }
 
     /**
@@ -121,14 +124,14 @@ class PoolConnector implements ConnectorInterface
     /**
      * 归还连接，如果连接不能使用则归还null
      *
-     * @param $PDO
+     * @param $redis
      */
-    public function put($PDO)
+    public function put($redis)
     {
-        if (is_null($PDO)) {
+        if (is_null($redis)) {
             $this->size--;
         } else if (!$this->pool->isFull()) {
-            $this->pool->push($PDO);
+            $this->pool->push($redis);
         }
     }
 
@@ -141,5 +144,25 @@ class PoolConnector implements ConnectorInterface
             $this->put($this->create());
         }
         $this->size = $this->capacity;
+    }
+
+    public function open()
+    {
+        // TODO: Implement open() method.
+    }
+
+    public function close()
+    {
+        // TODO: Implement close() method.
+    }
+
+    public function gc()
+    {
+        // TODO: Implement gc() method.
+    }
+
+    public function release()
+    {
+        $this->size--;
     }
 }

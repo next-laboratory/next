@@ -13,11 +13,12 @@ declare(strict_types=1);
 
 namespace Max\Redis\Connectors;
 
-use Max\Redis\Contracts\ConnectorInterface;
+use Max\Pool\Contracts\Poolable;
+use Max\Pool\Contracts\PoolInterface;
 use Max\Redis\RedisConfig;
 use Swoole\Coroutine;
 
-class AutoConnector implements ConnectorInterface
+class AutoConnector implements PoolInterface
 {
     /**
      * @var array|string[]
@@ -42,7 +43,7 @@ class AutoConnector implements ConnectorInterface
     /**
      * @return mixed
      */
-    public function get()
+    public function get(): Poolable
     {
         $type = class_exists(Coroutine::class) && Coroutine::getCid() > 0 ? 'pool' : 'base';
         if (!isset($this->container[$type])) {
@@ -50,5 +51,30 @@ class AutoConnector implements ConnectorInterface
             $this->container[$type] = new $connector($this->config);
         }
         return $this->container[$type]->get();
+    }
+
+    public function open()
+    {
+        // TODO: Implement open() method.
+    }
+
+    public function close()
+    {
+        // TODO: Implement close() method.
+    }
+
+    public function gc()
+    {
+        // TODO: Implement gc() method.
+    }
+
+    public function release(Poolable $poolable)
+    {
+        // TODO: Implement release() method.
+    }
+
+    public function put(Poolable $poolable)
+    {
+        // TODO: Implement put() method.
     }
 }

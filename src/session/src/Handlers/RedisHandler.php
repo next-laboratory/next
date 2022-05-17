@@ -2,7 +2,6 @@
 
 namespace Max\Session\Handlers;
 
-use Max\Redis\Contracts\ConnectorInterface;
 use Max\Redis\Manager;
 use Max\Redis\Redis;
 use Max\Utils\Traits\AutoFillProperties;

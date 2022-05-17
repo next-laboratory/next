@@ -13,10 +13,11 @@ declare(strict_types=1);
 
 namespace Max\Redis\Connectors;
 
-use Max\Redis\Contracts\ConnectorInterface;
+use Max\Pool\Contracts\Poolable;
+use Max\Pool\Contracts\PoolInterface;
 use Max\Redis\RedisConfig;
 
-class BaseConnector implements ConnectorInterface
+class BaseConnector implements PoolInterface
 {
     /**
      * @param RedisConfig $config
@@ -28,7 +29,7 @@ class BaseConnector implements ConnectorInterface
     /**
      * @return \Redis
      */
-    public function get()
+    public function get(): Poolable
     {
         $redis = new \Redis();
         $redis->connect(
@@ -45,5 +46,30 @@ class BaseConnector implements ConnectorInterface
         }
 
         return $redis;
+    }
+
+    public function open()
+    {
+        // TODO: Implement open() method.
+    }
+
+    public function close()
+    {
+        // TODO: Implement close() method.
+    }
+
+    public function gc()
+    {
+        // TODO: Implement gc() method.
+    }
+
+    public function release()
+    {
+        // TODO: Implement release() method.
+    }
+
+    public function put(Poolable $poolable)
+    {
+        // TODO: Implement put() method.
     }
 }

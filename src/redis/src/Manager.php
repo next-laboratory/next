@@ -14,7 +14,10 @@ declare(strict_types=1);
 namespace Max\Redis;
 
 use ArrayObject;
+use InvalidArgumentException;
 use Max\Config\Contracts\ConfigInterface;
+use Max\Pool\Contracts\PoolInterface;
+use Max\Pool\PoolManager;
 
 /**
  * @mixin Redis
@@ -43,29 +46,28 @@ class Manager
     {
         $config                  = $config->get('redis');
         $this->defaultConnection = $config['default'];
-        $this->connections       = new ArrayObject();
         $this->config            = $config['connections'] ?? [];
     }
 
     /**
      * @param string|null $name
      *
-     * @return Redis
+     * @return PoolInterface
      */
-    public function connection(?string $name = null)
+    public function connection(?string $name = null): PoolInterface
     {
-        $name ??= $this->defaultConnection;
-        if (!$this->connections->offsetExists($name)) {
+        $name ??= 'redis.' . $this->defaultConnection;
+        if (!PoolManager::has($name)) {
             if (!isset($this->config[$name])) {
-                throw new \InvalidArgumentException('没有相关数据库连接');
+                throw new InvalidArgumentException('没有相关数据库连接');
             }
-            $config          = $this->config[$name];
-            $connector       = $config['connector'];
-            $options         = $config['options'];
-            $options['name'] = $name;
-            $this->connections->offsetSet($name, new $connector(new RedisConfig($options)));
+            $config    = $this->config[$name];
+            $connector = $config['connector'];
+            $options   = $config['options'];
+            PoolManager::set($name, new $connector(new RedisConfig($options)));
         }
-        return new Redis($this->connections->offsetGet($name));
+
+        return PoolManager::get($name);
     }
 
     /**
@@ -76,6 +78,6 @@ class Manager
      */
     public function __call(string $name, array $arguments)
     {
-        return $this->connection($this->defaultConnection)->{$name}(...$arguments);
+        return $this->connection($this->defaultConnection)->get()->{$name}(...$arguments);
     }
 }
