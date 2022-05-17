@@ -19,17 +19,17 @@ class RedisConfig
 {
     use AutoFillProperties;
 
-    public const OPTION_NAME           = 'name';
-    public const OPTION_HOST           = 'host';
-    public const OPTION_PORT           = 'port';
-    public const OPTION_AUTH           = 'auth';
-    public const OPTION_DATABASE       = 'database';
-    public const OPTION_TIMEOUT        = 'timeout';
-    public const OPTION_READ_TIMEOUT   = 'readTimeout';
+    public const OPTION_NAME = 'name';
+    public const OPTION_HOST = 'host';
+    public const OPTION_PORT = 'port';
+    public const OPTION_AUTH = 'auth';
+    public const OPTION_DATABASE = 'database';
+    public const OPTION_TIMEOUT = 'timeout';
+    public const OPTION_READ_TIMEOUT = 'readTimeout';
     public const OPTION_RETRY_INTERVAL = 'retryInterval';
-    public const OPTION_RESERVED       = 'reserved';
-    public const OPTION_POOL_SIZE      = 'poolSize';
-    public const OPTION_AUTO_FILL      = 'autofill';
+    public const OPTION_RESERVED = 'reserved';
+    public const OPTION_POOL_SIZE = 'poolSize';
+    public const OPTION_AUTO_FILL = 'autofill';
 
     /**
      * @var string
@@ -67,9 +67,9 @@ class RedisConfig
      */
     protected int $retryInterval = 3;
     /**
-     * @var ?string
+     * @var string
      */
-    protected ?string $reserved = null;
+    protected string $reserved = '';
     /**
      * @var int
      */
@@ -145,9 +145,9 @@ class RedisConfig
     }
 
     /**
-     * @return ?string
+     * @return string
      */
-    public function getReserved(): ?string
+    public function getReserved(): string
     {
         return $this->reserved;
     }

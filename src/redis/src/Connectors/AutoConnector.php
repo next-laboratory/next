@@ -47,7 +47,7 @@ class AutoConnector implements PoolInterface
     {
         $type = class_exists(Coroutine::class) && Coroutine::getCid() > 0 ? 'pool' : 'base';
         if (!isset($this->container[$type])) {
-            $connector              = $this->connectors[$type];
+            $connector = $this->connectors[$type];
             $this->container[$type] = new $connector($this->config);
         }
         return $this->container[$type]->get();
@@ -68,7 +68,7 @@ class AutoConnector implements PoolInterface
         // TODO: Implement gc() method.
     }
 
-    public function release(?Poolable $poolable)
+    public function release($poolable)
     {
         // TODO: Implement release() method.
     }

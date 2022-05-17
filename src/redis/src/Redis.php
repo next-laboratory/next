@@ -34,17 +34,12 @@ class Redis implements Poolable
     {
         try {
             $result = $this->redis->{$name}(...$arguments);
-            $this->pool->release($this);
+            $this->pool->release($this->redis);
             $this->commandProcessed++;
             return $result;
         } catch (\RedisException $redisException) {
             $this->pool->release(null);
             throw $redisException;
         }
-    }
-
-    public function __destruct()
-    {
-        $this->pool->release(null);
     }
 }

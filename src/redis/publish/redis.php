@@ -27,7 +27,7 @@ return [
                 RedisConfig::OPTION_TIMEOUT => 3,
                 RedisConfig::OPTION_READ_TIMEOUT => 3,
                 RedisConfig::OPTION_RETRY_INTERVAL => 3,
-                RedisConfig::OPTION_RESERVED => null,
+                RedisConfig::OPTION_RESERVED => '',
                 RedisConfig::OPTION_POOL_SIZE => 64,
             ],
         ]

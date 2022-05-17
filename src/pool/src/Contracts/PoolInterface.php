@@ -12,5 +12,5 @@ interface PoolInterface
 
     public function gc();
 
-    public function release(?Poolable $poolable);
+    public function release($poolable);
 }

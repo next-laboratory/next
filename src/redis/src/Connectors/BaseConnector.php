@@ -64,7 +64,7 @@ class BaseConnector implements PoolInterface
         // TODO: Implement gc() method.
     }
 
-    public function release(?Poolable $poolable)
+    public function release($poolable)
     {
     }
 }

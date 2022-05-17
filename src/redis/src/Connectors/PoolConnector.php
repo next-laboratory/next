@@ -19,13 +19,14 @@ use Max\Pool\Contracts\PoolInterface;
 use Max\Redis\RedisConfig;
 use Redis;
 use Swoole\Coroutine\Channel;
+use Swoole\Database\RedisPool;
 
 class PoolConnector implements PoolInterface
 {
     /**
-     * @var Channel
+     * @var RedisPool
      */
-    protected Channel $pool;
+    protected RedisPool $pool;
 
     /**
      * 容量
@@ -46,10 +47,7 @@ class PoolConnector implements PoolInterface
      */
     public function __construct(protected RedisConfig $config)
     {
-        $this->pool = new Channel($this->capacity = $config->getPoolSize());
-        if ($config->isAutofill()) {
-            $this->fill();
-        }
+        $this->open();
     }
 
     /**
@@ -62,68 +60,75 @@ class PoolConnector implements PoolInterface
         // TOOD 多携程，多配置下会有问题
         $key = \Max\Redis\Redis::class;
         if (!Context::has($key)) {
-            if ($this->size < $this->capacity) {
-                $redis = $this->create();
-            } else {
-                $redis = $this->pool->pop(3);
-                dump(spl_object_hash($redis));
-            }
-            Context::put($key, $redis);
+            Context::put($key, new \Max\Redis\Redis($this, $this->pool->get()));
         }
         return Context::get($key);
     }
 
-    /**
-     * @return \Max\Redis\Redis
-     */
-    protected function create()
-    {
-        $redis = new \Redis();
-        $this->connect($redis);
-        $this->size++;
-        return new \Max\Redis\Redis($this, $redis);
-    }
+//    /**
+//     * @return \Max\Redis\Redis
+//     */
+//    protected function create()
+//    {
+//        $redis = new \Redis();
+//        $this->connect($redis);
+//        $this->size++;
+//        return new \Max\Redis\Redis($this, $redis);
+//    }
 
-    /**
-     * @param \Redis $redis
-     *
-     * @return void
-     */
-    protected function connect(\Redis $redis): void
-    {
-        $redis->connect(
-            $this->config->getHost(),
-            $this->config->getPort(),
-            $this->config->getTimeout(),
-            $this->config->getReserved(),
-            $this->config->getRetryInterval(),
-            $this->config->getReadTimeout()
-        );
-        $redis->select($this->config->getDatabase());
-        if ($auth = $this->config->getAuth()) {
-            $redis->auth($auth);
-        }
-    }
+//    /**
+//     * @param \Redis $redis
+//     *
+//     * @return void
+//     */
+//    protected function connect(\Redis $redis): void
+//    {
+//        $redis->connect(
+//            $this->config->getHost(),
+//            $this->config->getPort(),
+//            $this->config->getTimeout(),
+//            $this->config->getReserved(),
+//            $this->config->getRetryInterval(),
+//            $this->config->getReadTimeout()
+//        );
+//        $redis->select($this->config->getDatabase());
+//        if ($auth = $this->config->getAuth()) {
+//            $redis->auth($auth);
+//        }
+//    }
 
-    /**
-     * 填充连接池
-     */
-    public function fill()
-    {
-        for ($i = 0; $i < $this->capacity; $i++) {
-            $this->release($this->create());
-        }
-        $this->size = $this->capacity;
-    }
+//    /**
+//     * 填充连接池
+//     */
+//    public function fill()
+//    {
+//        for ($i = 0; $i < $this->capacity; $i++) {
+//            $this->release($this->create());
+//        }
+//        $this->size = $this->capacity;
+//    }
 
     public function open()
     {
-        // TODO: Implement open() method.
+        $this->pool = new RedisPool((new \Swoole\Database\RedisConfig())
+            ->withHost($this->config->getHost())
+            ->withPort($this->config->getPort())
+            ->withAuth($this->config->getAuth())
+            ->withDbIndex($this->config->getDatabase())
+            ->withReadTimeout($this->config->getReadTimeout())
+            ->withReserved($this->config->getReserved())
+            ->withRetryInterval($this->config->getRetryInterval())
+            ->withTimeout($this->config->getTimeout()),
+            $this->config->getPoolSize()
+        );
+        if ($this->config->isAutofill()) {
+            $this->pool->fill();
+        }
     }
 
     public function close()
     {
-        // TODO: Implement close() method.
+        $this->pool->close();
     }
 
     public function gc()
@@ -131,12 +136,12 @@ class PoolConnector implements PoolInterface
         // TODO: Implement gc() method.
     }
 
-    public function release(?Poolable $poolable)
+    /**
+     * @param \Redis|Poolable|null $poolable
+     * @return void
+     */
+    public function release($poolable)
     {
-        if (is_null($poolable)) {
-            $this->size--;
-        } else if (!$this->pool->isFull()) {
-            $this->pool->push($poolable);
-        }
+        $this->pool->put($poolable);
     }
 }
