@@ -17,8 +17,6 @@ use Max\Context\Context;
 use Max\Pool\Contracts\Poolable;
 use Max\Pool\Contracts\PoolInterface;
 use Max\Redis\RedisConfig;
-use Redis;
-use Swoole\Coroutine\Channel;
 use Swoole\Database\RedisPool;
 
 class PoolConnector implements PoolInterface
@@ -27,20 +25,6 @@ class PoolConnector implements PoolInterface
      * @var RedisPool
      */
     protected RedisPool $pool;
-
-    /**
-     * 容量
-     *
-     * @var int
-     */
-    protected int $capacity;
-
-    /**
-     * 大小
-     *
-     * @var int
-     */
-    protected int $size = 0;
 
     /**
      * @param RedisConfig $config
@@ -64,49 +48,6 @@ class PoolConnector implements PoolInterface
         }
         return Context::get($key);
     }
-
-//    /**
-//     * @return \Max\Redis\Redis
-//     */
-//    protected function create()
-//    {
-//        $redis = new \Redis();
-//        $this->connect($redis);
-//        $this->size++;
-//        return new \Max\Redis\Redis($this, $redis);
-//    }
-
-//    /**
-//     * @param \Redis $redis
-//     *
-//     * @return void
-//     */
-//    protected function connect(\Redis $redis): void
-//    {
-//        $redis->connect(
-//            $this->config->getHost(),
-//            $this->config->getPort(),
-//            $this->config->getTimeout(),
-//            $this->config->getReserved(),
-//            $this->config->getRetryInterval(),
-//            $this->config->getReadTimeout()
-//        );
-//        $redis->select($this->config->getDatabase());
-//        if ($auth = $this->config->getAuth()) {
-//            $redis->auth($auth);
-//        }
-//    }
-
-//    /**
-//     * 填充连接池
-//     */
-//    public function fill()
-//    {
-//        for ($i = 0; $i < $this->capacity; $i++) {
-//            $this->release($this->create());
-//        }
-//        $this->size = $this->capacity;
-//    }
 
     public function open()
     {
@@ -138,6 +79,7 @@ class PoolConnector implements PoolInterface
 
     /**
      * @param \Redis|Poolable|null $poolable
+     *
      * @return void
      */
     public function release($poolable)

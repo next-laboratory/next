@@ -13,7 +13,7 @@
     "require": {
         "php": "^8.0",
         "max/utils": "dev-master",
-        "max/http-message": "dev-master"
+        "max/http": "dev-master"
     },
     "autoload": {
         "psr-4": {

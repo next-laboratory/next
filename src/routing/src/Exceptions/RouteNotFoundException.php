@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Max\Routing\Exceptions;
 
-use Max\Swoole\Exceptions\HttpException;
+use Max\Http\Exceptions\HttpException;
 
 class RouteNotFoundException extends HttpException
 {

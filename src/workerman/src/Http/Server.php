@@ -3,7 +3,7 @@
 namespace Max\Workerman\Http;
 
 use Max\Di\Context;
-use Max\Http\Cookie;
+use Max\Http\Message\Cookie;
 use Max\Http\Message\ServerRequest;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -16,7 +16,8 @@ class Server
 {
     /**
      * @param TcpConnection $tcpConnection
-     * @param Request $request
+     * @param Request       $request
+     *
      * @return void
      */
     public function onMessage(TcpConnection $tcpConnection, Request $request)
@@ -27,7 +28,7 @@ class Server
             \Max\Context\Context::put(Request::class, $request);
             \Max\Context\Context::put(\Psr\Http\Message\ResponseInterface::class, new \Max\Http\Message\Response());
             $requestHandler = Context::getContainer()->make(\Psr\Http\Server\RequestHandlerInterface::class);
-            $psr7Response = $requestHandler->handle(Context::getContainer()->make(ServerRequestInterface::class));
+            $psr7Response   = $requestHandler->handle(Context::getContainer()->make(ServerRequestInterface::class));
             $tcpConnection->send($this->convertToWorkermanResponse($psr7Response));
         } catch (Throwable $throwable) {
             var_dump($throwable);
@@ -38,6 +39,7 @@ class Server
 
     /**
      * @param ResponseInterface $psrResponse
+     *
      * @return Response
      */
     public function convertToWorkermanResponse(ResponseInterface $psrResponse): Response
@@ -67,15 +69,16 @@ class Server
 
     /**
      * @param ResponseInterface $response
+     *
      * @return string
      */
     protected function convertToRaw(ResponseInterface $response): string
     {
-        $raw = 'HTTP/' . $response->getProtocolVersion() . ' ' . $response->getStatusCode() . ' ' . $response->getReasonPhrase() . "\r\n";
-        $body = $response->getBody();
+        $raw     = 'HTTP/' . $response->getProtocolVersion() . ' ' . $response->getStatusCode() . ' ' . $response->getReasonPhrase() . "\r\n";
+        $body    = $response->getBody();
         $rawBody = (string)$body?->getContents();
-        $raw .= "Connection: keep-alive\r\n";
-        $raw .= 'Content-Length: ' . $body->getSize() . "\r\n";
+        $raw     .= "Connection: keep-alive\r\n";
+        $raw     .= 'Content-Length: ' . $body->getSize() . "\r\n";
         foreach ($response->getHeaders() as $name => $headers) {
             if (0 === strcasecmp('Set-Cookie', $name)) {
                 foreach ($headers as $header) {

@@ -13,12 +13,13 @@ declare(strict_types=1);
 
 namespace Max\Swoole\Http;
 
+use Max\Context\Context;
+use Max\Http\Message\Cookie;
 use Max\Http\Message\Response as Psr7Response;
 use Max\Http\Message\ServerRequest;
 use Max\Http\Message\Stream\FileStream;
 use Max\Http\Message\Stream\StringStream;
 use Max\Swoole\Events\OnRequest;
-use Max\Context\Context;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

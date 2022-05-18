@@ -20,7 +20,13 @@ class ConfigProvider
      */
     public function __invoke(): array
     {
-        return [];
+        return [
+            'bindings' => [
+                'Psr\Http\Message\ServerRequestInterface' => 'Max\Swoole\Http\ServerRequest',
+                'Psr\Http\Message\ResponseInterface'      => 'Max\Swoole\Http\Response',
+                'Psr\Http\Server\RequestHandlerInterface' => 'Max\Swoole\Http\RequestHandler',
+            ]
+        ];
     }
 
     /**

@@ -15,6 +15,7 @@ namespace Max\Swoole\Http;
 
 use Max\Context\Context;
 use Max\Http\Message\Bags\CookieBag;
+use Max\Http\Message\Cookie;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 

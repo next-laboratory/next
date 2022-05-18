@@ -15,8 +15,8 @@ namespace Max\Swoole\Http;
 
 use Max\Di\Context;
 use Max\Di\Exceptions\NotFoundException;
-use Max\Swoole\Exceptions\InvalidRequestHandlerException;
-use Max\Swoole\Exceptions\InvalidResponseBodyException;
+use Max\Http\Exceptions\InvalidRequestHandlerException;
+use Max\Http\Exceptions\InvalidResponseBodyException;
 use Max\Http\Message\Stream\StringStream;
 use Max\Http\Server\RequestHandler as PsrRequestHandler;
 use Max\Routing\Route;
@@ -45,7 +45,7 @@ class RequestHandler implements RequestHandlerInterface
     protected Router $router;
 
     /**
-     * @param RouteCollector $routeCollector
+     * @param RouteCollector    $routeCollector
      * @param ResponseInterface $response
      */
     public function __construct(RouteCollector $routeCollector, protected ResponseInterface $response)
@@ -83,13 +83,12 @@ class RequestHandler implements RequestHandlerInterface
      *
      * @return ResponseInterface
      * @throws ContainerExceptionInterface
-     * @throws InvalidResponseBodyException
      * @throws ReflectionException
      */
-    protected function handleRequest(ServerRequestInterface $request)
+    protected function handleRequest(ServerRequestInterface $request): ResponseInterface
     {
         /** @var Route $route */
-        $route = \Max\Context\Context::get(Route::class);
+        $route  = \Max\Context\Context::get(Route::class);
         $action = $route->getAction();
         $params = $route->getParameters();
         if (is_string($action)) {
@@ -124,21 +123,26 @@ class RequestHandler implements RequestHandlerInterface
     /**
      * @param $data
      *
-     * @return mixed|ResponseInterface|ServerRequestInterface
+     * @return ResponseInterface
+     * @throws InvalidResponseBodyException
      */
-    protected function jsonResponse($data)
+    protected function jsonResponse($data): ResponseInterface
     {
-        return $this->response
-            ->withHeader('Content-Type', 'application/json; charset=utf-8')
-            ->withBody(new StringStream(json_encode($data)));
+        try {
+            return $this->response
+                ->withHeader('Content-Type', 'application/json; charset=utf-8')
+                ->withBody(new StringStream(json_encode($data)));
+        } catch (\Throwable $throwable) {
+            throw new InvalidResponseBodyException($throwable->getMessage(), $throwable->getCode(), $throwable);
+        }
     }
 
     /**
      * @param $data
      *
-     * @return mixed|ResponseInterface|ServerRequestInterface
+     * @return ResponseInterface
      */
-    protected function htmlResponse($data): mixed
+    protected function htmlResponse($data): ResponseInterface
     {
         return $this->response
             ->withHeader('Content-Type', 'text/html; charset=utf-8')
@@ -147,7 +151,7 @@ class RequestHandler implements RequestHandlerInterface
 
     /**
      * @param string $name
-     * @param array $arguments
+     * @param array  $arguments
      *
      * @return mixed
      */

@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Max\Framework\Http\Middlewares;
 
-use Max\Swoole\Exceptions\HttpException;
+use Max\Http\Exceptions\HttpException;
 use Max\Http\Message\Stream\StringStream;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -31,7 +31,7 @@ class ExceptionHandlerMiddleware implements MiddlewareInterface
     }
 
     /**
-     * @param ServerRequestInterface $request
+     * @param ServerRequestInterface  $request
      * @param RequestHandlerInterface $handler
      *
      * @return ResponseInterface
@@ -47,7 +47,7 @@ class ExceptionHandlerMiddleware implements MiddlewareInterface
     }
 
     /**
-     * @param Throwable $throwable
+     * @param Throwable              $throwable
      * @param ServerRequestInterface $request
      *
      * @return void
@@ -57,7 +57,7 @@ class ExceptionHandlerMiddleware implements MiddlewareInterface
     }
 
     /**
-     * @param Throwable $throwable
+     * @param Throwable              $throwable
      * @param ServerRequestInterface $request
      *
      * @return ResponseInterface
@@ -71,7 +71,7 @@ class ExceptionHandlerMiddleware implements MiddlewareInterface
     }
 
     /**
-     * @param Throwable $throwable
+     * @param Throwable              $throwable
      * @param ServerRequestInterface $request
      *
      * @return ResponseInterface
