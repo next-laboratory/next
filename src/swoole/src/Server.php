@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Max\Swoole;
 
+use Exception;
 use InvalidArgumentException;
 use Max\Config\Contracts\ConfigInterface;
 use Max\Di\Exceptions\NotFoundException;
@@ -28,7 +29,6 @@ use Max\Swoole\Events\OnWorkerStop;
 use Max\Swoole\Listeners\ServerListener;
 use Psr\Container\ContainerExceptionInterface;
 use ReflectionException;
-use RuntimeException;
 use Swoole\Http\Server as SwooleHttpServer;
 use Swoole\Process;
 use Swoole\Server as SwooleServer;
@@ -77,7 +77,7 @@ class Server
     protected array $config;
 
     /**
-     * @param ConfigInterface $config
+     * @param ConfigInterface      $config
      * @param EventDispatcher|null $eventDispatcher
      */
     public function __construct(ConfigInterface $config, protected ?EventDispatcher $eventDispatcher = null)
@@ -123,6 +123,9 @@ class Server
         $this->server->start();
     }
 
+    /**
+     * @throws Exception
+     */
     public function stop(): void
     {
         $pids = [
@@ -130,8 +133,9 @@ class Server
             '/var/run/max-php-master.pid',
         ];
         foreach ($pids as $pid) {
-            if (!file_exists($pid)) {
-                throw new RuntimeException('服务没有运行');
+            exec('ps -ef | grep ' . pathinfo($pid, PATHINFO_FILENAME) . ' | grep -v "grep"', $output);
+            if (empty($output) || !file_exists($pid)) {
+                throw new Exception('服务没有运行');
             }
             Process::kill((int)file_get_contents($pid), SIGTERM);
             unlink($pid);
