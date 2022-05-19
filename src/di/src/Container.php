@@ -39,14 +39,9 @@ class Container implements ContainerInterface
     protected array $resolved = [];
 
     /**
-     * 容器嗅探方法
-     */
-    protected const VIA = '__new';
-
-    /**
      * 将实例化的类存放到数组中
      *
-     * @param string $id 标识
+     * @param string $id       标识
      * @param object $instance 实例
      */
     public function set(string $id, object $instance)
@@ -119,8 +114,8 @@ class Container implements ContainerInterface
     /**
      * 注入的外部接口方法
      *
-     * @param string $id 类标识
-     * @param array $arguments 参数列表
+     * @param string $id        类标识
+     * @param array  $arguments 构造函数参数列表
      *
      * @return mixed
      * @throws ReflectionException|NotFoundException|ContainerExceptionInterface
@@ -149,15 +144,15 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param string $id
-     * @param array $arguments
+     * @param string $id        标识
+     * @param array  $arguments 构造函数参数列表
      *
      * @return object
      * @throws ReflectionException|NotFoundException|ContainerExceptionInterface
      */
     public function resolve(string $id, array $arguments = []): object
     {
-        $id = $this->getBinding($id);
+        $id              = $this->getBinding($id);
         $reflectionClass = ReflectionManager::reflectClass($id);
         if ($reflectionClass->isInterface()) {
             if (!$this->bound($id)) {
@@ -165,16 +160,6 @@ class Container implements ContainerInterface
             }
             // TODO 当绑定的类并没有实现该接口
             $reflectionClass = ReflectionManager::reflectClass($this->getBinding($id));
-        }
-
-        if ($reflectionClass->hasMethod(static::VIA)) {
-            $maker = $reflectionClass->getMethod(static::VIA);
-            if ($maker->isPublic() && $maker->isStatic()) {
-                return $this->resolving(
-                    $reflectionClass,
-                    $maker->invokeArgs(null, $this->getFuncArgs($maker, $arguments))
-                );
-            }
         }
 
         return $this->resolving(
@@ -186,8 +171,8 @@ class Container implements ContainerInterface
     /**
      * 调用类的方法
      *
-     * @param array|Closure|string $callable 可调用的类或者实例和方法数组
-     * @param array $arguments 给方法传递的参数
+     * @param array|Closure|string $callable  可调用的类或者实例和方法数组
+     * @param array                $arguments 给方法传递的参数
      *
      * @return mixed
      * @throws NotFoundException
@@ -199,7 +184,7 @@ class Container implements ContainerInterface
             return $this->callFunc($callable, $arguments);
         }
         [$id, $method] = $callable;
-        $id = is_object($id) ? $id::class : $this->getBinding($id);
+        $id               = is_object($id) ? $id::class : $this->getBinding($id);
         $reflectionMethod = ReflectionManager::reflectMethod($id, $method);
         if (false === $reflectionMethod->isAbstract()) {
             $funcArgs = $this->getFuncArgs($reflectionMethod, $arguments);
@@ -220,8 +205,8 @@ class Container implements ContainerInterface
     /**
      * 调用闭包
      *
-     * @param Closure|string $function
-     * @param array $arguments
+     * @param Closure|string $function  函数
+     * @param array          $arguments 参数列表
      *
      * @return mixed
      * @throws ReflectionException|NotFoundException|ContainerExceptionInterface
