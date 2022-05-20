@@ -2,7 +2,6 @@
 
 namespace Max\Swagger;
 
-use Max\Aop\Scanner;
 use Max\Swagger\Api\Api;
 use Max\Utils\Classes;
 

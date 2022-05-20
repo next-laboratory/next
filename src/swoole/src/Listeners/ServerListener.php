@@ -14,6 +14,7 @@ use Max\Swoole\Events\OnStart;
 use Max\Swoole\Events\OnWorkerExit;
 use Max\Swoole\Events\OnWorkerStart;
 use Max\Swoole\Events\OnWorkerStop;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class ServerListener implements EventListenerInterface
 {
@@ -26,6 +27,7 @@ class ServerListener implements EventListenerInterface
     public const EVENT_BEFORE_SHUTDOWN = 'beforeShutdown';
     public const EVENT_SHUTDOWN        = 'shutdown';
     public const EVENT_TASK            = 'task';
+    public const EVENT_CONNECT         = 'connect';
     public const EVENT_CLOSE           = 'close';
     public const EVENT_FINISH          = 'finish';
     public const EVENT_MESSAGE         = 'message';
@@ -78,8 +80,7 @@ class ServerListener implements EventListenerInterface
             case $event instanceof OnShutdown:
                 $pid = '/var/run/max-php-master.pid';
                 file_exists($pid) && unlink($pid);
-                echo (new Formatter())->setForeground('red')
-                                      ->apply('Server stopped.') . PHP_EOL;
+                (new ConsoleOutput())->writeln('<info>[DEBUG]</info> Server stopped.');
                 break;
             case $event instanceof OnBeforeShutdown:
         }

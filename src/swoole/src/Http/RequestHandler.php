@@ -131,7 +131,7 @@ class RequestHandler implements RequestHandlerInterface
         try {
             return $this->response
                 ->withHeader('Content-Type', 'application/json; charset=utf-8')
-                ->withBody(new StringStream(json_encode($data)));
+                ->withBody(new StringStream(json_encode($data, JSON_UNESCAPED_UNICODE)));
         } catch (\Throwable $throwable) {
             throw new InvalidResponseBodyException($throwable->getMessage(), $throwable->getCode(), $throwable);
         }
