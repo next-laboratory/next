@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Max\Aop;
 
 use Composer\Autoload\ClassLoader;
-use Max\Aop\Annotation\Collector\AspectCollector;
-use Max\Aop\Annotation\Collector\PropertyAttributeCollector;
+use Max\Aop\Collectors\AspectCollector;
+use Max\Aop\Collectors\PropertyAttributeCollector;
 use Max\Aop\Exceptions\ProcessException;
 use Max\Di\ReflectionManager;
 use Max\Utils\Filesystem;
@@ -57,12 +57,12 @@ final class Scanner
     /**
      * @var string
      */
-    protected string $proxyMap;
+    protected string     $proxyMap;
     protected AstManager $astManager;
 
     /**
      * @param ClassLoader $loader
-     * @param array $options
+     * @param array       $options
      *
      * @return void
      * @throws ContainerExceptionInterface
@@ -77,7 +77,7 @@ final class Scanner
 
     /**
      * @param ClassLoader $loader
-     * @param array $options
+     * @param array       $options
      *
      * @throws ContainerExceptionInterface
      * @throws ReflectionException
@@ -85,12 +85,12 @@ final class Scanner
     private function __construct(protected ClassLoader $loader, array $options)
     {
         $this->runtimeDir = $runtimeDir = rtrim($options['runtimeDir'] ?? '', '/\\') . '/aop/';
-        $cache = $options['cache'] ?? false;
+        $cache            = $options['cache'] ?? false;
         array_push($this->collectors, ...($options['collectors'] ?? []));
         is_dir($runtimeDir) || mkdir($runtimeDir, 0755, true);
         $this->astManager = new AstManager();
-        $this->classMap = $this->scanDir($options['paths'] ?? []);
-        $this->proxyMap = $proxyMap = $this->runtimeDir . 'proxy.php';
+        $this->classMap   = $this->scanDir($options['paths'] ?? []);
+        $this->proxyMap   = $proxyMap = $this->runtimeDir . 'proxy.php';
         if (!$cache || !file_exists($proxyMap)) {
             file_exists($proxyMap) && unlink($proxyMap);
             if (($pid = pcntl_fork()) == -1) {
@@ -109,7 +109,7 @@ final class Scanner
      */
     public function scanDir(array $dirs): array
     {
-        $files = (new Finder())->in($dirs)->name('*.php')->files();
+        $files   = (new Finder())->in($dirs)->name('*.php')->files();
         $classes = [];
         foreach ($files as $file) {
             $realPath = $file->getRealPath();
@@ -135,7 +135,7 @@ final class Scanner
             $filesystem->cleanDirectory($proxyDir);
             $this->collect();
             $collectedClasses = array_unique(array_merge(AspectCollector::getCollectedClasses(), PropertyAttributeCollector::getCollectedClasses()));
-            $scanMap = [];
+            $scanMap          = [];
             foreach ($collectedClasses as $class) {
                 $proxyPath = $proxyDir . str_replace('\\', '_', $class) . '_Proxy.php';
                 $filesystem->put($proxyPath, $this->generateProxyClass($class, $this->classMap[$class]));
@@ -156,9 +156,9 @@ final class Scanner
     protected function generateProxyClass($class, $path): string
     {
         try {
-            $ast = $this->astManager->getNodes($path);
+            $ast       = $this->astManager->getNodes($path);
             $traverser = new NodeTraverser();
-            $metadata = new Metadata($this->loader, $class);
+            $metadata  = new Metadata($this->loader, $class);
             $traverser->addVisitor(new PropertyHandlerVisitor($metadata));
             $traverser->addVisitor(new ProxyHandlerVisitor($metadata));
             $modifiedStmts = $traverser->traverse($ast);

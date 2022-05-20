@@ -11,11 +11,11 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Max\Aop\Annotation\Collector;
+namespace Max\Aop\Collectors;
 
 use Max\Aop\Contracts\AspectInterface;
 
-class AspectCollector extends AbstractCollector
+class AspectCollector extends AnnotationCollector
 {
     /**
      * @var array
