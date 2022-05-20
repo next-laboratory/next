@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Max\Framework\Http;
 
-use Max\Aop\Annotation\Collector\AbstractCollector;
+use Max\Aop\Collectors\AnnotationCollector;
 use Max\Di\Context;
 use Max\Di\Exceptions\NotFoundException;
 use Max\Di\ReflectionManager;
@@ -26,7 +26,7 @@ use Max\Utils\Str;
 use Psr\Container\ContainerExceptionInterface;
 use ReflectionException;
 
-class RouteCollector extends AbstractCollector
+class RouteCollector extends AnnotationCollector
 {
     /**
      * @var Router|null

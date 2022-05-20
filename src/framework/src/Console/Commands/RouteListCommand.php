@@ -14,7 +14,6 @@ declare (strict_types=1);
 namespace Max\Framework\Console\Commands;
 
 use Closure;
-use Max\Console\Commands\Command;
 use Max\Di\Exceptions\NotFoundException;
 use Max\Routing\Route;
 use Max\Routing\RouteCollector;
@@ -22,29 +21,35 @@ use Max\Utils\Collection;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use ReflectionException;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 
-class RouteList extends Command
+class RouteListCommand extends Command
 {
     /**
-     * @var string
-     */
-    protected string $name = 'route:list';
-
-    /**
-     * @var string
-     */
-    protected string $description = 'List your routes';
-
-    protected const SEPARATOR = "+---------------------------+------------------------------------------------------------+---------------------------------------------+----------------+\n";
-
-    /**
      * @return void
-     * @throws NotFoundException
-     * @throws ReflectionException|ContainerExceptionInterface
      */
-    public function run()
+    protected function configure()
     {
-        echo self::SEPARATOR . "|" . $this->format(' Methods', 26) . " |" . $this->format('URI', 60) . "|" . $this->format('Action', 45) . "|     Domain     |\n" . self::SEPARATOR;
+        $this->setName('route:list')
+             ->setDescription('List the routes');
+    }
+
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return int
+     * @throws ContainerExceptionInterface
+     * @throws ReflectionException
+     */
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
+        $table = new Table(new ConsoleOutput());
+        $table->setHeaders(['Methods', 'URI', 'Action', 'Middlewares', 'Domain']);
         foreach ($this->getRoutes() as $route) {
             /** @var Route $route */
             $action = $route->getAction();
@@ -53,9 +58,16 @@ class RouteList extends Command
             } else if ($action instanceof Closure) {
                 $action = 'Closure';
             }
-            echo '|' . $this->format(strtoupper(implode('|', $route->getMethods())), 27) . '|' . $this->format($route->getPath(), 60) . '|' . $this->format($action, 45) . '| ' . $this->format(($route->getDomain() ?: '*'), 15) . "|\n";
+            $table->addRow([
+                implode('|', $route->getMethods()),
+                $route->getPath(),
+                $action,
+                implode(PHP_EOL, $route->getMiddlewares()),
+                $route->getDomain() ?: '*'
+            ]);
         }
-        echo self::SEPARATOR;
+        $table->render();
+        return 0;
     }
 
     /**
@@ -83,18 +95,5 @@ class RouteList extends Command
             /** @var Route $item */
             return $item->getPath();
         });
-    }
-
-    /**
-     * 格式化文本，给两端添加空格
-     *
-     * @param $string
-     * @param $length
-     *
-     * @return string
-     */
-    private function format($string, $length): string
-    {
-        return str_pad($string, $length, ' ', STR_PAD_BOTH);
     }
 }

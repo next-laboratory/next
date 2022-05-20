@@ -11,7 +11,9 @@
             "email": "987861463@qq.com"
         }
     ],
-    "require": {},
+    "require": {
+        "symfony/console": "^6.0"
+    },
     "extra": {
         "max": {
             "config": "Max\\Framework\\ConfigProvider"

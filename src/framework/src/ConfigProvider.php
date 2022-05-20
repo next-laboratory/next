@@ -22,13 +22,14 @@ class ConfigProvider
     {
         return [
             'commands' => [
-                'Max\Framework\Console\Commands\Make',
-                'Max\Framework\Console\Commands\Queue',
-                'Max\Framework\Console\Commands\RouteList',
-                'Max\Framework\Console\Commands\Swoole',
-                'Max\Framework\Console\Commands\VendorPublish',
-                'Max\Framework\Console\Commands\Workerman',
-                'Max\Framework\Console\Commands\Swagger',
+                'Max\Framework\Console\Commands\QueueCommand',
+                'Max\Framework\Console\Commands\RouteListCommand',
+                'Max\Framework\Console\Commands\SwooleServerCommand',
+                'Max\Framework\Console\Commands\VendorPublishCommand',
+                'Max\Framework\Console\Commands\WorkermanServerCommand',
+                'Max\Framework\Console\Commands\SwaggerCommand',
+                'Max\Framework\Console\Commands\ControllerMakeCommand',
+                'Max\Framework\Console\Commands\MiddlewareMakeCommand',
             ]
         ];
     }

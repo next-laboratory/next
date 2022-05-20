@@ -2,26 +2,21 @@
 
 namespace Max\Framework\Console\Commands;
 
-use Max\Console\Commands\Command;
 use Max\Di\Context;
 use Max\Workerman\Server;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
-class Workerman extends Command
+class WorkermanServerCommand extends Command
 {
-    /**
-     * @var string
-     */
-    protected string $name = 'workerman';
+    protected function configure()
+    {
+        $this->setName('server:workerman')
+             ->setDescription('Manage the workerman server.');
+    }
 
-    /**
-     * @var string
-     */
-    protected string $description = 'Manage the workerman server.';
-
-    /**
-     * @return void
-     */
-    public function run()
+    public function run(InputInterface $input, OutputInterface $output): int
     {
         if (!class_exists('Workerman\Worker')) {
             throw new \RuntimeException('You need to install the workerman using command `composer require workerman/workerman before starting the server.');
@@ -38,5 +33,6 @@ EOT;
         /** @var Server $server */
         $server = Context::getContainer()->make(Server::class);
         $server->start();
+        return 0;
     }
 }

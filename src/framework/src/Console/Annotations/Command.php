@@ -11,12 +11,11 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Max\Console\Traits;
+namespace Max\Framework\Console\Annotations;
 
-trait DispatchJob
+use Attribute;
+
+#[Attribute(Attribute::TARGET_CLASS)]
+class Command
 {
-    public static function dispatch($args = [])
-    {
-        return (new static(...$args))->run();
-    }
 }
