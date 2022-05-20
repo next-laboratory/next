@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Max\Queue;
 
-use Max\Config\Repository;
+use Max\Config\Contracts\ConfigInterface;
 use Max\Queue\Contracts\QueueHandlerInterface;
 use Max\Queue\Exceptions\InvalidJobException;
 use Max\Queue\Jobs\DelayedJob;
@@ -41,22 +41,12 @@ class Queue
     protected QueueHandlerInterface $handler;
 
     /**
-     * @param array $config
+     * @param ConfigInterface $config
      */
-    public function __construct(array $config = [])
+    public function __construct(ConfigInterface $config)
     {
-        $this->config  = $config;
+        $this->config  = $config->get('queue');
         $this->handler = $this->makeQueue();
-    }
-
-    /**
-     * @param Repository $repository
-     *
-     * @return static
-     */
-    public static function __new(Repository $repository)
-    {
-        return new static($repository->get('queue'));
     }
 
     /**
