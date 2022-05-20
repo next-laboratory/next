@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Max\Aop\Annotation;
+namespace Max\Di\Annotations;
 
 use Attribute;
 use Max\Aop\Contracts\PropertyAttribute;

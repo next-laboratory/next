@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Max\Aop;
 
 use Closure;
-use Max\Aop\Annotation\Collector\AspectCollector;
+use Max\Aop\Collectors\AspectCollector;
 use Max\Aop\Contracts\AspectInterface;
 
 trait ProxyHandler
