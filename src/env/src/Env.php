@@ -14,43 +14,72 @@ declare (strict_types=1);
 namespace Max\Env;
 
 use ArrayAccess;
-use Max\Env\Contracts\LoaderInterface;
 use Max\Utils\Arr;
 use function strtoupper;
 
 class Env
 {
     /**
-     * @param LoaderInterface $loader
+     * @param string $iniFile
+     *
+     * @return void
      */
-    public function load(LoaderInterface $loader)
+    public static function loadFromIniFile(string $iniFile): void
     {
-        $this->push($loader->export());
+        static::loadFromArray(parse_ini_file($iniFile, true, INI_SCANNER_TYPED));
+    }
+
+    /**
+     * @param string $jsonFile
+     *
+     * @return void
+     */
+    public static function loadFromJsonFile(string $jsonFile): void
+    {
+        static::loadFromJson(file_get_contents($jsonFile));
+    }
+
+    /**
+     * @param string $json
+     *
+     * @return void
+     */
+    public static function loadFromJson(string $json): void
+    {
+        static::loadFromArray(json_decode($json, true));
+    }
+
+    /**
+     * @param array $env
+     *
+     * @return void
+     */
+    public static function loadFromArray(array $env): void
+    {
+        $_ENV = array_merge($_ENV, array_change_key_case($env, CASE_UPPER));
     }
 
     /**
      * 设置env
      *
-     * @param string $env
-     * @param null   $value
+     * @param string $key
+     * @param mixed  $value
      *
-     * @return Env
+     * @return void
      */
-    public function set(string $env, $value)
+    public static function set(string $key, mixed $value): void
     {
-        $_ENV[strtoupper($env)] = $value;
-
-        return $this;
+        $_ENV[strtoupper($key)] = $value;
     }
 
     /**
-     * 合并一个数组到env
+     * @param string $key
      *
-     * @param array $env
+     * @return void
      */
-    public function push(array $env)
+    public static function remove(string $key): void
     {
-        $_ENV = array_merge(array_change_key_case($env, CASE_UPPER), $_ENV);
+        Arr::forget($_ENV, strtoupper($key));
     }
 
     /**
@@ -61,19 +90,9 @@ class Env
      *
      * @return array|ArrayAccess|mixed
      */
-    public function get(string $key, $default = null)
+    public static function get(string $key, $default = null): mixed
     {
         return Arr::get($_ENV, strtoupper($key), $default);
-    }
-
-    /**
-     * 全部ENV
-     *
-     * @return array
-     */
-    public function all(): array
-    {
-        return $_ENV;
     }
 
     /**
@@ -83,7 +102,7 @@ class Env
      *
      * @return bool
      */
-    public function has($key): bool
+    public static function has($key): bool
     {
         return Arr::has($_ENV, strtoupper($key));
     }
