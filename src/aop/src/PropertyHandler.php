@@ -17,9 +17,6 @@ use Max\Aop\Collectors\PropertyAttributeCollector;
 
 trait PropertyHandler
 {
-    /**
-     * @return void
-     */
     protected function __handleProperties(): void
     {
         foreach (PropertyAttributeCollector::getClassPropertyAttributes(static::class) as $property => $attributes) {

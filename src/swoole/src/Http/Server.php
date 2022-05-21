@@ -14,11 +14,8 @@ declare(strict_types=1);
 namespace Max\Swoole\Http;
 
 use Max\Context\Context;
-use Max\Http\Message\Cookie;
 use Max\Http\Message\Response as Psr7Response;
 use Max\Http\Message\ServerRequest;
-use Max\Http\Message\Stream\FileStream;
-use Max\Http\Message\Stream\StringStream;
 use Max\Swoole\Events\OnRequest;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -30,15 +27,10 @@ use Throwable;
 
 class Server
 {
-    /**
-     * @param ServerRequestInterface        $request
-     * @param RequestHandlerInterface       $requestHandler
-     * @param EventDispatcherInterface|null $eventDispatcher
-     * @param LoggerInterface|null          $logger
-     */
     public function __construct(
         protected ServerRequestInterface    $request,
         protected RequestHandlerInterface   $requestHandler,
+        protected ResponseEmitter           $responseEmitter,
         protected ?EventDispatcherInterface $eventDispatcher = null,
         protected ?LoggerInterface          $logger = null,
     )
@@ -61,23 +53,7 @@ class Server
             Context::put(Response::class, $response);
             $psr7Response = $this->requestHandler->handle($this->request);
             $this->eventDispatcher?->dispatch(new OnRequest($this->request, $psr7Response, microtime(true) - $start));
-            $response->status($psr7Response->getStatusCode());
-            $this->setCookie($psr7Response, $response);
-            foreach ($psr7Response->getHeaders() as $name => $value) {
-                $response->header($name, $value);
-            }
-            $body = $psr7Response->getBody();
-            switch (true) {
-                case $body instanceof FileStream:
-                    $response->sendfile($body->getMetadata('uri'));
-                    break;
-                case $body instanceof StringStream:
-                    $response->end($body->getContents());
-                    break;
-                default:
-                    $response->end();
-            }
-            $body?->close();
+            $this->responseEmitter->emit($psr7Response, $response);
         } catch (Throwable $throwable) {
             $this->logger?->error(sprintf('%s:%s in %s +%d',
                 $throwable::class,
@@ -90,39 +66,5 @@ class Server
         } finally {
             Context::delete();
         }
-    }
-
-    /**
-     * @param ResponseInterface $psr7Response
-     * @param Response          $response
-     */
-    protected function setCookie(ResponseInterface &$psr7Response, Response $response): void
-    {
-        if (method_exists($psr7Response, 'getCookies') && $cookies = $psr7Response->getCookies()) {
-            foreach ($cookies as $cookie) {
-                $this->sendCookie($cookie, $response);
-            }
-        }
-
-        foreach ($psr7Response->getHeader('Set-Cookie') as $str) {
-            $this->sendCookie(Cookie::parse($str), $response);
-        }
-        $psr7Response = $psr7Response->withoutHeader('Set-Cookie');
-    }
-
-    /**
-     * @param Cookie   $cookie
-     * @param Response $response
-     *
-     * @return void
-     */
-    protected function sendCookie(Cookie $cookie, Response $response): void
-    {
-        $response->cookie(
-            $cookie->getName(), $cookie->getValue(),
-            $cookie->getExpires(), $cookie->getPath(),
-            $cookie->getDomain(), $cookie->isSecure(),
-            $cookie->isHttponly(), $cookie->getSamesite()
-        );
     }
 }

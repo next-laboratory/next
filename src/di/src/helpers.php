@@ -19,8 +19,6 @@ use Psr\Container\ContainerInterface;
 if (false === function_exists('container')) {
     /**
      * 容器实例化和获取实例
-     *
-     * @return ContainerInterface
      */
     function container(): ContainerInterface
     {

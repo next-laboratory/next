@@ -36,7 +36,7 @@ class Pipeline
     /**
      * Pipeline constructor.
      *
-     * @param ContainerInterface $container
+     * @param ContainerInterface|null $container
      */
     public function __construct(?ContainerInterface $container = null)
     {

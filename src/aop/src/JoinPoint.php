@@ -34,8 +34,6 @@ class JoinPoint
 
     /**
      * 执行代理方法
-     *
-     * @return mixed
      */
     public function process(): mixed
     {

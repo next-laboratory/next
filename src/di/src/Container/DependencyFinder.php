@@ -29,13 +29,8 @@ trait DependencyFinder
     /**
      * 获取构造函数的参数
      *
-     * @param ReflectionClass $reflectionClass
-     * @param array           $arguments
-     *
-     * @return array
-     * @throws NotFoundException
-     * @throws ReflectionException
      * @throws ContainerExceptionInterface
+     * @throws ReflectionException
      */
     public function getConstructorArgs(ReflectionClass $reflectionClass, array $arguments = []): array
     {
@@ -52,9 +47,7 @@ trait DependencyFinder
      * @param ReflectionFunctionAbstract $reflectionMethod 反射方法
      * @param array                      $arguments        参数列表，支持关联数组，会自动按照变量名传入
      *
-     * @return array
-     * @throws NotFoundException
-     * @throws ReflectionException|ContainerExceptionInterface
+     * @throws ContainerExceptionInterface|ReflectionException
      */
     public function getFuncArgs(ReflectionFunctionAbstract $reflectionMethod, array $arguments = []): array
     {

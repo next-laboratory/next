@@ -20,22 +20,17 @@ use function is_object;
 trait ResolvingCallbacks
 {
     /**
-     * @var array
+     * @var array 全局回调
      */
     protected array $globalResolvingCallbacks = [];
 
     /**
-     * @var array
+     * @var array 单个类注册的回调
      */
     protected array $resolvingCallbacks = [];
 
     /**
      * 解析后回调
-     *
-     * @param ReflectionClass $reflectionClass
-     * @param object          $concrete
-     *
-     * @return object
      */
     protected function resolving(ReflectionClass $reflectionClass, object $concrete): object
     {
@@ -47,9 +42,7 @@ trait ResolvingCallbacks
     }
 
     /**
-     * @param $abstract
-     *
-     * @return array
+     * 获取回调
      */
     public function getResolvingCallbacks($abstract): array
     {
@@ -60,9 +53,6 @@ trait ResolvingCallbacks
 
     /**
      * 解析后回调
-     *
-     * @param               $abstract
-     * @param Closure|null  $callback
      */
     public function afterResolving($abstract, ?Closure $callback = null): void
     {

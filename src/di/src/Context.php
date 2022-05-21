@@ -17,22 +17,13 @@ use Psr\Container\ContainerInterface;
 
 class Context
 {
-    /**
-     * @var ContainerInterface
-     */
     protected static ContainerInterface $container;
 
-    /**
-     * @return bool
-     */
     public static function hasContainer(): bool
     {
         return isset(self::$container);
     }
 
-    /**
-     * @return ContainerInterface
-     */
     public static function getContainer(): ContainerInterface
     {
         if (!self::hasContainer()) {
@@ -43,9 +34,6 @@ class Context
         return self::$container;
     }
 
-    /**
-     * @param ContainerInterface $container
-     */
     public static function setContainer(ContainerInterface $container): void
     {
         self::$container = $container;

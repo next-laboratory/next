@@ -29,12 +29,12 @@ class Container implements ContainerInterface
     use ResolvingCallbacks, PropertyModifier, DependencyFinder;
 
     /**
-     * @var array
+     * 类和标识对应关系
      */
     protected array $bindings = [];
 
     /**
-     * @var array
+     * 已经解析实例
      */
     protected array $resolved = [];
 
@@ -69,8 +69,8 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param string $id
-     * @param string $class
+     * @param string $id    标识，可以是接口
+     * @param string $class 类名
      *
      * @return void
      */
@@ -80,9 +80,7 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param string $id
-     *
-     * @return void
+     * @param string $id 标识
      */
     public function unBind(string $id): void
     {
@@ -92,9 +90,7 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param string $id
-     *
-     * @return bool
+     * @param string $id 标识
      */
     public function bound(string $id): bool
     {
@@ -102,9 +98,7 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param string $id
-     *
-     * @return string
+     * @param string $id 标识
      */
     public function getBinding(string $id): string
     {
@@ -114,10 +108,10 @@ class Container implements ContainerInterface
     /**
      * 注入的外部接口方法
      *
-     * @param string $id        类标识
+     * @param string $id        标识
      * @param array  $arguments 构造函数参数列表
      *
-     * @return mixed
+     * @return object
      * @throws ReflectionException|NotFoundException|ContainerExceptionInterface
      */
     public function make(string $id, array $arguments = []): object
@@ -132,8 +126,6 @@ class Container implements ContainerInterface
      * 注销实例
      *
      * @param string $id
-     *
-     * @return void
      */
     public function remove(string $id): void
     {
@@ -147,7 +139,6 @@ class Container implements ContainerInterface
      * @param string $id        标识
      * @param array  $arguments 构造函数参数列表
      *
-     * @return object
      * @throws ReflectionException|NotFoundException|ContainerExceptionInterface
      */
     public function resolve(string $id, array $arguments = []): object
@@ -174,9 +165,7 @@ class Container implements ContainerInterface
      * @param array|Closure|string $callable  可调用的类或者实例和方法数组
      * @param array                $arguments 给方法传递的参数
      *
-     * @return mixed
-     * @throws NotFoundException
-     * @throws ReflectionException|ContainerExceptionInterface
+     * @throws ReflectionException|ContainerExceptionInterface|NotFoundException
      */
     public function call(array|Closure|string $callable, array $arguments = []): mixed
     {
@@ -208,7 +197,6 @@ class Container implements ContainerInterface
      * @param Closure|string $function  函数
      * @param array          $arguments 参数列表
      *
-     * @return mixed
      * @throws ReflectionException|NotFoundException|ContainerExceptionInterface
      */
     public function callFunc(Closure|string $function, array $arguments = []): mixed

@@ -22,8 +22,6 @@ use Max\Utils\Filesystem;
 use PhpParser\Error;
 use PhpParser\NodeTraverser;
 use PhpParser\PrettyPrinter\Standard;
-use Psr\Container\ContainerExceptionInterface;
-use ReflectionException;
 use Symfony\Component\Finder\Finder;
 use Throwable;
 
@@ -39,35 +37,14 @@ final class Scanner
      */
     protected array $classMap = [];
 
-    /**
-     * 注解收集器
-     *
-     * @var array|string[]
-     */
-    protected array $collectors = [
+    protected array        $collectors = [
         AspectCollector::class,
         PropertyAttributeCollector::class
     ];
-
-    /**
-     * @var Scanner
-     */
     private static Scanner $scanner;
+    protected string       $proxyMap;
+    protected AstManager   $astManager;
 
-    /**
-     * @var string
-     */
-    protected string     $proxyMap;
-    protected AstManager $astManager;
-
-    /**
-     * @param ClassLoader $loader
-     * @param array       $options
-     *
-     * @return void
-     * @throws ContainerExceptionInterface
-     * @throws ReflectionException
-     */
     public static function init(ClassLoader $loader, array $options = []): void
     {
         if (!isset(self::$scanner)) {
@@ -75,13 +52,6 @@ final class Scanner
         }
     }
 
-    /**
-     * @param ClassLoader $loader
-     * @param array       $options
-     *
-     * @throws ContainerExceptionInterface
-     * @throws ReflectionException
-     */
     private function __construct(protected ClassLoader $loader, array $options)
     {
         $this->runtimeDir = $runtimeDir = rtrim($options['runtimeDir'] ?? '', '/\\') . '/aop/';
@@ -122,9 +92,6 @@ final class Scanner
 
     /**
      * @return mixed|void
-     * @throws ContainerExceptionInterface
-     * @throws Exceptions\NotFoundException
-     * @throws ReflectionException
      */
     protected function getProxyMap()
     {
