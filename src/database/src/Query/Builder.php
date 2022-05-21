@@ -305,6 +305,26 @@ class Builder
     }
 
     /**
+     * @param string $column
+     *
+     * @return $this
+     */
+    public function latest(string $column = 'id'): static
+    {
+        return $this->order($column, 'DESC');
+    }
+
+    /**
+     * @param string $column
+     *
+     * @return $this
+     */
+    public function oldest(string $column = 'id'): static
+    {
+        return $this->order($column);
+    }
+
+    /**
      * @param $column
      *
      * @return $this
