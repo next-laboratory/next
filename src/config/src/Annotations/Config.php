@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace Max\Config\Annotations;
 
 use Attribute;
+use Max\Aop\Exceptions\PropertyHandleException;
 use Max\Config\Repository;
 use Max\Di\Context;
 use Max\Aop\Contracts\PropertyAttribute;
-use Max\Di\Exceptions\PropertyHandleException;
 use Max\Di\ReflectionManager;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
@@ -34,12 +34,6 @@ class Config implements PropertyAttribute
     {
     }
 
-    /**
-     * @param object $object
-     * @param string $property
-     *
-     * @return void
-     */
     public function handle(object $object, string $property): void
     {
         try {

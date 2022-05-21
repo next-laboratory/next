@@ -40,13 +40,13 @@ SWOOLE >= 4.6
 ### 安装
 
 ```shell
-composer create-project max/swoole-project max  // 安装swoole项目
+composer create-project max/swoole-project:dev-master max  // 安装swoole项目
 ```
 
 ### 启动服务
 
 ```shell
-php bin/max swoole start
+php bin/max.php server:swoole start
 ```
 
 这行命令会在你命令执行目录安装框架
