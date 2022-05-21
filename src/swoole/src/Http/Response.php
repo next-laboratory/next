@@ -24,35 +24,6 @@ class Response implements ResponseInterface
     use Message;
 
     /**
-     * TODO
-     *
-     * @param Cookie $cookie
-     */
-    public function withCookie(Cookie $cookie)
-    {
-        if (!($bag = Context::get($key = CookieBag::class))) {
-            $bag = new $key();
-        }
-        $bag->add($cookie);
-        Context::put($key, $bag);
-
-        return $this;
-    }
-
-    /**
-     * TODO
-     *
-     * @return array
-     */
-    public function getCookies(): array
-    {
-        if ($bag = Context::get(CookieBag::class)) {
-            return $bag->all();
-        }
-        return [];
-    }
-
-    /**
      * @inheritDoc
      */
     public function getStatusCode()
