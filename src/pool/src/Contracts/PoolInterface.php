@@ -8,7 +8,7 @@ interface PoolInterface
 
     public function close();
 
-    public function get(): Poolable;
+    public function get();
 
     public function gc();
 

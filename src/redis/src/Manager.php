@@ -13,11 +13,9 @@ declare(strict_types=1);
 
 namespace Max\Redis;
 
-use ArrayObject;
 use InvalidArgumentException;
 use Max\Config\Contracts\ConfigInterface;
 use Max\Pool\Contracts\Poolable;
-use Max\Pool\Contracts\PoolInterface;
 use Max\Pool\PoolManager;
 
 /**
@@ -51,17 +49,18 @@ class Manager
      *
      * @return Redis
      */
-    public function connection(?string $name = null): Poolable
+    public function connection(?string $name = null)
     {
-        $name ??= 'redis.' . $this->defaultConnection;
+        $connection = $name ?? $this->defaultConnection;
+        $name       = 'redis.' . $connection;
         if (!PoolManager::has($name)) {
-            if (!isset($this->config[$name])) {
+            if (!isset($this->config[$connection])) {
                 throw new InvalidArgumentException('没有相关数据库连接');
             }
-            $config          = $this->config[$name];
+            $config          = $this->config[$connection];
             $connector       = $config['connector'];
             $options         = $config['options'];
-            $options['name'] = $name;
+            $options['name'] = $connection;
             PoolManager::set($name, new $connector(new RedisConfig($options)));
         }
 

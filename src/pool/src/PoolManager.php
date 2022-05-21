@@ -27,7 +27,9 @@ class PoolManager
 
     public static function add(string $name, PoolInterface $pool): void
     {
-        self::has($name) ? throw new PoolException(sprintf('Pool %s is already exist.', $name)) : self::set($pool);
+        self::has($name)
+            ? throw new PoolException(sprintf('Pool %s is already exist.', $name))
+            : self::set($pool);
     }
 
     public static function get(string $name): PoolInterface

@@ -43,7 +43,7 @@ class AutoConnector implements PoolInterface
     /**
      * @return mixed
      */
-    public function get(): Poolable
+    public function get()
     {
         $type = class_exists(Coroutine::class) && Coroutine::getCid() > 0 ? 'pool' : 'base';
         if (!isset($this->container[$type])) {

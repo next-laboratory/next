@@ -13,17 +13,11 @@ declare(strict_types=1);
 
 namespace Max\Redis\Connectors;
 
-use Max\Context\Context;
-use Max\Pool\Contracts\Poolable;
-use Max\Pool\Contracts\PoolInterface;
 use Max\Redis\RedisConfig;
 use Swoole\Database\RedisPool;
 
-class PoolConnector implements PoolInterface
+class PoolConnector
 {
-    /**
-     * @var RedisPool
-     */
     protected RedisPool $pool;
 
     /**
@@ -31,59 +25,35 @@ class PoolConnector implements PoolInterface
      */
     public function __construct(protected RedisConfig $config)
     {
-        $this->open();
-    }
-
-    /**
-     * 取
-     *
-     * @return \Max\Redis\Redis
-     */
-    public function get(): Poolable
-    {
-        // TOOD 多携程，多配置下会有问题
-        $key = \Max\Redis\Redis::class;
-        if (!Context::has($key)) {
-            Context::put($key, new \Max\Redis\Redis($this, $this->pool->get()));
-        }
-        return Context::get($key);
-    }
-
-    public function open()
-    {
         $this->pool = new RedisPool((new \Swoole\Database\RedisConfig())
             ->withHost($this->config->getHost())
             ->withPort($this->config->getPort())
-            ->withAuth($this->config->getAuth())
-            ->withDbIndex($this->config->getDatabase())
+            ->withTimeout($this->config->getTimeout())
             ->withReadTimeout($this->config->getReadTimeout())
-            ->withReserved($this->config->getReserved())
             ->withRetryInterval($this->config->getRetryInterval())
-            ->withTimeout($this->config->getTimeout()),
+            ->withReserved($this->config->getReserved())
+            ->withDbIndex($this->config->getDatabase())
+            ->withAuth($this->config->getAuth()),
             $this->config->getPoolSize()
         );
-        if ($this->config->isAutofill()) {
-            $this->pool->fill();
+    }
+
+    public function get()
+    {
+        $redis = $this->pool->get();
+        try {
+            $redis->ping();
+            \Co\defer(function() use ($redis) {
+                $this->pool->put($redis);
+            });
+            return $redis;
+        } catch (\RedisException) {
+            $this->pool->put(null);
         }
     }
 
-    public function close()
+    public function put()
     {
-        $this->pool->close();
-    }
 
-    public function gc()
-    {
-        // TODO: Implement gc() method.
-    }
-
-    /**
-     * @param \Redis|Poolable|null $poolable
-     *
-     * @return void
-     */
-    public function release($poolable)
-    {
-        $this->pool->put($poolable);
     }
 }

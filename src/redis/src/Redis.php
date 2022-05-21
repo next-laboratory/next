@@ -16,8 +16,15 @@ class Redis implements Poolable
     protected int $commandProcessed = 0;
 
     /**
+     * 连接坏了
+     *
+     * @var bool
+     */
+    protected bool $broken = false;
+
+    /**
      * @param PoolInterface $pool
-     * @param \Redis $redis
+     * @param \Redis        $redis
      */
     public function __construct(protected PoolInterface $pool, protected \Redis $redis)
     {
@@ -25,7 +32,7 @@ class Redis implements Poolable
 
     /**
      * @param string $name
-     * @param array $arguments
+     * @param array  $arguments
      *
      * @return mixed
      * @throws \RedisException
@@ -34,12 +41,16 @@ class Redis implements Poolable
     {
         try {
             $result = $this->redis->{$name}(...$arguments);
-            $this->pool->release($this->redis);
             $this->commandProcessed++;
             return $result;
         } catch (\RedisException $redisException) {
-            $this->pool->release(null);
+            $this->broken = true;
             throw $redisException;
         }
+    }
+
+    public function __destruct()
+    {
+        $this->pool->release($this->broken ? null : $this->redis);
     }
 }
