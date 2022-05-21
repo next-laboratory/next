@@ -19,13 +19,6 @@ use Max\Aop\Contracts\AspectInterface;
 
 trait ProxyHandler
 {
-    /**
-     * @param string  $method     方法名
-     * @param Closure $callback   构造的函数
-     * @param array   $parameters 方法参数
-     *
-     * @return mixed
-     */
     protected function __callViaProxy(string $method, Closure $callback, array $parameters): mixed
     {
         /** @var AspectInterface $aspect */

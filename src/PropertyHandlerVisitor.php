@@ -36,18 +36,10 @@ use ReflectionUnionType;
 
 class PropertyHandlerVisitor extends NodeVisitorAbstract
 {
-    /**
-     * @param Metadata $metadata
-     */
     public function __construct(protected Metadata $metadata)
     {
     }
 
-    /**
-     * @param Node $node
-     *
-     * @return void|null
-     */
     public function enterNode(Node $node)
     {
         if ($node instanceof ClassMethod && $node->name->toString() === '__construct') {
@@ -55,11 +47,6 @@ class PropertyHandlerVisitor extends NodeVisitorAbstract
         }
     }
 
-    /**
-     * @param Node $node
-     *
-     * @return void|null
-     */
     public function leaveNode(Node $node)
     {
         if ($node instanceof Class_) {

@@ -19,11 +19,6 @@ abstract class AnnotationCollector implements CollectorInterface
 {
     /**
      * 收集类注解
-     *
-     * @param string $class
-     * @param object $attribute
-     *
-     * @return void
      */
     public static function collectClass(string $class, object $attribute): void
     {
@@ -31,12 +26,6 @@ abstract class AnnotationCollector implements CollectorInterface
 
     /**
      * 收集类方法注解
-     *
-     * @param string $class
-     * @param string $method
-     * @param object $attribute
-     *
-     * @return void
      */
     public static function collectMethod(string $class, string $method, object $attribute): void
     {
@@ -44,12 +33,6 @@ abstract class AnnotationCollector implements CollectorInterface
 
     /**
      * 收集属性疏解
-     *
-     * @param string $class
-     * @param string $property
-     * @param object $attribute
-     *
-     * @return void
      */
     public static function collectProperty(string $class, string $property, object $attribute): void
     {
@@ -57,10 +40,6 @@ abstract class AnnotationCollector implements CollectorInterface
 
     /**
      * 缓存
-     *
-     * @param string $dir
-     *
-     * @return void
      */
     public static function export(string $dir): void
     {
@@ -68,10 +47,6 @@ abstract class AnnotationCollector implements CollectorInterface
 
     /**
      * 从缓存恢复
-     *
-     * @param string $dir
-     *
-     * @return void
      */
     public static function import(string $dir): void
     {

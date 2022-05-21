@@ -17,19 +17,10 @@ use Max\Aop\Contracts\AspectInterface;
 
 class AspectCollector extends AnnotationCollector
 {
-    /**
-     * @var array
-     */
     protected static array $container = [];
 
     /**
      * 收集方法切面
-     *
-     * @param string $class
-     * @param string $method
-     * @param object $attribute
-     *
-     * @return void
      */
     public static function collectMethod(string $class, string $method, object $attribute): void
     {
@@ -40,11 +31,6 @@ class AspectCollector extends AnnotationCollector
 
     /**
      * 收集类切面
-     *
-     * @param string $class
-     * @param object $attribute
-     *
-     * @return void
      */
     public static function collectClass(string $class, object $attribute): void
     {
@@ -55,11 +41,6 @@ class AspectCollector extends AnnotationCollector
 
     /**
      * 返回某个类方法的切面
-     *
-     * @param string $class
-     * @param string $method
-     *
-     * @return array
      */
     public static function getMethodAspects(string $class, string $method): array
     {
@@ -68,10 +49,6 @@ class AspectCollector extends AnnotationCollector
 
     /**
      * 返回某个类的切面
-     *
-     * @param string $class
-     *
-     * @return array
      */
     public static function getClassAspects(string $class): array
     {
@@ -80,8 +57,6 @@ class AspectCollector extends AnnotationCollector
 
     /**
      * 返回被收集过的类
-     *
-     * @return array
      */
     public static function getCollectedClasses(): array
     {
@@ -90,10 +65,6 @@ class AspectCollector extends AnnotationCollector
 
     /**
      * 是否可以被收集
-     *
-     * @param object $attribute
-     *
-     * @return bool
      */
     public static function isValid(object $attribute): bool
     {

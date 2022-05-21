@@ -20,7 +20,6 @@ class AstManager
         $this->parser = (new ParserFactory())->create(ParserFactory::ONLY_PHP7);
     }
 
-
     public function getNodes(string $realpath)
     {
         if (!isset($this->container[$realpath])) {

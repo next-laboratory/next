@@ -13,16 +13,7 @@ declare(strict_types=1);
 
 namespace Max\Aop\Contracts;
 
-use ReflectionClass;
-use ReflectionProperty;
-
 interface PropertyAttribute
 {
-    /**
-     * @param object $object   对象
-     * @param string $property 属性
-     *
-     * @return void
-     */
     public function handle(object $object, string $property): void;
 }
