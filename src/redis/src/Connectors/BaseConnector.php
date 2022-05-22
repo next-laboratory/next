@@ -13,58 +13,46 @@ declare(strict_types=1);
 
 namespace Max\Redis\Connectors;
 
-use Max\Pool\Contracts\Poolable;
-use Max\Pool\Contracts\PoolInterface;
+use Max\Redis\Contracts\ConnectorInterface;
 use Max\Redis\Redis;
 use Max\Redis\RedisConfig;
 
-class BaseConnector implements PoolInterface
+class BaseConnector implements ConnectorInterface
 {
-    /**
-     * @param RedisConfig $config
-     */
+    protected \ArrayObject $pool;
+
     public function __construct(protected RedisConfig $config)
     {
+        $this->pool = new \ArrayObject();
     }
 
-    /**
-     * @return \Redis
-     */
-    public function get(): Poolable
+    public function get(): \Redis
     {
-        $redis = new \Redis();
-        $redis->connect(
-            $this->config->getHost(),
-            $this->config->getPort(),
-            $this->config->getTimeout(),
-            $this->config->getReserved(),
-            $this->config->getRetryInterval(),
-            $this->config->getReadTimeout()
-        );
-        $redis->select($this->config->getDatabase());
-        if ($auth = $this->config->getAuth()) {
-            $redis->auth($auth);
+        $name = $this->config->getName();
+        if (!$this->pool->offsetExists($name)) {
+            $redis = new \Redis();
+            $redis->connect(
+                $this->config->getHost(),
+                $this->config->getPort(),
+                $this->config->getTimeout(),
+                $this->config->getReserved(),
+                $this->config->getRetryInterval(),
+                $this->config->getReadTimeout()
+            );
+            $redis->select($this->config->getDatabase());
+            if ($auth = $this->config->getAuth()) {
+                $redis->auth($auth);
+            }
+            $this->pool->offsetSet($name, $redis);
         }
 
-        return new Redis($this, $redis);
+        $redis = $this->pool->offsetGet($name);
+        $this->pool->offsetUnset($name);
+        return $redis;
     }
 
-    public function open()
+    public function release($redis)
     {
-        // TODO: Implement open() method.
-    }
-
-    public function close()
-    {
-        // TODO: Implement close() method.
-    }
-
-    public function gc()
-    {
-        // TODO: Implement gc() method.
-    }
-
-    public function release($poolable)
-    {
+        $this->pool->offsetSet($this->config->getName(), $redis);
     }
 }

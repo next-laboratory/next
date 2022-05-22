@@ -48,90 +48,56 @@ class RedisConfig
         $this->fillProperties($config);
     }
 
-    /**
-     * @return string
-     */
     public function getAuth(): string
     {
         return $this->auth;
     }
 
-    /**
-     * @return bool
-     */
     public function isAutofill(): bool
     {
         return $this->autofill;
     }
 
-    /**
-     * @return int
-     */
     public function getDatabase(): int
     {
         return $this->database;
     }
 
-    /**
-     * @return int
-     */
     public function getTimeout(): int
     {
         return $this->timeout;
     }
 
-    /**
-     * @return int
-     */
     public function getReadTimeout(): int
     {
         return $this->readTimeout;
     }
 
-    /**
-     * @return int
-     */
     public function getRetryInterval(): int
     {
         return $this->retryInterval;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return string
-     */
     public function getReserved(): string
     {
         return $this->reserved;
     }
 
-    /**
-     * @return int
-     */
     public function getPoolSize(): int
     {
         return $this->poolSize;
     }
 
-
-    /**
-     * @return string
-     */
     public function getHost(): string
     {
         return $this->host;
     }
 
-    /**
-     * @return int
-     */
     public function getPort(): int
     {
         return $this->port;

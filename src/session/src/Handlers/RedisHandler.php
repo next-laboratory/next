@@ -2,7 +2,7 @@
 
 namespace Max\Session\Handlers;
 
-use Max\Redis\Manager;
+use Max\Redis\RedisManager;
 use Max\Redis\Redis;
 use Max\Utils\Traits\AutoFillProperties;
 use Psr\Container\ContainerExceptionInterface;
@@ -37,8 +37,8 @@ class RedisHandler implements SessionHandlerInterface
     public function __construct(array $options = [])
     {
         $this->fillProperties($options);
-        /** @var Manager $manager */
-        $manager       = make(Manager::class);
+        /** @var RedisManager $manager */
+        $manager       = make(RedisManager::class);
         $this->handler = $manager->connection($this->connection);
     }
 

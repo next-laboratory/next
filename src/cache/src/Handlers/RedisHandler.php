@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Max\Cache\Handlers;
 
-use Max\Redis\Manager;
+use Max\Redis\RedisManager;
 use Max\Utils\Traits\AutoFillProperties;
 use Psr\Container\ContainerExceptionInterface;
 use ReflectionException;
@@ -36,8 +36,8 @@ class RedisHandler extends CacheHandler
     public function __construct(array $config)
     {
         $this->fillProperties($config);
-        /** @var Manager $manager */
-        $manager       = make(Manager::class);
+        /** @var RedisManager $manager */
+        $manager       = make(RedisManager::class);
         $this->handler = $manager->connection($this->connection);
     }
 

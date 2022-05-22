@@ -13,63 +13,39 @@ declare(strict_types=1);
 
 namespace Max\Redis\Connectors;
 
-use Max\Pool\Contracts\Poolable;
-use Max\Pool\Contracts\PoolInterface;
+use ArrayObject;
+use Max\Redis\Contracts\ConnectorInterface;
 use Max\Redis\RedisConfig;
 use Swoole\Coroutine;
 
-class AutoConnector implements PoolInterface
+class AutoConnector implements ConnectorInterface
 {
-    /**
-     * @var array|string[]
-     */
-    protected array $connectors = [
-        'pool' => PoolConnector::class,
-        'base' => BaseConnector::class,
-    ];
+    protected array        $connectors = ['pool' => PoolConnector::class, 'base' => BaseConnector::class,];
+    protected ?ArrayObject $pool       = null;
 
-    /**
-     * @var array
-     */
-    protected array $container = [];
-
-    /**
-     * @param RedisConfig $config
-     */
     public function __construct(protected RedisConfig $config)
     {
+        $this->pool = new ArrayObject();
     }
 
-    /**
-     * @return mixed
-     */
-    public function get()
+    public function get(): \Redis
     {
-        $type = class_exists(Coroutine::class) && Coroutine::getCid() > 0 ? 'pool' : 'base';
-        if (!isset($this->container[$type])) {
+        $type = $this->getConnectorType();
+        if (!$this->pool->offsetExists($type)) {
             $connector = $this->connectors[$type];
-            $this->container[$type] = new $connector($this->config);
+            $this->pool->offsetSet($type, new $connector($this->config));
         }
-        return $this->container[$type]->get();
+
+        return $this->pool->offsetGet($type)->get();
     }
 
-    public function open()
+    public function release($redis)
     {
-        // TODO: Implement open() method.
+        $this->pool->offsetGet($this->getConnectorType())->release($redis);
     }
 
-    public function close()
+    protected function getConnectorType(): string
     {
-        // TODO: Implement close() method.
-    }
-
-    public function gc()
-    {
-        // TODO: Implement gc() method.
-    }
-
-    public function release($poolable)
-    {
-        // TODO: Implement release() method.
+        return class_exists(Coroutine::class) && Coroutine::getCid() > 0 ? 'pool' : 'base';
     }
 }

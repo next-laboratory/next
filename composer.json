@@ -12,13 +12,12 @@
     ],
     "autoload": {
         "psr-4": {
+            "Max\\Aop\\": "src/aop/src",
             "Max\\Cache\\": "src/cache/src",
             "Max\\Config\\": "src/config/src",
-            "Max\\Console\\": "src/console/src",
+            "Max\\Context\\": "src/context/src",
             "Max\\Database\\": "src/database/src",
             "Max\\Di\\": "src/di/src",
-            "Max\\Aop\\": "src/aop/src",
-            "Max\\Env\\": "src/env/src",
             "Max\\Event\\": "src/event/src",
             "Max\\Framework\\": "src/framework/src",
             "Max\\Http\\": "src/http/src",

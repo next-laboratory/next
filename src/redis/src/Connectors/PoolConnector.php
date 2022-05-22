@@ -13,10 +13,11 @@ declare(strict_types=1);
 
 namespace Max\Redis\Connectors;
 
+use Max\Redis\Contracts\ConnectorInterface;
 use Max\Redis\RedisConfig;
 use Swoole\Database\RedisPool;
 
-class PoolConnector
+class PoolConnector implements ConnectorInterface
 {
     protected RedisPool $pool;
 
@@ -38,22 +39,20 @@ class PoolConnector
         );
     }
 
-    public function get()
+    public function get(): \Redis
     {
-        $redis = $this->pool->get();
         try {
+            $redis = $this->pool->get();
             $redis->ping();
-            \Co\defer(function() use ($redis) {
-                $this->pool->put($redis);
-            });
             return $redis;
-        } catch (\RedisException) {
+        } catch (\RedisException $redisException) {
             $this->pool->put(null);
+            throw $redisException;
         }
     }
 
-    public function put()
+    public function release(\Redis $redis)
     {
-
+        $this->pool->put($redis);
     }
 }

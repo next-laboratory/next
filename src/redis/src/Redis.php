@@ -2,55 +2,30 @@
 
 namespace Max\Redis;
 
-use Max\Pool\Contracts\Poolable;
-use Max\Pool\Contracts\PoolInterface;
+use Max\Redis\Contracts\ConnectorInterface;
 
 /**
  * @mixin \Redis
  */
-class Redis implements Poolable
+class Redis
 {
-    /**
-     * @var int
-     */
-    protected int $commandProcessed = 0;
+    protected \Redis $redis;
 
-    /**
-     * 连接坏了
-     *
-     * @var bool
-     */
-    protected bool $broken = false;
-
-    /**
-     * @param PoolInterface $pool
-     * @param \Redis        $redis
-     */
-    public function __construct(protected PoolInterface $pool, protected \Redis $redis)
+    public function __construct(protected ConnectorInterface $connector)
     {
+        $this->redis = $this->connector->get();
     }
 
     /**
-     * @param string $name
-     * @param array  $arguments
-     *
-     * @return mixed
      * @throws \RedisException
      */
     public function __call(string $name, array $arguments)
     {
-        try {
-            $result = $this->redis->{$name}(...$arguments);
-            $this->commandProcessed++;
-            return $result;
-        } catch (\RedisException $redisException) {
-            $this->broken = true;
-            throw $redisException;
-        }
+        return $this->redis->{$name}(...$arguments);
     }
 
     public function __destruct()
     {
-        $this->pool->release($this->broken ? null : $this->redis);
+        $this->connector->release($this->redis);
     }
 }
