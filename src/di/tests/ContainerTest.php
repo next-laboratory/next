@@ -1,20 +1,37 @@
 <?php
 
-namespace Max\Di;
+namespace Max\Di\Tests;
 
-use Max\Di\Tests\Concerns\TestCall;
+use Max\Di\Context;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
 class ContainerTest extends TestCase
 {
+    protected ContainerInterface $container;
 
-    public function testMake()
+    protected function setUp(): void
+    {
+        $this->container = Context::getContainer();
+    }
+
+    public function testCallFunc()
     {
 
     }
 
-    public function testOffsetGet()
+    public function testBind()
+    {
+        $this->container->bind(FooInterface::class, Foo::class);
+        $this->assertEquals($this->container->getBinding(FooInterface::class), Foo::class);
+    }
+
+    public function testCall()
+    {
+
+    }
+
+    public function testBound()
     {
 
     }
@@ -24,7 +41,7 @@ class ContainerTest extends TestCase
 
     }
 
-    public function testSet()
+    public function testGetBinding()
     {
 
     }
@@ -34,42 +51,7 @@ class ContainerTest extends TestCase
 
     }
 
-    public function test__isset()
-    {
-
-    }
-
-    public function testGetAlias()
-    {
-
-    }
-
-    public function testOffsetSet()
-    {
-
-    }
-
-    public function testOffsetUnset()
-    {
-
-    }
-
-    public function testOffsetExists()
-    {
-
-    }
-
-    public function test__construct()
-    {
-        $this->assertInstanceOf(ContainerInterface::class, new Container());
-    }
-
-    public function testCall()
-    {
-        call([TestCall::class, 'noneParams']);
-    }
-
-    public function testCallFunc()
+    public function testSet()
     {
 
     }
@@ -79,27 +61,17 @@ class ContainerTest extends TestCase
 
     }
 
-    public function testUnAlias()
-    {
-
-    }
-
-    public function test__get()
-    {
-
-    }
-
-    public function testAlias()
-    {
-
-    }
-
-    public function testHasAlias()
-    {
-
-    }
-
     public function testRemove()
+    {
+
+    }
+
+    public function testUnBind()
+    {
+
+    }
+
+    public function testMake()
     {
 
     }
