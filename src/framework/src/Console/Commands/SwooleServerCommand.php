@@ -13,7 +13,9 @@ declare(strict_types=1);
 
 namespace Max\Framework\Console\Commands;
 
+use Exception;
 use Max\Di\Context;
+use Max\Swoole\Server;
 use Psr\Container\ContainerExceptionInterface;
 use ReflectionException;
 use Symfony\Component\Console\Command\Command;
@@ -41,6 +43,7 @@ class SwooleServerCommand extends Command
      * @return void
      * @throws ContainerExceptionInterface
      * @throws ReflectionException
+     * @throws Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -55,13 +58,13 @@ EOT;
 
         if (posix_getuid() > 0) {
             exec('whoami', $user);
-            $output->info('建议使用root用户启动服务，当前用户：' . $user[0]);
+            $output->writeln('<info>[DEBUG]<info> 建议使用root用户启动服务，当前用户：' . $user[0]);
         }
         echo 'PHP:' . PHP_VERSION . PHP_EOL;
         echo 'swoole:' . SWOOLE_VERSION . PHP_EOL;
         $container = Context::getContainer();
-        /** @var \Max\Swoole\Server $server */
-        $server = $container->make(\Max\Swoole\Server::class);
+        /** @var Server $server */
+        $server = $container->make(Server::class);
         switch ($input->getArgument('action')) {
             case 'start':
                 $output->writeln('<info>[DEBU]</info> Server started.');
