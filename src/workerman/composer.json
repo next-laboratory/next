@@ -16,7 +16,7 @@
     },
     "extra": {
         "max": {
-            "config": "Max\\View\\ConfigProvider"
+            "config": "Max\\Workerman\\ConfigProvider"
         }
     }
 }
