@@ -83,7 +83,7 @@ class RequestHandler implements RequestHandlerInterface
      *
      * @return ResponseInterface
      * @throws ContainerExceptionInterface
-     * @throws ReflectionException
+     * @throws ReflectionException|InvalidResponseBodyException
      */
     protected function handleRequest(ServerRequestInterface $request): ResponseInterface
     {
@@ -106,6 +106,7 @@ class RequestHandler implements RequestHandlerInterface
      * @param $response
      *
      * @return ResponseInterface
+     * @throws InvalidResponseBodyException
      */
     protected function autoResponse($response): ResponseInterface
     {

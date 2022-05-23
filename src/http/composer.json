@@ -1,5 +1,7 @@
 {
     "name": "max/http",
+    "license": "Apache-2.0",
+    "homepage": "https://github.com/topyao/max-http",
     "autoload": {
         "psr-4": {
             "Max\\Http\\": "src/"

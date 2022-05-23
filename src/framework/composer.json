@@ -1,5 +1,7 @@
 {
     "name": "max/framework",
+    "license": "Apache-2.0",
+    "homepage": "https://github.com/topyao/max-framework",
     "autoload": {
         "psr-4": {
             "Max\\Framework\\": "src/"
