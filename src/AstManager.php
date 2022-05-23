@@ -10,10 +10,8 @@ use PhpParser\ParserFactory;
 
 class AstManager
 {
-
     protected Parser $parser;
-
-    protected array $container = [];
+    protected array  $container = [];
 
     public function __construct()
     {

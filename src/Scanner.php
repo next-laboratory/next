@@ -27,49 +27,37 @@ use Throwable;
 
 final class Scanner
 {
-    /**
-     * @var string
-     */
-    protected string $runtimeDir;
+    protected static ClassLoader $loader;
+    protected static AstManager  $astManager;
+    protected static Filesystem  $filesystem;
+    protected static string      $runtimeDir;
+    protected static string      $proxyMap;
+    protected static array       $classMap    = [];
+    protected static array       $collectors  = [AspectCollector::class, PropertyAttributeCollector::class];
+    protected static bool        $initialized = false;
 
-    /**
-     * @var array
-     */
-    protected array $classMap = [];
-
-    protected array        $collectors = [
-        AspectCollector::class,
-        PropertyAttributeCollector::class
-    ];
-    private static Scanner $scanner;
-    protected string       $proxyMap;
-    protected AstManager   $astManager;
-
-    public static function init(ClassLoader $loader, array $options = []): void
+    public static function init(ClassLoader $loader, ScannerConfig $config): void
     {
-        if (!isset(self::$scanner)) {
-            self::$scanner = new Scanner($loader, $options);
-        }
-    }
-
-    private function __construct(protected ClassLoader $loader, array $options)
-    {
-        $this->runtimeDir = $runtimeDir = rtrim($options['runtimeDir'] ?? '', '/\\') . '/aop/';
-        $cache            = $options['cache'] ?? false;
-        array_push($this->collectors, ...($options['collectors'] ?? []));
-        is_dir($runtimeDir) || mkdir($runtimeDir, 0755, true);
-        $this->astManager = new AstManager();
-        $this->classMap   = $this->scanDir($options['paths'] ?? []);
-        $this->proxyMap   = $proxyMap = $this->runtimeDir . 'proxy.php';
-        if (!$cache || !file_exists($proxyMap)) {
-            file_exists($proxyMap) && unlink($proxyMap);
-            if (($pid = pcntl_fork()) == -1) {
-                throw new ProcessException('Process fork failed.');
+        if (!self::$initialized) {
+            self::$loader     = $loader;
+            $filesystem       = self::$filesystem = new Filesystem();
+            self::$runtimeDir = $config->getRuntimeDir() . '/aop/';
+            $filesystem->isDirectory(self::$runtimeDir) || $filesystem->makeDirectory(self::$runtimeDir, 0755, true);
+            array_push(self::$collectors, ...$config->getCollectors());
+            self::$astManager = new AstManager();
+            self::$classMap   = self::scanDir($config->getPaths());
+            self::$proxyMap   = $proxyMap = self::$runtimeDir . 'proxy.php';
+            if (!$config->isCache() || !$filesystem->exists($proxyMap)) {
+                $filesystem->exists($proxyMap) && $filesystem->delete($proxyMap);
+                if (($pid = pcntl_fork()) == -1) {
+                    throw new ProcessException('Process fork failed.');
+                }
+                pcntl_wait($pid);
             }
-            pcntl_wait($pid);
+            $loader->addClassMap(self::getProxyMap());
+            self::collect();
+            self::$initialized = true;
         }
-        $loader->addClassMap($this->getProxyMap());
-        $this->collect();
     }
 
     /**
@@ -77,13 +65,13 @@ final class Scanner
      *
      * @return array
      */
-    public function scanDir(array $dirs): array
+    public static function scanDir(array $dirs): array
     {
         $files   = (new Finder())->in($dirs)->name('*.php')->files();
         $classes = [];
         foreach ($files as $file) {
             $realPath = $file->getRealPath();
-            foreach ($this->astManager->getClassesByRealPath($realPath) as $class) {
+            foreach (self::$astManager->getClassesByRealPath($realPath) as $class) {
                 $classes[$class] = $realPath;
             }
         }
@@ -93,25 +81,24 @@ final class Scanner
     /**
      * @return mixed|void
      */
-    protected function getProxyMap()
+    protected static function getProxyMap()
     {
-        $filesystem = new Filesystem();
-        if (!$filesystem->exists($this->proxyMap)) {
-            $proxyDir = $this->runtimeDir . 'proxy/';
-            $filesystem->makeDirectory($proxyDir, 0755, true, true);
-            $filesystem->cleanDirectory($proxyDir);
-            $this->collect();
+        if (!self::$filesystem->exists(self::$proxyMap)) {
+            $proxyDir = self::$runtimeDir . 'proxy/';
+            self::$filesystem->makeDirectory($proxyDir, 0755, true, true);
+            self::$filesystem->cleanDirectory($proxyDir);
+            self::collect();
             $collectedClasses = array_unique(array_merge(AspectCollector::getCollectedClasses(), PropertyAttributeCollector::getCollectedClasses()));
             $scanMap          = [];
             foreach ($collectedClasses as $class) {
                 $proxyPath = $proxyDir . str_replace('\\', '_', $class) . '_Proxy.php';
-                $filesystem->put($proxyPath, $this->generateProxyClass($class, $this->classMap[$class]));
+                self::$filesystem->put($proxyPath, self::generateProxyClass($class, self::$classMap[$class]));
                 $scanMap[$class] = $proxyPath;
             }
-            $filesystem->put($this->proxyMap, sprintf("<?php \nreturn %s;", var_export($scanMap, true)));
+            self::$filesystem->put(self::$proxyMap, sprintf("<?php \nreturn %s;", var_export($scanMap, true)));
             exit;
         }
-        return include $this->proxyMap;
+        return include self::$proxyMap;
     }
 
     /**
@@ -120,12 +107,12 @@ final class Scanner
      *
      * @return string
      */
-    protected function generateProxyClass($class, $path): string
+    protected static function generateProxyClass($class, $path): string
     {
         try {
-            $ast       = $this->astManager->getNodes($path);
+            $ast       = self::$astManager->getNodes($path);
             $traverser = new NodeTraverser();
-            $metadata  = new Metadata($this->loader, $class);
+            $metadata  = new Metadata(self::$loader, $class);
             $traverser->addVisitor(new PropertyHandlerVisitor($metadata));
             $traverser->addVisitor(new ProxyHandlerVisitor($metadata));
             $modifiedStmts = $traverser->traverse($ast);
@@ -140,14 +127,14 @@ final class Scanner
     /**
      * @return void
      */
-    protected function collect(): void
+    protected static function collect(): void
     {
-        foreach ($this->classMap as $class => $path) {
+        foreach (self::$classMap as $class => $path) {
             $reflectionClass = ReflectionManager::reflectClass($class);
             // 收集类注解
             foreach ($reflectionClass->getAttributes() as $attribute) {
                 try {
-                    foreach ($this->collectors as $collector) {
+                    foreach (self::$collectors as $collector) {
                         $collector::collectClass($class, $attribute->newInstance());
                     }
                 } catch (Throwable $throwable) {
@@ -158,7 +145,7 @@ final class Scanner
             foreach ($reflectionClass->getProperties() as $reflectionProperty) {
                 foreach ($reflectionProperty->getAttributes() as $attribute) {
                     try {
-                        foreach ($this->collectors as $collector) {
+                        foreach (self::$collectors as $collector) {
                             $collector::collectProperty($class, $reflectionProperty->getName(), $attribute->newInstance());
                         }
                     } catch (Throwable $throwable) {
@@ -170,7 +157,7 @@ final class Scanner
             foreach ($reflectionClass->getMethods() as $reflectionMethod) {
                 foreach ($reflectionMethod->getAttributes() as $attribute) {
                     try {
-                        foreach ($this->collectors as $collector) {
+                        foreach (self::$collectors as $collector) {
                             $collector::collectMethod($class, $reflectionMethod->getName(), $attribute->newInstance());
                         }
                     } catch (Throwable $throwable) {
