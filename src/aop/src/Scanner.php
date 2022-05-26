@@ -167,4 +167,23 @@ final class Scanner
             }
         }
     }
+
+    public static function scanConfig(string $installedJsonDir): array
+    {
+        $installed = json_decode(file_get_contents($installedJsonDir), true);
+        $installed = $installed['packages'] ?? $installed;
+        $config    = [];
+        foreach ($installed as $package) {
+            if (isset($package['extra']['max']['config'])) {
+                $configProvider = $package['extra']['max']['config'];
+                $configProvider = new $configProvider;
+                if (method_exists($configProvider, '__invoke')) {
+                    if (is_array($configItem = $configProvider())) {
+                        $config = array_merge_recursive($config, $configItem);
+                    }
+                }
+            }
+        }
+        return $config;
+    }
 }

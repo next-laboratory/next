@@ -8,17 +8,6 @@
 composer require max/aop:dev-master
 ```
 
-配置如下
-
-```
-'cache'      => false,
-'paths'      => [
-    BASE_PATH . '/app',
-],
-'collectors' => [],
-'runtimeDir' => BASE_PATH . '/runtime',
-```
-
 # 使用，以下以webman为例
 
 ## 修改start.php文件
@@ -26,14 +15,14 @@ composer require max/aop:dev-master
 ```php
 $loader = require_once __DIR__ . '/vendor/autoload.php';
 
-\Max\Di\Scanner::init($loader, [
+\Max\Di\Scanner::init($loader, new \Max\Aop\ScannerConfig([
     'cache'      => false,
     'paths'      => [
         BASE_PATH . '/app',
     ],
     'collectors' => [],
     'runtimeDir' => BASE_PATH . '/runtime',
-]);
+]));
 ```
 
 ## 编写切面类，实现AspectInterface接口

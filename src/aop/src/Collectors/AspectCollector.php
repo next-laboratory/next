@@ -49,6 +49,8 @@ class AspectCollector extends AnnotationCollector
 
     /**
      * 返回某个类的切面
+     *
+     * @return AspectInterface[]
      */
     public static function getClassAspects(string $class): array
     {
@@ -57,6 +59,8 @@ class AspectCollector extends AnnotationCollector
 
     /**
      * 返回被收集过的类
+     *
+     * @return AspectInterface[]
      */
     public static function getCollectedClasses(): array
     {
