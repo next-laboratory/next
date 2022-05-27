@@ -1,6 +1,7 @@
 {
     "name": "max/aop",
     "description": "An AOP package that is resident in in-memory PHP frameworks, such as MaxPHP, Webman.",
+    "license": "Apache-2.0",
     "autoload": {
         "psr-4": {
             "Max\\Aop\\": "src/"
@@ -9,7 +10,8 @@
     "authors": [
         {
             "name": "chengyao",
-            "email": "987861463@qq.com"
+            "email": "987861463@qq.com",
+            "homepage": "https://github.com/topyao/max-aop"
         }
     ],
     "require": {
