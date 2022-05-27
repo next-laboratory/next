@@ -1,0 +1,21 @@
+{
+    "name": "max/reflection",
+    "description": "",
+    "homepage": "https://github.com/topyao/max-reflection",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "chengyao",
+            "email": "987861463@qq.com",
+            "homepage": "https://www.1kmb.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Max\\Reflection\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.0"
+    }
+}
