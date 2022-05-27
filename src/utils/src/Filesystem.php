@@ -574,7 +574,7 @@ class Filesystem
     }
 
     /**
-     * Get all of the files from the given directory (recursive).
+     * Get all the files from the given directory (recursive).
      *
      * @param string $directory
      * @param bool   $hidden
