@@ -1,8 +1,6 @@
 {
     "name": "max/max",
     "license": "Apache-2.0",
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "description": "A lightweight, high-performance PHP framework based on swoole.",
     "homepage": "https://github.com/topyao/max",
     "keywords": [
@@ -18,6 +16,7 @@
             "Max\\Context\\": "src/context/src",
             "Max\\Database\\": "src/database/src",
             "Max\\Di\\": "src/di/src",
+            "Max\\Reflection\\": "src/reflection/src",
             "Max\\Event\\": "src/event/src",
             "Max\\Framework\\": "src/framework/src",
             "Max\\Http\\": "src/http/src",
@@ -46,29 +45,22 @@
     "replace": {
         "max/cache": "*",
         "max/config": "*",
-        "max/console": "*",
         "max/database": "*",
         "max/di": "*",
-        "max/env": "*",
+        "max/aop": "*",
         "max/event": "*",
         "max/framework": "*",
         "max/http": "*",
-        "max/http-message": "*",
-        "max/http-server": "*",
         "max/log": "*",
         "max/queue": "*",
         "max/routing": "*",
-        "max/server": "*",
+        "max/swoole": "*",
         "max/session": "*",
         "max/swagger": "*",
         "max/utils": "*",
         "max/validator": "*",
         "max/view": "*",
-        "max/websocket": "*"
-    },
-    "config": {
-        "optimize-autoloader": true,
-        "preferred-install": "dist"
+        "max/workerman": "*"
     },
     "require": {
         "php": "^8.0",
