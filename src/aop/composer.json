@@ -1,24 +1,25 @@
 {
-  "name": "max/aop",
-  "autoload": {
-    "psr-4": {
-      "Max\\Aop\\": "src/"
+    "name": "max/aop",
+    "description": "An AOP package that is resident in in-memory PHP frameworks, such as MaxPHP, Webman.",
+    "autoload": {
+        "psr-4": {
+            "Max\\Aop\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "chengyao",
+            "email": "987861463@qq.com"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "ext-pcntl": "*",
+        "max/utils": "dev-master",
+        "max/reflection": "dev-master",
+        "nikic/php-parser": "^4.13",
+        "symfony/polyfill-php80": "^1.25",
+        "symfony/polyfill-php81": "^1.25",
+        "symfony/finder": "^6.0"
     }
-  },
-  "authors": [
-    {
-      "name": "chengyao",
-      "email": "987861463@qq.com"
-    }
-  ],
-  "require": {
-    "php": "^8.0",
-    "ext-pcntl": "*",
-    "max/di": "dev-master",
-    "max/utils": "dev-master",
-    "nikic/php-parser": "^4.13",
-    "symfony/polyfill-php80": "^1.25",
-    "symfony/polyfill-php81": "^1.25",
-    "symfony/finder": "^6.0"
-  }
 }

@@ -32,18 +32,10 @@ use PhpParser\NodeVisitorAbstract;
 
 class ProxyHandlerVisitor extends NodeVisitorAbstract
 {
-    /**
-     * @param Metadata $metadata
-     */
     public function __construct(protected Metadata $metadata)
     {
     }
 
-    /**
-     * @param Node $node
-     *
-     * @return void|null
-     */
     public function leaveNode(Node $node)
     {
         if ($node instanceof Class_) {
