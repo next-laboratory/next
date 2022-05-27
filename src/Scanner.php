@@ -126,7 +126,7 @@ final class Scanner
             foreach ($reflectionClass->getAttributes() as $attribute) {
                 try {
                     foreach ($collectors as $collector) {
-                        $collector::collectClass($class, $attribute->newInstance());
+                        $collector::collectClass($reflectionClass, $attribute->newInstance());
                     }
                 } catch (Throwable $throwable) {
                     echo '[NOTICE] ' . $class . ': ' . $throwable->getMessage() . PHP_EOL;
@@ -137,7 +137,7 @@ final class Scanner
                 foreach ($reflectionProperty->getAttributes() as $attribute) {
                     try {
                         foreach ($collectors as $collector) {
-                            $collector::collectProperty($class, $reflectionProperty->getName(), $attribute->newInstance());
+                            $collector::collectProperty($reflectionProperty, $attribute->newInstance());
                         }
                     } catch (Throwable $throwable) {
                         echo '[NOTICE] ' . $class . ': ' . $throwable->getMessage() . PHP_EOL;
@@ -149,7 +149,7 @@ final class Scanner
                 foreach ($reflectionMethod->getAttributes() as $attribute) {
                     try {
                         foreach ($collectors as $collector) {
-                            $collector::collectMethod($class, $reflectionMethod->getName(), $attribute->newInstance());
+                            $collector::collectMethod($reflectionMethod, $attribute->newInstance());
                         }
                     } catch (Throwable $throwable) {
                         echo '[NOTICE] ' . $class . ': ' . $throwable->getMessage() . PHP_EOL;

@@ -14,17 +14,18 @@ declare(strict_types=1);
 namespace Max\Aop\Collectors;
 
 use Max\Aop\Contracts\PropertyAttribute;
+use ReflectionProperty;
 
-class PropertyAttributeCollector extends AnnotationCollector
+class PropertyAttributeCollector extends AbstractCollector
 {
     protected static array $container = [];
 
     /**
      * 收集属性注解
      */
-    public static function collectProperty(string $class, string $property, object $attribute): void
+    public static function collectProperty(ReflectionProperty $reflectionProperty, object $attribute): void
     {
-        self::$container[$class][$property][] = $attribute;
+        self::$container[$reflectionProperty->class][$reflectionProperty->getName()][] = $attribute;
     }
 
     /**
