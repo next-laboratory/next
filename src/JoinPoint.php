@@ -13,21 +13,22 @@ declare(strict_types=1);
 
 namespace Max\Aop;
 
+use ArrayObject;
 use Closure;
 
 class JoinPoint
 {
     /**
-     * @param object  $object     切入类的当前实例
-     * @param string  $method     切入的方法
-     * @param array   $parameters 当前方法传递的参数列表【索引数组】
-     * @param Closure $callback
+     * @param object      $object     切入类的当前实例
+     * @param string      $method     切入的方法
+     * @param ArrayObject $parameters 当前方法传递的参数列表【索引数组】
+     * @param Closure     $callback
      */
     public function __construct(
-        public object     $object,
-        public string     $method,
-        public array      $parameters,
-        protected Closure $callback
+        public object      $object,
+        public string      $method,
+        public ArrayObject $parameters,
+        protected Closure  $callback
     )
     {
     }
@@ -37,6 +38,6 @@ class JoinPoint
      */
     public function process(): mixed
     {
-        return call_user_func_array($this->callback, $this->parameters);
+        return call_user_func_array($this->callback, $this->parameters->getArrayCopy());
     }
 }

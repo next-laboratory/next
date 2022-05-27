@@ -17,11 +17,11 @@ use Composer\Autoload\ClassLoader;
 use Max\Aop\Collectors\AspectCollector;
 use Max\Aop\Collectors\PropertyAttributeCollector;
 use Max\Aop\Exceptions\ProcessException;
-use Max\Di\ReflectionManager;
+use Max\Reflection\ReflectionManager;
 use Max\Utils\Filesystem;
-use PhpParser\Error;
 use PhpParser\NodeTraverser;
 use PhpParser\PrettyPrinter\Standard;
+use ReflectionException;
 use Symfony\Component\Finder\Finder;
 use Throwable;
 
@@ -36,6 +36,9 @@ final class Scanner
     protected static array       $collectors  = [AspectCollector::class, PropertyAttributeCollector::class];
     protected static bool        $initialized = false;
 
+    /**
+     * @throws ReflectionException
+     */
     public static function init(ClassLoader $loader, ScannerConfig $config): void
     {
         if (!self::$initialized) {
@@ -43,7 +46,6 @@ final class Scanner
             $filesystem       = self::$filesystem = new Filesystem();
             self::$runtimeDir = $config->getRuntimeDir() . '/aop/';
             $filesystem->isDirectory(self::$runtimeDir) || $filesystem->makeDirectory(self::$runtimeDir, 0755, true);
-            array_push(self::$collectors, ...$config->getCollectors());
             self::$astManager = new AstManager();
             self::$classMap   = self::scanDir($config->getPaths());
             self::$proxyMap   = $proxyMap = self::$runtimeDir . 'proxy.php';
@@ -54,17 +56,12 @@ final class Scanner
                 }
                 pcntl_wait($pid);
             }
-            $loader->addClassMap(self::getProxyMap());
-            self::collect();
+            $loader->addClassMap(self::getProxyMap(self::$collectors));
+            self::collect([...self::$collectors, ...$config->getCollectors()]);
             self::$initialized = true;
         }
     }
 
-    /**
-     * @param array $dirs
-     *
-     * @return array
-     */
     public static function scanDir(array $dirs): array
     {
         $files   = (new Finder())->in($dirs)->name('*.php')->files();
@@ -79,15 +76,15 @@ final class Scanner
     }
 
     /**
-     * @return mixed|void
+     * @throws ReflectionException
      */
-    protected static function getProxyMap()
+    protected static function getProxyMap(array $collectors): array
     {
         if (!self::$filesystem->exists(self::$proxyMap)) {
             $proxyDir = self::$runtimeDir . 'proxy/';
             self::$filesystem->makeDirectory($proxyDir, 0755, true, true);
             self::$filesystem->cleanDirectory($proxyDir);
-            self::collect();
+            self::collect($collectors);
             $collectedClasses = array_unique(array_merge(AspectCollector::getCollectedClasses(), PropertyAttributeCollector::getCollectedClasses()));
             $scanMap          = [];
             foreach ($collectedClasses as $class) {
@@ -101,40 +98,34 @@ final class Scanner
         return include self::$proxyMap;
     }
 
-    /**
-     * @param $class
-     * @param $path
-     *
-     * @return string
-     */
-    protected static function generateProxyClass($class, $path): string
+    protected static function generateProxyClass(string $class, string $path): string
     {
-        try {
-            $ast       = self::$astManager->getNodes($path);
-            $traverser = new NodeTraverser();
-            $metadata  = new Metadata(self::$loader, $class);
-            $traverser->addVisitor(new PropertyHandlerVisitor($metadata));
-            $traverser->addVisitor(new ProxyHandlerVisitor($metadata));
-            $modifiedStmts = $traverser->traverse($ast);
-            $prettyPrinter = new Standard;
-            return $prettyPrinter->prettyPrintFile($modifiedStmts);
-        } catch (Error $error) {
-            echo "[ERROR] Parse error: {$error->getMessage()}\n";
-            return '';
-        }
+        //        try {
+        $ast       = self::$astManager->getNodes($path);
+        $traverser = new NodeTraverser();
+        $metadata  = new Metadata(self::$loader, $class);
+        $traverser->addVisitor(new PropertyHandlerVisitor($metadata));
+        $traverser->addVisitor(new ProxyHandlerVisitor($metadata));
+        $modifiedStmts = $traverser->traverse($ast);
+        $prettyPrinter = new Standard;
+        return $prettyPrinter->prettyPrintFile($modifiedStmts);
+        //        } catch (Error $error) {
+        //            echo "[ERROR] Parse error: {$error->getMessage()}\n";
+        //            return '';
+        //        }
     }
 
     /**
-     * @return void
+     * @throws ReflectionException
      */
-    protected static function collect(): void
+    protected static function collect(array $collectors): void
     {
         foreach (self::$classMap as $class => $path) {
             $reflectionClass = ReflectionManager::reflectClass($class);
             // 收集类注解
             foreach ($reflectionClass->getAttributes() as $attribute) {
                 try {
-                    foreach (self::$collectors as $collector) {
+                    foreach ($collectors as $collector) {
                         $collector::collectClass($class, $attribute->newInstance());
                     }
                 } catch (Throwable $throwable) {
@@ -145,7 +136,7 @@ final class Scanner
             foreach ($reflectionClass->getProperties() as $reflectionProperty) {
                 foreach ($reflectionProperty->getAttributes() as $attribute) {
                     try {
-                        foreach (self::$collectors as $collector) {
+                        foreach ($collectors as $collector) {
                             $collector::collectProperty($class, $reflectionProperty->getName(), $attribute->newInstance());
                         }
                     } catch (Throwable $throwable) {
@@ -157,7 +148,7 @@ final class Scanner
             foreach ($reflectionClass->getMethods() as $reflectionMethod) {
                 foreach ($reflectionMethod->getAttributes() as $attribute) {
                     try {
-                        foreach (self::$collectors as $collector) {
+                        foreach ($collectors as $collector) {
                             $collector::collectMethod($class, $reflectionMethod->getName(), $attribute->newInstance());
                         }
                     } catch (Throwable $throwable) {

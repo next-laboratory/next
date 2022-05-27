@@ -32,7 +32,7 @@ abstract class AnnotationCollector implements CollectorInterface
     }
 
     /**
-     * 收集属性疏解
+     * 收集属性注解
      */
     public static function collectProperty(string $class, string $property, object $attribute): void
     {
