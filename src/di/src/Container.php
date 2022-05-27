@@ -19,8 +19,10 @@ use Max\Di\Container\DependencyFinder;
 use Max\Di\Container\PropertyModifier;
 use Max\Di\Container\ResolvingCallbacks;
 use Max\Di\Exceptions\{ContainerException, NotFoundException};
+use Max\Reflection\ReflectionManager;
 use Psr\Container\{ContainerExceptionInterface, ContainerInterface};
 use ReflectionException;
+use ReflectionFunction;
 use function is_object;
 use function is_string;
 
@@ -201,7 +203,7 @@ class Container implements ContainerInterface
      */
     public function callFunc(Closure|string $function, array $arguments = []): mixed
     {
-        $reflectFunction = ReflectionManager::reflectFunction($function);
+        $reflectFunction = new ReflectionFunction($function);
 
         return $reflectFunction->invokeArgs(
             $this->getFuncArgs($reflectFunction, $arguments)

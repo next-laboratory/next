@@ -15,7 +15,7 @@ namespace Max\Di\Container;
 
 use Exception;
 use Max\Di\Exceptions\NotFoundException;
-use Max\Di\ReflectionManager;
+use Max\Reflection\ReflectionManager;
 use Psr\Container\ContainerExceptionInterface;
 use ReflectionException;
 use ReflectionProperty;

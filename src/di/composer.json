@@ -1,35 +1,36 @@
 {
-  "name": "max/di",
-  "description": "A lightweight dependency injection tool, container based on the PSR-11 specification.",
-  "homepage": "https://github.com/topyao/max-di",
-  "license": "Apache-2.0",
-  "keywords": [
-    "container",
-    "maxphp",
-    "dependence injection"
-  ],
-  "authors": [
-    {
-      "name": "chengyao",
-      "email": "987861463@qq.com",
-      "homepage": "https://www.1kmb.com"
-    }
-  ],
-  "autoload": {
-    "psr-4": {
-      "Max\\Di\\": "src/"
+    "name": "max/di",
+    "description": "A lightweight dependency injection tool, container based on the PSR-11 specification.",
+    "homepage": "https://github.com/topyao/max-di",
+    "license": "Apache-2.0",
+    "keywords": [
+        "container",
+        "maxphp",
+        "dependence injection"
+    ],
+    "authors": [
+        {
+            "name": "chengyao",
+            "email": "987861463@qq.com",
+            "homepage": "https://www.1kmb.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Max\\Di\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
-    "files": [
-      "src/helpers.php"
-    ]
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Max\\Di\\Tests\\": "tests/"
+    "autoload-dev": {
+        "psr-4": {
+            "Max\\Di\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": "^8.0",
+        "max/reflection": "dev-master",
+        "psr/container": "^2.0"
     }
-  },
-  "require": {
-    "php": "^8.0",
-    "psr/container": "^2.0"
-  }
 }
