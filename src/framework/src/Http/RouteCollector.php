@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace Max\Framework\Http;
 
-use Max\Aop\Collectors\AnnotationCollector;
+use Max\Aop\Collectors\AbstractCollector;
 use Max\Di\Context;
 use Max\Di\Exceptions\NotFoundException;
-use Max\Di\ReflectionManager;
+use Max\Reflection\ReflectionManager;
 use Max\Routing\Annotations\AutoController;
 use Max\Routing\Annotations\Controller;
 use Max\Routing\Contracts\MappingInterface;
@@ -24,19 +24,16 @@ use Max\Routing\Route;
 use Max\Routing\Router;
 use Max\Utils\Str;
 use Psr\Container\ContainerExceptionInterface;
+use ReflectionClass;
 use ReflectionException;
+use ReflectionMethod;
 
-class RouteCollector extends AnnotationCollector
+class RouteCollector extends AbstractCollector
 {
-    /**
-     * @var Router|null
-     */
     protected static ?Router $router = null;
 
     /**
      * 当前控制器的类名
-     *
-     * @var string
      */
     protected static string $class = '';
 
@@ -49,8 +46,9 @@ class RouteCollector extends AnnotationCollector
      * @throws ContainerExceptionInterface
      * @throws ReflectionException
      */
-    public static function collectClass(string $class, object $attribute): void
+    public static function collectClass(ReflectionClass $reflectionClass, object $attribute): void
     {
+        $class = $reflectionClass->getName();
         if ($attribute instanceof Controller) {
             self::$class  = $class;
             self::$router = new Router([
@@ -89,8 +87,10 @@ class RouteCollector extends AnnotationCollector
      * @throws ContainerExceptionInterface
      * @throws ReflectionException
      */
-    public static function collectMethod(string $class, string $method, object $attribute): void
+    public static function collectMethod(ReflectionMethod $reflectionMethod, object $attribute): void
     {
+        $class  = $reflectionMethod->class;
+        $method = $reflectionMethod->getName();
         if ($attribute instanceof MappingInterface && self::$class === $class && !is_null(self::$router)) {
             /** @var \Max\Routing\RouteCollector $routeCollector */
             $routeCollector = Context::getContainer()->make(\Max\Routing\RouteCollector::class);

@@ -13,32 +13,22 @@ declare(strict_types=1);
 
 namespace Max\Event;
 
-use Max\Aop\Collectors\AnnotationCollector;
+use Max\Aop\Collectors\AbstractCollector;
 use Max\Event\Annotations\Listen;
+use ReflectionClass;
 
-class ListenerCollector extends AnnotationCollector
+class ListenerCollector extends AbstractCollector
 {
-    /**
-     * @var array
-     */
     protected static array $listeners = [];
 
-    /**
-     * @param string $class
-     * @param object $attribute
-     *
-     * @return void
-     */
-    public static function collectClass(string $class, object $attribute): void
+    public static function collectClass(ReflectionClass $reflectionClass, object $attribute): void
     {
+        $class = $reflectionClass->getName();
         if ($attribute instanceof Listen && !in_array($class, self::$listeners)) {
             self::$listeners[] = $class;
         }
     }
 
-    /**
-     * @return array
-     */
     public static function getListeners(): array
     {
         return self::$listeners;

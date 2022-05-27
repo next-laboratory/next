@@ -14,28 +14,30 @@ declare(strict_types=1);
 namespace Max\Aop\Collectors;
 
 use Max\Aop\Contracts\AspectInterface;
+use ReflectionClass;
+use ReflectionMethod;
 
-class AspectCollector extends AnnotationCollector
+class AspectCollector extends AbstractCollector
 {
     protected static array $container = [];
 
     /**
      * 收集方法切面
      */
-    public static function collectMethod(string $class, string $method, object $attribute): void
+    public static function collectMethod(ReflectionMethod $reflectionMethod, object $attribute): void
     {
         if (self::isValid($attribute)) {
-            self::$container['method'][$class][$method][] = $attribute;
+            self::$container['method'][$reflectionMethod->class][$reflectionMethod->getName()][] = $attribute;
         }
     }
 
     /**
      * 收集类切面
      */
-    public static function collectClass(string $class, object $attribute): void
+    public static function collectClass(ReflectionClass $reflectionClass, object $attribute): void
     {
         if (self::isValid($attribute)) {
-            self::$container['class'][$class][] = $attribute;
+            self::$container['class'][$reflectionClass->getName()][] = $attribute;
         }
     }
 

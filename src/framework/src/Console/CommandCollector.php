@@ -13,34 +13,21 @@ declare(strict_types=1);
 
 namespace Max\Framework\Console;
 
-use Max\Aop\Collectors\AnnotationCollector;
+use Max\Aop\Collectors\AbstractCollector;
 use Max\Framework\Console\Annotations\Command;
+use ReflectionClass;
 
-class CommandCollector extends AnnotationCollector
+class CommandCollector extends AbstractCollector
 {
-    /**
-     * @var array
-     */
     protected static array $container = [];
 
-    /**
-     * @param string $class
-     * @param object $attribute
-     *
-     * @return void
-     */
-    public static function collectClass(string $class, object $attribute): void
+    public static function collectClass(ReflectionClass $reflectionClass, object $attribute): void
     {
         if ($attribute instanceof Command) {
-            self::add($class);
+            self::add($reflectionClass->getName());
         }
     }
 
-    /**
-     * @param string $class
-     *
-     * @return void
-     */
     public static function add(string $class): void
     {
         if (!in_array($class, self::$container)) {
@@ -48,9 +35,6 @@ class CommandCollector extends AnnotationCollector
         }
     }
 
-    /**
-     * @return array
-     */
     public static function all(): array
     {
         return self::$container;
