@@ -62,6 +62,11 @@ final class Scanner
         }
     }
 
+    public static function getLoader(): ClassLoader
+    {
+        return self::$loader;
+    }
+
     public static function scanDir(array $dirs): array
     {
         $files   = (new Finder())->in($dirs)->name('*.php')->files();
@@ -100,7 +105,6 @@ final class Scanner
 
     protected static function generateProxyClass(string $class, string $path): string
     {
-        //        try {
         $ast       = self::$astManager->getNodes($path);
         $traverser = new NodeTraverser();
         $metadata  = new Metadata(self::$loader, $class);
@@ -109,10 +113,6 @@ final class Scanner
         $modifiedStmts = $traverser->traverse($ast);
         $prettyPrinter = new Standard;
         return $prettyPrinter->prettyPrintFile($modifiedStmts);
-        //        } catch (Error $error) {
-        //            echo "[ERROR] Parse error: {$error->getMessage()}\n";
-        //            return '';
-        //        }
     }
 
     /**
