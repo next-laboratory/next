@@ -15,16 +15,15 @@ namespace Max\Framework\Console;
 
 use Max\Aop\Collectors\AbstractCollector;
 use Max\Framework\Console\Annotations\Command;
-use ReflectionClass;
 
 class CommandCollector extends AbstractCollector
 {
     protected static array $container = [];
 
-    public static function collectClass(ReflectionClass $reflectionClass, object $attribute): void
+    public static function collectClass(string $class, object $attribute): void
     {
         if ($attribute instanceof Command) {
-            self::add($reflectionClass->getName());
+            self::add($class);
         }
     }
 

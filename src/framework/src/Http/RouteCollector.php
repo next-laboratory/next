@@ -24,9 +24,7 @@ use Max\Routing\Route;
 use Max\Routing\Router;
 use Max\Utils\Str;
 use Psr\Container\ContainerExceptionInterface;
-use ReflectionClass;
 use ReflectionException;
-use ReflectionMethod;
 
 class RouteCollector extends AbstractCollector
 {
@@ -46,9 +44,8 @@ class RouteCollector extends AbstractCollector
      * @throws ContainerExceptionInterface
      * @throws ReflectionException
      */
-    public static function collectClass(ReflectionClass $reflectionClass, object $attribute): void
+    public static function collectClass(string $class, object $attribute): void
     {
-        $class = $reflectionClass->getName();
         if ($attribute instanceof Controller) {
             self::$class  = $class;
             self::$router = new Router([
@@ -87,10 +84,8 @@ class RouteCollector extends AbstractCollector
      * @throws ContainerExceptionInterface
      * @throws ReflectionException
      */
-    public static function collectMethod(ReflectionMethod $reflectionMethod, object $attribute): void
+    public static function collectMethod(string $class, string $method, object $attribute): void
     {
-        $class  = $reflectionMethod->class;
-        $method = $reflectionMethod->getName();
         if ($attribute instanceof MappingInterface && self::$class === $class && !is_null(self::$router)) {
             /** @var \Max\Routing\RouteCollector $routeCollector */
             $routeCollector = Context::getContainer()->make(\Max\Routing\RouteCollector::class);

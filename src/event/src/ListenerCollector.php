@@ -15,15 +15,13 @@ namespace Max\Event;
 
 use Max\Aop\Collectors\AbstractCollector;
 use Max\Event\Annotations\Listen;
-use ReflectionClass;
 
 class ListenerCollector extends AbstractCollector
 {
     protected static array $listeners = [];
 
-    public static function collectClass(ReflectionClass $reflectionClass, object $attribute): void
+    public static function collectClass(string $class, object $attribute): void
     {
-        $class = $reflectionClass->getName();
         if ($attribute instanceof Listen && !in_array($class, self::$listeners)) {
             self::$listeners[] = $class;
         }

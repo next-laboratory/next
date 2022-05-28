@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Max\Aop\Collectors;
 
 use Max\Aop\Contracts\PropertyAttribute;
-use ReflectionProperty;
 
 class PropertyAttributeCollector extends AbstractCollector
 {
@@ -23,9 +22,11 @@ class PropertyAttributeCollector extends AbstractCollector
     /**
      * 收集属性注解
      */
-    public static function collectProperty(ReflectionProperty $reflectionProperty, object $attribute): void
+    public static function collectProperty(string $class, string $property, object $attribute): void
     {
-        self::$container[$reflectionProperty->class][$reflectionProperty->getName()][] = $attribute;
+        if (self::isValid($attribute)) {
+            self::$container[$class][$property][] = $attribute;
+        }
     }
 
     /**

@@ -19,7 +19,7 @@ trait PropertyHandler
 {
     protected function __handleProperties(): void
     {
-        foreach (PropertyAttributeCollector::getClassPropertyAttributes(static::class) as $property => $attributes) {
+        foreach (PropertyAttributeCollector::getClassPropertyAttributes(self::class) as $property => $attributes) {
             foreach ($attributes as $attribute) {
                 $attribute->handle($this, $property);
             }

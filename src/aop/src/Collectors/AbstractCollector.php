@@ -14,21 +14,18 @@ declare(strict_types=1);
 namespace Max\Aop\Collectors;
 
 use Max\Aop\Contracts\CollectorInterface;
-use ReflectionClass;
-use ReflectionMethod;
-use ReflectionProperty;
 
 abstract class AbstractCollector implements CollectorInterface
 {
-    public static function collectClass(ReflectionClass $reflectionClass, object $attribute): void
+    public static function collectClass(string $class, object $attribute): void
     {
     }
 
-    public static function collectMethod(ReflectionMethod $reflectionMethod, object $attribute): void
+    public static function collectMethod(string $class, string $method, object $attribute): void
     {
     }
 
-    public static function collectProperty(ReflectionProperty $reflectionProperty, object $attribute): void
+    public static function collectProperty(string $class, string $property, object $attribute): void
     {
     }
 }
