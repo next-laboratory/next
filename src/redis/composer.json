@@ -18,7 +18,7 @@
     },
     "extra": {
         "max": {
-            "config": "Max\\Queue\\ConfigProvider"
+            "config": "Max\\Redis\\ConfigProvider"
         }
     }
 }
