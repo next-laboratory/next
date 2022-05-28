@@ -17,12 +17,17 @@ use Max\Aop\Collectors\PropertyAttributeCollector;
 
 trait PropertyHandler
 {
+    protected bool $__propertyHandled = false;
+
     protected function __handleProperties(): void
     {
-        foreach (PropertyAttributeCollector::getClassPropertyAttributes(self::class) as $property => $attributes) {
-            foreach ($attributes as $attribute) {
-                $attribute->handle($this, $property);
+        if (!$this->__propertyHandled) {
+            foreach (PropertyAttributeCollector::getClassPropertyAttributes(self::class) as $property => $attributes) {
+                foreach ($attributes as $attribute) {
+                    $attribute->handle($this, $property);
+                }
             }
+            $this->__propertyHandled = true;
         }
     }
 }
