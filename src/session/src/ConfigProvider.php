@@ -15,20 +15,16 @@ namespace Max\Session;
 
 class ConfigProvider
 {
-    /**
-     * @return string[][]
-     */
     public function __invoke(): array
     {
-        return [];
-    }
-
-    /**
-     * publish
-     */
-    public function publish()
-    {
-        $to = dirname(__DIR__, 4) . '/config/session.php';
-        file_exists($to) || copy(__DIR__ . '/../publish/session.php', $to);
+        return [
+            'publish' => [
+                [
+                    'name'        => 'session',
+                    'source'      => __DIR__ . '/../publish/session.php',
+                    'destination' => dirname(__DIR__, 4) . '/config/session.php',
+                ]
+            ],
+        ];
     }
 }

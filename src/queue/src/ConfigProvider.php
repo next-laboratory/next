@@ -15,20 +15,16 @@ namespace Max\Queue;
 
 class ConfigProvider
 {
-    /**
-     * @return string[][]
-     */
     public function __invoke()
     {
-        return [];
-    }
-
-    /**
-     * publish
-     */
-    public function publish()
-    {
-        $to = dirname(__DIR__, 4) . '/config/queue.php';
-        file_exists($to) || copy(__DIR__ . '/../publish/queue.php', $to);
+        return [
+            'publish' => [
+                [
+                    'name'        => 'queue',
+                    'source'      => __DIR__ . '/../publish/queue.php',
+                    'destination' => dirname(__DIR__, 4) . '/config/queue.php',
+                ]
+            ],
+        ];
     }
 }

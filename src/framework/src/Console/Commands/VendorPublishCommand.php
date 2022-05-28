@@ -13,6 +13,7 @@ declare (strict_types=1);
 
 namespace Max\Framework\Console\Commands;
 
+use Max\Aop\Scanner;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -28,27 +29,14 @@ class VendorPublishCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $path      = getcwd();
-        $installed = json_decode(file_get_contents($path . '/vendor/composer/installed.json'), true);
-        $installed = $installed['packages'] ?? $installed;
-        $config    = [];
-        foreach ($installed as $package) {
-            if (isset($package['extra']['max']['config'])) {
-                $provider       = $package['extra']['max']['config'];
-                $configProvider = new $provider;
-                if (method_exists($configProvider, '__invoke')) {
-                    if (is_array($configItem = $configProvider())) {
-                        $output->writeln('<info>[DEBUG]</info> Package `' . $provider . '` metadata cached.');
-                        $config = array_merge_recursive($config, $configItem);
-                    }
-                }
-                if (method_exists($configProvider, 'publish')) {
-                    try {
-                        $configProvider->publish();
-                        $output->writeln('<info>[DEBUG]</info> Package `' . $provider . '` publish successfully.');
-                    } catch (Throwable $throwable) {
-                        $output->writeln('<comment>[WAGNING]</comment> Package `' . $provider . '` publish failed.' . $throwable->getMessage());
-                    }
+        $path   = getcwd();
+        $config = Scanner::scanConfig($path . '/vendor/composer/installed.json');
+        if (isset($config['publish'])) {
+            foreach ($config['publish'] as $publish) {
+                $destination = $publish['destination'];
+                if (!file_exists($destination)) {
+                    copy($publish['source'], $publish['destination']);
+                    $output->writeln('<info>[DEBUG]</info> Package `' . $publish['name'] . '` config file published.');
                 }
             }
         }

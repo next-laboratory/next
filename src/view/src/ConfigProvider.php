@@ -15,20 +15,16 @@ namespace Max\View;
 
 class ConfigProvider
 {
-    /**
-     * @return array
-     */
     public function __invoke(): array
     {
-        return [];
-    }
-
-    /**
-     * publish
-     */
-    public function publish()
-    {
-        $to = dirname(__DIR__, 4) . '/config/view.php';
-        file_exists($to) || copy(__DIR__ . '/../publish/view.php', $to);
+        return [
+            'publish' => [
+                [
+                    'name'        => 'view',
+                    'source'      => __DIR__ . '/../publish/view.php',
+                    'destination' => dirname(__DIR__, 4) . '/config/view.php',
+                ],
+            ],
+        ];
     }
 }

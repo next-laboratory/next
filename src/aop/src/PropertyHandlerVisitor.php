@@ -31,6 +31,7 @@ use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\TraitUse;
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\ParserFactory;
+use ReflectionException;
 use ReflectionNamedType;
 use ReflectionUnionType;
 
@@ -47,6 +48,9 @@ class PropertyHandlerVisitor extends NodeVisitorAbstract
         }
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function leaveNode(Node $node)
     {
         if ($node instanceof Class_) {

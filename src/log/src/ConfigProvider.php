@@ -15,24 +15,19 @@ namespace Max\Log;
 
 class ConfigProvider
 {
-    /**
-     * @return array
-     */
     public function __invoke(): array
     {
         return [
             'bindings' => [
                 'Psr\Log\LoggerInterface' => 'Max\Log\Logger',
             ],
+            'publish'  => [
+                [
+                    'name'        => 'logger',
+                    'source'      => __DIR__ . '/../publish/logger.php',
+                    'destination' => dirname(__DIR__, 4) . '/config/logger.php',
+                ]
+            ],
         ];
-    }
-
-    /**
-     * publish
-     */
-    public function publish()
-    {
-        $to = dirname(__DIR__, 4) . '/config/logger.php';
-        file_exists($to) || copy(__DIR__ . '/../publish/logger.php', $to);
     }
 }

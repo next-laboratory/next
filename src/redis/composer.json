@@ -1,19 +1,24 @@
 {
-  "name": "max/redis",
-  "autoload": {
-    "psr-4": {
-      "Max\\Redis\\": "src/"
+    "name": "max/redis",
+    "autoload": {
+        "psr-4": {
+            "Max\\Redis\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "chengyao",
+            "email": "987861463@qq.com"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "max/config": "dev-master",
+        "max/pool": "dev-master"
+    },
+    "extra": {
+        "max": {
+            "config": "Max\\Queue\\ConfigProvider"
+        }
     }
-  },
-  "authors": [
-    {
-      "name": "chengyao",
-      "email": "987861463@qq.com"
-    }
-  ],
-  "require": {
-    "php": "^8.0",
-    "max/config": "dev-master",
-    "max/pool": "dev-master"
-  }
 }

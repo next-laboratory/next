@@ -15,9 +15,6 @@ namespace Max\Swoole;
 
 class ConfigProvider
 {
-    /**
-     * @return array
-     */
     public function __invoke(): array
     {
         return [
@@ -25,16 +22,14 @@ class ConfigProvider
                 'Psr\Http\Message\ServerRequestInterface' => 'Max\Swoole\Http\ServerRequest',
                 'Psr\Http\Message\ResponseInterface'      => 'Max\Swoole\Http\Response',
                 'Psr\Http\Server\RequestHandlerInterface' => 'Max\Swoole\Http\RequestHandler',
-            ]
+            ],
+            'publish'  => [
+                [
+                    'name'        => 'swoole',
+                    'source'      => __DIR__ . '/../publish/swoole.php',
+                    'destination' => dirname(__DIR__, 4) . '/config/swoole.php',
+                ]
+            ],
         ];
-    }
-
-    /**
-     * publish
-     */
-    public function publish()
-    {
-        $to = dirname(__DIR__, 4) . '/config/swoole.php';
-        file_exists($to) || copy(__DIR__ . '/../publish/swoole.php', $to);
     }
 }

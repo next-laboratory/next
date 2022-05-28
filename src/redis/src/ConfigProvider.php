@@ -11,18 +11,18 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Max\Database;
+namespace Max\Redis;
 
 class ConfigProvider
 {
-    public function __invoke(): array
+    public function __invoke()
     {
         return [
             'publish' => [
                 [
-                    'name'        => 'database',
-                    'source'      => __DIR__ . '/../publish/database.php',
-                    'destination' => dirname(__DIR__, 4) . '/config/database.php',
+                    'name'        => 'redis',
+                    'source'      => __DIR__ . '/../publish/redis.php',
+                    'destination' => dirname(__DIR__, 4) . '/config/redis.php',
                 ]
             ],
         ];

@@ -25,15 +25,13 @@ class ConfigProvider
                 'Psr\SimpleCache\CacheInterface'     => 'Max\Cache\Cache',
                 'Max\Cache\Contracts\CacheInterface' => 'Max\Cache\Cache',
             ],
+            'publish'  => [
+                [
+                    'name'        => 'cache',
+                    'source'      => __DIR__ . '/../publish/cache.php',
+                    'destination' => dirname(__DIR__, 4) . '/config/cache.php',
+                ]
+            ],
         ];
-    }
-
-    /**
-     * publish
-     */
-    public function publish()
-    {
-        $to = dirname(__DIR__, 4) . '/config/cache.php';
-        file_exists($to) || copy(__DIR__ . '/../publish/cache.php', $to);
     }
 }

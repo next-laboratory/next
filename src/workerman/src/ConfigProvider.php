@@ -15,20 +15,16 @@ namespace Max\Workerman;
 
 class ConfigProvider
 {
-    /**
-     * @return array
-     */
     public function __invoke(): array
     {
-        return [];
-    }
-
-    /**
-     * publish
-     */
-    public function publish()
-    {
-        $to = dirname(__DIR__, 4) . '/config/workerman.php';
-        file_exists($to) || copy(__DIR__ . '/../publish/workerman.php', $to);
+        return [
+            'publish' => [
+                [
+                    'name'        => 'workerman',
+                    'source'      => __DIR__ . '/../publish/workerman.php',
+                    'destination' => dirname(__DIR__, 4) . '/config/workerman.php',
+                ],
+            ],
+        ];
     }
 }

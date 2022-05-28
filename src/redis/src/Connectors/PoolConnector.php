@@ -39,6 +39,9 @@ class PoolConnector implements ConnectorInterface
         );
     }
 
+    /**
+     * @throws \RedisException
+     */
     public function get(): \Redis
     {
         try {
