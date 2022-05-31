@@ -22,14 +22,19 @@ use ReflectionException;
 
 trait ProxyHandler
 {
+    protected static array $__aspectCache = [];
+
     /**
      * @throws ReflectionException
      */
     protected function __callViaProxy(string $method, Closure $callback, array $parameters): mixed
     {
+        if (!isset(static::$__aspectCache[$method])) {
+            static::$__aspectCache[$method] = array_reverse([...AspectCollector::getClassAspects(__CLASS__), ...AspectCollector::getMethodAspects(__CLASS__, $method)]);
+        }
         /** @var AspectInterface $aspect */
         $pipeline = array_reduce(
-            array_reverse([...AspectCollector::getClassAspects(__CLASS__), ...AspectCollector::getMethodAspects(__CLASS__, $method)]),
+            self::$__aspectCache[$method],
             fn($stack, $aspect) => fn(JoinPoint $joinPoint) => $aspect->process($joinPoint, $stack),
             fn(JoinPoint $joinPoint) => $joinPoint->process()
         );
