@@ -175,19 +175,16 @@ class Container implements ContainerInterface
             return $this->callFunc($callable, $arguments);
         }
         [$id, $method] = $callable;
-        $id               = is_object($id) ? $id::class : $this->getBinding($id);
-        $reflectionMethod = ReflectionManager::reflectMethod($id, $method);
+        $isObject         = is_object($id);
+        $reflectionMethod = ReflectionManager::reflectMethod($isObject ? $id::class : $this->getBinding($id), $method);
         if (false === $reflectionMethod->isAbstract()) {
-            $funcArgs = $this->getFuncArgs($reflectionMethod, $arguments);
             if (!$reflectionMethod->isPublic()) {
                 $reflectionMethod->setAccessible(true);
             }
-            if ($reflectionMethod->isStatic()) {
-                return $reflectionMethod->invokeArgs(null, $funcArgs);
-            }
+
             return $reflectionMethod->invokeArgs(
-                is_object($id) ? $id : $this->make($id),
-                $funcArgs
+                $reflectionMethod->isStatic() ? null : ($isObject ? $id : $this->make($id)),
+                $this->getFuncArgs($reflectionMethod, $arguments)
             );
         }
         throw new BadMethodCallException('Unable to call method: ' . $method);
