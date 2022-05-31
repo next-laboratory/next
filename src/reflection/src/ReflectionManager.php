@@ -45,6 +45,15 @@ final class ReflectionManager
     }
 
     /**
+     * @return ReflectionMethod[]
+     * @throws ReflectionException
+     */
+    public static function reflectMethods(string $class, ?int $filter = null): array
+    {
+        return self::reflectClass($class)->getMethods($filter);
+    }
+
+    /**
      * @throws ReflectionException
      */
     public static function reflectProperty(string $class, string $property): ReflectionProperty

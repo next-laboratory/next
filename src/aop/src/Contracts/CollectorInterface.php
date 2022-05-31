@@ -13,10 +13,6 @@ declare(strict_types=1);
 
 namespace Max\Aop\Contracts;
 
-use ReflectionClass;
-use ReflectionMethod;
-use ReflectionProperty;
-
 interface CollectorInterface
 {
     public static function collectClass(string $class, object $attribute): void;

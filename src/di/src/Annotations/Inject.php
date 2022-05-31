@@ -30,19 +30,14 @@ class Inject implements PropertyAttribute
     {
     }
 
-    /**
-     * @param object $object
-     * @param string $property
-     *
-     * @return void
-     */
     public function handle(object $object, string $property): void
     {
         try {
             $container          = Context::getContainer();
             $reflectionProperty = ReflectionManager::reflectProperty($object::class, $property);
             if ((!is_null($type = $reflectionProperty->getType()) && $type = $type->getName()) || $type = $this->id) {
-                $container->setValue($object, $reflectionProperty, $container->make($type));
+                $reflectionProperty->setAccessible(true);
+                $reflectionProperty->setValue($object, $container->make($type));
             }
         } catch (Throwable $throwable) {
             throw new PropertyHandleException('Property assign failed. ' . $throwable->getMessage());

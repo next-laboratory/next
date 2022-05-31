@@ -14,11 +14,11 @@ declare(strict_types=1);
 namespace Max\Config\Annotations;
 
 use Attribute;
-use Max\Aop\Exceptions\PropertyHandleException;
-use Max\Config\Repository;
-use Max\Di\Context;
 use Max\Aop\Contracts\PropertyAttribute;
-use Max\Di\ReflectionManager;
+use Max\Aop\Exceptions\PropertyHandleException;
+use Max\Config\Contracts\ConfigInterface;
+use Max\Di\Context;
+use Max\Reflection\ReflectionManager;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Config implements PropertyAttribute
@@ -39,7 +39,8 @@ class Config implements PropertyAttribute
         try {
             $container          = Context::getContainer();
             $reflectionProperty = ReflectionManager::reflectProperty($object::class, $property);
-            $container->setValue($object, $reflectionProperty, $container->make(Repository::class)->get($this->key, $this->default));
+            $reflectionProperty->setAccessible(true);
+            $reflectionProperty->setValue($object, $container->make(ConfigInterface::class)->get($this->key, $this->default));
         } catch (\Throwable $throwable) {
             throw new PropertyHandleException('Property assign failed. ' . $throwable->getMessage());
         }
