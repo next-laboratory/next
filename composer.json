@@ -20,8 +20,6 @@
         "max/utils": "dev-master",
         "max/reflection": "dev-master",
         "nikic/php-parser": "^4.13",
-        "symfony/polyfill-php80": "^1.25",
-        "symfony/polyfill-php81": "^1.25",
         "symfony/finder": "^6.0"
     }
 }
