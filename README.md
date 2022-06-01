@@ -25,6 +25,12 @@ $loader = require_once __DIR__ . '/vendor/autoload.php';
 ]));
 ```
 
+* cache      是否缓存，true时下次启动不会重新生成代理类
+* paths      注解扫描路径
+* collectors 用户自定义注解收集器
+* runtimeDir 运行时，生成的代理类和代理类地图会被缓存到这里
+
+
 ## 编写切面类，实现AspectInterface接口
 
 ```php
@@ -33,8 +39,8 @@ $loader = require_once __DIR__ . '/vendor/autoload.php';
 namespace App\aspects;
 
 use Closure;
-use Max\Di\Aop\JoinPoint;
-use Max\Di\Contracts\AspectInterface;
+use Max\Aop\JoinPoint;
+use Max\Aop\Contracts\AspectInterface;
 
 #[\Attribute(\Attribute::TARGET_METHOD)]
 class Round implements AspectInterface
@@ -58,7 +64,7 @@ class Round implements AspectInterface
 namespace app\controller;
 
 use App\aspects\Round;
-use Max\Di\Annotation\Inject;
+use Max\Di\Annotations\Inject;
 use support\Request;
 
 class Index
