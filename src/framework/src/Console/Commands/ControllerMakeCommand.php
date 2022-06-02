@@ -38,13 +38,12 @@ class ControllerMakeCommand extends Command
         [$namespace, $controller] = $this->parse($controller);
         $controllerPath = base_path('app/Http/Controllers/' . str_replace('\\', '/', $namespace) . '/');
         $controllerFile = $controllerPath . $controller . 'Controller.php';
-        $fileSystem     = new Filesystem();
-        if ($fileSystem->exists($controllerFile)) {
+        if (Filesystem::exists($controllerFile)) {
             $output->writeln('<comment>[WARN]</comment> 控制器已经存在!');
             return 1;
         }
-        $fileSystem->exists($controllerPath) || $fileSystem->makeDirectory($controllerPath, 0777, true);
-        $fileSystem->put($controllerFile, str_replace(['{{namespace}}', '{{class}}', '{{path}}'], ['App\\Http\\Controllers' . $namespace, $controller . 'Controller', strtolower($controller)], $fileSystem->get($stubFile)));
+        Filesystem::exists($controllerPath) || Filesystem::makeDirectory($controllerPath, 0777, true);
+        Filesystem::put($controllerFile, str_replace(['{{namespace}}', '{{class}}', '{{path}}'], ['App\\Http\\Controllers' . $namespace, $controller . 'Controller', strtolower($controller)], Filesystem::get($stubFile)));
         $output->writeln("<info>[INFO]</info> 控制器App\\Http\\Controllers{$namespace}\\{$controller}Controller创建成功！");
 
         return 1;
