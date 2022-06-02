@@ -214,15 +214,15 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param ReflectionFunctionAbstract $reflectionMethod 反射方法
-     * @param array                      $arguments        参数列表，支持关联数组，会自动按照变量名传入
+     * @param ReflectionFunctionAbstract $reflectionFunction 反射方法
+     * @param array                      $arguments          参数列表，支持关联数组，会自动按照变量名传入
      *
      * @throws ContainerExceptionInterface|ReflectionException
      */
-    public function getFuncArgs(ReflectionFunctionAbstract $reflectionMethod, array $arguments = []): array
+    public function getFuncArgs(ReflectionFunctionAbstract $reflectionFunction, array $arguments = []): array
     {
         $funcArgs = [];
-        foreach ($reflectionMethod->getParameters() as $parameter) {
+        foreach ($reflectionFunction->getParameters() as $parameter) {
             $name = $parameter->getName();
             if (array_key_exists($name, $arguments)) {
                 $funcArgs[] = $arguments[$name];
