@@ -3,14 +3,11 @@
 namespace Max\Workerman\Http;
 
 use Max\Di\Context;
-use Max\Http\Message\Cookie;
 use Max\Http\Message\ServerRequest;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 use Workerman\Connection\TcpConnection;
 use Workerman\Protocols\Http\Request;
-use Workerman\Protocols\Http\Response;
 
 class Server
 {

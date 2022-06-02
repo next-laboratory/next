@@ -4,14 +4,10 @@ namespace Max\Swagger;
 
 use Max\Swagger\Api\Api;
 use Max\Utils\Classes;
+use ReflectionException;
 
 class Swagger
 {
-    /**
-     * @param array  $scanDir
-     * @param string $version
-     * @param string $output
-     */
     public function __construct(
         protected array  $scanDir = [],
         protected string $version = '',
@@ -47,9 +43,9 @@ class Swagger
     /**
      * 生成json
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
-    public function generateJson()
+    public function generateJson(): void
     {
         $classes = Classes::findInDirs($this->scanDir);
         $paths = [];
