@@ -29,7 +29,6 @@ final class Scanner
 {
     protected static ClassLoader $loader;
     protected static AstManager  $astManager;
-    protected static Filesystem  $filesystem;
     protected static string      $runtimeDir;
     protected static string      $proxyMap;
     protected static array       $classMap    = [];
@@ -43,14 +42,13 @@ final class Scanner
     {
         if (!self::$initialized) {
             self::$loader     = $loader;
-            $filesystem       = self::$filesystem = new Filesystem();
             self::$runtimeDir = $config->getRuntimeDir() . '/aop/';
-            $filesystem->isDirectory(self::$runtimeDir) || $filesystem->makeDirectory(self::$runtimeDir, 0755, true);
+            Filesystem::isDirectory(self::$runtimeDir) || Filesystem::makeDirectory(self::$runtimeDir, 0755, true);
             self::$astManager = new AstManager();
             self::$classMap   = self::scanDir($config->getPaths());
             self::$proxyMap   = $proxyMap = self::$runtimeDir . 'proxy.php';
-            if (!$config->isCache() || !$filesystem->exists($proxyMap)) {
-                $filesystem->exists($proxyMap) && $filesystem->delete($proxyMap);
+            if (!$config->isCache() || !Filesystem::exists($proxyMap)) {
+                Filesystem::exists($proxyMap) && Filesystem::delete($proxyMap);
                 if (($pid = pcntl_fork()) == -1) {
                     throw new ProcessException('Process fork failed.');
                 }
@@ -85,19 +83,19 @@ final class Scanner
      */
     protected static function getProxyMap(array $collectors): array
     {
-        if (!self::$filesystem->exists(self::$proxyMap)) {
+        if (!Filesystem::exists(self::$proxyMap)) {
             $proxyDir = self::$runtimeDir . 'proxy/';
-            self::$filesystem->makeDirectory($proxyDir, 0755, true, true);
-            self::$filesystem->cleanDirectory($proxyDir);
+            Filesystem::makeDirectory($proxyDir, 0755, true, true);
+            Filesystem::cleanDirectory($proxyDir);
             self::collect($collectors);
             $collectedClasses = array_unique(array_merge(AspectCollector::getCollectedClasses(), PropertyAttributeCollector::getCollectedClasses()));
             $scanMap          = [];
             foreach ($collectedClasses as $class) {
                 $proxyPath = $proxyDir . str_replace('\\', '_', $class) . '_Proxy.php';
-                self::$filesystem->put($proxyPath, self::generateProxyClass($class, self::$classMap[$class]));
+                Filesystem::put($proxyPath, self::generateProxyClass($class, self::$classMap[$class]));
                 $scanMap[$class] = $proxyPath;
             }
-            self::$filesystem->put(self::$proxyMap, sprintf("<?php \nreturn %s;", var_export($scanMap, true)));
+            Filesystem::put(self::$proxyMap, sprintf("<?php \nreturn %s;", var_export($scanMap, true)));
             exit;
         }
         return include self::$proxyMap;
@@ -146,10 +144,23 @@ final class Scanner
             }
             // 收集方法注解
             foreach ($reflectionClass->getMethods() as $reflectionMethod) {
+                $method = $reflectionMethod->getName();
                 foreach ($reflectionMethod->getAttributes() as $attribute) {
                     try {
                         foreach ($collectors as $collector) {
-                            $collector::collectMethod($class, $reflectionMethod->getName(), $attribute->newInstance());
+                            $collector::collectMethod($class, $method, $attribute->newInstance());
+                        }
+                    } catch (Throwable $throwable) {
+                        echo '[NOTICE] ' . $class . ': ' . $throwable->getMessage() . PHP_EOL;
+                    }
+                }
+                // 收集该方法的参数的注解
+                foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
+                    try {
+                        foreach ($reflectionParameter->getAttributes() as $attribute) {
+                            foreach ($collectors as $collector) {
+                                $collector::collectorMethodParameter($class, $method, $reflectionParameter->getName(), $attribute->newInstance());
+                            }
                         }
                     } catch (Throwable $throwable) {
                         echo '[NOTICE] ' . $class . ': ' . $throwable->getMessage() . PHP_EOL;
