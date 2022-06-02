@@ -44,7 +44,7 @@ class Arr
         foreach ($array as $values) {
             if ($values instanceof Collection) {
                 $values = $values->all();
-            } elseif (!is_array($values)) {
+            } else if (!is_array($values)) {
                 continue;
             }
             $results[] = $values;
@@ -174,7 +174,7 @@ class Arr
             $item = $item instanceof Collection ? $item->all() : $item;
             if (!is_array($item)) {
                 $result[] = $item;
-            } elseif ($depth === 1) {
+            } else if ($depth === 1) {
                 $result = array_merge($result, array_values($item));
             } else {
                 $result = array_merge($result, static::flatten($item, $depth - 1));
@@ -423,7 +423,7 @@ class Arr
             shuffle($array);
         } else {
             srand($seed);
-            usort($array, function () {
+            usort($array, function() {
                 return rand(-1, 1);
             });
         }
