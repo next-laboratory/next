@@ -30,15 +30,14 @@ if (false === function_exists('call')) {
     /**
      * 容器调用方法
      *
-     * @param array|Closure|string $callback  数组、闭包、函数名
-     * @param array                $arguments 给方法传递的参数列表
+     * @param callable $callback  数组、闭包、函数名
+     * @param array    $arguments 给方法传递的参数列表
      *
      * @return mixed
      * @throws ContainerExceptionInterface
-     * @throws NotFoundException
      * @throws ReflectionException
      */
-    function call(array|Closure|string $callback, array $arguments = []): mixed
+    function call(callable $callback, array $arguments = [])
     {
         return container()->call($callback, $arguments);
     }
@@ -46,30 +45,11 @@ if (false === function_exists('call')) {
 
 if (false === function_exists('make')) {
     /**
-     * @param string $id
-     * @param array  $parameters
-     *
-     * @return mixed
      * @throws NotFoundException
      * @throws ReflectionException|ContainerExceptionInterface
      */
-    function make(string $id, array $parameters = []): mixed
+    function make(string $id, array $parameters = []): object
     {
         return container()->make($id, $parameters);
-    }
-}
-
-if (false === function_exists('resolve')) {
-    /**
-     * @param       $id
-     * @param array $arguments
-     *
-     * @return object
-     * @throws NotFoundException
-     * @throws ReflectionException|ContainerExceptionInterface
-     */
-    function resolve($id, array $arguments = []): object
-    {
-        return container()->resolve($id, $arguments);
     }
 }
