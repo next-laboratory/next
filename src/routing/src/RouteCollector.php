@@ -66,7 +66,8 @@ class RouteCollector
     public function resolve(ServerRequestInterface $request): Route
     {
         $path          = '/' . trim($request->getUri()->getPath(), '/');
-        $map           = $this->routes[$request->getMethod()] ?? throw new MethodNotAllowedException('Method not allowed: ' . $method, 405);
+        $method        = $request->getMethod();
+        $map           = $this->routes[$method] ?? throw new MethodNotAllowedException('Method not allowed: ' . $method, 405);
         $routes        = $map[''] ?? [];
         $matchedDomain = '';
         foreach ($map as $domain => $item) {
