@@ -1,5 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of the Max package.
+ *
+ * (c) Cheng Yao <987861463@qq.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Max\HttpServer\ResponseEmitter;
 
 use Max\Http\Message\Cookie;
@@ -12,11 +23,11 @@ class WorkermanResponseEmitter implements ResponseEmitterInterface
 {
     /**
      * @param ResponseInterface $psrResponse
-     * @param                   $tcpConnection
+     * @param TcpConnection     $sender
      *
      * @return void
      */
-    public function emit(ResponseInterface $psrResponse, $tcpConnection = null): void
+    public function emit(ResponseInterface $psrResponse, $sender = null): void
     {
         $response = new Response($psrResponse->getStatusCode());
         foreach ($psrResponse->getHeaders() as $name => $values) {
@@ -42,6 +53,6 @@ class WorkermanResponseEmitter implements ResponseEmitterInterface
         $body    = $psrResponse->getBody();
         $content = (string)$body?->getContents();
         $body?->close();
-        $tcpConnection->send($response->withBody($content));
+        $sender->send($response->withBody($content));
     }
 }

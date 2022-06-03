@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Max\HttpServer;
 
-use Max\Http\Exceptions\InvalidRequestHandlerException;
+use Max\HttpServer\Exceptions\InvalidMiddlewareException;
 use Max\Routing\Route;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -35,7 +35,6 @@ class RequestHandler implements RequestHandlerInterface
 
     /**
      * @throws ContainerExceptionInterface
-     * @throws InvalidRequestHandlerException
      * @throws ReflectionException
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
@@ -60,6 +59,13 @@ class RequestHandler implements RequestHandlerInterface
         return $this->container->call($this->parseAction(), $params);
     }
 
+    /**
+     * 将路由注册的句柄解析为 callable
+     *
+     * @return callable
+     * @throws ContainerExceptionInterface
+     * @throws ReflectionException
+     */
     protected function parseAction(): callable
     {
         $action = $this->route->getAction();
@@ -74,7 +80,12 @@ class RequestHandler implements RequestHandlerInterface
     }
 
     /**
-     * @throws InvalidRequestHandlerException
+     * @param string                 $middleware
+     * @param ServerRequestInterface $request
+     *
+     * @return ResponseInterface
+     * @throws ContainerExceptionInterface
+     * @throws ReflectionException
      */
     protected function handleMiddleware(string $middleware, ServerRequestInterface $request): ResponseInterface
     {
@@ -84,6 +95,6 @@ class RequestHandler implements RequestHandlerInterface
             return $handler->process($request, $this);
         }
 
-        throw new InvalidRequestHandlerException(sprintf('Middleware `%s must implement the `Psr\Http\Server\MiddlewareInterface` interface.', $middleware));
+        throw new InvalidMiddlewareException(sprintf('Middleware `%s must implement the `Psr\Http\Server\MiddlewareInterface` interface.', $middleware));
     }
 }

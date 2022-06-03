@@ -1,15 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of the Max package.
+ *
+ * (c) Cheng Yao <987861463@qq.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Max\HttpServer;
 
 use Max\Http\Message\ServerRequest;
 use Max\HttpServer\Contracts\ExceptionHandlerInterface;
+use Max\HttpServer\Events\OnRequest;
 use Max\HttpServer\ResponseEmitter\FPMResponseEmitter;
 use Max\HttpServer\ResponseEmitter\SwooleResponseEmitter;
 use Max\HttpServer\ResponseEmitter\WorkermanResponseEmitter;
 use Max\Routing\RouteCollector;
 use Max\Routing\Router;
 use Psr\Container\ContainerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Swoole\Http\Request;
@@ -22,21 +35,22 @@ class Kernel
     /**
      * 全局中间件
      */
-    protected array  $middlewares = [];
-    protected Router $router;
+    protected array $middlewares = [];
 
     /**
-     * @param RouteCollector            $routeCollector 路由收集器
-     * @param ContainerInterface        $container
-     * @param ExceptionHandlerInterface $exceptionHandler
+     * @param RouteCollector            $routeCollector   路由收集器
+     * @param ContainerInterface        $container        容器
+     * @param ExceptionHandlerInterface $exceptionHandler 错误处理实例
+     * @param ?EventDispatcherInterface $eventDispatcher  事件调度器
      */
     final public function __construct(
         protected RouteCollector            $routeCollector,
         protected ContainerInterface        $container,
         protected ExceptionHandlerInterface $exceptionHandler,
+        protected ?EventDispatcherInterface $eventDispatcher = null,
     )
     {
-        $this->map($this->router = new Router([], $routeCollector));
+        $this->map(new Router([], $routeCollector));
     }
 
     /**
@@ -94,9 +108,12 @@ class Kernel
         try {
             $route       = $this->routeCollector->resolve($serverRequest);
             $middlewares = array_merge($this->middlewares, $route->getMiddlewares());
-            return (new RequestHandler($this->container, $route, $middlewares))->handle($serverRequest);
+            $response    = (new RequestHandler($this->container, $route, $middlewares))->handle($serverRequest);
         } catch (\Throwable $throwable) {
-            return $this->exceptionHandler->handleException($throwable, $serverRequest);
+            $response = $this->exceptionHandler->handleException($throwable, $serverRequest);
+        } finally {
+            $this->eventDispatcher?->dispatch(new OnRequest($serverRequest, $response));
+            return $response;
         }
     }
 }
