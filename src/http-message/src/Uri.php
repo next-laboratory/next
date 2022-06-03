@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Max\HttpMessage;
 
 use InvalidArgumentException;
-use Psr\HttpMessage\UriInterface;
+use Psr\Http\Message\UriInterface;
 
 class Uri implements UriInterface
 {

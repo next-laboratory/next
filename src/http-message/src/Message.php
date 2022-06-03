@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Max\HttpMessage;
 
-use Psr\HttpMessage\MessageInterface;
-use Psr\HttpMessage\StreamInterface;
+use Psr\Http\Message\MessageInterface;
+use Psr\Http\Message\StreamInterface;
 
 class Message implements MessageInterface
 {

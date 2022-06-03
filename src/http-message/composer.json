@@ -14,5 +14,8 @@
             "email": "bigyao@139.com"
         }
     ],
-    "require": {}
+    "require": {
+        "php": "^8.0",
+        "psr/http-message": "^1.0"
+    }
 }

@@ -15,8 +15,8 @@ namespace Max\HttpMessage;
 
 use Exception;
 use Max\HttpMessage\Stream\FileStream;
-use Psr\HttpMessage\StreamInterface;
-use Psr\HttpMessage\UploadedFileInterface;
+use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UploadedFileInterface;
 use SplFileInfo;
 
 class UploadedFile implements UploadedFileInterface

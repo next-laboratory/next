@@ -18,7 +18,7 @@ use Max\HttpMessage\Bags\InputBag;
 use Max\HttpMessage\Bags\ParameterBag;
 use Max\HttpMessage\Bags\ServerBag;
 use Max\HttpMessage\Stream\StringStream;
-use Psr\HttpMessage\ServerRequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use function strpos;
 
 class ServerRequest extends Request implements ServerRequestInterface

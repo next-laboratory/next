@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Max\HttpServer;
 
-use Max\Http\Message\ServerRequest;
+use Max\HttpMessage\ServerRequest;
 use Max\HttpServer\Contracts\ExceptionHandlerInterface;
 use Max\HttpServer\Events\OnRequest;
 use Max\HttpServer\ResponseEmitter\FPMResponseEmitter;

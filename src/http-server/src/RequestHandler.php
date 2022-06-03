@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Max\HttpServer;
 
+use Max\HttpMessage\Response;
 use Max\HttpServer\Exceptions\InvalidMiddlewareException;
 use Max\Routing\Route;
 use Psr\Container\ContainerExceptionInterface;
@@ -52,7 +53,7 @@ class RequestHandler implements RequestHandlerInterface
     protected function handleRequest(ServerRequestInterface $request): ResponseInterface
     {
         $params   = $this->route->getParameters();
-        $params[] = Context::create($request);
+        $params[] = Context::create($request, new Response());
 
         return $this->container->call($this->parseAction(), $params);
     }

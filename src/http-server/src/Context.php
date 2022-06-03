@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Max\HttpServer;
 
 use Max\Utils\Arr;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class Context
@@ -21,17 +22,14 @@ class Context
     use Input, Writer;
 
     public ServerRequestInterface $request;
+    public ResponseInterface      $response;
     protected array               $container = [];
 
-    /**
-     * @param ServerRequestInterface $request
-     *
-     * @return static
-     */
-    public static function create(ServerRequestInterface $request): static
+    public static function create(ServerRequestInterface $request, ResponseInterface $response): static
     {
-        $context          = new static();
-        $context->request = $request;
+        $context           = new static();
+        $context->request  = $request;
+        $context->response = $response;
         return $context;
     }
 

@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Max\HttpServer;
 
 use InvalidArgumentException;
-use Max\Http\Message\UploadedFile;
+use Max\HttpMessage\UploadedFile;
 
 trait Input
 {

@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Max\HttpMessage;
 
 use Max\HttpMessage\Stream\StringStream;
-use Psr\HttpMessage\ResponseInterface;
-use Psr\HttpMessage\StreamInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 
 class Response extends Message implements ResponseInterface
 {

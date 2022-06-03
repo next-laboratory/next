@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Max\HttpMessage\Stream;
 
 use Exception;
-use Psr\HttpMessage\StreamInterface;
+use Psr\Http\Message\StreamInterface;
 use function fclose;
 use function feof;
 use function fopen;

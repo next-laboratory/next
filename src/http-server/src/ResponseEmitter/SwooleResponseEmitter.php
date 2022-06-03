@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Max\HttpServer\ResponseEmitter;
 
-use Max\Http\Message\Cookie;
-use Max\Http\Message\Stream\FileStream;
-use Max\Http\Message\Stream\StringStream;
+use Max\HttpMessage\Cookie;
+use Max\HttpMessage\Stream\FileStream;
+use Max\HttpMessage\Stream\StringStream;
 use Max\HttpServer\Contracts\ResponseEmitterInterface;
 use Psr\Http\Message\ResponseInterface;
 use Swoole\Http\Response;
