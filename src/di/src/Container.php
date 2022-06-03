@@ -248,7 +248,7 @@ class Container implements ContainerInterface
                         try {
                             $funcArgs[] = $this->make($typeName);
                         } catch (Throwable $throwable) {
-                            $funcArgs[] = $parameter->isOptional() ? $parameter->getDefaultValue() : null;
+                            $funcArgs[] = $this->getParameterDefaultValue($parameter);
                         }
                     }
                 }
