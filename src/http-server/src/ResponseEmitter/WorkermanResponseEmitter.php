@@ -11,9 +11,12 @@ use Workerman\Protocols\Http\Response;
 class WorkermanResponseEmitter implements ResponseEmitterInterface
 {
     /**
-     * @param TcpConnection $tcpConnection
+     * @param ResponseInterface $psrResponse
+     * @param                   $tcpConnection
+     *
+     * @return void
      */
-    public function emit(ResponseInterface $psrResponse, $tcpConnection = null)
+    public function emit(ResponseInterface $psrResponse, $tcpConnection = null): void
     {
         $response = new Response($psrResponse->getStatusCode());
         foreach ($psrResponse->getHeaders() as $name => $values) {

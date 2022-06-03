@@ -12,6 +12,10 @@ use Throwable;
 class ExceptionHandler implements ExceptionHandlerInterface
 {
     /**
+     * @param Throwable              $throwable
+     * @param ServerRequestInterface $request
+     *
+     * @return ResponseInterface
      * @throws Throwable
      */
     public function handleException(Throwable $throwable, ServerRequestInterface $request): ResponseInterface
@@ -21,13 +25,22 @@ class ExceptionHandler implements ExceptionHandlerInterface
         return $this->renderException($throwable, $request);
     }
 
+    /**
+     * @param Throwable              $throwable
+     * @param ServerRequestInterface $request
+     *
+     * @return void
+     */
     protected function reportException(Throwable $throwable, ServerRequestInterface $request): void
     {
         var_dump($throwable, $request);
     }
 
     /**
-     * @throws Throwable
+     * @param Throwable              $throwable
+     * @param ServerRequestInterface $request
+     *
+     * @return ResponseInterface
      */
     protected function renderException(Throwable $throwable, ServerRequestInterface $request): ResponseInterface
     {

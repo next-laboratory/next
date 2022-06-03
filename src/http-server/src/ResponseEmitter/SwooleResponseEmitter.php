@@ -12,9 +12,12 @@ use Swoole\Http\Response;
 class SwooleResponseEmitter implements ResponseEmitterInterface
 {
     /**
-     * @param Response $sender
+     * @param ResponseInterface $psrResponse
+     * @param                   $sender
+     *
+     * @return void
      */
-    public function emit(ResponseInterface $psrResponse, $sender = null)
+    public function emit(ResponseInterface $psrResponse, $sender = null): void
     {
         $sender->status($psrResponse->getStatusCode());
         foreach ($psrResponse->getHeader('Set-Cookie') as $str) {
@@ -39,6 +42,12 @@ class SwooleResponseEmitter implements ResponseEmitterInterface
         $body?->close();
     }
 
+    /**
+     * @param Cookie   $cookie
+     * @param Response $response
+     *
+     * @return void
+     */
     protected function sendCookie(Cookie $cookie, Response $response): void
     {
         $response->cookie(

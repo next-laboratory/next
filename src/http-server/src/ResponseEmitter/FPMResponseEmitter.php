@@ -7,7 +7,13 @@ use Psr\Http\Message\ResponseInterface;
 
 class FPMResponseEmitter implements ResponseEmitterInterface
 {
-    public function emit(ResponseInterface $psrResponse, $sender = null)
+    /**
+     * @param ResponseInterface $psrResponse
+     * @param                   $sender
+     *
+     * @return void
+     */
+    public function emit(ResponseInterface $psrResponse, $sender = null): void
     {
         foreach ($psrResponse->getHeaders() as $name => $value) {
             header($name, implode(', ', $value));

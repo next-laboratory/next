@@ -20,6 +20,7 @@
             "Max\\Event\\": "src/event/src",
             "Max\\Framework\\": "src/framework/src",
             "Max\\Http\\": "src/http/src",
+            "Max\\HttpServer\\": "src/http-server/src",
             "Max\\Log\\": "src/log/src",
             "Max\\Queue\\": "src/queue/src",
             "Max\\Routing\\": "src/routing/src",

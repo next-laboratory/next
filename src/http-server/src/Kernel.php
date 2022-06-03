@@ -25,6 +25,11 @@ class Kernel
     protected array  $middlewares = [];
     protected Router $router;
 
+    /**
+     * @param RouteCollector            $routeCollector 路由收集器
+     * @param ContainerInterface        $container
+     * @param ExceptionHandlerInterface $exceptionHandler
+     */
     final public function __construct(
         protected RouteCollector            $routeCollector,
         protected ContainerInterface        $container,
@@ -34,10 +39,23 @@ class Kernel
         $this->map($this->router = new Router([], $routeCollector));
     }
 
+    /**
+     * 路由注册
+     *
+     * @param Router $router
+     *
+     * @return void
+     */
     protected function map(Router $router): void
     {
     }
 
+    /**
+     * @param Request  $request
+     * @param Response $response
+     *
+     * @return void
+     */
     public function handleSwooleRequest(Request $request, Response $response): void
     {
         (new SwooleResponseEmitter())->emit(
@@ -45,6 +63,12 @@ class Kernel
         );
     }
 
+    /**
+     * @param TcpConnection    $tcpConnection
+     * @param WorkermanRequest $request
+     *
+     * @return void
+     */
     public function handleWorkermanRequest(TcpConnection $tcpConnection, WorkermanRequest $request): void
     {
         (new WorkermanResponseEmitter())->emit(
@@ -52,18 +76,25 @@ class Kernel
         );
     }
 
+    /**
+     * @return void
+     */
     public function handleFPMRequest(): void
     {
         (new FPMResponseEmitter())->emit($this->handle(ServerRequest::createFromGlobals()));
     }
 
+    /**
+     * @param ServerRequestInterface $serverRequest
+     *
+     * @return ResponseInterface
+     */
     final protected function handle(ServerRequestInterface $serverRequest): ResponseInterface
     {
         try {
-            $route          = $this->routeCollector->resolve($serverRequest);
-            $middlewares    = array_merge($this->middlewares, $route->getMiddlewares());
-            $requestHandler = new RequestHandler($this->container, $route, $middlewares);
-            return $requestHandler->handle($serverRequest);
+            $route       = $this->routeCollector->resolve($serverRequest);
+            $middlewares = array_merge($this->middlewares, $route->getMiddlewares());
+            return (new RequestHandler($this->container, $route, $middlewares))->handle($serverRequest);
         } catch (\Throwable $throwable) {
             return $this->exceptionHandler->handleException($throwable, $serverRequest);
         }

@@ -1,5 +1,7 @@
 {
     "name": "max/http-server",
+    "license": "Apache-2.0",
+    "homepage": "https://github.com/topyao/max-http-server",
     "autoload": {
         "psr-4": {
             "Max\\HttpServer\\": "src/"
@@ -7,9 +9,15 @@
     },
     "authors": [
         {
-            "name": "ChengYao",
-            "email": "bigyao@139.com"
+            "name": "chengyao",
+            "email": "987861463@qq.com"
         }
     ],
-    "require": {}
+    "require": {
+        "php": "^8.0",
+        "max/http": "dev-master",
+        "max/routing": "dev-master",
+        "psr/http-server-middleware": "^1.0",
+        "psr/http-server-handler": "^1.0"
+    }
 }
