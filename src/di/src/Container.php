@@ -25,6 +25,7 @@ use ReflectionFunctionAbstract;
 use ReflectionNamedType;
 use ReflectionParameter;
 use ReflectionUnionType;
+use Throwable;
 use function array_shift;
 use function is_null;
 use function is_object;
@@ -241,7 +242,15 @@ class Container implements ContainerInterface
                     $funcArgs[] = $this->getParameterDefaultValue($parameter);
                 } else {
                     // 当接口注入后又传递参数的时候会报错
-                    $funcArgs[] = $objectValues[$typeName] ?? $this->make($typeName);
+                    if (isset($objectValues[$typeName])) {
+                        $funcArgs[] = $objectValues[$typeName];
+                    } else {
+                        try {
+                            $funcArgs[] = $this->make($typeName);
+                        } catch (Throwable $throwable) {
+                            $funcArgs[] = $parameter->isOptional() ? $parameter->getDefaultValue() : null;
+                        }
+                    }
                 }
             }
         }
