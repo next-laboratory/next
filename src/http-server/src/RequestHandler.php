@@ -52,11 +52,12 @@ class RequestHandler implements RequestHandlerInterface
      */
     protected function handleRequest(ServerRequestInterface $request): ResponseInterface
     {
-        $context              = new Context();
-        $context->request     = $request;
-        $context->routeParams = $this->route->getParameters();
+        $context          = new Context();
+        $context->request = $request;
+        $params           = $this->route->getParameters();
+        $params[]         = $context;
 
-        return $this->parseAction()($context);
+        return $this->container->call($this->parseAction(), $params);
     }
 
     protected function parseAction(): callable
