@@ -141,9 +141,6 @@ class Response extends Message implements ResponseInterface
      */
     public function getReasonPhrase()
     {
-        if ('' === $this->reasonPhrase) {
-            return static::PHRASES[$this->getStatusCode()] ?? '';
-        }
-        return '';
+        return $this->reasonPhrase ?: (static::PHRASES[$this->getStatusCode()] ?? '');
     }
 }
