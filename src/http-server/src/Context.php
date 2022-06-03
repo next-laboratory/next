@@ -4,6 +4,7 @@ namespace Max\HttpServer;
 
 use ArrayAccess;
 use Max\Http\Message\Response;
+use Max\Utils\Arr;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Stringable;
@@ -17,19 +18,32 @@ class Context
     /**
      * @param ArrayAccess|array $data
      */
-    public function JSON($data, int $statusCode = 200, array $headers = []): ResponseInterface
+    public function JSON($data, int $status = 200, array $headers = []): ResponseInterface
     {
         $headers['Content-Type'] = 'application/json; charset=utf-8';
-        return new Response($statusCode, $headers, json_encode($data));
+        return new Response($status, $headers, json_encode($data));
     }
 
     /**
      * @param Stringable|string $data
      */
-    public function HTML($data, int $statusCode = 200, array $headers = []): ResponseInterface
+    public function HTML($data, int $status = 200, array $headers = []): ResponseInterface
     {
         $headers['Content-Type'] = 'text/html; charset=utf-8';
-        return new Response($statusCode, $headers, (string)$data);
+        return new Response($status, $headers, (string)$data);
+    }
+
+    public function input(): Input
+    {
+        return new Input($this->request);
+    }
+
+    /**
+     * @param Stringable|string $data
+     */
+    public function text($data, int $status = 200, array $headers = []): ResponseInterface
+    {
+        return new Response($status, $headers, (string)$data);
     }
 
     /**
@@ -37,7 +51,7 @@ class Context
      */
     public function get(string $key)
     {
-        return $this->container[$key] ?? null;
+        return Arr::get($this->container, $key);
     }
 
     /**
@@ -45,11 +59,16 @@ class Context
      */
     public function set(string $key, $value): void
     {
-        $this->container[$key] = $value;
+        Arr::set($this->container, $key, $value);
     }
 
     public function has(string $key): bool
     {
-        return isset($this->container[$key]);
+        return Arr::has($this->container, $key);
+    }
+
+    public function remove(string $key = ''): void
+    {
+        empty($key) ? $this->container = [] : Arr::forget($this->container, $key);
     }
 }

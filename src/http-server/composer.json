@@ -16,6 +16,7 @@
     "require": {
         "php": "^8.0",
         "max/http": "dev-master",
+        "max/utils": "dev-master",
         "max/routing": "dev-master",
         "psr/http-server-middleware": "^1.0",
         "psr/http-server-handler": "^1.0"
