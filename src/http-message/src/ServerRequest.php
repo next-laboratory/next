@@ -23,35 +23,12 @@ use function strpos;
 
 class ServerRequest extends Request implements ServerRequestInterface
 {
-    /**
-     * @var ServerBag
-     */
-    protected ServerBag $serverParams;
-
-    /**
-     * @var InputBag
-     */
-    protected InputBag $cookieParams;
-
-    /**
-     * @var InputBag
-     */
-    protected InputBag $queryParams;
-
-    /**
-     * @var ParameterBag
-     */
-    protected ParameterBag $attributes;
-
-    /**
-     * @var FileBag
-     */
-    protected FileBag $uploadedFiles;
-
-    /**
-     * @var InputBag
-     */
-    protected InputBag $parsedBody;
+    protected array $serverParams;
+    protected array $cookieParams;
+    protected array $queryParams;
+    protected array $attributes;
+    protected array $uploadedFiles;
+    protected array $parsedBody;
 
     /**
      * uri部分代码来自hyperf
@@ -62,16 +39,16 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public static function createFromSwooleRequest($request): ServerRequest
     {
-        $server = $request->server;
-        $header = $request->header;
-        $uri = (new Uri())->withScheme(isset($server['https']) && $server['https'] !== 'off' ? 'https' : 'http');
+        $server  = $request->server;
+        $header  = $request->header;
+        $uri     = (new Uri())->withScheme(isset($server['https']) && $server['https'] !== 'off' ? 'https' : 'http');
         $hasPort = false;
         if (isset($server['http_host'])) {
             $hostHeaderParts = explode(':', $server['http_host']);
-            $uri = $uri->withHost($hostHeaderParts[0]);
+            $uri             = $uri->withHost($hostHeaderParts[0]);
             if (isset($hostHeaderParts[1])) {
                 $hasPort = true;
-                $uri = $uri->withPort($hostHeaderParts[1]);
+                $uri     = $uri->withPort($hostHeaderParts[1]);
             }
         } else if (isset($server['server_name'])) {
             $uri = $uri->withHost($server['server_name']);
@@ -98,10 +75,10 @@ class ServerRequest extends Request implements ServerRequestInterface
         $hasQuery = false;
         if (isset($server['request_uri'])) {
             $requestUriParts = explode('?', $server['request_uri']);
-            $uri = $uri->withPath($requestUriParts[0]);
+            $uri             = $uri->withPath($requestUriParts[0]);
             if (isset($requestUriParts[1])) {
                 $hasQuery = true;
-                $uri = $uri->withQuery($requestUriParts[1]);
+                $uri      = $uri->withQuery($requestUriParts[1]);
             }
         }
 
@@ -109,34 +86,34 @@ class ServerRequest extends Request implements ServerRequestInterface
             $uri = $uri->withQuery($server['query_string']);
         }
 
-        $psrRequest = new static($request->getMethod(), $uri, $header);
-        $psrRequest->serverParams = new ServerBag(array_change_key_case($server, CASE_UPPER));
-        $psrRequest->parsedBody = new InputBag($request->post ?? []);
-        $psrRequest->body = new StringStream($request->getContent());
-        $psrRequest->cookieParams = new InputBag(array_change_key_case($request->cookie ?? [], CASE_UPPER));
-        $psrRequest->queryParams = new InputBag($request->get ?? []);
-        $psrRequest->uploadedFiles = new FileBag($request->files ?? []);
-        $psrRequest->attributes = new ParameterBag();
+        $psrRequest                = new static($request->getMethod(), $uri, $header);
+        $psrRequest->serverParams  = array_change_key_case($server, CASE_UPPER);
+        $psrRequest->parsedBody    = $request->post ?? [];
+        $psrRequest->body          = new StringStream($request->getContent());
+        $psrRequest->cookieParams  = array_change_key_case($request->cookie ?? [], CASE_UPPER);
+        $psrRequest->queryParams   = $request->get ?? [];
+        $psrRequest->uploadedFiles = $request->files ?? [];
 
         return $psrRequest;
     }
 
     /**
      * @param \Workerman\Protocols\Http\Request $request
+     *
      * @return static
      */
     public static function createFromWorkermanRequest($request)
     {
-        $psrRequest = new static(
+        $psrRequest                = new static(
             $request->method(),
             new Uri($request->uri()),
             $request->header(),
             $request->rawBody()
         );
-        $psrRequest->queryParams = new InputBag($request->get());
-        $psrRequest->parsedBody = new InputBag($request->post());
-        $psrRequest->cookieParams = new InputBag($request->cookie());
-        $psrRequest->uploadedFiles = new FileBag($request->file());
+        $psrRequest->queryParams   = $request->get() ?: [];
+        $psrRequest->parsedBody    = $request->post() ?: [];
+        $psrRequest->cookieParams  = $request->cookie() ?: [];
+        $psrRequest->uploadedFiles = $request->file() ?: [];
 
         return $psrRequest;
     }
@@ -146,38 +123,35 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public static function createFromGlobals()
     {
-        $psrRequest = new static(
+        $psrRequest                = new static(
             $_SERVER['REQUEST_METHOD'],
             $_SERVER['REQUEST_URI'],
             apache_request_headers(),
             file_get_contents('php://input')
         );
-        $psrRequest->queryParams = new InputBag($_GET);
-        $psrRequest->parsedBody = new InputBag($_POST);
-        $psrRequest->uploadedFiles = new FileBag($_FILES);
-        $psrRequest->cookieParams = new InputBag($_COOKIE);
+        $psrRequest->queryParams   = $_GET;
+        $psrRequest->parsedBody    = $_POST;
+        $psrRequest->uploadedFiles = $_FILES;
+        $psrRequest->cookieParams  = $_COOKIE;
 
         return $psrRequest;
     }
 
     /**
-     * @return array
+     * @inheritDoc
      */
     public function getServerParams()
     {
-        return $this->serverParams->all();
+        return $this->serverParams;
     }
 
     /**
-     * @param array $serverParams
-     *
-     * @return ServerRequest
+     * @inheritDoc
      */
     public function withServerParams(array $serverParams)
     {
-        $new = clone $this;
-        $new->serverParams = new ServerBag($serverParams);
-        return $new;
+        $this->serverParams = array_change_key_case($serverParams, CASE_UPPER);
+        return $this;
     }
 
     /**
@@ -185,22 +159,16 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function getCookieParams()
     {
-        return $this->cookieParams->all();
+        return $this->cookieParams;
     }
 
     /**
-     * @param array $cookies
-     *
-     * @return ServerRequest
+     * @inheritDoc
      */
     public function withCookieParams(array $cookies)
     {
-        $new = clone $this;
-        $newCookieParam = clone $this->cookieParams;
-        $newCookieParam->add(array_change_key_case($cookies, CASE_UPPER));
-        $new->cookieParams = $newCookieParam;
-
-        return $new;
+        $this->cookieParams = array_change_key_case($cookies, CASE_UPPER);
+        return $this;
     }
 
     /**
@@ -208,115 +176,83 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function getQueryParams()
     {
-        return $this->queryParams->all();
+        return $this->queryParams;
     }
 
     /**
-     * @param array $query
-     *
-     * @return ServerRequest
+     * @inheritDoc
      */
     public function withQueryParams(array $query)
     {
-        $new = clone $this;
-        $newQueryParams = clone $this->queryParams;
-        $newQueryParams->add($query);
-        $new->queryParams = $newQueryParams;
-
-        return $new;
+        $this->queryParams = $query;
+        return $this;
     }
 
     /**
-     * @return array|FileBag
+     * @inheritDoc
      */
     public function getUploadedFiles()
     {
-        return $this->uploadedFiles->all();
+        return $this->uploadedFiles;
     }
 
     /**
-     * @param array $uploadedFiles
-     *
-     * @return ServerRequest
+     * @inheritDoc
      */
     public function withUploadedFiles(array $uploadedFiles)
     {
-        $new = clone $this;
-        $newUploadedFiles = clone $this->uploadedFiles;
-        $newUploadedFiles->replace(array_merge($newUploadedFiles->all(), $uploadedFiles));
-        $new->uploadedFiles = $newUploadedFiles;
-
-        return $new;
+        $this->uploadedFiles = $uploadedFiles;
+        return $this;
     }
 
     /**
-     * @return array
+     * @inheritDoc
      */
     public function getParsedBody()
     {
-        return $this->parsedBody->all();
+        return $this->parsedBody;
     }
 
     /**
-     * @param $data
-     *
-     * @return ServerRequest
+     * @inheritDoc
      */
     public function withParsedBody($data)
     {
-        $new = clone $this;
-        $new->parsedBody = new InputBag($data);
-
-        return $new;
+        $this->parsedBody = (array)$data;
+        return $this;
     }
 
     /**
-     * @return array
+     * @inheritDoc
      */
     public function getAttributes()
     {
-        return $this->attributes->all();
+        return $this->attributes;
     }
 
     /**
-     * @param $name
-     * @param $default
-     *
-     * @return mixed|null
+     * @inheritDoc
      */
     public function getAttribute($name, $default = null)
     {
-        return $this->attributes->get($name, $default);
+        return $this->attributes[$name] ?? $default;
     }
 
     /**
-     * @param $name
-     * @param $value
-     *
-     * @return ServerRequest
+     * @inheritDoc
      */
     public function withAttribute($name, $value)
     {
-        $new = clone $this;
-        $newAttribute = clone $this->attributes;
-        $newAttribute->set($name, $value);
-        $new->attributes = $newAttribute;
-
-        return $new;
+        $this->attributes[$name] = $value;
+        return $this;
     }
 
     /**
-     * @param $name
-     *
-     * @return ServerRequest
+     * @inheritDoc
      */
     public function withoutAttribute($name)
     {
-        $new = clone $this;
-        $newAttribute = clone $this->attributes;
-        $newAttribute->remove($name);
-        $new->attributes = $newAttribute;
-
-        return $new;
+        unset($this->attributes[$name]);
+        return $this;
     }
 }

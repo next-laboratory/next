@@ -120,6 +120,6 @@ class Response extends Message implements ResponseInterface
      */
     public function getReasonPhrase()
     {
-        return $this->reasonPhrase;
+        return $this->reasonPhrase ?: (self::PHRASES[$this->getStatusCode()] ?? '');
     }
 }

@@ -177,99 +177,70 @@ class Uri implements UriInterface
     }
 
     /**
-     * @param $scheme
-     *
-     * @return Uri
+     * @inheritDoc
      */
     public function withScheme($scheme)
     {
-        $new         = clone $this;
-        $new->scheme = $scheme;
-
-        return $new;
+        $this->scheme = $scheme;
+        return $this;
     }
 
     /**
-     * @param $user
-     * @param $password
-     *
-     * @return Uri
+     * @inheritDoc
      */
     public function withUserInfo($user, $password = null)
     {
-        $new           = clone $this;
-        $new->userinfo = sprintf('%s%s', $user, $password ? (':' . $password) : '');
-
-        return $new;
+        $this->userinfo = sprintf('%s%s', $user, $password ? (':' . $password) : '');
+        return $this;
     }
 
     /**
-     * @param $host
-     *
-     * @return Uri
+     * @inheritDoc
      */
     public function withHost($host)
     {
-        $new       = clone $this;
-        $new->host = $host;
-
-        return $new;
+        $this->host = $host;
+        return $this;
     }
 
     /**
-     * @param $port
-     *
-     * @return Uri
+     * @inheritDoc
      */
     public function withPort($port)
     {
-        $new       = clone $this;
-        $new->port = $port;
-
-        return $new;
+        $this->port = $port;
+        return $this;
     }
 
     /**
-     * @param $path
-     *
-     * @return Uri
+     * @inheritDoc
      */
     public function withPath($path)
     {
-        $new       = clone $this;
-        $new->path = $path;
-
-        return $new;
+        $this->path = $path;
+        return $this;
     }
 
     /**
-     * @param $query
-     *
-     * @return Uri
+     * @inheritDoc
      */
     public function withQuery($query)
     {
-        $new        = clone $this;
-        $new->query = $query;
-
-        return $new;
+        $this->query = $query;
+        return $this;
     }
 
     /**
-     * @param $fragment
-     *
-     * @return Uri
+     * @inheritDoc
      */
     public function withFragment($fragment)
     {
-        $new           = clone $this;
-        $new->fragment = $fragment;
-
-        return $new;
+        $this->fragment = $fragment;
+        return $this;
     }
 
     /**
-     * @return string
+     * @inheritDoc
      */
     protected function getPortString()
     {

@@ -43,13 +43,13 @@ class FileStream implements StreamInterface
      *
      * @throws Exception
      */
-    public function __construct(string $path)
+    public function __construct(protected string $path)
     {
         $this->stream = fopen($path, 'rw+');
     }
 
     /**
-     * @return false|string
+     * @inheritDoc
      */
     public function __toString()
     {
@@ -57,7 +57,7 @@ class FileStream implements StreamInterface
     }
 
     /**
-     *
+     * @inheritDoc
      */
     public function close()
     {
@@ -65,7 +65,15 @@ class FileStream implements StreamInterface
     }
 
     /**
-     *
+     * @inheritDoc
+     */
+    public function getPath(): string
+    {
+        return $this->path;
+    }
+
+    /**
+     * @inheritDoc
      */
     public function detach()
     {
@@ -73,7 +81,7 @@ class FileStream implements StreamInterface
     }
 
     /**
-     * @return int|null
+     * @inheritDoc
      * @throws Exception
      */
     public function getSize()
@@ -84,7 +92,7 @@ class FileStream implements StreamInterface
     }
 
     /**
-     *
+     * @inheritDoc
      */
     public function tell()
     {
@@ -92,7 +100,7 @@ class FileStream implements StreamInterface
     }
 
     /**
-     * @return bool
+     * @inheritDoc
      */
     public function eof()
     {
@@ -100,7 +108,7 @@ class FileStream implements StreamInterface
     }
 
     /**
-     * @return array|mixed|null
+     * @inheritDoc
      */
     public function isSeekable()
     {
@@ -108,8 +116,7 @@ class FileStream implements StreamInterface
     }
 
     /**
-     * @param     $offset
-     * @param int $whence
+     * @inheritDoc
      */
     public function seek($offset, $whence = SEEK_SET)
     {
@@ -117,7 +124,7 @@ class FileStream implements StreamInterface
     }
 
     /**
-     *
+     * @inheritDoc
      */
     public function rewind()
     {
@@ -125,7 +132,7 @@ class FileStream implements StreamInterface
     }
 
     /**
-     * @return bool
+     * @inheritDoc
      */
     public function isWritable()
     {
@@ -133,7 +140,7 @@ class FileStream implements StreamInterface
     }
 
     /**
-     * @param $string
+     * @inheritDoc
      */
     public function write($string)
     {
@@ -141,7 +148,7 @@ class FileStream implements StreamInterface
     }
 
     /**
-     * @return bool
+     * @inheritDoc
      */
     public function isReadable()
     {
@@ -149,9 +156,7 @@ class FileStream implements StreamInterface
     }
 
     /**
-     * @param $length
-     *
-     * @return false|string
+     * @inheritDoc
      */
     public function read($length)
     {
@@ -159,7 +164,7 @@ class FileStream implements StreamInterface
     }
 
     /**
-     * @return false|string
+     * @inheritDoc
      */
     public function getContents()
     {
@@ -167,9 +172,7 @@ class FileStream implements StreamInterface
     }
 
     /**
-     * @param null $key
-     *
-     * @return array|mixed|null
+     * @inheritDoc
      */
     public function getMetadata($key = null)
     {

@@ -3,7 +3,10 @@
     "autoload": {
         "psr-4": {
             "Max\\HttpMessage\\": "src/"
-        }
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "authors": [
         {

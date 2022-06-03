@@ -44,7 +44,6 @@ class ExceptionHandler implements ExceptionHandlerInterface
      */
     protected function reportException(Throwable $throwable, ServerRequestInterface $request): void
     {
-        var_dump($throwable, $request);
     }
 
     /**
