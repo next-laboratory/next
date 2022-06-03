@@ -221,7 +221,12 @@ class Container implements ContainerInterface
      */
     public function getFuncArgs(ReflectionFunctionAbstract $reflectionFunction, array $arguments = []): array
     {
-        $funcArgs = [];
+        $objectValues = $funcArgs = [];
+        foreach ($arguments as $argument) {
+            if (is_object($argument)) {
+                $objectValues[get_class($argument)] = $argument;
+            }
+        }
         foreach ($reflectionFunction->getParameters() as $parameter) {
             $name = $parameter->getName();
             if (array_key_exists($name, $arguments)) {
@@ -236,7 +241,7 @@ class Container implements ContainerInterface
                     $funcArgs[] = $this->getParameterDefaultValue($parameter);
                 } else {
                     // 当接口注入后又传递参数的时候会报错
-                    $funcArgs[] = $this->make($typeName);
+                    $funcArgs[] = $objectValues[$typeName] ?? $this->make($typeName);
                 }
             }
         }
