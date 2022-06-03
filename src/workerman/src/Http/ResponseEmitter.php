@@ -13,7 +13,7 @@ class ResponseEmitter implements ResponseEmitterInterface
     /**
      * @param TcpConnection $tcpConnection
      */
-    public function emit(ResponseInterface $psr7Response, $tcpConnection)
+    public function emit(ResponseInterface $psr7Response, $tcpConnection = null)
     {
         $response = new Response($psr7Response->getStatusCode());
         foreach ($psr7Response->getHeaders() as $name => $values) {

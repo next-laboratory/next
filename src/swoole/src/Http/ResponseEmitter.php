@@ -14,7 +14,7 @@ class ResponseEmitter implements ResponseEmitterInterface
     /**
      * @param Response $response
      */
-    public function emit(ResponseInterface $psr7Response, $response)
+    public function emit(ResponseInterface $psr7Response, $response = null)
     {
         $response->status($psr7Response->getStatusCode());
         foreach ($psr7Response->getHeader('Set-Cookie') as $str) {
