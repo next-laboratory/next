@@ -104,7 +104,7 @@ class Route
         $regexp     = preg_replace_callback('/<(.+?)>/', function($matches) {
             [, $name] = $matches;
             $this->setParameter($name, null);
-            return sprintf('(?P<%s>%s%s)%s', $name, '', $this->getPattern($name), '');
+            return sprintf('(?P<%s>%s)', $name, $this->getPattern($name));
         }, $this->path);
         if ($regexp !== $this->path) {
             $this->regexp = sprintf('#^%s$#iU', $regexp);
