@@ -1,0 +1,15 @@
+{
+    "name": "max/http-server",
+    "autoload": {
+        "psr-4": {
+            "Max\\HttpServer\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "ChengYao",
+            "email": "bigyao@139.com"
+        }
+    ],
+    "require": {}
+}
