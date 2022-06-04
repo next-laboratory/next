@@ -16,12 +16,19 @@ namespace Max\HttpServer;
 use Max\HttpMessage\Response;
 use Max\HttpServer\Contracts\ExceptionHandlerInterface;
 use Max\HttpServer\Exceptions\HttpException;
+use Max\Routing\Exceptions\MethodNotAllowedException;
+use Max\Routing\Exceptions\RouteNotFoundException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 
 class ExceptionHandler implements ExceptionHandlerInterface
 {
+    protected array $httpExceptions = [
+        MethodNotAllowedException::class,
+        RouteNotFoundException::class,
+    ];
+
     /**
      * @param Throwable              $throwable
      * @param ServerRequestInterface $request
@@ -54,8 +61,17 @@ class ExceptionHandler implements ExceptionHandlerInterface
      */
     protected function renderException(Throwable $throwable, ServerRequestInterface $request): ResponseInterface
     {
-        $statusCode = $throwable instanceof HttpException ? $throwable->getCode() : 400;
-
-        return new Response($statusCode, [], $throwable->getMessage());
+        $statusCode = 400;
+        if (in_array($throwable::class, $this->httpExceptions) || $throwable instanceof HttpException) {
+            $statusCode = $throwable->getCode();
+        }
+        return new Response($statusCode, [], sprintf("<pre><p><b>%s %s in %s +%d</b><p>%s</pre>",
+                $throwable::class,
+                $throwable->getMessage(),
+                $throwable->getFile(),
+                $throwable->getLine(),
+                $throwable->getTraceAsString()
+            )
+        );
     }
 }
