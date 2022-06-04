@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Max\HttpServer;
 
-use Max\Http\Exceptions\HttpException;
 use Max\HttpMessage\Response;
 use Max\HttpServer\Contracts\ExceptionHandlerInterface;
+use Max\HttpServer\Exceptions\HttpException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;

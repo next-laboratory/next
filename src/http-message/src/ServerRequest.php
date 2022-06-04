@@ -18,17 +18,19 @@ use Max\HttpMessage\Bags\InputBag;
 use Max\HttpMessage\Bags\ParameterBag;
 use Max\HttpMessage\Bags\ServerBag;
 use Max\HttpMessage\Stream\StringStream;
+use Max\Session\Session;
 use Psr\Http\Message\ServerRequestInterface;
 use function strpos;
 
 class ServerRequest extends Request implements ServerRequestInterface
 {
-    protected array $serverParams;
-    protected array $cookieParams;
-    protected array $queryParams;
-    protected array $attributes;
-    protected array $uploadedFiles;
-    protected array $parsedBody;
+    public ?Session $session       = null;
+    protected array $serverParams  = [];
+    protected array $cookieParams  = [];
+    protected array $queryParams   = [];
+    protected array $attributes    = [];
+    protected array $uploadedFiles = [];
+    protected array $parsedBody    = [];
 
     /**
      * uri部分代码来自hyperf

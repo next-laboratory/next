@@ -29,16 +29,7 @@ class FPMResponseEmitter implements ResponseEmitterInterface
     {
         header(sprintf('HTTP/%s %d %s', $psrResponse->getProtocolVersion(), $psrResponse->getStatusCode(), $psrResponse->getReasonPhrase()), true);
         foreach ($psrResponse->getHeader('Set-Cookie') as $cookieString) {
-            $cookie = Cookie::parse($cookieString);
-            setcookie(
-                $cookie->getName(),
-                $cookie->getValue(),
-                $cookie->getExpires(),
-                $cookie->getPath(),
-                $cookie->getDomain(),
-                $cookie->isSecure(),
-                $cookie->isHttponly()
-            );
+            $this->sendCookie($cookieString);
         }
         $psrResponse = $psrResponse->withoutHeader('Set-Cookie');
         foreach ($psrResponse->getHeaders() as $name => $value) {
@@ -46,5 +37,17 @@ class FPMResponseEmitter implements ResponseEmitterInterface
         }
         $body = $psrResponse->getBody();
         echo $body?->getContents();
+        $body?->close();
+    }
+
+    protected function sendCookie(string $cookieString)
+    {
+        $cookie = Cookie::parse($cookieString);
+        setcookie(
+            $cookie->getName(), $cookie->getValue(),
+            $cookie->getExpires(), $cookie->getPath(),
+            $cookie->getDomain(), $cookie->isSecure(),
+            $cookie->isHttponly()
+        );
     }
 }

@@ -24,7 +24,7 @@ class SwooleResponseEmitter implements ResponseEmitterInterface
 {
     /**
      * @param ResponseInterface $psrResponse
-     * @param                   $sender
+     * @param Response          $sender
      *
      * @return void
      */
@@ -35,9 +35,8 @@ class SwooleResponseEmitter implements ResponseEmitterInterface
             $this->sendCookie(Cookie::parse($str), $sender);
         }
         $psrResponse = $psrResponse->withoutHeader('Set-Cookie');
-
-        foreach ($psrResponse->getHeaders() as $name => $value) {
-            $sender->header($name, $value);
+        foreach ($psrResponse->getHeaders() as $key => $value) {
+            $sender->header($key, $value);
         }
         $body = $psrResponse->getBody();
         switch (true) {

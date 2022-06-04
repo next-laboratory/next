@@ -20,7 +20,7 @@ class Message implements MessageInterface
 {
     protected string           $protocolVersion = '1.1';
     protected array            $headers         = [];
-    protected ?StreamInterface $body;
+    protected ?StreamInterface $body            = null;
 
     /**
      * @inheritDoc
@@ -89,8 +89,7 @@ class Message implements MessageInterface
      */
     public function withAddedHeader($name, $value)
     {
-        $original      = $this->getHeader($name);
-        $this->headers = array_merge($original, array_change_key_case((array)$value, CASE_UPPER));
+        $this->headers[strtoupper($name)][] = $value;
         return $this;
     }
 
