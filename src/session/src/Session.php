@@ -13,10 +13,8 @@ declare(strict_types=1);
 
 namespace Max\Session;
 
-use Max\Config\Contracts\ConfigInterface;
-use Max\Context\Context;
-use Max\Session\Context\Storage;
 use Max\Session\Exceptions\SessionException;
+use Max\Utils\Arr;
 use SessionHandlerInterface;
 use function is_string;
 use function md5;
@@ -27,85 +25,147 @@ use function unserialize;
 
 class Session
 {
-    protected SessionHandlerInterface $handler;
+    /**
+     * Session ID.
+     *
+     * @var string
+     */
+    protected string $id = '';
 
-    public function __construct(ConfigInterface $config)
+    /**
+     * Session data.
+     *
+     * @var array
+     */
+    protected array $data = [];
+
+    public function __construct(protected SessionHandlerInterface $sessionHandler)
     {
-        $config        = $config->get('session');
-        $config        = $config['stores'][$config['default']];
-        $handler       = $config['handler'];
-        $this->handler = new $handler($config['options']);
     }
 
+    /**
+     * Start a new session.
+     *
+     * @param string|null $id
+     *
+     * @return void
+     */
     public function start(?string $id = null): void
     {
-        $id   ??= $this->createId();
-        $data = $this->handler->read($id);
+        $this->id = $id ?? $this->createId();
+        $data     = $this->sessionHandler->read($this->id);
         if (!$data) {
             $data = [];
         }
         if (is_string($data)) {
             $data = unserialize($data) ?: [];
         }
-
-        Context::put(Storage::class, new Storage($id, $data));
+        $this->data = $data;
     }
 
+    /**
+     * @return void
+     */
     public function save(): void
     {
-        $data = Context::get(Storage::class)?->all() ?: [];
-        $this->handler->write($this->getId(), serialize($data));
+        $this->sessionHandler->write($this->id, serialize($this->data));
     }
 
+    /**
+     * @return bool
+     */
     public function close(): bool
     {
-        return $this->handler->close();
+        return $this->sessionHandler->close();
     }
 
+    /**
+     * @param string $key
+     *
+     * @return bool
+     */
     public function has(string $key): bool
     {
-        return (bool)(Context::get(Storage::class)?->has($key));
+        return Arr::has($this->data, $key);
     }
 
+    /**
+     * @param string $key
+     * @param        $default
+     *
+     * @return mixed
+     */
     public function get(string $key, $default = null): mixed
     {
-        return Context::get(Storage::class)?->get($key, $default);
+        return Arr::get($this->data, $key, $default);
     }
 
+    /**
+     * @param string $key
+     * @param        $value
+     *
+     * @return array
+     */
     public function set(string $key, $value): array
     {
-        return Context::get(Storage::class)?->set($key, $value);
+        return Arr::set($this->data, $key, $value);
     }
 
+    /**
+     * @param string     $key
+     * @param mixed|null $default
+     *
+     * @return mixed
+     */
     public function pull(string $key, mixed $default = null): mixed
     {
-        return Context::get(Storage::class)?->pull($key, $default);
+        $data = $this->get($key, $default);
+        $this->remove($key);
+        return $data;
     }
 
+    /**
+     * @param string $key
+     *
+     * @return void
+     */
     public function remove(string $key): void
     {
-        Context::get(Storage::class)?->remove($key);
+        Arr::forget($this->data, $key);
     }
 
+    /**
+     * @return void
+     */
     public function destroy(): void
     {
-        $storage = Context::get(Storage::class);
-        $this->handler->destroy($storage->getId());
-        Context::delete(Storage::class);
+        $this->sessionHandler->destroy($this->id);
+        $this->data = [];
     }
 
+    /**
+     * @return string
+     */
     public function getId(): string
     {
-        return Context::get(Storage::class)?->getId() ?? throw new SessionException('The session is not started.');
+        return $this->id ?: throw new SessionException('The session is not started.');
     }
 
+    /**
+     * @return string
+     */
     protected function createId(): string
     {
         return md5(microtime(true) . session_create_id());
     }
 
+    /**
+     * @param string $id
+     *
+     * @return void
+     */
     public function setId(string $id): void
     {
-        Context::get(Storage::class)?->setId($id);
+        $this->id = $id;
     }
 }
