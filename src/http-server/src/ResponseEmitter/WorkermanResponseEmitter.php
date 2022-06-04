@@ -54,5 +54,6 @@ class WorkermanResponseEmitter implements ResponseEmitterInterface
         $content = (string)$body?->getContents();
         $body?->close();
         $sender->send($response->withBody($content));
+        $sender->close();
     }
 }
