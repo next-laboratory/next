@@ -86,9 +86,7 @@ class RedisHandler implements SessionHandlerInterface
     }
 
     /**
-     * @param string $id
-     *
-     * @return false|mixed|\Redis|string
+     * @inheritDoc
      */
     #[\ReturnTypeWillChange]
     public function read(string $id)

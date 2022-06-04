@@ -13,15 +13,10 @@ declare(strict_types=1);
 
 namespace Max\Session;
 
+use InvalidArgumentException;
 use Max\Session\Exceptions\SessionException;
 use Max\Utils\Arr;
 use SessionHandlerInterface;
-use function is_string;
-use function md5;
-use function microtime;
-use function serialize;
-use function session_create_id;
-use function unserialize;
 
 class Session
 {
@@ -39,6 +34,11 @@ class Session
      */
     protected array $data = [];
 
+    /**
+     * @var bool
+     */
+    protected bool $started = false;
+
     public function __construct(protected SessionHandlerInterface $sessionHandler)
     {
     }
@@ -52,15 +52,14 @@ class Session
      */
     public function start(?string $id = null): void
     {
-        $this->id = $id ?? $this->createId();
-        $data     = $this->sessionHandler->read($this->id);
-        if (!$data) {
-            $data = [];
+        if ($this->started) {
+            throw new SessionException('Session cannot be started repeatedly.');
         }
-        if (is_string($data)) {
-            $data = unserialize($data) ?: [];
+        $this->id = ($id && $this->isValidId($id)) ? $id : \session_create_id();
+        if ($data = $this->sessionHandler->read($this->id)) {
+            $this->data = (array)(@\unserialize($data) ?: []);
         }
-        $this->data = $data;
+        $this->started = true;
     }
 
     /**
@@ -152,20 +151,25 @@ class Session
     }
 
     /**
-     * @return string
-     */
-    protected function createId(): string
-    {
-        return md5(microtime(true) . session_create_id());
-    }
-
-    /**
      * @param string $id
      *
      * @return void
      */
     public function setId(string $id): void
     {
+        if (!$this->isValidId($id)) {
+            throw new InvalidArgumentException('The length of the session ID must be 40.');
+        }
         $this->id = $id;
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return bool
+     */
+    protected function isValidId(string $id): bool
+    {
+        return \ctype_alnum($id);
     }
 }
