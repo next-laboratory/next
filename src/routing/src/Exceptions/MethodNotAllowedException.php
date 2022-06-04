@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Max\Routing\Exceptions;
 
-use Max\Http\Exceptions\HttpException;
+use Exception;
 
-class MethodNotAllowedException extends HttpException
+class MethodNotAllowedException extends Exception
 {
 }
