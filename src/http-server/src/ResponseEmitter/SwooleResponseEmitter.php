@@ -41,7 +41,7 @@ class SwooleResponseEmitter implements ResponseEmitterInterface
         $body = $psrResponse->getBody();
         switch (true) {
             case $body instanceof FileStream:
-                $sender->sendfile($body->getMetadata('uri'), $body->tell(), $body->getLength());
+                $sender->sendfile($body->getMetadata('uri'), $body->tell(), max($body->getLength(), 0));
                 break;
             case $body instanceof StringStream:
                 $sender->end($body->getContents());
