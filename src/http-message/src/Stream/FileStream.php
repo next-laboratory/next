@@ -37,15 +37,22 @@ class FileStream implements StreamInterface
     protected $stream;
 
     /**
-     * FileStream constructor.
-     *
-     * @param string $path
-     *
-     * @throws Exception
+     * @param string $path   文件地址
+     * @param int    $offset 偏移量
+     * @param int    $length 长度
      */
-    public function __construct(protected string $path)
+    public function __construct(string $path, int $offset = 0, protected int $length = -1)
     {
         $this->stream = fopen($path, 'rw+');
+        $this->seek($offset);
+    }
+
+    /**
+     * @return int
+     */
+    public function getLength(): int
+    {
+        return $this->length;
     }
 
     /**
@@ -53,7 +60,7 @@ class FileStream implements StreamInterface
      */
     public function __toString()
     {
-        return stream_get_contents($this->stream);
+        return stream_get_contents($this->stream, $this->length, $this->tell());
     }
 
     /**
@@ -62,14 +69,6 @@ class FileStream implements StreamInterface
     public function close()
     {
         fclose($this->stream);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getPath(): string
-    {
-        return $this->path;
     }
 
     /**
@@ -96,7 +95,7 @@ class FileStream implements StreamInterface
      */
     public function tell()
     {
-        ftell($this->stream);
+        return (int)ftell($this->stream);
     }
 
     /**

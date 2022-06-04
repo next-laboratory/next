@@ -50,4 +50,17 @@ trait Writer
             ->withStatus($status)
             ->withBody($data instanceof StreamInterface ? $data : new StringStream((string)$data));
     }
+
+    /**
+     * 重定向
+     *
+     * @param string $url
+     * @param int    $status
+     *
+     * @return ResponseInterface
+     */
+    public function redirect(string $url, int $status = 302): ResponseInterface
+    {
+        return $this->response->withHeader('Location', $url)->withStatus($status);
+    }
 }

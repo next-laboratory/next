@@ -24,8 +24,6 @@ class StringStream implements StreamInterface
     protected $stream;
 
     /**
-     * StringStream constructor.
-     *
      * @param string $string
      */
     public function __construct(string $string)
@@ -36,7 +34,7 @@ class StringStream implements StreamInterface
     }
 
     /**
-     * @return false|string
+     * @inheritDoc
      */
     public function __toString()
     {
@@ -44,7 +42,7 @@ class StringStream implements StreamInterface
     }
 
     /**
-     * close
+     * @inheritDoc
      */
     public function close()
     {
@@ -52,7 +50,7 @@ class StringStream implements StreamInterface
     }
 
     /**
-     * @return void
+     * @inheritDoc
      */
     public function detach()
     {
@@ -60,7 +58,7 @@ class StringStream implements StreamInterface
     }
 
     /**
-     * @return int
+     * @inheritDoc
      * @throws Exception
      */
     public function getSize()

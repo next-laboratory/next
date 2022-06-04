@@ -91,10 +91,7 @@ class Response extends Message implements ResponseInterface
     {
         $this->reasonPhrase = static::PHRASES[$status] ?? '';
         $this->headers      = array_change_key_case($headers, CASE_UPPER);
-        if (is_string($body)) {
-            $body = new StringStream($body);
-        }
-        $this->body = $body;
+        $this->body         = is_string($body) ? new StringStream($body) : $body;
     }
 
     /**

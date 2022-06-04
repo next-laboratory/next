@@ -65,7 +65,7 @@ class ExceptionHandler implements ExceptionHandlerInterface
         if (in_array($throwable::class, $this->httpExceptions) || $throwable instanceof HttpException) {
             $statusCode = $throwable->getCode();
         }
-        return new Response($statusCode, [], sprintf("<pre><p><b>[%s] %s in %s +%d</b><p>%s</pre>",
+        return new Response($statusCode, [], sprintf("<pre style='color:red;'><p><b>[%s] %s in %s +%d</b><p>%s</pre>",
                 $throwable::class,
                 $throwable->getMessage(),
                 $throwable->getFile(),
