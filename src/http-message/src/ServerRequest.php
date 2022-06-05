@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Max\HttpMessage;
 
 use Max\HttpMessage\Stream\FileStream;
+use Max\HttpMessage\Stream\StringStream;
 use Psr\Http\Message\ServerRequestInterface;
 use function strpos;
 
