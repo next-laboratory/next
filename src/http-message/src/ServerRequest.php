@@ -107,7 +107,7 @@ class ServerRequest extends Request implements ServerRequestInterface
         $psrRequest->queryParams   = $request->get() ?: [];
         $psrRequest->parsedBody    = $request->post() ?: [];
         $psrRequest->cookieParams  = array_change_key_case($request->cookie() ?: [], CASE_UPPER);
-        $psrRequest->uploadedFiles = $request->file() ?: []; // TODO Convert to UploadedFiles.
+        $psrRequest->uploadedFiles = $request->file();
 
         return $psrRequest;
     }
@@ -117,19 +117,32 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public static function createFromGlobals(): static
     {
-        $psrRequest                = new static(
+        $psrRequest               = new static(
             $_SERVER['REQUEST_METHOD'],
             new Uri($_SERVER['REQUEST_URI']),
             apache_request_headers(),
             file_get_contents('php://input')
         );
-        $psrRequest->serverParams  = $_SERVER;
-        $psrRequest->cookieParams  = array_change_key_case($_COOKIE, CASE_UPPER);
-        $psrRequest->queryParams   = $_GET;
-        $psrRequest->parsedBody    = $_POST;
-        $psrRequest->uploadedFiles = $_FILES; // TODO Convert to UploadedFiles
+        $psrRequest->serverParams = $_SERVER;
+        $psrRequest->cookieParams = array_change_key_case($_COOKIE, CASE_UPPER);
+        $psrRequest->queryParams  = $_GET;
+        $psrRequest->parsedBody   = $_POST;
+        foreach ($_FILES as $key => $file) {
+            $psrRequest->convertToUploadedFiles($psrRequest->uploadedFiles, $key, $file['name'], $file['tmp_name'], $file['type'], $file['size'], $file['error']);
+        }
 
         return $psrRequest;
+    }
+
+    protected function convertToUploadedFiles(&$uploadedFiles, $k, $name, $tmpName, $type, $size, $error): void
+    {
+        if (is_string($name)) {
+            $uploadedFiles[$k] = new UploadedFile($error > 0 ? null : new StringStream($tmpName), $size, $name, $type, $error);
+        } else {
+            foreach ($name as $key => $value) {
+                $this->convertToUploadedFiles($uploadedFiles[$k], $key, $value, $tmpName[$key], $type[$key], $size[$key], $error[$key]);
+            }
+        }
     }
 
     /**
