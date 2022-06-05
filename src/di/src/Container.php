@@ -116,7 +116,7 @@ class Container implements ContainerInterface
      * @param string $id        标识
      * @param array  $arguments 构造函数参数列表
      *
-     * @return object
+     * @return mixed
      * @throws ReflectionException|NotFoundException|ContainerExceptionInterface
      */
     public function make(string $id, array $arguments = []): object

@@ -38,7 +38,9 @@ class Message implements MessageInterface
      */
     public function withProtocolVersion($version)
     {
-        $this->protocolVersion = $version;
+        if ($this->protocolVersion !== $version) {
+            $this->protocolVersion = $version;
+        }
         return $this;
     }
 
