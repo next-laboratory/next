@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Max\HttpMessage;
 
-use Max\HttpMessage\Stream\StringStream;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
@@ -90,8 +89,8 @@ class Response extends Message implements ResponseInterface
     )
     {
         $this->reasonPhrase = static::PHRASES[$status] ?? '';
-        $this->headers      = array_change_key_case($headers, CASE_UPPER);
-        $this->body         = is_string($body) ? new StringStream($body) : $body;
+        $this->formatBody($body);
+        $this->formatHeaders($headers);
     }
 
     /**

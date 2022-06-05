@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Max\HttpMessage;
 
-use Max\HttpMessage\Stream\StringStream;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
@@ -21,32 +20,23 @@ use Psr\Http\Message\UriInterface;
 class Request extends Message implements RequestInterface
 {
     protected UriInterface $uri;
-    protected string       $method;
     protected string       $requestTarget = '/';
 
     public function __construct(
-        string $method,
-               $uri,
-        array  $headers = [],
-               $body = null,
-        string $protocolVersion = '1.1'
+        protected string            $method,
+        string|UriInterface         $uri,
+        array                       $headers = [],
+        string|null|StreamInterface $body = null,
+        protected string            $protocolVersion = '1.1'
     )
     {
-        $this->method = $method;
-        if (!$uri instanceof UriInterface) {
-            $uri = new Uri($uri);
-        }
-        $this->uri     = $uri;
-        $this->headers = array_change_key_case($headers, CASE_UPPER);
-        if (!$body instanceof StreamInterface) {
-            $body = new StringStream((string)$body);
-        }
-        $this->body            = $body;
-        $this->protocolVersion = $protocolVersion;
+        $this->uri = $uri instanceof UriInterface ? $uri : new Uri($uri);
+        $this->formatBody($body);
+        $this->formatHeaders($headers);
     }
 
     /**
-     * @return string
+     * @inheritDoc
      */
     public function getRequestTarget()
     {
