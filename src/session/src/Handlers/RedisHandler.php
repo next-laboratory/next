@@ -4,6 +4,7 @@ namespace Max\Session\Handlers;
 
 use Max\Redis\RedisManager;
 use Max\Redis\Redis;
+use Max\Session\Exceptions\SessionException;
 use Max\Utils\Traits\AutoFillProperties;
 use Psr\Container\ContainerExceptionInterface;
 use ReflectionException;
@@ -37,6 +38,9 @@ class RedisHandler implements SessionHandlerInterface
     public function __construct(array $options = [])
     {
         $this->fillProperties($options);
+        if (!class_exists('Max\Redis\RedisManager')) {
+            throw new SessionException('You will need to install the Redis package using `composer require max/redis`');
+        }
         /** @var RedisManager $manager */
         $manager       = make(RedisManager::class);
         $this->handler = $manager->connection($this->connection);
