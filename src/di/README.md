@@ -1,4 +1,4 @@
-一款简单的容器
+一款简单的容器，所有被容器实例化的类以及所有依赖都是单例
 
 # 安装
 
@@ -41,4 +41,9 @@ $container->make(Test::class);
 
 ```php
 $container->get(Test::class);
+```
+
+调用方法
+```php
+$conatiner->call(callable $callable, array $arguments = []);
 ```
