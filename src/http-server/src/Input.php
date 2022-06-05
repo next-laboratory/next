@@ -15,6 +15,7 @@ namespace Max\HttpServer;
 
 use Max\HttpMessage\UploadedFile;
 use Max\Session\Session;
+use Max\Utils\Arr;
 use RuntimeException;
 
 trait Input
@@ -106,7 +107,12 @@ trait Input
 
     public function file(string $field): ?UploadedFile
     {
-        return $this->request->getUploadedFiles()[$field] ?? null;
+        return Arr::get($this->files(), $field);
+    }
+
+    public function files(): array
+    {
+        return $this->request->getUploadedFiles();
     }
 
     public function all(): array
