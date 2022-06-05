@@ -38,7 +38,7 @@ class SwooleResponseEmitter implements ResponseEmitterInterface
         }
         $psrResponse = $psrResponse->withoutHeader('Set-Cookie');
         foreach ($psrResponse->getHeaders() as $key => $value) {
-            $sender->header($key, $value);
+            $sender->header($key, implode(', ', $value));
         }
         $body = $psrResponse->getBody();
         switch (true) {
