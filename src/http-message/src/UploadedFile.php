@@ -14,70 +14,46 @@ declare(strict_types=1);
 namespace Max\HttpMessage;
 
 use Exception;
-use Max\HttpMessage\Stream\FileStream;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
+use RuntimeException;
 use SplFileInfo;
 
 class UploadedFile implements UploadedFileInterface
 {
-    /**
-     * 错误提示
-     */
-    protected const ERROR = [
-        'UPLOAD_ERR_OK',         //表示没有错误发生，文件上传成功。
-        'UPLOAD_ERR_INI_SIZE',   //上传的文件超过了 php.ini 中 upload_max_filesize选项限制的值。
-        'UPLOAD_ERR_FORM_SIZE',  //上传文件的大小超过了 HTML 表单中 MAX_FILE_SIZE 选项指定的值。
-        'UPLOAD_ERR_PARTIAL',    //文件只有部分被上传。
-        'UPLOAD_ERR_NO_FILE',    //没有文件被上传。
-        'UPLOAD_ERR_NO_TMP_DIR', //找不到临时文件夹。
-        'UPLOAD_ERR_CANT_WRITE', //文件写入失败。
+    protected const ERROR_MESSAGES = [
+        UPLOAD_ERR_OK         => 'OK.',
+        UPLOAD_ERR_INI_SIZE   => '上传的文件超过了 php.ini 中 upload_max_filesize选项限制的值',
+        UPLOAD_ERR_FORM_SIZE  => '上传文件的大小超过了 HTML 表单中 MAX_FILE_SIZE 选项指定的值',
+        UPLOAD_ERR_PARTIAL    => '文件只有部分被上传',
+        UPLOAD_ERR_NO_FILE    => '没有文件被上传',
+        UPLOAD_ERR_NO_TMP_DIR => '找不到临时文件夹',
+        UPLOAD_ERR_CANT_WRITE => '文件写入失败',
     ];
 
     /**
-     * @var string|mixed
+     * @param StreamInterface|null $stream
+     * @param int                  $size
+     * @param string               $clientFilename
+     * @param string               $clientMediaType
+     * @param int                  $error
      */
-    protected string $name = '';
-
-    /**
-     * @var string|mixed
-     */
-    protected string $type = '';
-
-    /**
-     * @var string|mixed
-     */
-    protected string $tmpName = '';
-
-    /**
-     * @var int|mixed
-     */
-    protected int $error = 0;
-
-    /**
-     * @var int|mixed
-     */
-    protected int $size = 0;
-
-    /**
-     * @param array $file
-     */
-    public function __construct(array $file)
+    public function __construct(
+        protected ?StreamInterface $stream = null,
+        protected int              $size = 0,
+        protected string           $clientFilename = '',
+        protected string           $clientMediaType = '',
+        protected int              $error = \UPLOAD_ERR_OK,
+    )
     {
-        $this->name    = $file['name'];
-        $this->tmpName = $file['tmp_name'];
-        $this->type    = $file['type'];
-        $this->error   = $file['error'];
-        $this->size    = $file['size'];
     }
 
     /**
-     * @return StreamInterface
-     * @throws Exception
+     * @inheritDoc
      */
     public function getStream()
     {
-        return new FileStream($this->tmpName);
+        return $this->stream;
     }
 
     /**
@@ -88,19 +64,19 @@ class UploadedFile implements UploadedFileInterface
      */
     public function moveTo($targetPath)
     {
-        if (0 !== $this->getError()) {
-            throw new Exception(static::ERROR[$this->getError()], $this->getError());
+        if (($code = $this->getError()) > 0) {
+            throw new RuntimeException(static::ERROR_MESSAGES[$code], $code);
         }
         $path = pathinfo($targetPath, PATHINFO_DIRNAME);
         !is_dir($path) && mkdir($path, 0755, true);
-        if (move_uploaded_file($this->tmpName, $targetPath)) {
+        if (move_uploaded_file($this->stream->getMetadata('uri'), $targetPath)) {
             return new SplFileInfo($targetPath);
         }
-        throw new Exception('文件上传失败，请检查目录权限！');
+        throw new RuntimeException('文件上传失败，请检查目录权限！');
     }
 
     /**
-     * @return int|mixed|null
+     * @inheritDoc
      */
     public function getSize()
     {
@@ -108,7 +84,7 @@ class UploadedFile implements UploadedFileInterface
     }
 
     /**
-     * @return int|mixed
+     * @inheritDoc
      */
     public function getError()
     {
@@ -116,18 +92,18 @@ class UploadedFile implements UploadedFileInterface
     }
 
     /**
-     * @return mixed|string|null
+     * @inheritDoc
      */
     public function getClientFilename()
     {
-        return $this->name;
+        return $this->clientFilename;
     }
 
     /**
-     * @return mixed|string|null
+     * @inheritDoc
      */
     public function getClientMediaType()
     {
-        return $this->type;
+        return $this->clientMediaType;
     }
 }

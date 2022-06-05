@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Max\HttpMessage;
 
-use Max\HttpMessage\Stream\StringStream;
+use Max\HttpMessage\Stream\FileStream;
 use Psr\Http\Message\ServerRequestInterface;
 use function strpos;
 
@@ -137,7 +137,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     protected function convertToUploadedFiles(&$uploadedFiles, $k, $name, $tmpName, $type, $size, $error): void
     {
         if (is_string($name)) {
-            $uploadedFiles[$k] = new UploadedFile($error > 0 ? null : new StringStream($tmpName), $size, $name, $type, $error);
+            $uploadedFiles[$k] = new UploadedFile($error > 0 ? null : new FileStream($tmpName), $size, $name, $type, $error);
         } else {
             foreach ($name as $key => $value) {
                 $this->convertToUploadedFiles($uploadedFiles[$k], $key, $value, $tmpName[$key], $type[$key], $size[$key], $error[$key]);
