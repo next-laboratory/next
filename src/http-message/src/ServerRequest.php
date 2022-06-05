@@ -13,10 +13,6 @@ declare(strict_types=1);
 
 namespace Max\HttpMessage;
 
-use Max\HttpMessage\Bags\FileBag;
-use Max\HttpMessage\Bags\InputBag;
-use Max\HttpMessage\Bags\ParameterBag;
-use Max\HttpMessage\Bags\ServerBag;
 use Max\HttpMessage\Stream\StringStream;
 use Max\Session\Session;
 use Psr\Http\Message\ServerRequestInterface;
@@ -109,7 +105,7 @@ class ServerRequest extends Request implements ServerRequestInterface
         $psrRequest                = new static(
             $request->method(),
             new Uri($request->uri()),
-            $request->header(),
+            array_change_key_case($request->header(), CASE_UPPER),
             $request->rawBody()
         );
         $psrRequest->queryParams   = $request->get() ?: [];
@@ -127,14 +123,15 @@ class ServerRequest extends Request implements ServerRequestInterface
     {
         $psrRequest                = new static(
             $_SERVER['REQUEST_METHOD'],
-            $_SERVER['REQUEST_URI'],
+            new Uri($_SERVER['REQUEST_URI']),
             apache_request_headers(),
             file_get_contents('php://input')
         );
+        $psrRequest->serverParams  = $_SERVER;
+        $psrRequest->cookieParams  = array_change_key_case($_COOKIE, CASE_UPPER);
         $psrRequest->queryParams   = $_GET;
         $psrRequest->parsedBody    = $_POST;
-        $psrRequest->uploadedFiles = $_FILES;
-        $psrRequest->cookieParams  = $_COOKIE;
+        $psrRequest->uploadedFiles = $_FILES; // TODO Convert to UploadedFiles
 
         return $psrRequest;
     }
