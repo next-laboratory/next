@@ -73,7 +73,7 @@ class ExceptionHandler implements ExceptionHandlerInterface
 
     protected function getStatusCode(Throwable $throwable)
     {
-        $statusCode = 400;
+        $statusCode = 500;
         if (in_array($throwable::class, $this->httpExceptions) || $throwable instanceof HttpException) {
             $statusCode = $throwable->getCode();
         }

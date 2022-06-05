@@ -90,7 +90,7 @@ class ServerRequest extends Request implements ServerRequestInterface
         $psrRequest->body          = new StringStream($request->getContent());
         $psrRequest->cookieParams  = array_change_key_case($request->cookie ?? [], CASE_UPPER);
         $psrRequest->queryParams   = $request->get ?? [];
-        $psrRequest->uploadedFiles = $request->files ?? [];
+        $psrRequest->uploadedFiles = $request->files ?? []; // TODO Convert to UploadedFiles.
 
         return $psrRequest;
     }
@@ -100,18 +100,16 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @return static
      */
-    public static function createFromWorkermanRequest($request)
+    public static function createFromWorkermanRequest($request): static
     {
         $psrRequest                = new static(
-            $request->method(),
-            new Uri($request->uri()),
-            array_change_key_case($request->header(), CASE_UPPER),
-            $request->rawBody()
+            $request->method(), new Uri($request->uri()),
+            array_change_key_case($request->header(), CASE_UPPER), $request->rawBody()
         );
         $psrRequest->queryParams   = $request->get() ?: [];
         $psrRequest->parsedBody    = $request->post() ?: [];
-        $psrRequest->cookieParams  = $request->cookie() ?: [];
-        $psrRequest->uploadedFiles = $request->file() ?: [];
+        $psrRequest->cookieParams  = array_change_key_case($request->cookie() ?: [], CASE_UPPER);
+        $psrRequest->uploadedFiles = $request->file() ?: []; // TODO Convert to UploadedFiles.
 
         return $psrRequest;
     }
@@ -119,7 +117,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * @return static
      */
-    public static function createFromGlobals()
+    public static function createFromGlobals(): static
     {
         $psrRequest                = new static(
             $_SERVER['REQUEST_METHOD'],
