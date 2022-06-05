@@ -13,8 +13,9 @@ declare(strict_types=1);
 
 namespace Max\HttpServer;
 
-use InvalidArgumentException;
 use Max\HttpMessage\UploadedFile;
+use Max\Session\Session;
+use RuntimeException;
 
 trait Input
 {
@@ -23,12 +24,15 @@ trait Input
         return $this->request->getHeaderLine($name);
     }
 
-    public function session(string $key, $value = null)
+    /**
+     * @return ?Session
+     */
+    public function session(): ?Session
     {
-        if (is_null($value)) {
-            return $this->request->session?->get($key);
+        if ($session = $this->request->getAttribute('Max\Session\Session')) {
+            return $session;
         }
-        return $this->request->session?->set($key, $value);
+        throw new RuntimeException('Session is invalid.');
     }
 
     public function server(string $name)

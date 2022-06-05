@@ -31,8 +31,10 @@ class SwooleResponseEmitter implements ResponseEmitterInterface
     public function emit(ResponseInterface $psrResponse, $sender = null): void
     {
         $sender->status($psrResponse->getStatusCode());
-        foreach ($psrResponse->getHeader('Set-Cookie') as $str) {
-            $this->sendCookie(Cookie::parse($str), $sender);
+        foreach ($psrResponse->getHeader('Set-Cookie') as $cookies) {
+            foreach ($cookies as $cookieString) {
+                $this->sendCookie(Cookie::parse($cookieString), $sender);
+            }
         }
         $psrResponse = $psrResponse->withoutHeader('Set-Cookie');
         foreach ($psrResponse->getHeaders() as $key => $value) {

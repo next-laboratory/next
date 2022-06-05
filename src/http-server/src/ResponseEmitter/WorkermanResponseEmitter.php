@@ -30,24 +30,24 @@ class WorkermanResponseEmitter implements ResponseEmitterInterface
     public function emit(ResponseInterface $psrResponse, $sender = null): void
     {
         $response = new Response($psrResponse->getStatusCode());
-        foreach ($psrResponse->getHeaders() as $name => $values) {
-            if (0 === strcasecmp('Set-Cookie', $name)) {
-                foreach ($values as $value) {
-                    $cookie = Cookie::parse($value);
-                    $response->cookie(
-                        $cookie->getName(),
-                        $cookie->getValue(),
-                        $cookie->getMaxAge(),
-                        $cookie->getPath(),
-                        $cookie->getDomain(),
-                        $cookie->isSecure(),
-                        $cookie->isHttponly(),
-                        $cookie->getSamesite()
-                    );
-                }
-            } else {
-                $response->header($name, implode(', ', $values));
+        foreach ($psrResponse->getHeader('Set-Cookie') as $cookies) {
+            foreach ($cookies as $cookieString) {
+                $cookie = Cookie::parse($cookieString);
+                $response->cookie(
+                    $cookie->getName(),
+                    $cookie->getValue(),
+                    $cookie->getMaxAge(),
+                    $cookie->getPath(),
+                    $cookie->getDomain(),
+                    $cookie->isSecure(),
+                    $cookie->isHttponly(),
+                    $cookie->getSamesite()
+                );
             }
+        }
+        $psrResponse = $psrResponse->withoutHeader('Set-Cookie');
+        foreach ($psrResponse->getHeaders() as $name => $values) {
+            $response->header($name, implode(', ', $values));
         }
 
         $body    = $psrResponse->getBody();

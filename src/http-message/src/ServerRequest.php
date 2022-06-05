@@ -14,13 +14,11 @@ declare(strict_types=1);
 namespace Max\HttpMessage;
 
 use Max\HttpMessage\Stream\StringStream;
-use Max\Session\Session;
 use Psr\Http\Message\ServerRequestInterface;
 use function strpos;
 
 class ServerRequest extends Request implements ServerRequestInterface
 {
-    public ?Session $session       = null;
     protected array $serverParams  = [];
     protected array $cookieParams  = [];
     protected array $queryParams   = [];

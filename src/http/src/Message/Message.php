@@ -75,7 +75,6 @@ class Message implements MessageInterface
 
     /**
      * @inheritDoc
-     * @return string[]
      */
     public function getHeader($name)
     {
