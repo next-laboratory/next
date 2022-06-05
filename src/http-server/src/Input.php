@@ -23,6 +23,14 @@ trait Input
         return $this->request->getHeaderLine($name);
     }
 
+    public function session(string $key, $value = null)
+    {
+        if (is_null($value)) {
+            return $this->request->session?->get($key);
+        }
+        return $this->request->session?->set($key, $value);
+    }
+
     public function server(string $name)
     {
         return $this->request->getServerParams()[strtoupper($name)] ?? null;
