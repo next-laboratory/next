@@ -81,6 +81,11 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
     /**
      * @var array
      */
+    protected array $appends = [];
+
+    /**
+     * @var array
+     */
     protected array $attributes = [];
 
     /**
@@ -109,8 +114,9 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
      */
     protected function fillableFromArray(array $attributes): array
     {
-        if (count($this->getFillable()) > 0) {
-            return array_intersect_key($attributes, array_flip($this->getFillable()));
+        $fillable = $this->getFillable();
+        if (count($fillable) > 0) {
+            return array_intersect_key($attributes, array_flip($fillable));
         }
         return $attributes;
     }
@@ -123,7 +129,7 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
     public function fill(array $attributes): static
     {
         $this->original = $attributes;
-        foreach ($this->fillableFromArray($attributes) as $key => $value) {
+        foreach ($attributes as $key => $value) {
             $this->setAttribute($key, $value);
         }
         return $this;
@@ -317,10 +323,14 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
      */
     public function setAttribute($key, $value): void
     {
-        if ($this->hasCast($key)) {
-            $value = $this->cast($value, $this->getCast($key));
+        $this->original[$key] = $value;
+
+        if (in_array($key, $this->getFillable())) {
+            if ($this->hasCast($key)) {
+                $value = $this->cast($value, $this->getCast($key));
+            }
+            $this->attributes[$key] = $value;
         }
-        $this->attributes[$key] = $value;
     }
 
     /**
