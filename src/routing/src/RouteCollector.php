@@ -61,7 +61,6 @@ class RouteCollector
      * @return Route
      * @throws MethodNotAllowedException
      * @throws RouteNotFoundException
-     * @throws HttpException
      */
     public function resolve(ServerRequestInterface $request): Route
     {

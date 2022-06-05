@@ -36,7 +36,7 @@ class ExceptionHandler implements ExceptionHandlerInterface
      * @return ResponseInterface
      * @throws Throwable
      */
-    public function handleException(Throwable $throwable, ServerRequestInterface $request): ResponseInterface
+    final public function handleException(Throwable $throwable, ServerRequestInterface $request): ResponseInterface
     {
         $this->reportException($throwable, $request);
 
@@ -61,11 +61,7 @@ class ExceptionHandler implements ExceptionHandlerInterface
      */
     protected function renderException(Throwable $throwable, ServerRequestInterface $request): ResponseInterface
     {
-        $statusCode = 400;
-        if (in_array($throwable::class, $this->httpExceptions) || $throwable instanceof HttpException) {
-            $statusCode = $throwable->getCode();
-        }
-        return new Response($statusCode, [], sprintf("<pre style='color:red;'><p><b>[%s] %s in %s +%d</b><p>%s</pre>",
+        return new Response($this->getStatusCode($throwable), [], sprintf("<pre style='color:red;'><p><b>[%s] %s in %s +%d</b><p>%s</pre>",
                 $throwable::class,
                 $throwable->getMessage(),
                 $throwable->getFile(),
@@ -73,5 +69,14 @@ class ExceptionHandler implements ExceptionHandlerInterface
                 $throwable->getTraceAsString()
             )
         );
+    }
+
+    protected function getStatusCode(Throwable $throwable)
+    {
+        $statusCode = 400;
+        if (in_array($throwable::class, $this->httpExceptions) || $throwable instanceof HttpException) {
+            $statusCode = $throwable->getCode();
+        }
+        return $statusCode;
     }
 }
