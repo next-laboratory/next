@@ -40,12 +40,12 @@ class FPMResponseEmitter implements ResponseEmitterInterface
         if ($body instanceof FileStream) {
             header("Pragma: public");                                           //1 Public指示响应可被任何缓存区缓存。
             header("Expires: 0");                                               //2 浏览器不会响应缓存
-            header("Cache-Control:must-revalidate, post-check=0, pre-check=0"); //3
+            header("Cache-Control: must-revalidate, post-check=0, pre-check=0"); //3
             //            header("Content-Type:application/force-download");                  //4 请求该页面就出现下载保存窗口。
             //            header("Content-Type:application/octet-stream");                    //5  二进制流，不知道下载文件类型。
             //            header("Content-Type:application/vnd.ms-excel;");                   //6
-            header("Content-Type:application/download");                        //7 提示用户将当前文件保存到本地。
-            header("Content-Transfer-Encoding:binary");                         //9
+            header("Content-Type: application/download");                        //7 提示用户将当前文件保存到本地。
+            header("Content-Transfer-Encoding: binary");                         //9
         }
         echo $body?->getContents();
         $body?->close();

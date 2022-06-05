@@ -4,9 +4,10 @@ namespace Max\HttpServer;
 
 use ArrayAccess;
 use Max\HttpMessage\Cookie;
-use Max\HttpMessage\Response;
 use Max\HttpMessage\Stream\FileStream;
 use Max\HttpMessage\Stream\StringStream;
+use Max\Utils\Exceptions\FileNotFoundException;
+use Max\Utils\Filesystem;
 use Max\Utils\Str;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
@@ -15,21 +16,12 @@ use Stringable;
 trait Writer
 {
     /**
-     * @param string $name
-     * @param string $value
-     * @param int    $expires
-     * @param string $path
-     * @param string $domain
-     * @param bool   $secure
-     * @param bool   $httponly
-     * @param string $samesite
-     *
-     * @return $this
+     * Set cookie.
      */
     public function setCookie(
         string $name, string $value, int $expires = 3600, string $path = '/',
         string $domain = '', bool $secure = false, bool $httponly = false, string $samesite = ''
-    )
+    ): static
     {
         $cookie = new Cookie(...func_get_args());
         $this->response->withAddedHeader('Set-Cookie', $cookie->__toString());
@@ -37,37 +29,29 @@ trait Writer
     }
 
     /**
-     * @param string $contentType
+     * Generate a JSON response.
      *
-     * @return $this
-     */
-    public function contentType(string $contentType)
-    {
-        $this->response->withHeader('Content-Type', $contentType);
-        return $this;
-    }
-
-    /**
      * @param ArrayAccess|array $data
      */
     public function JSON($data, int $status = 200): ResponseInterface
     {
-        return $this->contentType('application/json; charset=utf-8')->end(json_encode($data), $status);
+        $this->response->withHeader('Content-Type', 'application/json; charset=utf-8');
+        return $this->end(json_encode($data), $status);
     }
 
     /**
+     * Generate a HTML response.
+     *
      * @param Stringable|string $data
      */
     public function HTML($data, int $status = 200): ResponseInterface
     {
-        return $this->contentType('text/html; charset=utf-8')->end((string)$data, $status);
+        $this->response->withHeader('Content-Type', 'charset=utf-8');
+        return $this->end((string)$data, $status);
     }
 
     /**
-     * @param StreamInterface|string|null $data
-     * @param int                         $status
-     *
-     * @return ResponseInterface
+     * Generate a response.
      */
     public function end(null|StreamInterface|string $data = null, int $status = 200): ResponseInterface
     {
@@ -77,12 +61,7 @@ trait Writer
     }
 
     /**
-     * 重定向
-     *
-     * @param string $url
-     * @param int    $status
-     *
-     * @return ResponseInterface
+     * Generate a redirect response.
      */
     public function redirect(string $url, int $status = 302): ResponseInterface
     {
@@ -90,19 +69,29 @@ trait Writer
     }
 
     /**
-     * 文件下载
+     * Generate a file download response.
      *
      * @param string $uri    文件路径
-     * @param string $name   文件名
+     * @param string $name   文件名（留空则自动生成文件名）
      * @param int    $offset 偏移量
      * @param int    $length 长度
      *
-     * @return ResponseInterface
+     * @throws FileNotFoundException
      */
     public function download(string $uri, string $name = '', int $offset = 0, int $length = -1): ResponseInterface
     {
+        if (!file_exists($uri)) {
+            throw new FileNotFoundException('File does not exist.');
+        }
+        if (empty($name)) {
+            $extension = Filesystem::extension($uri);
+            if (!empty($extension)) {
+                $extension = '.' . $extension;
+            }
+            $name = Str::random(10) . $extension;
+        }
         return $this->response
-            ->withHeader('Content-Disposition', 'attachment;filename=' . $name ?: Str::random(10))
+            ->withHeader('Content-Disposition', 'attachment;filename=' . $name)
             ->withBody(new FileStream($uri, $offset, $length));
     }
 }
