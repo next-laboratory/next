@@ -1,33 +1,37 @@
 <?php
 
-declare(strict_types=1);
-
-/**
- * This file is part of the Max package.
- *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
-namespace Max\HttpServer;
+namespace Max\HttpServer\Middlewares;
 
 use Max\HttpMessage\Response;
-use Max\HttpServer\Contracts\ExceptionHandlerInterface;
 use Max\HttpServer\Exceptions\HttpException;
-use Max\Routing\Exceptions\MethodNotAllowedException;
-use Max\Routing\Exceptions\RouteNotFoundException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Throwable;
 
-class ExceptionHandler implements ExceptionHandlerInterface
+class ExceptionHandleMiddleware implements MiddlewareInterface
 {
     protected array $httpExceptions = [
-        MethodNotAllowedException::class,
-        RouteNotFoundException::class,
+        'Max\Routing\Exceptions\MethodNotAllowedException',
+        'Max\Routing\Exceptions\RouteNotFoundException',
     ];
+
+    /**
+     * @param ServerRequestInterface  $request
+     * @param RequestHandlerInterface $handler
+     *
+     * @return ResponseInterface
+     */
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    {
+        try {
+            return $handler->handle($request);
+        } catch (Throwable $throwable) {
+            $this->reportException($throwable, $request);
+            return $this->renderException($throwable, $request);
+        }
+    }
 
     /**
      * @param Throwable              $throwable
@@ -71,12 +75,17 @@ class ExceptionHandler implements ExceptionHandlerInterface
         );
     }
 
-    protected function getStatusCode(Throwable $throwable)
+    /**
+     * @param Throwable $throwable
+     *
+     * @return int
+     */
+    protected function getStatusCode(Throwable $throwable): int
     {
         $statusCode = 500;
         if (in_array($throwable::class, $this->httpExceptions) || $throwable instanceof HttpException) {
             $statusCode = $throwable->getCode();
         }
-        return $statusCode;
+        return (int)$statusCode;
     }
 }

@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Max\HttpServer;
 
 use Max\HttpMessage\ServerRequest;
-use Max\HttpServer\Contracts\ExceptionHandlerInterface;
 use Max\HttpServer\Events\OnRequest;
 use Max\HttpServer\ResponseEmitter\FPMResponseEmitter;
 use Max\HttpServer\ResponseEmitter\SwooleResponseEmitter;
@@ -35,18 +34,19 @@ class Kernel
     /**
      * 全局中间件
      */
-    protected array $middlewares = [];
+    protected array $middlewares = [
+        'Max\HttpServer\Middlewares\ExceptionHandleMiddleware',
+        'Max\HttpServer\Middlewares\RoutingMiddleware',
+    ];
 
     /**
-     * @param RouteCollector            $routeCollector   路由收集器
-     * @param ContainerInterface        $container        容器
-     * @param ExceptionHandlerInterface $exceptionHandler 错误处理实例
-     * @param ?EventDispatcherInterface $eventDispatcher  事件调度器
+     * @param RouteCollector            $routeCollector  路由收集器
+     * @param ContainerInterface        $container       容器
+     * @param ?EventDispatcherInterface $eventDispatcher 事件调度器
      */
     final public function __construct(
         protected RouteCollector            $routeCollector,
         protected ContainerInterface        $container,
-        protected ExceptionHandlerInterface $exceptionHandler,
         protected ?EventDispatcherInterface $eventDispatcher = null,
     )
     {
@@ -99,21 +99,16 @@ class Kernel
     }
 
     /**
-     * @param ServerRequestInterface $serverRequest
+     * @param ServerRequestInterface $request
      *
      * @return ResponseInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \ReflectionException
      */
-    final protected function handle(ServerRequestInterface $serverRequest): ResponseInterface
+    final protected function handle(ServerRequestInterface $request): ResponseInterface
     {
-        try {
-            $route       = $this->routeCollector->resolve($serverRequest);
-            $middlewares = array_merge($this->middlewares, $route->getMiddlewares());
-            $response    = (new RequestHandler($this->container, $route, $middlewares))->handle($serverRequest);
-        } catch (\Throwable $throwable) {
-            $response = $this->exceptionHandler->handleException($throwable, $serverRequest);
-        } finally {
-            $this->eventDispatcher?->dispatch(new OnRequest($serverRequest, $response));
-            return $response;
-        }
+        $response = (new RequestHandler($this->container, $this->middlewares))->handle($request);
+        $this->eventDispatcher?->dispatch(new OnRequest($request, $response));
+        return $response;
     }
 }

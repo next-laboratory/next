@@ -28,7 +28,6 @@ class RequestHandler implements RequestHandlerInterface
 {
     public function __construct(
         protected ContainerInterface $container,
-        protected Route              $route,
         protected array              $middlewares = []
     )
     {
@@ -52,22 +51,11 @@ class RequestHandler implements RequestHandlerInterface
      */
     protected function handleRequest(ServerRequestInterface $request): ResponseInterface
     {
-        $params   = $this->route->getParameters();
+        /** @var Route $route */
+        $route    = $request->getAttribute(Route::class);
+        $params   = $route->getParameters();
         $params[] = Context::create($request, new Response());
-
-        return $this->container->call($this->parseAction(), $params);
-    }
-
-    /**
-     * 将路由注册的句柄解析为 callable
-     *
-     * @return callable
-     * @throws ContainerExceptionInterface
-     * @throws ReflectionException
-     */
-    protected function parseAction(): callable
-    {
-        $action = $this->route->getAction();
+        $action   = $route->getAction();
         if (is_string($action)) {
             $action = explode('@', $action, 2);
         }
@@ -75,7 +63,8 @@ class RequestHandler implements RequestHandlerInterface
             [$controller, $action] = $action;
             $action = [$this->container->make($controller), $action];
         }
-        return $action;
+
+        return $this->container->call($action, $params);
     }
 
     /**
@@ -95,5 +84,15 @@ class RequestHandler implements RequestHandlerInterface
         }
 
         throw new InvalidMiddlewareException(sprintf('Middleware `%s must implement the `Psr\Http\Server\MiddlewareInterface` interface.', $middleware));
+    }
+
+    /**
+     * @param array $middlewares
+     *
+     * @return void
+     */
+    public function pushMiddlewares(array $middlewares)
+    {
+        array_push($this->middlewares, ...$middlewares);
     }
 }
