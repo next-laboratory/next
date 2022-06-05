@@ -219,6 +219,7 @@ class Container implements ContainerInterface
      * @param array                      $arguments          参数列表，支持关联数组，会自动按照变量名传入
      *
      * @throws ContainerExceptionInterface|ReflectionException
+     * @throws Throwable
      */
     public function getFuncArgs(ReflectionFunctionAbstract $reflectionFunction, array $arguments = []): array
     {
@@ -239,7 +240,7 @@ class Container implements ContainerInterface
                     || ($type instanceof ReflectionNamedType && $type->isBuiltin())
                     || (PHP_VERSION_ID >= 80000 && $type instanceof ReflectionUnionType)
                     || ($typeName = $type->getName()) === 'Closure') {
-                    $funcArgs[] = $this->getParameterDefaultValue($parameter);
+                    $funcArgs[] = $parameter->isOptional() ? $parameter->getDefaultValue() : null;
                 } else {
                     // 当接口注入后又传递参数的时候会报错
                     if (isset($objectValues[$typeName])) {
@@ -248,7 +249,10 @@ class Container implements ContainerInterface
                         try {
                             $funcArgs[] = $this->make($typeName);
                         } catch (Throwable $throwable) {
-                            $funcArgs[] = $this->getParameterDefaultValue($parameter);
+                            if (!$parameter->isOptional()) {
+                                throw $throwable;
+                            }
+                            $funcArgs[] = $parameter->getDefaultValue();
                         }
                     }
                 }
@@ -256,16 +260,5 @@ class Container implements ContainerInterface
         }
 
         return array_map(fn($value) => is_null($value) && !empty($arguments) ? array_shift($arguments) : $value, $funcArgs);
-    }
-
-    /**
-     * @param ReflectionParameter $reflectionParameter
-     *
-     * @return mixed|null
-     * @throws ReflectionException
-     */
-    protected function getParameterDefaultValue(ReflectionParameter $reflectionParameter)
-    {
-        return $reflectionParameter->isOptional() ? $reflectionParameter->getDefaultValue() : null;
     }
 }
