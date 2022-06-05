@@ -299,7 +299,7 @@ class Builder
      */
     public function order($column, string $order = 'ASC'): static
     {
-        $this->order[] = func_get_args();
+        $this->order[] = [$column, $order];
 
         return $this;
     }
