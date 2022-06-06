@@ -106,7 +106,7 @@ class Blade implements ViewEngineInterface
      * @return void
      * @throws ViewNotExistException
      */
-    public function render(string $template, array $arguments = [])
+    public function render(string $template, array $arguments = []): void
     {
         $this->renderView($template, $arguments);
     }
@@ -115,7 +115,7 @@ class Blade implements ViewEngineInterface
      * @return void
      * @throws ViewNotExistException
      */
-    protected function renderView()
+    protected function renderView(): void
     {
         extract(func_get_arg(1));
         include $this->getCompiler()->compile(func_get_arg(0));

@@ -28,6 +28,7 @@ use Throwable;
  * @method static Builder where(string $column, $value, string $operator = '=')
  * @method static Builder whereNull(string $column)
  * @method static Builder order(string $column, string $sort = 'ASC')
+ * @method static Builder limit(int $limit)
  */
 abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
 {

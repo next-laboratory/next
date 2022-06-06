@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Max\HttpMessage;
 
-use Exception;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use RuntimeException;
@@ -22,21 +21,21 @@ use SplFileInfo;
 class UploadedFile implements UploadedFileInterface
 {
     protected const ERROR_MESSAGES = [
-        UPLOAD_ERR_OK         => 'OK.',
-        UPLOAD_ERR_INI_SIZE   => '上传的文件超过了 php.ini 中 upload_max_filesize选项限制的值',
-        UPLOAD_ERR_FORM_SIZE  => '上传文件的大小超过了 HTML 表单中 MAX_FILE_SIZE 选项指定的值',
-        UPLOAD_ERR_PARTIAL    => '文件只有部分被上传',
-        UPLOAD_ERR_NO_FILE    => '没有文件被上传',
-        UPLOAD_ERR_NO_TMP_DIR => '找不到临时文件夹',
-        UPLOAD_ERR_CANT_WRITE => '文件写入失败',
+        UPLOAD_ERR_OK         => 'File uploaded successfully.',
+        UPLOAD_ERR_INI_SIZE   => 'The uploaded file exceeded the limit for upload_max_filesize in php.ini.',
+        UPLOAD_ERR_FORM_SIZE  => 'The size of the uploaded file exceeds the value specified by the MAX_FILE_SIZE option in the HTML form.',
+        UPLOAD_ERR_PARTIAL    => 'Only part of the file was uploaded.',
+        UPLOAD_ERR_NO_FILE    => 'No files were uploaded.',
+        UPLOAD_ERR_NO_TMP_DIR => 'Unable to find temporary folder.',
+        UPLOAD_ERR_CANT_WRITE => 'File write failed.',
     ];
 
     /**
-     * @param StreamInterface|null $stream
-     * @param int                  $size
-     * @param string               $clientFilename
-     * @param string               $clientMediaType
-     * @param int                  $error
+     * @param StreamInterface|null $stream          文件流
+     * @param int                  $size            文件大小
+     * @param string               $clientFilename  客户端文件名
+     * @param string               $clientMediaType 客户端媒体类型
+     * @param int                  $error           错误码
      */
     public function __construct(
         protected ?StreamInterface $stream = null,
@@ -57,10 +56,8 @@ class UploadedFile implements UploadedFileInterface
     }
 
     /**
-     * @param $targetPath
-     *
+     * @inheritDoc
      * @return SplFileInfo
-     * @throws Exception
      */
     public function moveTo($targetPath)
     {
@@ -72,7 +69,7 @@ class UploadedFile implements UploadedFileInterface
         if (move_uploaded_file($this->stream->getMetadata('uri'), $targetPath)) {
             return new SplFileInfo($targetPath);
         }
-        throw new RuntimeException('文件上传失败，请检查目录权限！');
+        throw new RuntimeException('Failed to upload file. Check directory permission.');
     }
 
     /**
