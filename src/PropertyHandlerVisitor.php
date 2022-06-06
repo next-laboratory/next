@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Max\Aop;
 
-use Max\Reflection\ReflectionManager;
+use Max\Di\Reflection;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ClassConstFetch;
@@ -55,7 +55,7 @@ class PropertyHandlerVisitor extends NodeVisitorAbstract
     {
         if ($node instanceof Class_) {
             $params          = [];
-            $reflectionClass = ReflectionManager::reflectClass($this->metadata->className);
+            $reflectionClass = Reflection::class($this->metadata->className);
             if ($reflectionConstructor = $reflectionClass->getConstructor()) {
                 $declaringClass = $reflectionConstructor->getDeclaringClass()->getName();
                 if ($classPath = $this->metadata->loader->findFile($declaringClass)) {
