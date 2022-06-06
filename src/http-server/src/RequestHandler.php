@@ -54,7 +54,7 @@ class RequestHandler implements RequestHandlerInterface
         /** @var Route $route */
         $route    = $request->getAttribute(Route::class);
         $params   = $route->getParameters();
-        $params[] = Context::create($request, new Response());
+        $params[] = $request;
         $action   = $route->getAction();
         if (is_string($action)) {
             $action = explode('@', $action, 2);

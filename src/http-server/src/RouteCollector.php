@@ -16,7 +16,7 @@ namespace Max\HttpServer;
 use Max\Aop\Collectors\AbstractCollector;
 use Max\Di\Context;
 use Max\Di\Exceptions\NotFoundException;
-use Max\Reflection\ReflectionManager;
+use Max\Di\Reflection;
 use Max\Routing\Annotations\AutoController;
 use Max\Routing\Annotations\Controller;
 use Max\Routing\Contracts\MappingInterface;
@@ -58,7 +58,7 @@ class RouteCollector extends AbstractCollector
                 'prefix'      => $attribute->prefix,
                 'middlewares' => $attribute->middlewares,
             ]);
-            foreach (ReflectionManager::reflectClass($class)->getMethods() as $reflectionMethod) {
+            foreach (Reflection::class($class)->getMethods() as $reflectionMethod) {
                 if ($reflectionMethod->isPublic() && !$reflectionMethod->isStatic() && !$reflectionMethod->isAbstract()) {
                     $action = $reflectionMethod->getName();
                     /** @var \Max\Routing\RouteCollector $routeCollector */

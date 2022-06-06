@@ -22,7 +22,7 @@ class FPMResponseEmitter implements ResponseEmitterInterface
 {
     /**
      * @param ResponseInterface $psrResponse
-     * @param                   $sender
+     * @param null              $sender
      *
      * @return void
      */
