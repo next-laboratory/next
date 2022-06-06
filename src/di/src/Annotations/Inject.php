@@ -17,7 +17,7 @@ use Attribute;
 use Max\Aop\Contracts\PropertyAttribute;
 use Max\Aop\Exceptions\PropertyHandleException;
 use Max\Di\Context;
-use Max\Reflection\ReflectionManager;
+use Max\Di\Reflection;
 use Throwable;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
@@ -34,7 +34,7 @@ class Inject implements PropertyAttribute
     {
         try {
             $container          = Context::getContainer();
-            $reflectionProperty = ReflectionManager::reflectProperty($object::class, $property);
+            $reflectionProperty = Reflection::property($object::class, $property);
             if ((!is_null($type = $reflectionProperty->getType()) && $type = $type->getName()) || $type = $this->id) {
                 $reflectionProperty->setAccessible(true);
                 $reflectionProperty->setValue($object, $container->make($type));

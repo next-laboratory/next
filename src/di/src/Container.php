@@ -16,14 +16,12 @@ namespace Max\Di;
 use BadMethodCallException;
 use Closure;
 use Max\Di\Exceptions\{ContainerException, NotFoundException};
-use Max\Reflection\ReflectionManager;
 use Psr\Container\{ContainerExceptionInterface, ContainerInterface};
 use ReflectionClass;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
 use ReflectionNamedType;
-use ReflectionParameter;
 use ReflectionUnionType;
 use Throwable;
 use function array_shift;
@@ -123,13 +121,13 @@ class Container implements ContainerInterface
     {
         if (false === $this->has($id)) {
             $id              = $this->getBinding($id);
-            $reflectionClass = ReflectionManager::reflectClass($id);
+            $reflectionClass = Reflection::class($id);
             if ($reflectionClass->isInterface()) {
                 if (!$this->bound($id)) {
                     throw new ContainerException('The ' . $id . ' has no implementation class. ', 600);
                 }
                 // TODO 当绑定的类并没有实现该接口
-                $reflectionClass = ReflectionManager::reflectClass($this->getBinding($id));
+                $reflectionClass = Reflection::class($this->getBinding($id));
             }
 
             $this->set($id, $reflectionClass->newInstanceArgs($this->getConstructorArgs($reflectionClass, $arguments)));
@@ -166,7 +164,7 @@ class Container implements ContainerInterface
         }
         [$objectOrClass, $method] = $callable;
         $isObject         = is_object($objectOrClass);
-        $reflectionMethod = ReflectionManager::reflectMethod($isObject ? get_class($objectOrClass) : $this->getBinding($objectOrClass), $method);
+        $reflectionMethod = Reflection::method($isObject ? get_class($objectOrClass) : $this->getBinding($objectOrClass), $method);
         if (false === $reflectionMethod->isAbstract()) {
             if (!$reflectionMethod->isPublic()) {
                 $reflectionMethod->setAccessible(true);
@@ -242,10 +240,16 @@ class Container implements ContainerInterface
                     || ($typeName = $type->getName()) === 'Closure') {
                     $funcArgs[] = $parameter->isOptional() ? $parameter->getDefaultValue() : null;
                 } else {
+                    $isObjectValue = false;
                     // 当接口注入后又传递参数的时候会报错
-                    if (isset($objectValues[$typeName])) {
-                        $funcArgs[] = $objectValues[$typeName];
-                    } else {
+                    foreach ($objectValues as $objectValue) {
+                        if ($objectValue instanceof $typeName) {
+                            $funcArgs[]    = $objectValue;
+                            $isObjectValue = true;
+                            break;
+                        }
+                    }
+                    if (!$isObjectValue) {
                         try {
                             $funcArgs[] = $this->make($typeName);
                         } catch (Throwable $throwable) {

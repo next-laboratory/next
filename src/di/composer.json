@@ -30,7 +30,6 @@
     },
     "require": {
         "php": "^8.0",
-        "max/reflection": "dev-master",
         "psr/container": "^2.0"
     }
 }

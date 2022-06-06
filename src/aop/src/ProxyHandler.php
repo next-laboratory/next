@@ -17,7 +17,7 @@ use ArrayObject;
 use Closure;
 use Max\Aop\Collectors\AspectCollector;
 use Max\Aop\Contracts\AspectInterface;
-use Max\Reflection\ReflectionManager;
+use Max\Di\Reflection;
 use ReflectionException;
 
 trait ProxyHandler
@@ -40,7 +40,7 @@ trait ProxyHandler
         );
         return $pipeline(
             new JoinPoint($this, $method, new ArrayObject(
-                array_combine(ReflectionManager::reflectMethodParameterNames(__CLASS__, $method), $parameters)
+                array_combine(Reflection::methodParameterNames(__CLASS__, $method), $parameters)
             ), $callback)
         );
     }

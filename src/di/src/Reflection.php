@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Max\Reflection;
+namespace Max\Di;
 
 use ReflectionClass;
 use ReflectionException;
@@ -19,18 +19,37 @@ use ReflectionMethod;
 use ReflectionParameter;
 use ReflectionProperty;
 
-final class ReflectionManager
+final class Reflection
 {
-    protected static array $reflectionClasses    = [];
+    /**
+     * @var array
+     */
+    protected static array $reflectionClasses = [];
+
+    /**
+     * @var array
+     */
     protected static array $methodParameterNames = [];
-    protected static array $propertiesNames      = [];
-    protected static array $reflectionMethods    = [];
+
+    /**
+     * @var array
+     */
+    protected static array $propertiesNames = [];
+
+    /**
+     * @var array
+     */
+    protected static array $reflectionMethods = [];
+
+    /**
+     * @var array
+     */
     protected static array $reflectionProperties = [];
 
     /**
      * @throws ReflectionException
      */
-    public static function reflectClass(string $class): ReflectionClass
+    public static function class(string $class): ReflectionClass
     {
         if (!isset(self::$reflectionClasses[$class])) {
             self::$reflectionClasses[$class] = new ReflectionClass($class);
@@ -41,10 +60,10 @@ final class ReflectionManager
     /**
      * @throws ReflectionException
      */
-    public static function reflectMethod(string $class, string $method): ReflectionMethod
+    public static function method(string $class, string $method): ReflectionMethod
     {
         if (!isset(self::$reflectionMethods[$class][$method])) {
-            self::$reflectionMethods[$class][$method] = self::reflectClass($class)->getMethod($method);
+            self::$reflectionMethods[$class][$method] = self::class($class)->getMethod($method);
         }
         return self::$reflectionMethods[$class][$method];
     }
@@ -53,18 +72,18 @@ final class ReflectionManager
      * @return ReflectionMethod[]
      * @throws ReflectionException
      */
-    public static function reflectMethods(string $class, ?int $filter = null): array
+    public static function methods(string $class, ?int $filter = null): array
     {
-        return self::reflectClass($class)->getMethods($filter);
+        return self::class($class)->getMethods($filter);
     }
 
     /**
      * @throws ReflectionException
      */
-    public static function reflectProperty(string $class, string $property): ReflectionProperty
+    public static function property(string $class, string $property): ReflectionProperty
     {
         if (!isset(self::$reflectionProperties[$class][$property])) {
-            self::$reflectionProperties[$class][$property] = self::reflectClass($class)->getProperty($property);
+            self::$reflectionProperties[$class][$property] = self::class($class)->getProperty($property);
         }
         return self::$reflectionProperties[$class][$property];
     }
@@ -73,21 +92,21 @@ final class ReflectionManager
      * @return ReflectionProperty[]
      * @throws ReflectionException
      */
-    public static function reflectProperties(string $class, $filter = null): array
+    public static function properties(string $class, $filter = null): array
     {
-        return self::reflectClass($class)->getProperties($filter);
+        return self::class($class)->getProperties($filter);
     }
 
     /**
      * @throws ReflectionException
      */
-    public static function reflectMethodParameterNames(string $class, string $method): array
+    public static function methodParameterNames(string $class, string $method): array
     {
         $key = $class . '@' . $method;
         if (!isset(self::$methodParameterNames[$key])) {
             self::$methodParameterNames[$key] = array_map(
                 fn(ReflectionParameter $reflectionParameter) => $reflectionParameter->getName(),
-                self::reflectMethodParameters($class, $method)
+                self::methodParameters($class, $method)
             );
         }
         return self::$methodParameterNames[$key];
@@ -97,25 +116,30 @@ final class ReflectionManager
      * @return ReflectionParameter[]
      * @throws ReflectionException
      */
-    public static function reflectMethodParameters(string $class, string $method): array
+    public static function methodParameters(string $class, string $method): array
     {
-        return self::reflectMethod($class, $method)->getParameters();
+        return self::method($class, $method)->getParameters();
     }
 
     /**
      * @throws ReflectionException
      */
-    public static function reflectPropertyNames(string $class)
+    public static function propertyNames(string $class)
     {
         if (!isset(self::$propertiesNames[$class])) {
             self::$propertiesNames[$class] = value(fn($class) => array_map(
-                fn($property) => $property->getName(), self::reflectProperties($class))
+                fn($property) => $property->getName(), self::properties($class))
             );
         }
         return self::$propertiesNames[$class];
     }
 
-    public static function getPropertyDefaultValue(ReflectionProperty $property)
+    /**
+     * @param ReflectionProperty $property
+     *
+     * @return mixed|null
+     */
+    public static function propertyDefaultValue(ReflectionProperty $property)
     {
         return method_exists($property, 'getDefaultValue')
             ? $property->getDefaultValue()

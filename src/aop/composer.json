@@ -18,7 +18,7 @@
         "php": "^8.0",
         "ext-pcntl": "*",
         "max/utils": "dev-master",
-        "max/reflection": "dev-master",
+        "max/di": "dev-master",
         "nikic/php-parser": "^4.13",
         "symfony/finder": "^6.0"
     }

@@ -17,7 +17,7 @@ use Composer\Autoload\ClassLoader;
 use Max\Aop\Collectors\AspectCollector;
 use Max\Aop\Collectors\PropertyAttributeCollector;
 use Max\Aop\Exceptions\ProcessException;
-use Max\Reflection\ReflectionManager;
+use Max\Di\Reflection;
 use Max\Utils\Filesystem;
 use PhpParser\NodeTraverser;
 use PhpParser\PrettyPrinter\Standard;
@@ -119,7 +119,7 @@ final class Scanner
     protected static function collect(array $collectors): void
     {
         foreach (self::$classMap as $class => $path) {
-            $reflectionClass = ReflectionManager::reflectClass($class);
+            $reflectionClass = Reflection::class($class);
             // 收集类注解
             foreach ($reflectionClass->getAttributes() as $attribute) {
                 try {
