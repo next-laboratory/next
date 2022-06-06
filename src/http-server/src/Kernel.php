@@ -20,10 +20,12 @@ use Max\HttpServer\ResponseEmitter\SwooleResponseEmitter;
 use Max\HttpServer\ResponseEmitter\WorkermanResponseEmitter;
 use Max\Routing\RouteCollector;
 use Max\Routing\Router;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use ReflectionException;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
 use Workerman\Connection\TcpConnection;
@@ -69,12 +71,15 @@ class Kernel
      * @param Response $response
      *
      * @return void
+     * @throws ContainerExceptionInterface
+     * @throws ReflectionException
      */
     public function handleSwooleRequest(Request $request, Response $response): void
     {
-        (new SwooleResponseEmitter())->emit(
-            $this->handle(ServerRequest::createFromSwooleRequest($request)), $response
-        );
+        $serverRequest = ServerRequest::createFromSwooleRequest($request);
+        $serverRequest->withAttribute('rawRequest', $request);
+        $serverRequest->withAttribute('rawResponse', $response);
+        (new SwooleResponseEmitter())->emit($this->handle($serverRequest), $response);
     }
 
     /**
@@ -82,16 +87,21 @@ class Kernel
      * @param WorkermanRequest $request
      *
      * @return void
+     * @throws ContainerExceptionInterface
+     * @throws ReflectionException
      */
     public function handleWorkermanRequest(TcpConnection $tcpConnection, WorkermanRequest $request): void
     {
-        (new WorkermanResponseEmitter())->emit(
-            $this->handle(ServerRequest::createFromWorkermanRequest($request)), $tcpConnection
-        );
+        $serverRequest = ServerRequest::createFromWorkermanRequest($request);
+        $serverRequest->withAttribute('rawRequest', $request);
+        $serverRequest->withAttribute('rawResponse', $tcpConnection);
+        (new WorkermanResponseEmitter())->emit($this->handle($serverRequest), $tcpConnection);
     }
 
     /**
      * @return void
+     * @throws ContainerExceptionInterface
+     * @throws ReflectionException
      */
     public function handleFPMRequest(): void
     {
@@ -102,8 +112,8 @@ class Kernel
      * @param ServerRequestInterface $request
      *
      * @return ResponseInterface
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \ReflectionException
+     * @throws ContainerExceptionInterface
+     * @throws ReflectionException
      */
     final protected function handle(ServerRequestInterface $request): ResponseInterface
     {

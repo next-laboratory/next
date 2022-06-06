@@ -30,6 +30,7 @@ class WorkermanResponseEmitter implements ResponseEmitterInterface
     public function emit(ResponseInterface $psrResponse, $sender = null): void
     {
         $response = new Response($psrResponse->getStatusCode());
+        /** @var string[] $cookies */
         foreach ($psrResponse->getHeader('Set-Cookie') as $cookies) {
             foreach ($cookies as $cookieString) {
                 $cookie = Cookie::parse($cookieString);

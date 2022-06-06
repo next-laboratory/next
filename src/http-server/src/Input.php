@@ -17,9 +17,17 @@ use Max\HttpMessage\UploadedFile;
 use Max\Session\Session;
 use Max\Utils\Arr;
 use RuntimeException;
+use Swoole\Http\Request;
+use Swoole\Http\Response;
+use Workerman\Connection\TcpConnection;
 
 trait Input
 {
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
     public function header(string $name): string
     {
         return $this->request->getHeaderLine($name);
@@ -36,31 +44,57 @@ trait Input
         throw new RuntimeException('Session is invalid.');
     }
 
+    /**
+     * @param string $name
+     *
+     * @return mixed|null
+     */
     public function server(string $name)
     {
         return $this->request->getServerParams()[strtoupper($name)] ?? null;
     }
 
+    /**
+     * @param string $method
+     *
+     * @return bool
+     */
     public function isMethod(string $method): bool
     {
         return 0 === strcasecmp($this->request->getMethod(), $method);
     }
 
+    /**
+     * @return string
+     */
     public function url(): string
     {
         return $this->request->getUri()->__toString();
     }
 
+    /**
+     * @param string $name
+     *
+     * @return string|null
+     */
     public function cookie(string $name): ?string
     {
         return $this->request->getCookieParams()[strtoupper($name)] ?? null;
     }
 
+    /**
+     * @return bool
+     */
     public function isAjax(): bool
     {
         return 0 === strcasecmp('XMLHttpRequest', $this->request->getHeaderLine('X-REQUESTED-WITH'));
     }
 
+    /**
+     * @param string $path
+     *
+     * @return bool
+     */
     public function isPath(string $path): bool
     {
         $requestPath = $this->request->getUri()->getPath();
@@ -68,21 +102,43 @@ trait Input
         return 0 === strcasecmp($requestPath, $path) || preg_match("#^{$path}$#iU", $requestPath);
     }
 
+    /**
+     * @return string
+     */
     public function raw(): string
     {
         return $this->request->getBody()->getContents();
     }
 
+    /**
+     * @param array|string|null $key
+     * @param mixed|null        $default
+     *
+     * @return mixed
+     */
     public function get(null|array|string $key = null, mixed $default = null): mixed
     {
         return $this->input($key, $default, $this->request->getQueryParams());
     }
 
+    /**
+     * @param array|string|null $key
+     * @param mixed|null        $default
+     *
+     * @return mixed
+     */
     public function post(null|array|string $key = null, mixed $default = null): mixed
     {
         return $this->input($key, $default, $this->request->getParsedBody());
     }
 
+    /**
+     * @param array|string|null $key
+     * @param mixed|null        $default
+     * @param array|null        $from
+     *
+     * @return mixed
+     */
     public function input(null|array|string $key = null, mixed $default = null, ?array $from = null): mixed
     {
         $from ??= $this->all();
@@ -100,21 +156,54 @@ trait Input
         return $this->isEmpty($from, $key) ? $default : $from[$key];
     }
 
+    /**
+     * @param array $haystack
+     * @param       $needle
+     *
+     * @return bool
+     */
     protected function isEmpty(array $haystack, $needle): bool
     {
         return !isset($haystack[$needle]) || '' === $haystack[$needle];
     }
 
+    /**
+     * @return null|Request|\Workerman\Protocols\Http\Request
+     */
+    public function rawRequest()
+    {
+        return $this->request->getAttribute('rawRequest');
+    }
+
+    /**
+     * @return null|Response|TcpConnection
+     */
+    public function rawResponse()
+    {
+        return $this->request->getAttribute('rawResponse');
+    }
+
+    /**
+     * @param string $field
+     *
+     * @return UploadedFile|null
+     */
     public function file(string $field): ?UploadedFile
     {
         return Arr::get($this->files(), $field);
     }
 
+    /**
+     * @return UploadedFile[]
+     */
     public function files(): array
     {
         return $this->request->getUploadedFiles();
     }
 
+    /**
+     * @return array
+     */
     public function all(): array
     {
         return $this->request->getParsedBody() + $this->request->getParsedBody();

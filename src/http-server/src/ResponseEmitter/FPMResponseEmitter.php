@@ -29,6 +29,7 @@ class FPMResponseEmitter implements ResponseEmitterInterface
     public function emit(ResponseInterface $psrResponse, $sender = null): void
     {
         header(sprintf('HTTP/%s %d %s', $psrResponse->getProtocolVersion(), $psrResponse->getStatusCode(), $psrResponse->getReasonPhrase()), true);
+        /** @var string[] $cookies */
         foreach ($psrResponse->getHeader('Set-Cookie') as $cookies) {
             foreach ($cookies as $cookieString) {
                 $this->sendCookie($cookieString);

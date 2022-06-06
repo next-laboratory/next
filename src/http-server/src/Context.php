@@ -49,11 +49,21 @@ class Context
         Arr::set($this->container, $key, $value);
     }
 
+    /**
+     * @param string $key
+     *
+     * @return bool
+     */
     public function hasValue(string $key): bool
     {
         return Arr::has($this->container, $key);
     }
 
+    /**
+     * @param string $key
+     *
+     * @return void
+     */
     public function removeValue(string $key = ''): void
     {
         empty($key) ? $this->container = [] : Arr::forget($this->container, $key);
