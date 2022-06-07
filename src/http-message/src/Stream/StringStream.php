@@ -54,12 +54,7 @@ class StringStream implements StreamInterface
      */
     public function detach()
     {
-        $this->abort();
-    }
-
-    protected function abort()
-    {
-        throw new Exception('Not implemented.');
+        throw new \BadMethodCallException('Not implemented.');
     }
 
     /**

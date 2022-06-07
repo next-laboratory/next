@@ -29,32 +29,35 @@ class WorkermanResponseEmitter implements ResponseEmitterInterface
      */
     public function emit(ResponseInterface $psrResponse, $sender = null): void
     {
-        $response = new Response($psrResponse->getStatusCode());
-        /** @var string[] $cookies */
-        foreach ($psrResponse->getHeader('Set-Cookie') as $cookies) {
-            foreach ($cookies as $cookieString) {
-                $cookie = Cookie::parse($cookieString);
-                $response->cookie(
-                    $cookie->getName(),
-                    $cookie->getValue(),
-                    $cookie->getMaxAge(),
-                    $cookie->getPath(),
-                    $cookie->getDomain(),
-                    $cookie->isSecure(),
-                    $cookie->isHttponly(),
-                    $cookie->getSamesite()
-                );
+        try {
+            $response = new Response($psrResponse->getStatusCode());
+            /** @var string[] $cookies */
+            foreach ($psrResponse->getHeader('Set-Cookie') as $cookies) {
+                foreach ($cookies as $cookieString) {
+                    $cookie = Cookie::parse($cookieString);
+                    $response->cookie(
+                        $cookie->getName(),
+                        $cookie->getValue(),
+                        $cookie->getMaxAge(),
+                        $cookie->getPath(),
+                        $cookie->getDomain(),
+                        $cookie->isSecure(),
+                        $cookie->isHttponly(),
+                        $cookie->getSamesite()
+                    );
+                }
             }
+            $psrResponse = $psrResponse->withoutHeader('Set-Cookie');
+            foreach ($psrResponse->getHeaders() as $name => $values) {
+                $response->header($name, implode(', ', $values));
+            }
+            $body = $psrResponse->getBody();
+            $content = (string)$body?->getContents();
+            $body?->close();
+            $sender->send($response->withBody($content));
+            $sender->close();
+        } catch (\Throwable $throwable) {
+            echo $throwable->getMessage() . PHP_EOL;
         }
-        $psrResponse = $psrResponse->withoutHeader('Set-Cookie');
-        foreach ($psrResponse->getHeaders() as $name => $values) {
-            $response->header($name, implode(', ', $values));
-        }
-
-        $body    = $psrResponse->getBody();
-        $content = (string)$body?->getContents();
-        $body?->close();
-        $sender->send($response->withBody($content));
-        $sender->close();
     }
 }
