@@ -65,12 +65,14 @@ class ExceptionHandleMiddleware implements MiddlewareInterface
      */
     protected function renderException(Throwable $throwable, ServerRequestInterface $request): ResponseInterface
     {
-        return new Response($this->getStatusCode($throwable), [], sprintf("<pre style='color:red;'><p><b>[%s] %s in %s +%d</b><p>%s</pre>",
-                $throwable::class,
-                $throwable->getMessage(),
-                $throwable->getFile(),
-                $throwable->getLine(),
-                $throwable->getTraceAsString()
+        $message = sprintf('%s: %s in %s +%d', $throwable::class, $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
+        return new Response($this->getStatusCode($throwable), [], sprintf(<<<EOT
+<html><head><title>%s</title></head><body><pre style="font-size: 1.5em; white-space: break-spaces"><p><b>%s</b></p><b>Stack Trace</b><br>%s</pre></body></html>
+EOT
+                ,
+                $message,
+                $message,
+                $throwable->getTraceAsString(),
             )
         );
     }
