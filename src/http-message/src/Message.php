@@ -95,11 +95,9 @@ class Message implements MessageInterface
      */
     public function withAddedHeader($name, $value)
     {
-        $new            = clone $this;
-        $new->headers   = clone $this->headers;
-        $headers        = $new->headers->get($name);
-        $headers[$name] = $value;
-        $new->headers->replace($headers);
+        $new          = clone $this;
+        $new->headers = clone $this->headers;
+        $new->headers->add($name, $value);
 
         return $new;
     }

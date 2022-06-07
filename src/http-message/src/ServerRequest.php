@@ -233,7 +233,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function getParsedBody()
     {
-        return $this->parsedBody;
+        return $this->parsedBody->all();
     }
 
     /**

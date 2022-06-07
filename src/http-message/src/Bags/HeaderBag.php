@@ -50,8 +50,13 @@ class HeaderBag extends ParameterBag
      */
     public function set(string $key, $value)
     {
-        $this->map[strtoupper($key)] = $key;
-        $this->parameters[$key] = $this->formatValue($value);
+        $uppercaseKey = strtoupper($key);
+        if (isset($this->map[$key])) {
+            $this->parameters[$this->map[$key]] = $this->formatValue($value);
+        } else {
+            $this->map[$uppercaseKey] = $key;
+            $this->parameters[$key]   = $this->formatValue($value);
+        }
     }
 
     /**
@@ -73,7 +78,7 @@ class HeaderBag extends ParameterBag
     {
         if ($this->has($key)) {
             $uppercaseKey = strtoupper($key);
-            $key = $this->map[$uppercaseKey];
+            $key          = $this->map[$uppercaseKey];
             unset($this->parameters[$key]);
             unset($this->map[$uppercaseKey]);
         }
@@ -87,10 +92,21 @@ class HeaderBag extends ParameterBag
     public function replace(array $parameters = [])
     {
         $this->parameters = [];
-        $this->map = [];
+        $this->map        = [];
         foreach ($parameters as $key => $value) {
             $this->map[strtoupper($key)] = $key;
-            $this->parameters[$key] = $this->formatValue($value);
+            $this->parameters[$key]      = $this->formatValue($value);
+        }
+    }
+
+    public function add(string $key, $value)
+    {
+        $uppercaseKey = strtoupper($key);
+        if (isset($this->map[$uppercaseKey])) {
+            array_push($this->parameters[$this->map[$uppercaseKey]], ...(array)$value);
+        } else {
+            $this->map[$uppercaseKey] = $key;
+            $this->parameters[$key]   = $this->formatValue($value);
         }
     }
 }

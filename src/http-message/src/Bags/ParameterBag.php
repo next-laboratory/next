@@ -19,7 +19,7 @@ class ParameterBag
 
     /**
      * @param string $key
-     * @param null $default
+     * @param null   $default
      *
      * @return mixed
      */
