@@ -126,8 +126,8 @@ class ServerRequest extends Request implements ServerRequestInterface
             $request->method(), new Uri($request->uri()),
             $request->header(), $request->rawBody()
         );
-        $psrRequest->queryParams   = $request->get() ?: [];
-        $psrRequest->parsedBody    = $request->post() ?: [];
+        $psrRequest->queryParams   = new ParameterBag($request->get() ?: []);
+        $psrRequest->parsedBody    = new ParameterBag($request->post() ?: []);
         $psrRequest->cookieParams  = new ParameterBag($request->cookie());
         $psrRequest->uploadedFiles = new FileBag($request->file());
 
