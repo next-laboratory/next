@@ -6,8 +6,16 @@ use InvalidArgumentException;
 
 class HeaderBag extends ParameterBag
 {
+    /**
+     * @var array
+     */
     protected array $map = [];
 
+    /**
+     * @param $value
+     *
+     * @return array|string[]
+     */
     protected function formatValue($value)
     {
         if (is_scalar($value)) {
@@ -20,6 +28,12 @@ class HeaderBag extends ParameterBag
         return array_values($value);
     }
 
+    /**
+     * @param string $key
+     * @param        $default
+     *
+     * @return mixed
+     */
     public function get(string $key, $default = []): mixed
     {
         if ($this->has($key)) {
@@ -28,17 +42,33 @@ class HeaderBag extends ParameterBag
         return $default;
     }
 
+    /**
+     * @param string $key
+     * @param        $value
+     *
+     * @return void
+     */
     public function set(string $key, $value)
     {
         $this->map[strtoupper($key)] = $key;
         $this->parameters[$key] = $this->formatValue($value);
     }
 
+    /**
+     * @param string $key
+     *
+     * @return bool
+     */
     public function has(string $key): bool
     {
         return isset($this->map[strtoupper($key)]);
     }
 
+    /**
+     * @param string $key
+     *
+     * @return void
+     */
     public function remove(string $key)
     {
         if ($this->has($key)) {
@@ -49,6 +79,11 @@ class HeaderBag extends ParameterBag
         }
     }
 
+    /**
+     * @param array $parameters
+     *
+     * @return void
+     */
     public function replace(array $parameters = [])
     {
         $this->parameters = [];

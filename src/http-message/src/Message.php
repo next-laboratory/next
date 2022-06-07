@@ -20,9 +20,9 @@ use Psr\Http\Message\StreamInterface;
 
 class Message implements MessageInterface
 {
-    protected string $protocolVersion = '1.1';
-    protected ?HeaderBag $headers = null;
-    protected ?StreamInterface $body = null;
+    protected string           $protocolVersion = '1.1';
+    protected HeaderBag        $headers;
+    protected ?StreamInterface $body            = null;
 
     /**
      * @inheritDoc
@@ -83,7 +83,7 @@ class Message implements MessageInterface
      */
     public function withHeader($name, $value)
     {
-        $new = clone $this;
+        $new          = clone $this;
         $new->headers = clone $this->headers;
         $new->headers->set($name, $value);
 
@@ -95,9 +95,9 @@ class Message implements MessageInterface
      */
     public function withAddedHeader($name, $value)
     {
-        $new = clone $this;
-        $new->headers = clone $this->headers;
-        $headers = $new->headers->get($name);
+        $new            = clone $this;
+        $new->headers   = clone $this->headers;
+        $headers        = $new->headers->get($name);
         $headers[$name] = $value;
         $new->headers->replace($headers);
 
@@ -109,7 +109,7 @@ class Message implements MessageInterface
      */
     public function withoutHeader($name)
     {
-        $new = clone $this;
+        $new          = clone $this;
         $new->headers = clone $this->headers;
         $new->headers->remove($name);
 
