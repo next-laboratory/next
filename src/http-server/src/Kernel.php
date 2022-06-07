@@ -65,7 +65,7 @@ class Kernel
      * @throws ContainerExceptionInterface
      * @throws ReflectionException
      */
-    public function createResponse(ServerRequestInterface $request): ResponseInterface
+    public function through(ServerRequestInterface $request): ResponseInterface
     {
         $response = (new RequestHandler($this->container, $this->middlewares))->handle($request);
         $this->eventDispatcher?->dispatch(new OnRequest($request, $response));
