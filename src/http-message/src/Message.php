@@ -13,17 +13,16 @@ declare(strict_types=1);
 
 namespace Max\HttpMessage;
 
-use InvalidArgumentException;
+use Max\HttpMessage\Bags\HeaderBag;
 use Max\HttpMessage\Stream\StringStream;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\StreamInterface;
 
 class Message implements MessageInterface
 {
-    protected string           $protocolVersion = '1.1';
-    protected array            $headers         = [];
-    protected array            $headersMap      = [];
-    protected ?StreamInterface $body            = null;
+    protected string $protocolVersion = '1.1';
+    protected ?HeaderBag $headers = null;
+    protected ?StreamInterface $body = null;
 
     /**
      * @inheritDoc
@@ -49,7 +48,7 @@ class Message implements MessageInterface
      */
     public function getHeaders()
     {
-        return $this->headers;
+        return $this->headers->all();
     }
 
     /**
@@ -57,7 +56,7 @@ class Message implements MessageInterface
      */
     public function hasHeader($name)
     {
-        return isset($this->headersMap[strtoupper($name)]);
+        return $this->headers?->has($name);
     }
 
     /**
@@ -65,11 +64,7 @@ class Message implements MessageInterface
      */
     public function getHeader($name)
     {
-        $name = strtoupper($name);
-        if (isset($this->headersMap[$name])) {
-            return $this->headers[$this->headersMap[$name]];
-        }
-        return [];
+        return $this->headers?->get($name);
     }
 
     /**
@@ -77,20 +72,10 @@ class Message implements MessageInterface
      */
     public function getHeaderLine($name)
     {
-        if ($header = $this->getHeader($name)) {
-            return implode(',', $header);
+        if ($this->hasHeader($name)) {
+            return implode(', ', $this->getHeader($name));
         }
-
         return '';
-    }
-
-    protected function normalizeHeaderName(string $name)
-    {
-        $key = strtoupper($name);
-        if (!isset($this->headersMap[$key])) {
-            $this->headersMap[$key] = $name;
-        }
-        return $this->headersMap[$key];
     }
 
     /**
@@ -98,8 +83,11 @@ class Message implements MessageInterface
      */
     public function withHeader($name, $value)
     {
-        $this->headers[$this->normalizeHeaderName($name)] = $this->formatValue($value);
-        return $this;
+        $new = clone $this;
+        $new->headers = clone $this->headers;
+        $new->headers->set($name, $value);
+
+        return $new;
     }
 
     /**
@@ -107,8 +95,13 @@ class Message implements MessageInterface
      */
     public function withAddedHeader($name, $value)
     {
-        $this->headers[$this->normalizeHeaderName($name)][] = $this->formatValue($value);
-        return $this;
+        $new = clone $this;
+        $new->headers = clone $this->headers;
+        $headers = $new->headers->get($name);
+        $headers[$name] = $value;
+        $new->headers->replace($headers);
+
+        return $new;
     }
 
     /**
@@ -116,12 +109,11 @@ class Message implements MessageInterface
      */
     public function withoutHeader($name)
     {
-        $key = strtoupper($name);
-        if (isset($this->headersMap[$key])) {
-            unset($this->headers[$this->headersMap[$key]]);
-            unset($this->headersMap[$key]);
-        }
-        return $this;
+        $new = clone $this;
+        $new->headers = clone $this->headers;
+        $new->headers->remove($name);
+
+        return $new;
     }
 
     /**
@@ -144,30 +136,5 @@ class Message implements MessageInterface
     protected function formatBody(string|StreamInterface|null $body)
     {
         $this->body = $body instanceof StreamInterface ? $body : new StringStream((string)$body);
-    }
-
-    protected function formatHeaders(array $headers = [])
-    {
-        foreach ($headers as $key => $value) {
-            $this->headersMap[strtoupper($key)] = $key;
-            $this->headers[$key]                = $this->formatValue($value);
-        }
-    }
-
-    /**
-     * @param $value
-     *
-     * @return string[]
-     */
-    protected function formatValue($value): array
-    {
-        if (is_scalar($value)) {
-            $value = [(string)$value];
-        }
-        if (!is_array($value)) {
-            throw new InvalidArgumentException('The given header cannot be set.');
-        }
-
-        return array_values($value);
     }
 }
