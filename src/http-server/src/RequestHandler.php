@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Max\HttpServer;
 
-use Max\HttpMessage\Response;
+use BadMethodCallException;
 use Max\HttpServer\Exceptions\InvalidMiddlewareException;
 use Max\Routing\Route;
 use Psr\Container\ContainerExceptionInterface;
@@ -59,9 +59,12 @@ class RequestHandler implements RequestHandlerInterface
         if (is_string($action)) {
             $action = explode('@', $action, 2);
         }
-        if (is_array($action)) {
+        if (!is_callable($action) && is_array($action)) {
             [$controller, $action] = $action;
             $action = [$this->container->make($controller), $action];
+        }
+        if (!is_callable($action)) {
+            throw new BadMethodCallException('The given action is not a callable value.');
         }
 
         return $this->container->call($action, $params);
