@@ -54,7 +54,10 @@ class StringStream implements StreamInterface
      */
     public function detach()
     {
-        throw new \BadMethodCallException('Not implemented.');
+        $content = $this->getContents();
+        $this->close();
+        $this->stream = null;
+        return $content;
     }
 
     /**
