@@ -23,7 +23,7 @@ class ParameterBag
      *
      * @return mixed
      */
-    public function get(string $key, $default = null): mixed
+    public function get(string $key, $default = null)
     {
         return $this->parameters[$key] ?? $default;
     }
@@ -34,7 +34,7 @@ class ParameterBag
      *
      * @return void
      */
-    public function set(string $key, $value): void
+    public function set(string $key, $value)
     {
         $this->parameters[$key] = $value;
     }
@@ -54,7 +54,7 @@ class ParameterBag
      *
      * @return void
      */
-    public function remove(string $key): void
+    public function remove(string $key)
     {
         unset($this->parameters[$key]);
     }
@@ -64,7 +64,7 @@ class ParameterBag
      *
      * @return void
      */
-    public function replace(array $parameters = []): void
+    public function replace(array $parameters = [])
     {
         $this->parameters = $parameters;
     }
