@@ -18,6 +18,7 @@
             "Max\\Di\\": "src/di/src",
             "Max\\Event\\": "src/event/src",
             "Max\\Framework\\": "src/framework/src",
+            "Max\\Http\\": "src/http/src",
             "Max\\Http\\Server\\": "src/http-server/src",
             "Max\\Http\\Message\\": "src/http-message/src",
             "Max\\Log\\": "src/log/src",

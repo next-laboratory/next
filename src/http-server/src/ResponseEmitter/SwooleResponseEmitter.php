@@ -30,29 +30,33 @@ class SwooleResponseEmitter implements ResponseEmitterInterface
      */
     public function emit(ResponseInterface $psrResponse, $sender = null): void
     {
-        $sender->status($psrResponse->getStatusCode());
-        /** @var string[] $cookies */
-        foreach ($psrResponse->getHeader('Set-Cookie') as $cookies) {
-            foreach ($cookies as $cookieString) {
-                $this->sendCookie(Cookie::parse($cookieString), $sender);
+        try {
+            $sender->status($psrResponse->getStatusCode(), $psrResponse->getReasonPhrase());
+            /** @var string[] $cookies */
+            foreach ($psrResponse->getHeader('Set-Cookie') as $cookies) {
+                foreach ($cookies as $cookieString) {
+                    $this->sendCookie(Cookie::parse($cookieString), $sender);
+                }
             }
+            $psrResponse = $psrResponse->withoutHeader('Set-Cookie');
+            foreach ($psrResponse->getHeaders() as $key => $value) {
+                $sender->header($key, implode(', ', $value));
+            }
+            $body = $psrResponse->getBody();
+            switch (true) {
+                case $body instanceof FileStream:
+                    $sender->sendfile($body->getMetadata('uri'), $body->tell(), max($body->getLength(), 0));
+                    break;
+                case $body instanceof StringStream:
+                    $sender->end($body->getContents());
+                    break;
+                default:
+                    $sender->end();
+            }
+            $body?->close();
+        } catch (\Throwable $throwable) {
+            echo $throwable->getMessage() . PHP_EOL;
         }
-        $psrResponse = $psrResponse->withoutHeader('Set-Cookie');
-        foreach ($psrResponse->getHeaders() as $key => $value) {
-            $sender->header($key, implode(', ', $value));
-        }
-        $body = $psrResponse->getBody();
-        switch (true) {
-            case $body instanceof FileStream:
-                $sender->sendfile($body->getMetadata('uri'), $body->tell(), max($body->getLength(), 0));
-                break;
-            case $body instanceof StringStream:
-                $sender->end($body->getContents());
-                break;
-            default:
-                $sender->end();
-        }
-        $body?->close();
     }
 
     /**
