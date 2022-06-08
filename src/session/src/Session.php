@@ -35,6 +35,7 @@ class Session
     protected array $data = [];
 
     /**
+     * 是否已经开启
      * @var bool
      */
     protected bool $started = false;
@@ -52,8 +53,8 @@ class Session
      */
     public function start(?string $id = null): void
     {
-        if ($this->started) {
-            throw new SessionException('Session cannot be started repeatedly.');
+        if ($this->isStarted()) {
+            throw new SessionException('Cannot restart session.');
         }
         $this->id = ($id && $this->isValidId($id)) ? $id : \session_create_id();
         if ($data = $this->sessionHandler->read($this->id)) {
@@ -111,7 +112,7 @@ class Session
     }
 
     /**
-     * @param string     $key
+     * @param string $key
      * @param mixed|null $default
      *
      * @return mixed
@@ -140,6 +141,7 @@ class Session
     {
         $this->sessionHandler->destroy($this->id);
         $this->data = [];
+        $this->id = '';
     }
 
     /**
@@ -147,7 +149,7 @@ class Session
      */
     public function getId(): string
     {
-        return $this->id ?: throw new SessionException('The session is not started.');
+        return $this->id;
     }
 
     /**
@@ -171,5 +173,13 @@ class Session
     protected function isValidId(string $id): bool
     {
         return \ctype_alnum($id);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isStarted(): bool
+    {
+        return $this->started;
     }
 }
