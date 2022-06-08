@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Max\Swoole\Listeners;
 
-use Max\Console\Output\Formatter;
 use Max\Event\Contracts\EventListenerInterface;
 use Max\Swoole\Events\OnBeforeShutdown;
 use Max\Swoole\Events\OnManagerStart;
