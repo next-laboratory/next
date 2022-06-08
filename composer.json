@@ -16,11 +16,10 @@
             "Max\\Context\\": "src/context/src",
             "Max\\Database\\": "src/database/src",
             "Max\\Di\\": "src/di/src",
-            "Max\\Reflection\\": "src/reflection/src",
             "Max\\Event\\": "src/event/src",
             "Max\\Framework\\": "src/framework/src",
-            "Max\\Http\\": "src/http/src",
-            "Max\\HttpServer\\": "src/http-server/src",
+            "Max\\Http\\Server\\": "src/http-server/src",
+            "Max\\Http\\Message\\": "src/http-message/src",
             "Max\\Log\\": "src/log/src",
             "Max\\Queue\\": "src/queue/src",
             "Max\\Routing\\": "src/routing/src",
@@ -29,8 +28,7 @@
             "Max\\Swagger\\": "src/swagger/src",
             "Max\\Utils\\": "src/utils/src",
             "Max\\Validator\\": "src/validator/src",
-            "Max\\View\\": "src/view/src",
-            "Max\\Workerman\\": "src/workerman/src"
+            "Max\\View\\": "src/view/src"
         },
         "files": [
             "src/di/src/helpers.php",
@@ -60,8 +58,7 @@
         "max/swagger": "*",
         "max/utils": "*",
         "max/validator": "*",
-        "max/view": "*",
-        "max/workerman": "*"
+        "max/view": "*"
     },
     "require": {
         "php": "^8.0",
