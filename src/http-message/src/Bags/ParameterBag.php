@@ -1,6 +1,6 @@
 <?php
 
-namespace Max\HttpMessage\Bags;
+namespace Max\Http\Message\Bags;
 
 class ParameterBag
 {
@@ -34,7 +34,7 @@ class ParameterBag
      *
      * @return void
      */
-    public function set(string $key, $value)
+    public function set(string $key, $value): void
     {
         $this->parameters[$key] = $value;
     }
@@ -54,7 +54,7 @@ class ParameterBag
      *
      * @return void
      */
-    public function remove(string $key)
+    public function remove(string $key): void
     {
         unset($this->parameters[$key]);
     }
@@ -64,7 +64,7 @@ class ParameterBag
      *
      * @return void
      */
-    public function replace(array $parameters = [])
+    public function replace(array $parameters = []): void
     {
         $this->parameters = $parameters;
     }

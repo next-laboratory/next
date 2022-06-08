@@ -1,6 +1,6 @@
 <?php
 
-namespace Max\HttpServer\Middlewares;
+namespace Max\Http\Server\Middlewares;
 
 use Max\Routing\Exceptions\MethodNotAllowedException;
 use Max\Routing\Exceptions\RouteNotFoundException;

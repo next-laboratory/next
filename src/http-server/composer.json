@@ -4,7 +4,7 @@
     "homepage": "https://github.com/topyao/max-http-server",
     "autoload": {
         "psr-4": {
-            "Max\\HttpServer\\": "src/"
+            "Max\\Http\\Server\\": "src/"
         }
     },
     "authors": [

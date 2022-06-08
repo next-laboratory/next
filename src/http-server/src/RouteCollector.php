@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Max\HttpServer;
+namespace Max\Http\Server;
 
 use Max\Aop\Collectors\AbstractCollector;
 use Max\Di\Context;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Max\HttpMessage\Bags;
+namespace Max\Http\Message\Bags;
 
 class CookieBag extends CaseInsensitiveBag
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Max\HttpServer\Exceptions;
+namespace Max\Http\Server\Exceptions;
 
 use Exception;
 

@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Max\HttpServer\Contracts;
+namespace Max\Http\Server\Contracts;
 
 use Psr\Http\Message\ResponseInterface;
 

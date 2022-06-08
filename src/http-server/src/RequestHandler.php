@@ -11,10 +11,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Max\HttpServer;
+namespace Max\Http\Server;
 
 use BadMethodCallException;
-use Max\HttpServer\Exceptions\InvalidMiddlewareException;
+use Max\Http\Server\Exceptions\InvalidMiddlewareException;
 use Max\Routing\Route;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;

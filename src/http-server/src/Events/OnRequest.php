@@ -1,6 +1,6 @@
 <?php
 
-namespace Max\HttpServer\Events;
+namespace Max\Http\Server\Events;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

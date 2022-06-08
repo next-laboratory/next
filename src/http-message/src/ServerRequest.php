@@ -11,13 +11,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Max\HttpMessage;
+namespace Max\Http\Message;
 
-use Max\HttpMessage\Bags\CookieBag;
-use Max\HttpMessage\Bags\FileBag;
-use Max\HttpMessage\Bags\ParameterBag;
-use Max\HttpMessage\Bags\ServerBag;
-use Max\HttpMessage\Stream\StringStream;
+use Max\Http\Message\Bags\CookieBag;
+use Max\Http\Message\Bags\FileBag;
+use Max\Http\Message\Bags\ParameterBag;
+use Max\Http\Message\Bags\ServerBag;
+use Max\Http\Message\Stream\StringStream;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;

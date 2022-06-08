@@ -1,9 +1,9 @@
 <?php
 
-namespace Max\HttpMessage\Bags;
+namespace Max\Http\Message\Bags;
 
-use Max\HttpMessage\Stream\FileStream;
-use Max\HttpMessage\UploadedFile;
+use Max\Http\Message\Stream\FileStream;
+use Max\Http\Message\UploadedFile;
 
 class FileBag
 {

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Max\HttpMessage\Stream;
+namespace Max\Http\Message\Stream;
 
 use Exception;
 use Psr\Http\Message\StreamInterface;

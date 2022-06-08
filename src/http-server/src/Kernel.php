@@ -11,9 +11,9 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Max\HttpServer;
+namespace Max\Http\Server;
 
-use Max\HttpServer\Events\OnRequest;
+use Max\Http\Server\Events\OnRequest;
 use Max\Routing\RouteCollector;
 use Max\Routing\Router;
 use Psr\Container\ContainerExceptionInterface;
@@ -29,8 +29,8 @@ class Kernel
      * 全局中间件
      */
     protected array $middlewares = [
-        'Max\HttpServer\Middlewares\ExceptionHandleMiddleware',
-        'Max\HttpServer\Middlewares\RoutingMiddleware',
+        'Max\Http\Server\Middlewares\ExceptionHandleMiddleware',
+        'Max\Http\Server\Middlewares\RoutingMiddleware',
     ];
 
     /**

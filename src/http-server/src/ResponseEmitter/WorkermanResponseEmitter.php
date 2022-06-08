@@ -11,10 +11,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Max\HttpServer\ResponseEmitter;
+namespace Max\Http\Server\ResponseEmitter;
 
-use Max\HttpMessage\Cookie;
-use Max\HttpServer\Contracts\ResponseEmitterInterface;
+use Max\Http\Message\Cookie;
+use Max\Http\Server\Contracts\ResponseEmitterInterface;
 use Psr\Http\Message\ResponseInterface;
 use Workerman\Connection\TcpConnection;
 use Workerman\Protocols\Http\Response;

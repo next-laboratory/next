@@ -4,7 +4,7 @@
   "home-page": "https://github.com/topyao/max-http-message",
   "autoload": {
     "psr-4": {
-      "Max\\HttpMessage\\": "src/"
+      "Max\\Http\\Message\\": "src/"
     },
     "files": [
       "src/helpers.php"

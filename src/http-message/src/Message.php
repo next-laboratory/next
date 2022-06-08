@@ -11,10 +11,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Max\HttpMessage;
+namespace Max\Http\Message;
 
-use Max\HttpMessage\Bags\HeaderBag;
-use Max\HttpMessage\Stream\StringStream;
+use Max\Http\Message\Bags\HeaderBag;
+use Max\Http\Message\Stream\StringStream;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\StreamInterface;
 

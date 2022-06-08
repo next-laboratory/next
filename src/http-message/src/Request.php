@@ -11,9 +11,9 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Max\HttpMessage;
+namespace Max\Http\Message;
 
-use Max\HttpMessage\Bags\HeaderBag;
+use Max\Http\Message\Bags\HeaderBag;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;

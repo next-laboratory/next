@@ -11,12 +11,12 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Max\HttpServer\ResponseEmitter;
+namespace Max\Http\Server\ResponseEmitter;
 
-use Max\HttpMessage\Cookie;
-use Max\HttpMessage\Stream\FileStream;
-use Max\HttpMessage\Stream\StringStream;
-use Max\HttpServer\Contracts\ResponseEmitterInterface;
+use Max\Http\Message\Cookie;
+use Max\Http\Message\Stream\FileStream;
+use Max\Http\Message\Stream\StringStream;
+use Max\Http\Server\Contracts\ResponseEmitterInterface;
 use Psr\Http\Message\ResponseInterface;
 use Swoole\Http\Response;
 

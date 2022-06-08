@@ -1,9 +1,9 @@
 <?php
 
-namespace Max\HttpServer\Middlewares;
+namespace Max\Http\Server\Middlewares;
 
-use Max\HttpMessage\Response;
-use Max\HttpServer\Exceptions\HttpException;
+use Max\Http\Message\Response;
+use Max\Http\Server\Exceptions\HttpException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
