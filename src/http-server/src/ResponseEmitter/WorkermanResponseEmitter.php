@@ -23,7 +23,7 @@ class WorkermanResponseEmitter implements ResponseEmitterInterface
 {
     /**
      * @param ResponseInterface $psrResponse
-     * @param TcpConnection     $sender
+     * @param TcpConnection $sender
      *
      * @return void
      */
@@ -32,20 +32,18 @@ class WorkermanResponseEmitter implements ResponseEmitterInterface
         try {
             $response = new Response($psrResponse->getStatusCode());
             /** @var string[] $cookies */
-            foreach ($psrResponse->getHeader('Set-Cookie') as $cookies) {
-                foreach ($cookies as $cookieString) {
-                    $cookie = Cookie::parse($cookieString);
-                    $response->cookie(
-                        $cookie->getName(),
-                        $cookie->getValue(),
-                        $cookie->getMaxAge(),
-                        $cookie->getPath(),
-                        $cookie->getDomain(),
-                        $cookie->isSecure(),
-                        $cookie->isHttponly(),
-                        $cookie->getSamesite()
-                    );
-                }
+            foreach ($psrResponse->getHeader('Set-Cookie') as $cookie) {
+                $cookie = Cookie::parse($cookie);
+                $response->cookie(
+                    $cookie->getName(),
+                    $cookie->getValue(),
+                    $cookie->getMaxAge(),
+                    $cookie->getPath(),
+                    $cookie->getDomain(),
+                    $cookie->isSecure(),
+                    $cookie->isHttponly(),
+                    $cookie->getSamesite()
+                );
             }
             $psrResponse = $psrResponse->withoutHeader('Set-Cookie');
             foreach ($psrResponse->getHeaders() as $name => $values) {

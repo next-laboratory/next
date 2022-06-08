@@ -22,24 +22,21 @@ class FPMResponseEmitter implements ResponseEmitterInterface
 {
     /**
      * @param ResponseInterface $psrResponse
-     * @param null              $sender
+     * @param null $sender
      *
      * @return void
      */
     public function emit(ResponseInterface $psrResponse, $sender = null): void
     {
         header(sprintf('HTTP/%s %d %s', $psrResponse->getProtocolVersion(), $psrResponse->getStatusCode(), $psrResponse->getReasonPhrase()), true);
-        /** @var string[] $cookies */
-        foreach ($psrResponse->getHeader('Set-Cookie') as $cookies) {
-            foreach ($cookies as $cookieString) {
-                $cookie = Cookie::parse($cookieString);
-                setcookie(
-                    $cookie->getName(), $cookie->getValue(),
-                    $cookie->getExpires(), $cookie->getPath(),
-                    $cookie->getDomain(), $cookie->isSecure(),
-                    $cookie->isHttponly()
-                );
-            }
+        foreach ($psrResponse->getHeader('Set-Cookie') as $cookie) {
+            $cookie = Cookie::parse($cookie);
+            setcookie(
+                $cookie->getName(), $cookie->getValue(),
+                $cookie->getExpires(), $cookie->getPath(),
+                $cookie->getDomain(), $cookie->isSecure(),
+                $cookie->isHttponly()
+            );
         }
         $psrResponse = $psrResponse->withoutHeader('Set-Cookie');
         foreach ($psrResponse->getHeaders() as $name => $value) {
