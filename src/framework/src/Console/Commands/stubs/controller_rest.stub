@@ -17,27 +17,29 @@ use Max\Routing\Annotations\Controller;
 use Max\Routing\Annotations\GetMapping;
 use Max\Routing\Annotations\DeleteMapping;
 use Max\Routing\Annotations\RequestMapping;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 #[Controller(prefix: '/{{path}}')]
 class {{class}}
 {
     #[GetMapping(path: '/')]
-    public function index()
+    public function index(ServerRequestInterface $request): ResponseInterface
     {
     }
 
     #[GetMapping(path: '/<id>')]
-    public function show($id)
+    public function show(ServerRequestInterface $request, $id): ResponseInterface
     {
     }
 
     #[DeleteMapping(path: '/<id>')]
-    public function delete($id)
+    public function delete(ServerRequestInterface $request, $id): ResponseInterface
     {
     }
 
     #[RequestMapping(path: '/<id>', methods: ['PUT', 'PATCH'])]
-    public function update($id)
+    public function update(ServerRequestInterface $request, $id): ResponseInterface
     {
     }
 }

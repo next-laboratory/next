@@ -13,6 +13,7 @@ declare (strict_types=1);
 
 namespace Max\Framework\Console\Commands;
 
+use App\Http\Kernel;
 use Closure;
 use Max\Di\Exceptions\NotFoundException;
 use Max\Routing\Route;
@@ -78,8 +79,7 @@ class RouteListCommand extends Command
      */
     protected function getRoutes(): Collection
     {
-        /** @var RouteCollector $routeCollector */
-        make(RequestHandlerInterface::class);
+        make(Kernel::class);
         $routeCollector = make(RouteCollector::class);
         $routes         = [];
         foreach ($routeCollector->all() as $registeredRoute) {

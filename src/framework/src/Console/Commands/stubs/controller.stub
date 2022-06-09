@@ -15,12 +15,14 @@ namespace {{namespace}};
 
 use Max\Routing\Annotations\Controller;
 use Max\Routing\Annotations\GetMapping;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 #[Controller(prefix: '/{{path}}')]
 class {{class}}
 {
     #[GetMapping(path: '/')]
-    public function index()
+    public function index(ServerRequestInterface $request): ResponseInterface
     {
     }
 }
