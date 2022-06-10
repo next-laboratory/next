@@ -168,4 +168,11 @@ class StringStream implements StreamInterface
         $meta = stream_get_meta_data($this->stream);
         return $key ? $meta[$key] ?? null : $meta;
     }
+
+    public function __destruct()
+    {
+        if (is_resource($this->stream)) {
+            $this->close();
+        }
+    }
 }

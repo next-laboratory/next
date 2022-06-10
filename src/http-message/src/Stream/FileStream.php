@@ -17,15 +17,15 @@ use function stream_get_meta_data;
 class FileStream implements StreamInterface
 {
     protected const READ_WRITE_HASH = [
-        'read' => [
-            'r' => true, 'w+' => true, 'r+' => true, 'x+' => true, 'c+' => true,
-            'rb' => true, 'w+b' => true, 'r+b' => true, 'x+b' => true,
+        'read'  => [
+            'r'   => true, 'w+' => true, 'r+' => true, 'x+' => true, 'c+' => true,
+            'rb'  => true, 'w+b' => true, 'r+b' => true, 'x+b' => true,
             'c+b' => true, 'rt' => true, 'w+t' => true, 'r+t' => true,
             'x+t' => true, 'c+t' => true, 'a+' => true,
         ],
         'write' => [
-            'w' => true, 'w+' => true, 'rw' => true, 'r+' => true, 'x+' => true,
-            'c+' => true, 'wb' => true, 'w+b' => true, 'r+b' => true,
+            'w'   => true, 'w+' => true, 'rw' => true, 'r+' => true, 'x+' => true,
+            'c+'  => true, 'wb' => true, 'w+b' => true, 'r+b' => true,
             'x+b' => true, 'c+b' => true, 'w+t' => true, 'r+t' => true,
             'x+t' => true, 'c+t' => true, 'a' => true, 'a+' => true,
         ],
@@ -37,9 +37,9 @@ class FileStream implements StreamInterface
     protected $stream;
 
     /**
-     * @param string $path 文件地址
-     * @param int $offset 偏移量
-     * @param int $length 长度
+     * @param string $path   文件地址
+     * @param int    $offset 偏移量
+     * @param int    $length 长度
      */
     public function __construct(string $path, int $offset = 0, protected int $length = -1)
     {
@@ -177,5 +177,12 @@ class FileStream implements StreamInterface
     {
         $meta = stream_get_meta_data($this->stream);
         return $key ? $meta[$key] ?? null : $meta;
+    }
+
+    public function __destruct()
+    {
+        if (is_resource($this->stream)) {
+            $this->close();
+        }
     }
 }
