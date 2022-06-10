@@ -23,7 +23,7 @@ class WorkermanResponseEmitter implements ResponseEmitterInterface
 {
     /**
      * @param ResponseInterface $psrResponse
-     * @param TcpConnection $sender
+     * @param TcpConnection     $sender
      *
      * @return void
      */
@@ -50,9 +50,8 @@ class WorkermanResponseEmitter implements ResponseEmitterInterface
                 $response->header($name, implode(', ', $values));
             }
             $body = $psrResponse->getBody();
-            $content = (string)$body?->getContents();
+            $sender->send($response->withBody((string)$body?->getContents()));
             $body?->close();
-            $sender->send($response->withBody($content));
             $sender->close();
         } catch (\Throwable $throwable) {
             echo $throwable->getMessage() . PHP_EOL;

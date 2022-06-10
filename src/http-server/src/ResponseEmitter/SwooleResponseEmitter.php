@@ -24,7 +24,7 @@ class SwooleResponseEmitter implements ResponseEmitterInterface
 {
     /**
      * @param ResponseInterface $psrResponse
-     * @param Response $sender
+     * @param Response          $sender
      *
      * @return void
      */
@@ -44,11 +44,8 @@ class SwooleResponseEmitter implements ResponseEmitterInterface
                 case $body instanceof FileStream:
                     $sender->sendfile($body->getMetadata('uri'), $body->tell(), max($body->getLength(), 0));
                     break;
-                case $body instanceof StringStream:
-                    $sender->end($body->getContents());
-                    break;
                 default:
-                    $sender->end();
+                    $sender->end($body->getContents());
             }
             $body?->close();
         } catch (\Throwable $throwable) {
@@ -57,7 +54,7 @@ class SwooleResponseEmitter implements ResponseEmitterInterface
     }
 
     /**
-     * @param Cookie $cookie
+     * @param Cookie   $cookie
      * @param Response $response
      *
      * @return void
