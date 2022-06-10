@@ -40,16 +40,16 @@ class RequestHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         if ([] === $this->middlewares) {
-            return $this->createResponse($request);
+            return $this->handleRequest($request);
         }
-        return $this->throughMiddleware(array_shift($this->middlewares), $request);
+        return $this->handleMiddleware(array_shift($this->middlewares), $request);
     }
 
     /**
      * @throws ContainerExceptionInterface
      * @throws ReflectionException
      */
-    protected function createResponse(ServerRequestInterface $request): ResponseInterface
+    protected function handleRequest(ServerRequestInterface $request): ResponseInterface
     {
         /** @var Route $route */
         $route    = $request->getAttribute(Route::class);
@@ -78,7 +78,7 @@ class RequestHandler implements RequestHandlerInterface
      * @throws ContainerExceptionInterface
      * @throws ReflectionException
      */
-    protected function throughMiddleware(string $middleware, ServerRequestInterface $request): ResponseInterface
+    protected function handleMiddleware(string $middleware, ServerRequestInterface $request): ResponseInterface
     {
         $handler = is_null($this->container) ? new $middleware() : $this->container->make($middleware);
 
