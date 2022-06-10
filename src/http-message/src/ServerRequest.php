@@ -211,10 +211,11 @@ class ServerRequest extends Request implements ServerRequestInterface
 
     /**
      * @inheritDoc
+     * @return UploadedFile[]
      */
     public function getUploadedFiles()
     {
-        return $this->uploadedFiles;
+        return $this->uploadedFiles->all();
     }
 
     /**
