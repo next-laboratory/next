@@ -52,10 +52,8 @@ class RequestHandler implements RequestHandlerInterface
     protected function handleRequest(ServerRequestInterface $request): ResponseInterface
     {
         /** @var Route $route */
-        $route    = $request->getAttribute(Route::class);
-        $params   = $route->getParameters();
-        $params[] = $request;
-        $action   = $route->getAction();
+        $route  = $request->getAttribute(Route::class);
+        $action = $route->getAction();
         if (is_string($action)) {
             $action = explode('@', $action, 2);
         }
@@ -67,7 +65,7 @@ class RequestHandler implements RequestHandlerInterface
             throw new BadMethodCallException('The given action is not a callable value.');
         }
 
-        return $this->container->call($action, $params);
+        return $action($request->withRouteParams($route->getParameters()));
     }
 
     /**
