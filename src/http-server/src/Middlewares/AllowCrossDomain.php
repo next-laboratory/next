@@ -26,9 +26,7 @@ class AllowCrossDomain implements MiddlewareInterface
      *
      * @var array
      */
-    protected array $allowOrigin = [
-        'https://www.1kmb.com'
-    ];
+    protected array $allowOrigin = [];
 
     /**
      * 附加的响应头
