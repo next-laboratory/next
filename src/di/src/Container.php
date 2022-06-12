@@ -31,14 +31,10 @@ use function is_string;
 
 class Container implements ContainerInterface
 {
-    /**
-     * 类和标识对应关系
-     */
+    /** @var array 类和标识对应关系 */
     protected array $bindings = [];
 
-    /**
-     * 已经解析实例
-     */
+    /** @var array 已经解析实例 */
     protected array $resolved = [];
 
     /**
@@ -213,6 +209,7 @@ class Container implements ContainerInterface
     }
 
     /**
+     * TODO bug
      * @param ReflectionFunctionAbstract $reflectionFunction 反射方法
      * @param array                      $arguments          参数列表，支持关联数组，会自动按照变量名传入
      *
