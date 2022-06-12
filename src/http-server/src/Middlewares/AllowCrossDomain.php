@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Max\HttpServer\Middlewares;
+namespace Max\Http\Server\Middlewares;
 
 use Max\Http\Message\Response;
 use Psr\Http\Message\ResponseInterface;
@@ -21,18 +21,10 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class AllowCrossDomain implements MiddlewareInterface
 {
-    /**
-     * 允许域
-     *
-     * @var array
-     */
+    /** @var array 允许域，全部可以使用`*` */
     protected array $allowOrigin = [];
 
-    /**
-     * 附加的响应头
-     *
-     * @var array
-     */
+    /** @var array 附加的响应头 */
     protected array $addedHeaders = [
         'Access-Control-Allow-Credentials' => 'true',
         'Access-Control-Max-Age'           => 1800,
