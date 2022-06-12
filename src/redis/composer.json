@@ -13,8 +13,7 @@
     ],
     "require": {
         "php": "^8.0",
-        "max/config": "dev-master",
-        "max/pool": "dev-master"
+        "max/config": "dev-master"
     },
     "extra": {
         "max": {
