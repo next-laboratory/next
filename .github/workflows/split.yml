@@ -23,5 +23,8 @@ jobs:
         TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       run: git config --global url."https://topyao:${TOKEN}@github.com".insteadOf "https://github.com"
       
+    - name: prepare bins
+      run: chmod -R 0777 ./bin
+      
     - name: split repositories
-      run: chmod +x ./bin/split-linux.sh && ./bin/split-linux.sh
+      run: ./bin/split-linux.sh
