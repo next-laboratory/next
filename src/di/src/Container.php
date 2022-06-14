@@ -226,19 +226,16 @@ class Container implements ContainerInterface
                 if (is_null($type)
                     || ($type instanceof ReflectionNamedType && $type->isBuiltin())
                     || $type instanceof ReflectionUnionType
-                    || ($typeName = $type->getName()) === 'Closure') {
-                    if (!$parameter->isOptional()) {
-                        throw new ContainerException(sprintf('Missing parameter `%s`', $name));
-                    }
-                    $funcArgs[] = $parameter->getDefaultValue();
+                    || ($typeName = $type->getName()) === 'Closure'
+                ) {
+                    $funcArgs = $parameter->isOptional()
+                        ? $parameter->getDefaultValue()
+                        : throw new ContainerException(sprintf('Missing parameter `%s`', $name));
                 } else {
                     try {
                         $funcArgs[] = $this->make($typeName);
                     } catch (ReflectionException|ContainerExceptionInterface $exception) {
-                        if (!$parameter->isOptional()) {
-                            throw $exception;
-                        }
-                        $funcArgs[] = $parameter->getDefaultValue();
+                        $funcArgs = $parameter->isOptional() ? $parameter->getDefaultValue() : throw $exception;
                     }
                 }
             }
