@@ -21,7 +21,7 @@ jobs:
     - name: prepare git
       env: 
         TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-      run: git config --global url."https://bigyao@139.com:${TOKEN}@github.com".insteadOf "https://github.com"
+      run: git config --global url."https://topyao:${TOKEN}@github.com".insteadOf "https://github.com"
       
     - name: split repositories
       run: chmod +x ./bin/split-linux.sh && ./bin/split-linux.sh
