@@ -64,8 +64,10 @@ class RequestHandler implements RequestHandlerInterface
         if (!is_callable($action)) {
             throw new BadMethodCallException('The given action is not a callable value.');
         }
-
-        return $action($request->withRouteParams($route->getParameters()));
+        $parameters            = $route->getParameters();
+        $parameters['request'] = $request;
+        return $this->container->call($action, $parameters);
+        //        return $action($request->withRouteParams($route->getParameters()));
     }
 
     /**

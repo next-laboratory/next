@@ -210,6 +210,7 @@ class Container implements ContainerInterface
 
     /**
      * TODO bug
+     *
      * @param ReflectionFunctionAbstract $reflectionFunction 反射方法
      * @param array                      $arguments          参数列表，支持关联数组，会自动按照变量名传入
      *
@@ -218,48 +219,34 @@ class Container implements ContainerInterface
      */
     public function getFuncArgs(ReflectionFunctionAbstract $reflectionFunction, array $arguments = []): array
     {
-        $objectValues = $funcArgs = [];
-        foreach ($arguments as $argument) {
-            if (is_object($argument)) {
-                $objectValues[get_class($argument)] = $argument;
-            }
-        }
+        $funcArgs = [];
         foreach ($reflectionFunction->getParameters() as $parameter) {
             $name = $parameter->getName();
             if (array_key_exists($name, $arguments)) {
                 $funcArgs[] = $arguments[$name];
-                unset($arguments[$name]);
             } else {
                 $type = $parameter->getType();
                 if (is_null($type)
                     || ($type instanceof ReflectionNamedType && $type->isBuiltin())
-                    || (PHP_VERSION_ID >= 80000 && $type instanceof ReflectionUnionType)
+                    || $type instanceof ReflectionUnionType
                     || ($typeName = $type->getName()) === 'Closure') {
-                    $funcArgs[] = $parameter->isOptional() ? $parameter->getDefaultValue() : null;
-                } else {
-                    $isObjectValue = false;
-                    // 当接口注入后又传递参数的时候会报错
-                    foreach ($objectValues as $objectValue) {
-                        if ($objectValue instanceof $typeName) {
-                            $funcArgs[]    = $objectValue;
-                            $isObjectValue = true;
-                            break;
-                        }
+                    if (!$parameter->isOptional()) {
+                        throw new ContainerException('Missing parameter `' . $name . '`.');
                     }
-                    if (!$isObjectValue) {
-                        try {
-                            $funcArgs[] = $this->make($typeName);
-                        } catch (Throwable $throwable) {
-                            if (!$parameter->isOptional()) {
-                                throw $throwable;
-                            }
-                            $funcArgs[] = $parameter->getDefaultValue();
+                    $funcArgs[] = $parameter->getDefaultValue();
+                } else {
+                    try {
+                        $funcArgs[] = $this->make($typeName);
+                    } catch (Throwable $throwable) {
+                        if (!$parameter->isOptional()) {
+                            throw $throwable;
                         }
+                        $funcArgs[] = $parameter->getDefaultValue();
                     }
                 }
             }
         }
 
-        return array_map(fn($value) => is_null($value) && !empty($arguments) ? array_shift($arguments) : $value, $funcArgs);
+        return $funcArgs;
     }
 }
