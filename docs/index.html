@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>MaxPHP开发文档</title>
+    <title>Document</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <meta name="description" content="Description">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
@@ -12,52 +12,42 @@
 <div id="app"></div>
 <script>
     window.$docsify = {
-        name: '',
-        repo: '',
-        maxLevel: 3,
-        // coverpage: true,
-        // complete configuration parameters
+        name: 'MaxPHP开发手册',
+        repo: 'topyao/max',
         search: {
-            maxAge: 86400000, // Expiration time, the default one day
-            paths: [], // or 'auto'
-            maxLevel: 3,
-            // Localization
-            placeholder: {
-                '/zh-cn/': '搜索',
-                '/': 'Type to search'
-            },
-
-            // Localization
+            depth: 6,
             noData: {
-                '/zh-cn/': '找不到结果',
-                '/': 'No Results'
+                '/en/': 'No results!',
+                '/zh-cn/': '没有找到结果!',
+                '/zh-hk/': '沒有找到結果!',
+                '/zh-tw/': '沒有找到結果!',
+                '/': '没有找到结果!'
             },
-
-            // Headline depth, 1 - 6
-            depth: 2,
-
-            hideOtherSidebarContent: false, // whether or not to hide other sidebar content
-
-            // To avoid search index collision
-            // between multiple websites under the same domain
-            namespace: 'website-1',
-
-            // Use different indexes for path prefixes (namespaces).
-            // NOTE: Only works in 'auto' mode.
-            //
-            // When initialiazing an index, we look for the first path from the sidebar.
-            // If it matches the prefix from the list, we switch to the corresponding index.
-            // pathNamespaces: ['/zh-cn', '/ru-ru', '/ru-ru/v1'],
-
-            // You can provide a regexp to match prefixes. In this case,
-            // the matching substring will be used to identify the index
-            pathNamespaces: /^(\/(zh-cn|ru-ru))?(\/(v1|v2))?/
-        }
+            paths: 'auto',
+            placeholder: {
+                '/en/': 'Type to Search',
+                '/zh-cn/': '输入关键词搜索',
+                '/zh-hk/': '輸入關鍵詞搜索',
+                '/zh-tw/': '輸入關鍵詞搜索',
+                '/': '输入关键词搜索'
+            },
+            pathNamespaces: ['/zh-cn']
+        },
+        plugins: [
+            function (hook, vm) {
+                hook.beforeEach(function (html) {
+                    url = 'https://github.com/topyao/max/blob/master/docs/' + vm.route.file;
+                    var editHtml = '<p style="text-align: right"><a href="' + url + '" target="_blank" rel="noopener"><img class="emoji" src="https://github.githubassets.com/images/icons/emoji/memo.png" alt="memo"> Edit on github</a></p>\n\n';
+                    return (
+                        editHtml +
+                        html
+                    );
+                });
+            },
+        ]
     }
 </script>
 <!-- Docsify v4 -->
-<script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
-<script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
-<script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
+<script src="./docsify.js"></script>
 </body>
 </html>
