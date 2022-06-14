@@ -1,4 +1,4 @@
-name: PHP Composer
+name: Split repositories
 
 on:
   push:
@@ -24,4 +24,4 @@ jobs:
       run: git config --global url."https://bigyao@139.com:${TOKEN}@github.com".insteadOf "https://github.com"
       
     - name: split repositories
-      run: ./bin/split-linux.sh
+      run: chmod +x ./bin/split-linux.sh && ./bin/split-linux.sh
