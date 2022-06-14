@@ -23,8 +23,6 @@ use ReflectionFunction;
 use ReflectionFunctionAbstract;
 use ReflectionNamedType;
 use ReflectionUnionType;
-use Throwable;
-use function array_shift;
 use function is_null;
 use function is_object;
 use function is_string;
@@ -180,7 +178,8 @@ class Container implements ContainerInterface
      * @param Closure|string $function  函数
      * @param array          $arguments 参数列表
      *
-     * @throws ReflectionException|NotFoundException|ContainerExceptionInterface
+     * @throws ReflectionException|NotFoundException
+     * @throws ContainerExceptionInterface
      */
     public function callFunc($function, array $arguments = [])
     {
@@ -213,6 +212,7 @@ class Container implements ContainerInterface
      * @param array                      $arguments          参数列表，支持关联数组，会自动按照变量名传入
      *
      * @throws ReflectionException
+     * @throws ContainerExceptionInterface
      */
     public function getFuncArgs(ReflectionFunctionAbstract $reflectionFunction, array $arguments = []): array
     {
@@ -227,11 +227,17 @@ class Container implements ContainerInterface
                     || ($type instanceof ReflectionNamedType && $type->isBuiltin())
                     || $type instanceof ReflectionUnionType
                     || ($typeName = $type->getName()) === 'Closure') {
+                    if (!$parameter->isOptional()) {
+                        throw new ContainerException(sprintf('Missing parameter `%s`', $name));
+                    }
                     $funcArgs[] = $parameter->getDefaultValue();
                 } else {
                     try {
                         $funcArgs[] = $this->make($typeName);
-                    } catch (ReflectionException|ContainerExceptionInterface) {
+                    } catch (ReflectionException|ContainerExceptionInterface $exception) {
+                        if (!$parameter->isOptional()) {
+                            throw $exception;
+                        }
                         $funcArgs[] = $parameter->getDefaultValue();
                     }
                 }
