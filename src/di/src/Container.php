@@ -209,13 +209,10 @@ class Container implements ContainerInterface
     }
 
     /**
-     * TODO bug
-     *
      * @param ReflectionFunctionAbstract $reflectionFunction 反射方法
      * @param array                      $arguments          参数列表，支持关联数组，会自动按照变量名传入
      *
-     * @throws ContainerExceptionInterface|ReflectionException
-     * @throws Throwable
+     * @throws ReflectionException
      */
     public function getFuncArgs(ReflectionFunctionAbstract $reflectionFunction, array $arguments = []): array
     {
@@ -230,17 +227,11 @@ class Container implements ContainerInterface
                     || ($type instanceof ReflectionNamedType && $type->isBuiltin())
                     || $type instanceof ReflectionUnionType
                     || ($typeName = $type->getName()) === 'Closure') {
-                    if (!$parameter->isOptional()) {
-                        throw new ContainerException('Missing parameter `' . $name . '`.');
-                    }
                     $funcArgs[] = $parameter->getDefaultValue();
                 } else {
                     try {
                         $funcArgs[] = $this->make($typeName);
-                    } catch (Throwable $throwable) {
-                        if (!$parameter->isOptional()) {
-                            throw $throwable;
-                        }
+                    } catch (ReflectionException|ContainerExceptionInterface) {
                         $funcArgs[] = $parameter->getDefaultValue();
                     }
                 }
