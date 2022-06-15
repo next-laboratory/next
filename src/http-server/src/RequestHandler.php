@@ -67,7 +67,6 @@ class RequestHandler implements RequestHandlerInterface
         $parameters            = $route->getParameters();
         $parameters['request'] = $request;
         return $this->container->call($action, $parameters);
-        //        return $action($request->withRouteParams($route->getParameters()));
     }
 
     /**
