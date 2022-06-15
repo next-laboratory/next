@@ -38,7 +38,7 @@ class Container implements ContainerInterface
     /**
      * 将实例化的类存放到数组中
      *
-     * @param string $id       标识
+     * @param string $id 标识
      * @param object $instance 实例
      */
     public function set(string $id, object $instance)
@@ -51,10 +51,7 @@ class Container implements ContainerInterface
      */
     public function get(string $id)
     {
-        if ($this->has($id)) {
-            return $this->resolved[$this->getBinding($id)];
-        }
-        throw new NotFoundException('No instance found: ' . $id);
+        return $this->resolved[$this->getBinding($id)] ?? new NotFoundException('No instance found: ' . $id);
     }
 
     /**
@@ -66,7 +63,7 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param string $id    标识，可以是接口
+     * @param string $id 标识，可以是接口
      * @param string $class 类名
      *
      * @return void
@@ -105,8 +102,8 @@ class Container implements ContainerInterface
     /**
      * 注入的外部接口方法
      *
-     * @param string $id        标识
-     * @param array  $arguments 构造函数参数列表
+     * @param string $id 标识
+     * @param array $arguments 构造函数参数列表（关联数组）
      *
      * @return mixed
      * @throws ReflectionException|NotFoundException|ContainerExceptionInterface
@@ -114,7 +111,7 @@ class Container implements ContainerInterface
     public function make(string $id, array $arguments = []): object
     {
         if (false === $this->has($id)) {
-            $id              = $this->getBinding($id);
+            $id = $this->getBinding($id);
             $reflectionClass = Reflection::class($id);
             if ($reflectionClass->isInterface()) {
                 if (!$this->bound($id)) {
@@ -136,8 +133,11 @@ class Container implements ContainerInterface
      */
     public function remove(string $id): void
     {
-        $id = $this->getBinding($id);
-        if ($this->has($id)) {
+        $binding = $this->getBinding($id);
+        if (isset($this->resolved[$binding])) {
+            unset($this->resolved[$binding]);
+        }
+        if ($id !== $binding && isset($this->resolved[$id])) {
             unset($this->resolved[$id]);
         }
     }
@@ -145,19 +145,19 @@ class Container implements ContainerInterface
     /**
      * 调用类的方法
      *
-     * @param callable $callable  可调用的类或者实例和方法数组
-     * @param array    $arguments 给方法传递的参数
+     * @param array|string|Closure $callable $callable 可调用的类或者实例和方法数组
+     * @param array $arguments 给方法传递的参数（关联数组）
      *
-     * @throws ContainerExceptionInterface
+     * @return mixed
      * @throws ReflectionException
      */
-    public function call(callable $callable, array $arguments = [])
+    public function call(array|string|Closure $callable, array $arguments = []): mixed
     {
         if ($callable instanceof Closure || is_string($callable)) {
             return $this->callFunc($callable, $arguments);
         }
         [$objectOrClass, $method] = $callable;
-        $isObject         = is_object($objectOrClass);
+        $isObject = is_object($objectOrClass);
         $reflectionMethod = Reflection::method($isObject ? get_class($objectOrClass) : $this->getBinding($objectOrClass), $method);
         if (false === $reflectionMethod->isAbstract()) {
             if (!$reflectionMethod->isPublic()) {
@@ -175,13 +175,13 @@ class Container implements ContainerInterface
     /**
      * 调用闭包
      *
-     * @param Closure|string $function  函数
-     * @param array          $arguments 参数列表
+     * @param string|Closure $function 函数
+     * @param array $arguments 参数列表（关联数组）
      *
      * @throws ReflectionException|NotFoundException
      * @throws ContainerExceptionInterface
      */
-    public function callFunc($function, array $arguments = [])
+    public function callFunc(string|Closure $function, array $arguments = [])
     {
         $reflectFunction = new ReflectionFunction($function);
 
@@ -209,7 +209,7 @@ class Container implements ContainerInterface
 
     /**
      * @param ReflectionFunctionAbstract $reflectionFunction 反射方法
-     * @param array                      $arguments          参数列表，支持关联数组，会自动按照变量名传入
+     * @param array $arguments 参数列表（关联数组）
      *
      * @throws ReflectionException
      * @throws ContainerExceptionInterface

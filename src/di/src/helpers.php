@@ -30,14 +30,12 @@ if (false === function_exists('call')) {
     /**
      * 容器调用方法
      *
-     * @param callable $callback  数组、闭包、函数名
-     * @param array    $arguments 给方法传递的参数列表
+     * @param array|string|Closure $callback 数组、闭包、函数名
+     * @param array $arguments 给方法传递的参数列表
      *
      * @return mixed
-     * @throws ContainerExceptionInterface
-     * @throws ReflectionException
      */
-    function call(callable $callback, array $arguments = [])
+    function call(array|string|Closure $callback, array $arguments = []): mixed
     {
         return container()->call($callback, $arguments);
     }
