@@ -1,0 +1,30 @@
+name: Split repositories
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+  
+    runs-on: ubuntu-latest
+    
+    steps:
+    
+    - uses: actions/checkout@v3
+    
+    - name: prepare git
+      env: 
+        TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      run: git config --global url."https://topyao:${TOKEN}@github.com".insteadOf "https://github.com"
+      
+    - name: prepare bins
+      run: chmod -R 0777 ./bin
+      
+    - name: split repositories
+      run: ./bin/split-linux.sh
