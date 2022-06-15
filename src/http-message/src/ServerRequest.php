@@ -31,7 +31,6 @@ class ServerRequest extends Request implements ServerRequestInterface
     protected ParameterBag $attributes;
     protected FileBag      $uploadedFiles;
     protected ParameterBag $parsedBody;
-    protected ParameterBag $routeParams;
 
     public function __construct(
         string                      $method,
@@ -47,7 +46,6 @@ class ServerRequest extends Request implements ServerRequestInterface
         $this->uploadedFiles = new FileBag();
         $this->parsedBody    = new ParameterBag();
         $this->serverParams  = new ServerBag();
-        $this->routeParams   = new ParameterBag();
     }
 
     /**
@@ -288,37 +286,5 @@ class ServerRequest extends Request implements ServerRequestInterface
         $new->attributes->remove($name);
 
         return $new;
-    }
-
-    /**
-     * @param array $routeParams
-     *
-     * @return ServerRequest
-     */
-    public function withRouteParams(array $routeParams): ServerRequest
-    {
-        $new              = clone $this;
-        $new->routeParams = new ParameterBag($routeParams);
-
-        return $new;
-    }
-
-    /**
-     * @return array
-     */
-    public function getRouteParams(): array
-    {
-        return $this->routeParams->all();
-    }
-
-    /**
-     * @param $key
-     * @param $default
-     *
-     * @return mixed|null
-     */
-    public function getRouteParam($key, $default = null): mixed
-    {
-        return $this->routeParams->get($key, $default);
     }
 }
