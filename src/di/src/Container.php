@@ -38,7 +38,7 @@ class Container implements ContainerInterface
     /**
      * 将实例化的类存放到数组中
      *
-     * @param string $id 标识
+     * @param string $id       标识
      * @param object $instance 实例
      */
     public function set(string $id, object $instance)
@@ -63,7 +63,7 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param string $id 标识，可以是接口
+     * @param string $id    标识，可以是接口
      * @param string $class 类名
      *
      * @return void
@@ -102,8 +102,8 @@ class Container implements ContainerInterface
     /**
      * 注入的外部接口方法
      *
-     * @param string $id 标识
-     * @param array $arguments 构造函数参数列表（关联数组）
+     * @param string $id        标识
+     * @param array  $arguments 构造函数参数列表（关联数组）
      *
      * @return mixed
      * @throws ReflectionException|NotFoundException|ContainerExceptionInterface
@@ -111,7 +111,7 @@ class Container implements ContainerInterface
     public function make(string $id, array $arguments = []): object
     {
         if (false === $this->has($id)) {
-            $id = $this->getBinding($id);
+            $id              = $this->getBinding($id);
             $reflectionClass = Reflection::class($id);
             if ($reflectionClass->isInterface()) {
                 if (!$this->bound($id)) {
@@ -145,11 +145,11 @@ class Container implements ContainerInterface
     /**
      * 调用类的方法
      *
-     * @param array|string|Closure $callable $callable 可调用的类或者实例和方法数组
-     * @param array $arguments 给方法传递的参数（关联数组）
+     * @param array|string|Closure $callable  $callable 可调用的类或者实例和方法数组
+     * @param array                $arguments 给方法传递的参数（关联数组）
      *
      * @return mixed
-     * @throws ReflectionException
+     * @throws ReflectionException|ContainerExceptionInterface
      */
     public function call(array|string|Closure $callable, array $arguments = []): mixed
     {
@@ -157,7 +157,7 @@ class Container implements ContainerInterface
             return $this->callFunc($callable, $arguments);
         }
         [$objectOrClass, $method] = $callable;
-        $isObject = is_object($objectOrClass);
+        $isObject         = is_object($objectOrClass);
         $reflectionMethod = Reflection::method($isObject ? get_class($objectOrClass) : $this->getBinding($objectOrClass), $method);
         if (false === $reflectionMethod->isAbstract()) {
             if (!$reflectionMethod->isPublic()) {
@@ -175,8 +175,8 @@ class Container implements ContainerInterface
     /**
      * 调用闭包
      *
-     * @param string|Closure $function 函数
-     * @param array $arguments 参数列表（关联数组）
+     * @param string|Closure $function  函数
+     * @param array          $arguments 参数列表（关联数组）
      *
      * @throws ReflectionException|NotFoundException
      * @throws ContainerExceptionInterface
@@ -209,7 +209,7 @@ class Container implements ContainerInterface
 
     /**
      * @param ReflectionFunctionAbstract $reflectionFunction 反射方法
-     * @param array $arguments 参数列表（关联数组）
+     * @param array                      $arguments          参数列表（关联数组）
      *
      * @throws ReflectionException
      * @throws ContainerExceptionInterface
@@ -228,14 +228,14 @@ class Container implements ContainerInterface
                     || $type instanceof ReflectionUnionType
                     || ($typeName = $type->getName()) === 'Closure'
                 ) {
-                    $funcArgs = $parameter->isOptional()
+                    $funcArgs[] = $parameter->isOptional()
                         ? $parameter->getDefaultValue()
                         : throw new ContainerException(sprintf('Missing parameter `%s`', $name));
                 } else {
                     try {
                         $funcArgs[] = $this->make($typeName);
                     } catch (ReflectionException|ContainerExceptionInterface $exception) {
-                        $funcArgs = $parameter->isOptional() ? $parameter->getDefaultValue() : throw $exception;
+                        $funcArgs[] = $parameter->isOptional() ? $parameter->getDefaultValue() : throw $exception;
                     }
                 }
             }
