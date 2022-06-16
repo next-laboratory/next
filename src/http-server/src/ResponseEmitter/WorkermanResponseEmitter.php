@@ -29,32 +29,28 @@ class WorkermanResponseEmitter implements ResponseEmitterInterface
      */
     public function emit(ResponseInterface $psrResponse, $sender = null): void
     {
-        try {
-            $response = new Response($psrResponse->getStatusCode());
-            /** @var string[] $cookies */
-            foreach ($psrResponse->getHeader('Set-Cookie') as $cookie) {
-                $cookie = Cookie::parse($cookie);
-                $response->cookie(
-                    $cookie->getName(),
-                    $cookie->getValue(),
-                    $cookie->getMaxAge(),
-                    $cookie->getPath(),
-                    $cookie->getDomain(),
-                    $cookie->isSecure(),
-                    $cookie->isHttponly(),
-                    $cookie->getSamesite()
-                );
-            }
-            $psrResponse = $psrResponse->withoutHeader('Set-Cookie');
-            foreach ($psrResponse->getHeaders() as $name => $values) {
-                $response->header($name, implode(', ', $values));
-            }
-            $body = $psrResponse->getBody();
-            $sender->send($response->withBody((string)$body?->getContents()));
-            $body?->close();
-            $sender->close();
-        } catch (\Throwable $throwable) {
-            echo $throwable->getMessage() . PHP_EOL;
+        $response = new Response($psrResponse->getStatusCode());
+        /** @var string[] $cookies */
+        foreach ($psrResponse->getHeader('Set-Cookie') as $cookie) {
+            $cookie = Cookie::parse($cookie);
+            $response->cookie(
+                $cookie->getName(),
+                $cookie->getValue(),
+                $cookie->getMaxAge(),
+                $cookie->getPath(),
+                $cookie->getDomain(),
+                $cookie->isSecure(),
+                $cookie->isHttponly(),
+                $cookie->getSamesite()
+            );
         }
+        $psrResponse = $psrResponse->withoutHeader('Set-Cookie');
+        foreach ($psrResponse->getHeaders() as $name => $values) {
+            $response->header($name, implode(', ', $values));
+        }
+        $body = $psrResponse->getBody();
+        $sender->send($response->withBody((string)$body?->getContents()));
+        $body?->close();
+        $sender->close();
     }
 }

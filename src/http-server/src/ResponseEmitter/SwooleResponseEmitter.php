@@ -30,27 +30,23 @@ class SwooleResponseEmitter implements ResponseEmitterInterface
      */
     public function emit(ResponseInterface $psrResponse, $sender = null): void
     {
-        try {
-            $sender->status($psrResponse->getStatusCode(), $psrResponse->getReasonPhrase());
-            foreach ($psrResponse->getHeader('Set-Cookie') as $cookie) {
-                $this->sendCookie(Cookie::parse($cookie), $sender);
-            }
-            $psrResponse = $psrResponse->withoutHeader('Set-Cookie');
-            foreach ($psrResponse->getHeaders() as $key => $value) {
-                $sender->header($key, implode(', ', $value));
-            }
-            $body = $psrResponse->getBody();
-            switch (true) {
-                case $body instanceof FileStream:
-                    $sender->sendfile($body->getMetadata('uri'), $body->tell(), max($body->getLength(), 0));
-                    break;
-                default:
-                    $sender->end($body->getContents());
-            }
-            $body?->close();
-        } catch (\Throwable $throwable) {
-            echo $throwable->getMessage() . PHP_EOL;
+        $sender->status($psrResponse->getStatusCode(), $psrResponse->getReasonPhrase());
+        foreach ($psrResponse->getHeader('Set-Cookie') as $cookie) {
+            $this->sendCookie(Cookie::parse($cookie), $sender);
         }
+        $psrResponse = $psrResponse->withoutHeader('Set-Cookie');
+        foreach ($psrResponse->getHeaders() as $key => $value) {
+            $sender->header($key, implode(', ', $value));
+        }
+        $body = $psrResponse->getBody();
+        switch (true) {
+            case $body instanceof FileStream:
+                $sender->sendfile($body->getMetadata('uri'), $body->tell(), max($body->getLength(), 0));
+                break;
+            default:
+                $sender->end($body->getContents());
+        }
+        $body?->close();
     }
 
     /**
