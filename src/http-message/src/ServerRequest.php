@@ -55,7 +55,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @return static
      */
-    public static function createFromSwooleRequest($request): ServerRequest
+    public static function createFromSwooleRequest($request, array $attributes = []): ServerRequest
     {
         $server  = $request->server;
         $header  = $request->header;
@@ -111,16 +111,18 @@ class ServerRequest extends Request implements ServerRequestInterface
         $psrRequest->cookieParams  = new CookieBag($request->cookie ?? []);
         $psrRequest->queryParams   = new ParameterBag($request->get ?? []);
         $psrRequest->uploadedFiles = new FileBag($request->files ?? []); // TODO Convert to UploadedFiles.
+        $psrRequest->attributes    = new ParameterBag($attributes);
 
         return $psrRequest;
     }
 
     /**
      * @param \Workerman\Protocols\Http\Request $request
+     * @param array                             $attributes
      *
      * @return static
      */
-    public static function createFromWorkermanRequest($request): static
+    public static function createFromWorkermanRequest($request, array $attributes = []): static
     {
         $psrRequest                = new static(
             $request->method(), new Uri($request->uri()),
@@ -130,6 +132,7 @@ class ServerRequest extends Request implements ServerRequestInterface
         $psrRequest->parsedBody    = new ParameterBag($request->post() ?: []);
         $psrRequest->cookieParams  = new ParameterBag($request->cookie());
         $psrRequest->uploadedFiles = new FileBag($request->file());
+        $psrRequest->attributes    = new ParameterBag($attributes);
 
         return $psrRequest;
     }
