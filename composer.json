@@ -61,9 +61,6 @@
     },
     "require": {
         "php": "^8.0",
-        "ext-swoole": ">=4.6",
-        "ext-pcntl": "*",
-        "ext-posix": "*",
         "psr/container": "^2.0",
         "psr/simple-cache": "^1.0",
         "psr/event-dispatcher": "^1.0",
