@@ -39,7 +39,7 @@ class RoutingMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $route = $this->routeCollector->resolve($request);
-        $handler->unshiftMiddlewares($route->getMiddlewares());
+        $handler->prependMiddlewares($route->getMiddlewares());
         return $handler->handle($request->withAttribute(Route::class, $route));
     }
 }
