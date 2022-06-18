@@ -63,10 +63,8 @@ class Compiler
      */
     protected function readFile($template): bool|string
     {
-        if (file_exists($template)) {
-            if ($content = file_get_contents($template)) {
-                return $content;
-            }
+        if (file_exists($template) && (false !== ($content = file_get_contents($template)))) {
+            return $content;
         }
         throw new ViewNotExistException('View ' . $template . ' does not exist');
     }
@@ -100,13 +98,13 @@ class Compiler
 
         if (false === $this->blade->isCache() || false === file_exists($compiledFile)) {
             !is_dir($compileDir) && mkdir($compileDir, 0755, true);
-            $stream = $this->compileView($template);
+            $content = $this->compileView($template);
             while (isset($this->parent)) {
                 $parent       = $this->parent;
                 $this->parent = null;
-                $stream       = $this->compileView($parent);
+                $content      = $this->compileView($parent);
             }
-            file_put_contents($compiledFile, $stream, LOCK_EX);
+            file_put_contents($compiledFile, $content, LOCK_EX);
         }
 
         return $compiledFile;

@@ -118,16 +118,6 @@ class Blade implements ViewEngineInterface
     protected function renderView(): void
     {
         extract(func_get_arg(1));
-        include $this->getCompiler()->compile(func_get_arg(0));
-    }
-
-    /**
-     * 返回一个新的compiler
-     *
-     * @return Compiler
-     */
-    protected function getCompiler(): Compiler
-    {
-        return new Compiler($this);
+        include (new Compiler($this))->compile(func_get_arg(0));
     }
 }
