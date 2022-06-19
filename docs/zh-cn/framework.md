@@ -5,10 +5,8 @@
 框架提供了env和config两个函数，可以方便获取配置，如果你使用了AOP包，还可以直接使用注解将配置注入示例
 
 ```php
-class User {
-	/**
-     * @var string
-     */
+class User
+{
     #[\Max\Config\Annotations\Config(key: 'qcloud.user.secret_key', default = '123')]
     protected string $secretKey;
 }
@@ -18,18 +16,40 @@ class User {
 
 ## 路由定义
 
-> 路由定义支持注解，注解扫描路径在`app/Http/Kernel.php`中的`routeScanDir`数组中配置
+> 在`app/Http/Kernel.php`的`map`方法中注册路由，例如
+
+```php
+protected function map(Router $router) {
+	$router->group(function(Router $router) {
+		$router->get('/', function(ServerRequestInterface $request) {
+			return $request->all();
+		});
+		$router->group(function() {
+		    // 引入文件的方式 
+			include_once 'routes.php';
+		});
+	});
+}
+```
+
+如果你引入了其他文件，则可以在该文件中使用`$this`来访问`Router`对象, 例如文件`routes.php`中定义路由
+
+```php
+/** @var Router $this */
+$this->get('/', [IndexController::class, 'index']);
+```
+
+> 也可以使用注解方式
 
 ```php
 #[Controller(prefix: 'index', middleware: [BasicAuthentication::class])]
 class Index
 {
-    #[GetMapping(path: '/user/<id>.html', domain: '*.1kmb.com')]
-    public function index(\Psr\Http\Message\ServerRequestInterface $request)
+    #[GetMapping(path: '/user/<id>\.html', domain: '*.1kmb.com')]
+    public function index(\Psr\Http\Message\ServerRequestInterface $request, $id)
     {
-        echo 'patch';
+        return new \Max\Http\Message\Response(200, [], 'Hello, world!');
     }
-
 }
 ```
 
@@ -43,28 +63,6 @@ class Index
 - DeleteMapping
 - PatchMapping
 - RequestMapping
-
-> 如果你不习惯使用注解，可以在`app/Http/Kernel.php`的`map`方法中注册路由，例如
-
-```php
-protected function map(Router $router) {
-	$router->group(function(Router $router) {
-		$router->get('/', function(ServerRequestInterface $request) {
-			return $request->all();
-		});
-		$router->group(function() {
-			include_once 'routes.php';
-		});
-	});
-}
-```
-
-如果你引入了其他文件，则可以在该文件中使用`$this`来访问`Router`对象, 例如文件`routes.php`中定义路由
-
-```php
-/** @var Router $this */
-$this->get('/', [IndexController::class, 'index']);
-```
 
 # 控制器
 
@@ -87,8 +85,7 @@ class IntexController {
 ## 请求头
 
 ```php
-\Max\Http\Message\ServerRequest::header($name): string
-\Max\Http\Message\ServerRequest::getHeaderLine($name): string
+\App\Http\ServerRequest::getHeaderLine($name): string
 ```
 
 上面两个方法会返回请求头字符串，`header` 方法返回值 `getHeaderLine` 是一样的
@@ -96,8 +93,8 @@ class IntexController {
 ## Server
 
 ```php
-\Max\Http\Message\ServerRequest::server($name): string     // 一条
-\Max\Http\Message\ServerRequest::getServerParams(): array // 全部
+\App\Http\ServerRequest::server($name): string     // 一条
+\App\Http\ServerRequest::getServerParams(): array // 全部
 ```
 
 获取`$_SERVER`中的值
@@ -105,7 +102,7 @@ class IntexController {
 ## 判断请求方法
 
 ```php
-\Max\Http\Message\ServerRequest::isMethod($method): bool
+\App\Http\ServerRequest::isMethod($method): bool
 ```
 
 不区分大小写的方式判断请求方式是否一致
@@ -113,7 +110,7 @@ class IntexController {
 ## 请求地址
 
 ```php
-\Max\Http\Message\ServerRequest::url(bool $full = false): string
+\App\Http\ServerRequest::url(bool $full = false): string
 ```
 
 返回请求的地址，`$full`为`true`，则返回完整地址
@@ -121,8 +118,8 @@ class IntexController {
 ## Cookie
 
 ```php
-\Max\Http\Message\ServerRequest::cookie(string $name): string   // 单条
-\Max\Http\Message\ServerRequest::getCookieParams(): array       // 全部
+\App\Http\ServerRequest::cookie(string $name): string   // 单条
+\App\Http\ServerRequest::getCookieParams(): array       // 全部
 ```
 
 获取请求的Cookie，一般也可以直接从`Header`中获取
@@ -130,7 +127,7 @@ class IntexController {
 ## Ajax
 
 ```php
-\Max\Http\Message\ServerRequest::isAjax(): bool
+\App\Http\ServerRequest::isAjax(): bool
 ```
 
 判断当前请求是否是`Ajax`请求, 注意：有部分前端框架在发送Ajax请求的时候并没有发送X_REQUESTED_WITH头，所以这个方法会返回false
@@ -138,7 +135,7 @@ class IntexController {
 ## 判断path
 
 ```php
-\Max\Http\Message\ServerRequest::is(string $path): bool
+\App\Http\ServerRequest::is(string $path): bool
 ```
 
 判断当前请求的`path`是否和给定的`path`匹配，支持正则
@@ -146,10 +143,10 @@ class IntexController {
 ## 获取输入参数
 
 ```php
-\Max\Http\Message\ServerRequest::get($key = null, $default = null)                         // $_GET
-\Max\Http\Message\ServerRequest::post($key = null, $default = null)                        // $_POST
-\Max\Http\Message\ServerRequest::all()                                                     // $_GET + $_POST
-\Max\Http\Message\ServerRequest::input($key = null, $default = null, ?array $from = null)  // $_GET + $_POST
+\App\Http\ServerRequest::get($key = null, $default = null)                         // $_GET
+\App\Http\ServerRequest::post($key = null, $default = null)                        // $_POST
+\App\Http\ServerRequest::all()                                                     // $_GET + $_POST
+\App\Http\ServerRequest::input($key = null, $default = null, ?array $from = null)  // $_GET + $_POST
 ```
 
 获取请求的参数，这些参数是通过PHP全局变量加载进来的，当$key为null的时候会返回全部参数，如果为字符串会返回单个，如果不存在返回default，如果$key是数组，则会返回多个参数，$default此时可以为数组，数组的键为参数键，数组的值为参数的默认值
@@ -157,25 +154,25 @@ class IntexController {
 例如
 
 ```php
-\Max\Http\Message\ServerRequest::get('a');
+\App\Http\ServerRequest::get('a');
 ```
 
 可以给第二个参数传入一个默认值，例如
 
 ```php
-\Max\Http\Message\ServerRequest::get('a','default');
+\App\Http\ServerRequest::get('a','default');
 ```
 
 获取多个参数可以使用
 
 ```php
-\Max\Http\Message\ServerRequest::get(['a','b']);
+\App\Http\ServerRequest::get(['a','b']);
 ```
 
 可以传入一个关联数组，数组的键为参数名，值为默认值，例如
 
 ```php
-\Max\Http\Message\ServerRequest::get(['a', 'b'], ['a' => 1]);
+\App\Http\ServerRequest::get(['a', 'b'], ['a' => 1]);
 ```
 
 此时如果`a`不存在，则`a`的值为`1`
@@ -183,7 +180,7 @@ class IntexController {
 ## 文件
 
 ```php
-\Max\Http\Message\ServerRequest::file($name);
+\App\Http\ServerRequest::file($name);
 ```
 
 获取上传文件，这个方法暂时不建议使用
@@ -222,10 +219,7 @@ class Login implement MiddlewareInterface
 ```php
 #[Controller(prefix: '/', middleware(TestMiddleware::class))]
 class Index {
-	#[
-		GetMapping(path: '/'),
-		Middleware(Test2Middleware::class)
-	]
+	#[GetMapping(path: '/', middlewares: [Test2Middleware::class])]
 	public function index() {
 		// Do something.
 	}
@@ -236,8 +230,7 @@ class Index {
 
 # Session
 
-> Session可以使用`File`, `Cache`, 驱动，`File` 驱动参考了`ThinkPHP`， 感谢。 如果使用`Cache`, 则`Cache`请不要使用文件驱动，使用`Session`
-> 请使用`\Max\Http\Session`
+> Session可以使用`File`, `Redis` 驱动
 
 Session配置文件如下
 
@@ -257,6 +250,20 @@ return [
 ];
 
 ```
+
+## 在控制器中使用
+
+当前请求的session需要在中间件中创建，所以需要开启SessionMiddleware。开启后将session放入Request属性中，在控制器中使用
+
+```php
+public function index(App\Http\ServerRequest $request) 
+{
+    $session = $request->session();
+    $session = $request->getAttribute(\Max\Session\Session::class);
+}
+```
+
+你也可以自己定义session的存储位置，但是要保证协程间隔离。如果使用workerman，还可以直接使用其提供的session
 
 ## 判断是否存在
 
