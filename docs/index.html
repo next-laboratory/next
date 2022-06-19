@@ -14,24 +14,46 @@
     window.$docsify = {
         name: 'MaxPHP开发手册',
         repo: 'topyao/max',
+        auto2top: true,
+        // coverpage: true,
+        executeScript: true,
+        loadSidebar: true,
+        loadNavbar: true,
+        mergeNavbar: true,
+        maxLevel: 4,
+        subMaxLevel: 2,
+
         search: {
-            depth: 6,
-            noData: {
-                '/en/': 'No results!',
-                '/zh-cn/': '没有找到结果!',
-                '/zh-hk/': '沒有找到結果!',
-                '/zh-tw/': '沒有找到結果!',
-                '/': '没有找到结果!'
-            },
-            paths: 'auto',
+            maxAge: 86400000, // Expiration time, the default one day
+            paths: 'auto', // or 'auto'
             placeholder: {
-                '/en/': 'Type to Search',
-                '/zh-cn/': '输入关键词搜索',
-                '/zh-hk/': '輸入關鍵詞搜索',
-                '/zh-tw/': '輸入關鍵詞搜索',
-                '/': '输入关键词搜索'
+                '/zh-cn/': '搜索',
+                '/': 'Type to search'
             },
-            pathNamespaces: ['/zh-cn']
+            noData: {
+                '/zh-cn/': '找不到结果',
+                '/': 'No Results'
+            },
+
+            // Headline depth, 1 - 6
+            depth: 2,
+
+            hideOtherSidebarContent: false, // whether or not to hide other sidebar content
+
+            // To avoid search index collision
+            // between multiple websites under the same domain
+            namespace: 'website-1',
+
+            // Use different indexes for path prefixes (namespaces).
+            // NOTE: Only works in 'auto' mode.
+            //
+            // When initialiazing an index, we look for the first path from the sidebar.
+            // If it matches the prefix from the list, we switch to the corresponding index.
+            // pathNamespaces: ['/zh-cn', '/ru-ru', '/ru-ru/v1'],
+
+            // You can provide a regexp to match prefixes. In this case,
+            // the matching substring will be used to identify the index
+            pathNamespaces: /^(\/(zh-cn|ru-ru))?(\/(v1|v2))?/
         },
         plugins: [
             function (hook, vm) {
@@ -49,5 +71,6 @@
 </script>
 <!-- Docsify v4 -->
 <script src="./docsify.js"></script>
+<script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
 </body>
 </html>

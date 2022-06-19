@@ -47,3 +47,5 @@ $container->get(Test::class);
 ```php
 $conatiner->call(callable $callable, array $arguments = []);
 ```
+
+> 注意：所有需要传参的api均需要关联数组，数组的键为参数的名字
