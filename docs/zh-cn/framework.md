@@ -80,12 +80,15 @@ class IntexController {
 
 # 请求
 
-> 请使用`Max\Http\Message\ServerRequest`类，是实现了`Psr7 ServerRequest`的请求类
+请求可以是任何实现了Psr的ServerRequestInterface实例
+
+> 请使用`App\Http\ServerRequest`，该类继承`Max\Http\Message\ServerRequest`类，是实现了`Psr7 ServerRequest` 的请求类，并且附加了一些简单的方法，开发者可以自定义相关方法
 
 ## 请求头
 
 ```php
 \App\Http\ServerRequest::getHeaderLine($name): string
+\App\Http\ServerRequest::head($name): string
 ```
 
 上面两个方法会返回请求头字符串，`header` 方法返回值 `getHeaderLine` 是一样的
@@ -180,10 +183,10 @@ class IntexController {
 ## 文件
 
 ```php
-\App\Http\ServerRequest::file($name);
+\App\Http\ServerRequest::getUploadedFiles();
 ```
 
-获取上传文件，这个方法暂时不建议使用
+cli-server和FPM下可以使用，swoole或workerman下暂时未做解析
 
 # 中间件
 
@@ -313,8 +316,6 @@ composer require max/validator
 
 ## 使用
 
-> 可以使用`Facade`或者实例化的方式使用验证器，暂时不推荐依赖注入
-
 ```php
 $validator = new \Max\Validator\Validator();
 $validator->make([
@@ -346,3 +347,23 @@ $validator->errors()->first();
 ```php
 $validator->setThrowable(true);
 ```
+
+## 错误处理
+
+如果你使用内置cli-server或者FPM。则可以使用类似laravel的错误处理模板，需要安装以下扩展
+
+```shell
+composer require filp/whoops
+```
+
+然后修改`App\Http\Middlewares\ExceptionHandler`中的render方法，如下：
+
+```php
+$whoops = new \Whoops\Run();
+$whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
+$whoops->register();
+$html = $whoops->handleException($throwable);
+return new \App\Http\Response($this->getStatusCode($throwable), [], $html);
+```
+
+如果你是用swoole/workerman，可以直接响应json
