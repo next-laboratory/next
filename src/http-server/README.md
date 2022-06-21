@@ -8,16 +8,26 @@ request -> kernel -> response
 
 # 使用
 
+需要新建类继承`\Max\Http\Server\Kernel`类
+
 ```php
+class HttpKernel extends Kernel 
+{
+    // 全局中间件
+    protected array $middlewares = [];
+    
+    // 注册路由
+    protected function map(Router $router)
+    {
+        $router->get('/', 'IndexController@index');
+    }
+}
+```
 
-// 实例化router
-$router = new \Max\Routing\Router();
+然后使用容器实例化`HttpKernel`类
 
-// 注册路由
-$router->get('/', 'IndexController@index');
-
-// 实例化kernel，注意这个需要保持单例
-$kernel = new \Max\Http\Server\Kernel($router->getRouteCollector(), \Max\Di\Context::getContainer());
+```php
+$kernel = \Max\Di\Context::getContainer->make(HttpKernel::class);
 
 // 获取一个PsrServerRequest
 $request = \Max\Http\Message\ServerRequest::createFromGlobals();
