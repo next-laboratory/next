@@ -26,7 +26,6 @@
 - Blade视图组件 [max/view](https://github.com/topyao/max-view)
 - 验证器: [max/validator](https://github.com/topyao/max-validator)
 - 切面编程 [max/aop](https://github.com/topyao/max-aop)
-- API文档生成 [max/swagger](https://github.com/topyao/max-swagger)
 
 ## 贡献一览
 
