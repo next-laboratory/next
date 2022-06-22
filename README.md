@@ -29,7 +29,7 @@
 
 ## 贡献一览
 
-[![Contributor over time](https://contributor-overtime-api.apiseven.com/contributors-svg?chart=contributorOverTime&repo=topyao/max,topyao/max-routing,topyao/max-session,topyao/max-view,topyao/max-di,topyao/max-cache,topyao/max-simple,topyao/max-http-message,topyao/max-http-server,topyao/max-event,topyao/max-config,topyao/max-aop,topyao/max-database,topyao/max-log,topyao/max-redis,topyao/max-validator)](https://contributor-overtime-api.apiseven.com/contributors-svg?chart=contributorOverTime&repo=topyao/max,topyao/max-routing,topyao/max-session,topyao/max-view,topyao/max-di,topyao/max-cache,topyao/max-simple,topyao/max-http-message,topyao/max-http-server,topyao/max-event,topyao/max-config,topyao/max-aop,topyao/max-database,topyao/max-log,topyao/max-redis,topyao/max-validator)
+[![Contributor over time](https://contributor-overtime-api.apiseven.com/contributors-svg?chart=contributorOverTime&repo=topyao/max)](https://contributor-overtime-api.apiseven.com/contributors-svg?chart=contributorOverTime&repo=topyao/max)
 
 欢迎有兴趣的朋友参与开发
 
