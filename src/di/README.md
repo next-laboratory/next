@@ -5,7 +5,7 @@
 > 环境要求 PHP >= 8.0
 
 ```shell
-composer require max/di:dev-master
+composer require max/di
 ```
 
 # 使用
@@ -17,21 +17,13 @@ $container = \Max\Di\Context::getContainer();
 $container = container();
 ```
 
-绑定类和别名
+绑定类和别名，之后所有容器接口都可以使用TestInterface::class标识来获取Test::class实例
 
 ```php
 $container->bind(TestInterface::class, Test::class);
 ```
 
-之后所有容器接口都可以使用TestInterface::class标识来获取Test::class实例
-
-实例化对象, 不保存改对象, 但是会保存所有该类依赖的对象
-
-```php
-$container->resolve(Test::class);
-```
-
-实例化对象并存储
+实例化
 
 ```php
 $container->make(Test::class);
