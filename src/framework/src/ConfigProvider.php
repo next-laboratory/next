@@ -23,7 +23,6 @@ class ConfigProvider
         return [
             'commands' => [
                 'Max\Framework\Console\Commands\RouteListCommand',
-                'Max\Framework\Console\Commands\SwaggerCommand',
                 'Max\Framework\Console\Commands\ControllerMakeCommand',
                 'Max\Framework\Console\Commands\MiddlewareMakeCommand',
             ]

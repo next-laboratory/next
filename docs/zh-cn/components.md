@@ -971,19 +971,11 @@ User::get();                  // 返回全部User模型的集合
 
 文档待补全
 
-## max/log
-
-文档待补全
-
 ## max/queue
 
 文档待补全
 
 ## max/redis
-
-文档待补全
-
-## max/swagger
 
 文档待补全
 
