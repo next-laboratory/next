@@ -21,7 +21,8 @@
         "ext-pdo": "*",
         "ext-json": "*",
         "max/utils": "dev-master",
-        "max/config": "dev-master"
+        "max/config": "dev-master",
+        "max/context": "dev-master"
     },
     "extra": {
         "max": {
