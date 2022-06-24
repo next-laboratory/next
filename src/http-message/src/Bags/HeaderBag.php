@@ -16,7 +16,7 @@ class HeaderBag extends ParameterBag
      *
      * @return array|string[]
      */
-    protected function formatValue($value)
+    protected function formatValue($value): array
     {
         if (is_scalar($value)) {
             $value = [(string)$value];
