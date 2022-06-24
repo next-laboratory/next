@@ -190,7 +190,7 @@ cli-server和FPM下可以使用，swoole或workerman下暂时未做解析
 
 # 中间件
 
-> 中间件基于`Psr15`实现，在`config/http.php` 中的`$middleware`数组中注册的为全局的中间件，均在路由匹配前执行， 其他中间件在路由匹配后执行
+> 中间件基于`Psr15`实现，在`App\Http\Kernel` 中的`$middlewares`数组中注册的为全局的中间件，例如请求异常处理，路由服务，Session初始化，CSRF校验等等
 
 首先需要创建一个中间件，例如
 
@@ -214,8 +214,6 @@ class Login implement MiddlewareInterface
         return $response;    
 }
 ```
-
-> 注意：上面代码中的view函数生成了Response响应，所以可以直接在中间件中返回
 
 ### 注解
 
