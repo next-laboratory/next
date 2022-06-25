@@ -15,17 +15,17 @@
 
 ## 主要组件
 
-- 基于 Psr7 的 [max/http-message](https://github.com/topyao/max-http-message)
-- 基于 Psr11 的 [max/di](https://github.com/topyao/max-di)
-- 基于 Psr14 的 [max/event](https://github.com/topyao/max-http-message)
-- 基于 Psr15 的 [max/http-server](https://github.com/topyao/max-http-server)
+- 基于 Psr7 的 [max/http-message](https://github.com/topyao/max-http-message) HTTP消息
+- 基于 Psr11 的 [max/di](https://github.com/topyao/max-di) 依赖注入容器
+- 基于代理类实现的切面编程 [max/aop](https://github.com/topyao/max-aop)
+- 基于 Psr14 的 [max/event](https://github.com/topyao/max-event) 事件
+- 基于 Psr15 的 [max/http-server](https://github.com/topyao/max-http-server) HTTP服务
 - 基于 Psr16 的 [max/cache](https://github.com/topyao/max-cache)，支持 File,Memcached,Redis,APC [可扩展]
 - 符合 Psr7 规范的 [max/routing](https://github.com/topyao/max-routing) 路由组件
 - 数据库 [max/database](https://github.com/topyao/max-database) 组件，支持连接池
-- Session [max/session](https://github.com/topyao/max-session)
-- Blade视图组件 [max/view](https://github.com/topyao/max-view)
+- 支持多适配器的 [max/session](https://github.com/topyao/max-session) Session
+- 可扩展的Blade视图组件 [max/view](https://github.com/topyao/max-view)
 - 验证器: [max/validator](https://github.com/topyao/max-validator)
-- 切面编程 [max/aop](https://github.com/topyao/max-aop)
 
 ## 贡献一览
 
