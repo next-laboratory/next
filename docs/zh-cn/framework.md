@@ -346,7 +346,7 @@ $validator->errors()->first();
 $validator->setThrowable(true);
 ```
 
-## 错误处理
+# 错误处理
 
 如果你使用内置cli-server或者FPM。则可以使用类似laravel的错误处理模板，需要安装以下扩展
 
