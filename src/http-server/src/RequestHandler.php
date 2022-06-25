@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Max\Http\Server;
 
 use Max\Http\Server\Exceptions\InvalidMiddlewareException;
+use Max\Routing\Exceptions\RouteNotFoundException;
 use Max\Routing\Route;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -46,19 +47,21 @@ class RequestHandler implements RequestHandlerInterface
 
     /**
      * @throws ContainerExceptionInterface
-     * @throws ReflectionException
+     * @throws ReflectionException|RouteNotFoundException
      */
     protected function handleRequest(ServerRequestInterface $request): ResponseInterface
     {
         /** @var Route $route */
-        $route  = $request->getAttribute(Route::class);
-        $action = $route->getAction();
-        if (is_string($action)) {
-            $action = explode('@', $action, 2);
+        if ($route = $request->getAttribute(Route::class)) {
+            $action = $route->getAction();
+            if (is_string($action)) {
+                $action = explode('@', $action, 2);
+            }
+            $parameters            = $route->getParameters();
+            $parameters['request'] = $request;
+            return $this->container->call($action, $parameters);
         }
-        $parameters            = $route->getParameters();
-        $parameters['request'] = $request;
-        return $this->container->call($action, $parameters);
+        throw new RouteNotFoundException('No route was matched', 404);
     }
 
     /**
