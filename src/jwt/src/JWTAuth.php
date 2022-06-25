@@ -52,12 +52,12 @@ class JWTAuth
 
     }
 
-    public function parseToken(ServerRequestInterface $request)
+    public function parseToken(ServerRequestInterface $request, string $header = 'Authorization', string $query = '__token')
     {
-        if ($tokenize = $request->getHeaderLine('Authorization')) {
+        if ($tokenize = $request->getHeaderLine($header)) {
             $tokenize = explode(' ', $tokenize, 2);
             $token    = $tokenize[1] ?? null;
         }
-        return $token ?? $request->getQueryParams()['__token'] ?? null;
+        return $token ?? $request->getQueryParams()[$query] ?? null;
     }
 }
