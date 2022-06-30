@@ -19,6 +19,7 @@ use Max\Database\Collection;
 use Max\Database\Eloquent\Traits\Relations;
 use Max\Database\Exceptions\ModelNotFoundException;
 use Max\Database\Manager;
+use Max\Database\Query\Expression;
 use Max\Utils\Arr;
 use Max\Utils\Contracts\Arrayable;
 use Max\Utils\Str;
@@ -27,7 +28,7 @@ use Throwable;
 /**
  * @method static Builder where(string $column, $value, string $operator = '=')
  * @method static Builder whereNull(string $column)
- * @method static Builder order(string $column, string $sort = 'ASC')
+ * @method static Builder order(string|Expression $column, string $sort = 'ASC')
  * @method static Builder limit(int $limit)
  */
 abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
