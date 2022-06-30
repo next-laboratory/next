@@ -20,6 +20,6 @@
         "max/utils": "dev-master",
         "max/di": "dev-master",
         "nikic/php-parser": "^4.13",
-        "symfony/finder": "^6.0"
+        "symfony/finder": "*"
     }
 }
