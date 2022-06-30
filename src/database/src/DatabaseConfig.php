@@ -31,7 +31,7 @@ class DatabaseConfig
     public const OPTION_POOL_SIZE = 'poolSize';
     public const OPTION_OPTIONS = 'options';
     public const OPTION_UNIX_SOCKET = 'unixSocket';
-    public const OPTION_DSN = 'dsb';
+    public const OPTION_DSN = 'dsn';
     public const OPTION_AUTO_FILL = 'autofill';
 
     /**
