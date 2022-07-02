@@ -18,6 +18,7 @@ class Watcher
 
         while (true) {
             sleep($interval);
+            clearstatcache();
             $modified = [];
             $files    = Finder::create()->in($dirs)->name($pattern)->files();
             foreach ($files as $file) {
