@@ -143,7 +143,7 @@ class FileStream implements StreamInterface
      */
     public function write($string)
     {
-        fwrite($this->stream, $string);
+        return (int)fwrite($this->stream, $string);
     }
 
     /**

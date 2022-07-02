@@ -129,7 +129,7 @@ class StringStream implements StreamInterface
      */
     public function write($string)
     {
-        return fwrite($this->stream, $string);
+        return (int)fwrite($this->stream, $string);
     }
 
     /**
