@@ -14,15 +14,13 @@ declare(strict_types=1);
 namespace Max\Routing;
 
 use Closure;
-use Max\Utils\Traits\AutoFillProperties;
 use function array_merge;
 use function array_unique;
+use function property_exists;
 use function sprintf;
 
 class Router
 {
-    use AutoFillProperties;
-
     /**
      * 分组中间件
      */
@@ -58,7 +56,13 @@ class Router
      */
     public function __construct(array $options = [], ?RouteCollector $routeCollector = null)
     {
-        $this->fillProperties($options);
+        if ([] !== $options) {
+            foreach ($options as $key => $value) {
+                if (property_exists($this, $key)) {
+                    $this->{$key} = $value;
+                }
+            }
+        }
         $this->routeCollector = $routeCollector ?? new RouteCollector();
     }
 
