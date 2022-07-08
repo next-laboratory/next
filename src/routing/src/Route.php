@@ -101,7 +101,7 @@ class Route
     public function setPath(string $path): Route
     {
         $this->path = '/' . trim($path, '/');
-        $regexp     = preg_replace_callback('/<(.+?)>/', function($matches) {
+        $regexp     = preg_replace_callback('/<(\w+)>/', function($matches) {
             [, $name] = $matches;
             $this->setParameter($name, null);
             return sprintf('(?P<%s>%s)', $name, $this->getPattern($name));

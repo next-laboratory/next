@@ -70,35 +70,14 @@ class Router
     }
 
     /**
-     * @return array
+     * For example: $router->any('/', [IndexController::class, 'index'])
+     *
+     * @param string               $path   The request path.
+     * @param array|Closure|string $action The handling method.
      */
-    public function getMiddlewares(): array
+    public function any(string $path, array|Closure|string $action): Route
     {
-        return $this->middlewares;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPrefix(): string
-    {
-        return $this->prefix;
-    }
-
-    /**
-     * @return string
-     */
-    public function getNamespace(): string
-    {
-        return $this->namespace;
-    }
-
-    /**
-     * @return array
-     */
-    public function getPatterns(): array
-    {
-        return $this->patterns;
+        return $this->request($path, $action, ['GET', 'HEAD', 'POST', 'OPTIONS', 'PUT', 'PATCH', 'DELETE']);
     }
 
     /**
@@ -176,6 +155,13 @@ class Router
      */
     public function request(string $path, array|Closure|string $action, array $methods = ['GET', 'HEAD', 'POST']): Route
     {
+        if (is_array($action)) {
+            [$controller, $action] = $action;
+            $action = [$this->namespace . '\\' . $controller, $action];
+        }
+        if (is_string($action)) {
+            $action = $this->namespace . '\\' . $action;
+        }
         $route = new Route(
             $methods,
             $this->prefix . $path,
@@ -199,11 +185,44 @@ class Router
     }
 
     /**
+     * @return array
+     */
+    public function getMiddlewares(): array
+    {
+        return $this->middlewares;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPrefix(): string
+    {
+        return $this->prefix;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNamespace(): string
+    {
+        return $this->namespace;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPatterns(): array
+    {
+        return $this->patterns;
+    }
+
+    /**
      * 添加中间件
      *
      * @param string ...$middlewares
      *
      * @return Router
+     * @deprecated
      */
     public function middleware(string ...$middlewares): Router
     {
@@ -225,6 +244,7 @@ class Router
      * @param string $domain
      *
      * @return Router
+     * @deprecated
      */
     public function domain(string $domain): Router
     {
@@ -238,6 +258,7 @@ class Router
      * @param array $patterns
      *
      * @return Router
+     * @deprecated
      */
     public function patterns(array $patterns): Router
     {
@@ -253,6 +274,7 @@ class Router
      * @param string $prefix
      *
      * @return $this
+     * @deprecated
      */
     public function prefix(string $prefix): Router
     {
@@ -266,6 +288,7 @@ class Router
      * @param string $namespace
      *
      * @return Router
+     * @deprecated
      */
     public function namespace(string $namespace): Router
     {
@@ -281,5 +304,61 @@ class Router
     public function getRouteCollector(): RouteCollector
     {
         return $this->routeCollector;
+    }
+
+    public function withPrefix(string $prefix): Router
+    {
+        $new         = clone $this;
+        $new->prefix = $this->prefix . $prefix;
+
+        return $new;
+    }
+
+    public function withNamespace(string $namespace): Router
+    {
+        $new            = clone $this;
+        $new->namespace = sprintf('%s\\%s', $this->namespace, trim($namespace, '\\'));
+
+        return $new;
+    }
+
+    public function withPattern(string $parameter, string $pattern): Router
+    {
+        $new                       = clone $this;
+        $new->patterns[$parameter] = $pattern;
+        return $new;
+    }
+
+    public function withPatterns(array $patterns): Router
+    {
+        $new           = clone $this;
+        $new->patterns = array_merge($this->patterns, $patterns);
+
+        return $new;
+    }
+
+    public function withMiddleware(string $middleware): Router
+    {
+        $new = clone $this;
+        if (!in_array($middleware, $new->middlewares)) {
+            $new->middlewares[] = $middleware;
+        }
+        return $new;
+    }
+
+    public function withDomain(string $domain): Router
+    {
+        $new         = clone $this;
+        $new->domain = $domain;
+
+        return $new;
+    }
+
+    public function withMiddlewares(array $middlewares): Router
+    {
+        $new              = clone $this;
+        $new->middlewares = array_unique([...$this->middlewares, ...$middlewares]);
+
+        return $new;
     }
 }
