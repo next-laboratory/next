@@ -13,8 +13,9 @@ class CaseInsensitiveBag extends ParameterBag
      */
     public function replace(array $parameters = [])
     {
+        $arrayKeys        = array_keys($parameters);
         $this->parameters = array_change_key_case($parameters, CASE_UPPER);
-        $this->map        = array_combine(array_keys($this->parameters), $parameters);
+        $this->map        = array_combine(array_keys($this->parameters), $arrayKeys);
     }
 
     /**
