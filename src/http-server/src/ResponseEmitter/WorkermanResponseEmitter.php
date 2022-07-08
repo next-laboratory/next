@@ -20,13 +20,10 @@ use Psr\Http\Message\ResponseInterface;
 use Workerman\Connection\TcpConnection;
 use Workerman\Protocols\Http\Response;
 
-class WorkermanResponseEmitter implements ResponseEmitterInterface
+class WorkerManResponseEmitter implements ResponseEmitterInterface
 {
     /**
-     * @param ResponseInterface $psrResponse
-     * @param TcpConnection     $sender
-     *
-     * @return void
+     * @param TcpConnection $sender
      */
     public function emit(ResponseInterface $psrResponse, $sender = null): void
     {
@@ -54,7 +51,7 @@ class WorkermanResponseEmitter implements ResponseEmitterInterface
                     $cookie->getSamesite()
                 );
             }
-            $sender->send($response->withBody((string)$body?->getContents()));
+            $sender->send($response->withBody((string) $body?->getContents()));
         }
         $body?->close();
         $sender->close();

@@ -28,21 +28,36 @@ class RequestHandler implements RequestHandlerInterface
 {
     public function __construct(
         protected ContainerInterface $container,
-        protected array              $middlewares = []
-    )
-    {
+        protected array $middlewares = []
+    ) {
     }
 
     /**
      * @throws ContainerExceptionInterface
-     * @throws ReflectionException
+     * @throws ReflectionException|RouteNotFoundException
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        if ([] === $this->middlewares) {
+        if ($this->middlewares === []) {
             return $this->handleRequest($request);
         }
         return $this->handleMiddleware(array_shift($this->middlewares), $request);
+    }
+
+    /**
+     * 向尾部追加中间件.
+     */
+    public function appendMiddlewares(array $middlewares): void
+    {
+        array_push($this->middlewares, ...$middlewares);
+    }
+
+    /**
+     * 向当前中间件后插入中间件.
+     */
+    public function prependMiddlewares(array $middlewares): void
+    {
+        array_unshift($this->middlewares, ...$middlewares);
     }
 
     /**
@@ -65,10 +80,6 @@ class RequestHandler implements RequestHandlerInterface
     }
 
     /**
-     * @param string                 $middleware
-     * @param ServerRequestInterface $request
-     *
-     * @return ResponseInterface
      * @throws ContainerExceptionInterface
      * @throws ReflectionException
      */
@@ -81,29 +92,5 @@ class RequestHandler implements RequestHandlerInterface
         }
 
         throw new InvalidMiddlewareException(sprintf('Middleware `%s must implement the `Psr\Http\Server\MiddlewareInterface` interface.', $middleware));
-    }
-
-    /**
-     * 向尾部追加中间件
-     *
-     * @param array $middlewares
-     *
-     * @return void
-     */
-    public function appendMiddlewares(array $middlewares): void
-    {
-        array_push($this->middlewares, ...$middlewares);
-    }
-
-    /**
-     * 向当前中间件后插入中间件
-     *
-     * @param array $middlewares
-     *
-     * @return void
-     */
-    public function prependMiddlewares(array $middlewares): void
-    {
-        array_unshift($this->middlewares, ...$middlewares);
     }
 }

@@ -26,7 +26,7 @@ use ReflectionException;
 class Kernel
 {
     /**
-     * 全局中间件
+     * 全局中间件.
      */
     protected array $middlewares = [
         'Max\Http\Server\Middlewares\ExceptionHandleMiddleware',
@@ -39,29 +39,14 @@ class Kernel
      * @param ?EventDispatcherInterface $eventDispatcher 事件调度器
      */
     final public function __construct(
-        protected RouteCollector            $routeCollector,
-        protected ContainerInterface        $container,
+        protected RouteCollector $routeCollector,
+        protected ContainerInterface $container,
         protected ?EventDispatcherInterface $eventDispatcher = null,
-    )
-    {
+    ) {
         $this->map(new Router([], $routeCollector));
     }
 
     /**
-     * 路由注册
-     *
-     * @param Router $router
-     *
-     * @return void
-     */
-    protected function map(Router $router): void
-    {
-    }
-
-    /**
-     * @param ServerRequestInterface $request
-     *
-     * @return ResponseInterface
      * @throws ContainerExceptionInterface
      * @throws ReflectionException
      */
@@ -70,5 +55,12 @@ class Kernel
         $response = (new RequestHandler($this->container, $this->middlewares))->handle($request);
         $this->eventDispatcher?->dispatch(new OnRequest($request, $response));
         return $response;
+    }
+
+    /**
+     * 路由注册.
+     */
+    protected function map(Router $router): void
+    {
     }
 }

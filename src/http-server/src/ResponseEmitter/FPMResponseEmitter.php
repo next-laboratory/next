@@ -19,21 +19,18 @@ use Psr\Http\Message\ResponseInterface;
 
 class FPMResponseEmitter implements ResponseEmitterInterface
 {
-    /**
-     * @param ResponseInterface $psrResponse
-     * @param null              $sender
-     *
-     * @return void
-     */
     public function emit(ResponseInterface $psrResponse, $sender = null): void
     {
         header(sprintf('HTTP/%s %d %s', $psrResponse->getProtocolVersion(), $psrResponse->getStatusCode(), $psrResponse->getReasonPhrase()), true);
         foreach ($psrResponse->getHeader('Set-Cookie') as $cookie) {
             $cookie = Cookie::parse($cookie);
             setcookie(
-                $cookie->getName(), $cookie->getValue(),
-                $cookie->getExpires(), $cookie->getPath(),
-                $cookie->getDomain(), $cookie->isSecure(),
+                $cookie->getName(),
+                $cookie->getValue(),
+                $cookie->getExpires(),
+                $cookie->getPath(),
+                $cookie->getDomain(),
+                $cookie->isSecure(),
                 $cookie->isHttponly()
             );
         }

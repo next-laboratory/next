@@ -32,19 +32,13 @@ class AllowCrossDomain implements MiddlewareInterface
         'Access-Control-Allow-Headers'     => 'Authorization, Content-Type, If-Match, If-Modified-Since, If-None-Match, If-Unmodified-Since, X-CSRF-TOKEN, X-Requested-With',
     ];
 
-    /**
-     * @param ServerRequestInterface  $request
-     * @param RequestHandlerInterface $handler
-     *
-     * @return ResponseInterface
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $allowOrigin = in_array('*', $this->allowOrigin) ? '*' : $request->getHeaderLine('Origin');
-        if ('' !== $allowOrigin) {
+        if ($allowOrigin !== '') {
             $headers                                = $this->addedHeaders;
             $headers['Access-Control-Allow-Origin'] = $allowOrigin;
-            if (0 === strcasecmp($request->getMethod(), 'OPTIONS')) {
+            if (strcasecmp($request->getMethod(), 'OPTIONS') === 0) {
                 return new Response(204, $headers);
             }
             $response = $handler->handle($request);

@@ -15,7 +15,6 @@ namespace Max\Http\Server\ResponseEmitter;
 
 use Max\Http\Message\Cookie;
 use Max\Http\Message\Stream\FileStream;
-use Max\Http\Message\Stream\StringStream;
 use Max\Http\Server\Contracts\ResponseEmitterInterface;
 use Psr\Http\Message\ResponseInterface;
 use Swoole\Http\Response;
@@ -23,10 +22,7 @@ use Swoole\Http\Response;
 class SwooleResponseEmitter implements ResponseEmitterInterface
 {
     /**
-     * @param ResponseInterface $psrResponse
-     * @param Response          $sender
-     *
-     * @return void
+     * @param Response $sender
      */
     public function emit(ResponseInterface $psrResponse, $sender = null): void
     {
@@ -49,19 +45,17 @@ class SwooleResponseEmitter implements ResponseEmitterInterface
         $body?->close();
     }
 
-    /**
-     * @param Cookie   $cookie
-     * @param Response $response
-     *
-     * @return void
-     */
     protected function sendCookie(Cookie $cookie, Response $response): void
     {
         $response->cookie(
-            $cookie->getName(), $cookie->getValue(),
-            $cookie->getExpires(), $cookie->getPath(),
-            $cookie->getDomain(), $cookie->isSecure(),
-            $cookie->isHttponly(), $cookie->getSamesite()
+            $cookie->getName(),
+            $cookie->getValue(),
+            $cookie->getExpires(),
+            $cookie->getPath(),
+            $cookie->getDomain(),
+            $cookie->isSecure(),
+            $cookie->isHttponly(),
+            $cookie->getSamesite()
         );
     }
 }

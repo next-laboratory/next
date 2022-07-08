@@ -31,15 +31,11 @@ class RouteCollector extends AbstractCollector
     protected static ?Router $router = null;
 
     /**
-     * 当前控制器的类名
+     * 当前控制器的类名.
      */
     protected static string $class = '';
 
     /**
-     * @param string $class
-     * @param object $attribute
-     *
-     * @return void
      * @throws NotFoundException
      * @throws ContainerExceptionInterface
      * @throws ReflectionException
@@ -59,7 +55,7 @@ class RouteCollector extends AbstractCollector
                 'middlewares' => $attribute->middlewares,
             ]);
             foreach (Reflection::class($class)->getMethods() as $reflectionMethod) {
-                if ($reflectionMethod->isPublic() && !$reflectionMethod->isStatic() && !$reflectionMethod->isAbstract()) {
+                if ($reflectionMethod->isPublic() && ! $reflectionMethod->isStatic() && ! $reflectionMethod->isAbstract()) {
                     $action = $reflectionMethod->getName();
                     /** @var \Max\Routing\RouteCollector $routeCollector */
                     $routeCollector = Context::getContainer()->make(\Max\Routing\RouteCollector::class);
@@ -75,18 +71,13 @@ class RouteCollector extends AbstractCollector
     }
 
     /**
-     * @param string $class
-     * @param string $method
-     * @param object $attribute
-     *
-     * @return void
      * @throws NotFoundException
      * @throws ContainerExceptionInterface
      * @throws ReflectionException
      */
     public static function collectMethod(string $class, string $method, object $attribute): void
     {
-        if ($attribute instanceof MappingInterface && self::$class === $class && !is_null(self::$router)) {
+        if ($attribute instanceof MappingInterface && self::$class === $class && ! is_null(self::$router)) {
             /** @var \Max\Routing\RouteCollector $routeCollector */
             $routeCollector = Context::getContainer()->make(\Max\Routing\RouteCollector::class);
             $routeCollector->add((new Route(
