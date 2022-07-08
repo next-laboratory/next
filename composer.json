@@ -21,12 +21,13 @@
         }
     },
     "require": {
-        "php": "^7.4|^8.0",
+        "php": "^8.0",
         "ramsey/uuid": "^4.2",
         "symfony/mime": "*",
         "voku/portable-ascii": "^1.5",
         "league/commonmark": "^2.0",
-        "symfony/finder": "*"
+        "symfony/finder": "*",
+        "doctrine/inflector": "*"
     },
     "suggest": {
         "symfony/var-dumper": "*"

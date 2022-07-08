@@ -19,6 +19,9 @@ use Max\Utils\Collection;
 use Max\Utils\Contracts\Arrayable;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * @deprecated
+ */
 abstract class JsonResource implements Arrayable, JsonSerializable, ArrayAccess
 {
     protected int $perpage = 15;
