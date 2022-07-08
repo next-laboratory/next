@@ -5,6 +5,9 @@ namespace Max\Utils;
 use Max\Aop\AstManager;
 use Symfony\Component\Finder\Finder;
 
+/**
+ * @deprecated
+ */
 class Classes
 {
     public static function findInDirs(array $dirs): array

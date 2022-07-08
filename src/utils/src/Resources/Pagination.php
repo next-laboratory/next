@@ -17,6 +17,9 @@ use JsonSerializable;
 use Max\Utils\Collection;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * @deprecated
+ */
 class Pagination implements JsonSerializable
 {
     /**

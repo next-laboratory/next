@@ -15,6 +15,9 @@ namespace Max\Utils\Resources;
 
 use JsonSerializable;
 
+/**
+ * @deprecated
+ */
 class ResourceCollection implements JsonSerializable
 {
     /**
