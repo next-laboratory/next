@@ -25,43 +25,36 @@ class Router
 
     /**
      * 分组中间件
-     *
-     * @var array
      */
     protected array $middlewares = [];
 
     /**
      * 前缀
-     *
-     * @var string
      */
     protected string $prefix = '';
 
     /**
-     * @var string
+     * 命名空间
      */
     protected string $namespace = '';
 
     /**
      * 域名
-     *
-     * @var string
      */
     protected string $domain = '';
 
     /**
-     * @var array
+     * 参数规则
      */
     protected array $patterns = [];
 
     /**
-     * @var RouteCollector
+     * 路由收集器
      */
     protected RouteCollector $routeCollector;
 
     /**
-     * @param array               $options
-     * @param RouteCollector|null $routeCollector
+     * @param array $options 初始配置
      */
     public function __construct(array $options = [], ?RouteCollector $routeCollector = null)
     {
@@ -70,6 +63,7 @@ class Router
     }
 
     /**
+     * Allow almost all methods.
      * For example: $router->any('/', [IndexController::class, 'index'])
      *
      * @param string               $path   The request path.
@@ -81,86 +75,68 @@ class Router
     }
 
     /**
-     * @param string $uri
-     * @param        $action
-     *
-     * @return Route
+     * Method PATCH.
      */
-    public function patch(string $uri, $action): Route
+    public function patch(string $uri, string|array|Closure $action): Route
     {
         return $this->request($uri, $action, ['PATCH']);
     }
 
     /**
-     * @param string $uri
-     * @param        $action
-     *
-     * @return Route
+     * Method PUT.
      */
-    public function put(string $uri, $action): Route
+    public function put(string $uri, string|array|Closure $action): Route
     {
         return $this->request($uri, $action, ['PUT']);
     }
 
     /**
-     * @param string $uri
-     * @param        $action
-     *
-     * @return Route
+     * Method DELETE.
      */
-    public function delete(string $uri, $action): Route
+    public function delete(string $uri, string|array|Closure $action): Route
     {
         return $this->request($uri, $action, ['DELETE']);
     }
 
     /**
-     * @param string $uri
-     * @param        $action
-     *
-     * @return Route
+     * Method POST.
      */
-    public function post(string $uri, $action): Route
+    public function post(string $uri, string|array|Closure $action): Route
     {
         return $this->request($uri, $action, ['POST']);
     }
 
     /**
-     * @param string $uri
-     * @param        $action
-     *
-     * @return Route
+     * Method GET.
      */
-    public function get(string $uri, $action): Route
+    public function get(string $uri, string|array|Closure $action): Route
     {
         return $this->request($uri, $action, ['GET', 'HEAD']);
     }
 
     /**
-     * @param string $uri
-     * @param        $action
-     *
-     * @return Route
+     * Method OPTIONS.
      */
-    public function options(string $uri, $action): Route
+    public function options(string $uri, string|array|Closure $action): Route
     {
         return $this->request($uri, $action, ['OPTIONS']);
     }
 
     /**
-     * @param string               $path
-     * @param array|Closure|string $action
-     * @param array                $methods
-     *
-     * @return Route
+     * Allow multi request methods.
      */
-    public function request(string $path, array|Closure|string $action, array $methods = ['GET', 'HEAD', 'POST']): Route
+    public function request(
+        string               $path,
+        array|Closure|string $action,
+        array                $methods = ['GET', 'HEAD', 'POST']
+    ): Route
     {
         if (is_array($action)) {
             [$controller, $action] = $action;
-            $action = [$this->namespace . '\\' . $controller, $action];
+            $action = [$this->namespace . '\\' . ltrim($controller, '\\'), $action];
         }
         if (is_string($action)) {
-            $action = $this->namespace . '\\' . $action;
+            $action = $this->namespace . '\\' . ltrim($action, '\\');
         }
         $route = new Route(
             $methods,
@@ -176,8 +152,6 @@ class Router
 
     /**
      * 分组路由
-     *
-     * @param Closure $group
      */
     public function group(Closure $group): void
     {
@@ -219,9 +193,6 @@ class Router
     /**
      * 添加中间件
      *
-     * @param string ...$middlewares
-     *
-     * @return Router
      * @deprecated
      */
     public function middleware(string ...$middlewares): Router
@@ -241,9 +212,6 @@ class Router
     }
 
     /**
-     * @param string $domain
-     *
-     * @return Router
      * @deprecated
      */
     public function domain(string $domain): Router
@@ -255,9 +223,6 @@ class Router
     }
 
     /**
-     * @param array $patterns
-     *
-     * @return Router
      * @deprecated
      */
     public function patterns(array $patterns): Router
@@ -271,9 +236,6 @@ class Router
     /**
      * 设置前缀
      *
-     * @param string $prefix
-     *
-     * @return $this
      * @deprecated
      */
     public function prefix(string $prefix): Router
@@ -285,15 +247,12 @@ class Router
     }
 
     /**
-     * @param string $namespace
-     *
-     * @return Router
      * @deprecated
      */
     public function namespace(string $namespace): Router
     {
         $new            = clone $this;
-        $new->namespace = sprintf('%s\\%s', $this->namespace, $namespace);
+        $new->namespace = sprintf('%s\\%s', $this->namespace, trim($namespace, '\\'));
 
         return $new;
     }
