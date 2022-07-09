@@ -1,21 +1,23 @@
 <?php
 
-namespace Max\Framework\Http\Middlewares;
+namespace Max\Framework\Exceptions\Handlers;
 
 use Max\Http\Message\Response;
 use Max\Http\Message\Stream\StringStream;
+use Max\Http\Server\Contracts\ExceptionHandlerInterface;
+use Max\Http\Server\Contracts\StoppableExceptionHandlerInterface;
 use Max\Utils\Str;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
-use Psr\Http\Server\RequestHandlerInterface;
+use Throwable;
 use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PlainTextHandler;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Handler\XmlResponseHandler;
 use Whoops\Run;
+use Whoops\RunInterface;
 
-class WhoopsExceptionHandler implements MiddlewareInterface
+class WhoopsExceptionHandler implements ExceptionHandlerInterface, StoppableExceptionHandlerInterface
 {
     protected static array $preference = [
         'text/html'        => PrettyPageHandler::class,
@@ -23,22 +25,23 @@ class WhoopsExceptionHandler implements MiddlewareInterface
         'application/xml'  => XmlResponseHandler::class,
     ];
 
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    public function handle(Throwable $throwable, ServerRequestInterface $request): ?ResponseInterface
     {
-        try {
-            return $handler->handle($request);
-        } catch (\Throwable $throwable) {
-            $whoops = new Run();
-            [$handler, $contentType] = $this->negotiateHandler($request);
+        $whoops = new Run();
+        [$handler, $contentType] = $this->negotiateHandler($request);
 
-            $whoops->pushHandler($handler);
-            $whoops->allowQuit(false);
-            ob_start();
-            $whoops->{Run::EXCEPTION_HANDLER}($throwable);
-            $content = ob_get_clean();
+        $whoops->pushHandler($handler);
+        $whoops->allowQuit(false);
+        ob_start();
+        $whoops->{RunInterface::EXCEPTION_HANDLER}($throwable);
+        $content = ob_get_clean();
 
-            return new Response(500, ['Content-Type' => $contentType], new StringStream($content));
-        }
+        return new Response(500, ['Content-Type' => $contentType], new StringStream($content));
+    }
+
+    public function isValid(Throwable $throwable): bool
+    {
+        return class_exists('Whoops\Run');
     }
 
     protected function negotiateHandler(ServerRequestInterface $request)

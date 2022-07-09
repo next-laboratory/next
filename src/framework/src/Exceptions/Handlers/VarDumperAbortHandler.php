@@ -1,8 +1,9 @@
 <?php
 
-namespace Max\Framework\Exceptions;
+namespace Max\Framework\Exceptions\Handlers;
 
 use ErrorException;
+use Max\Framework\Exceptions\VarDumperAbort;
 use Max\Http\Message\Response;
 use Max\Http\Message\Stream\StringStream;
 use Max\Http\Server\Contracts\ExceptionHandlerInterface;
@@ -35,6 +36,6 @@ class VarDumperAbortHandler implements ExceptionHandlerInterface, StoppableExcep
 
     public function isValid(Throwable $throwable): bool
     {
-        return $throwable instanceof VarDumperAbort;
+        return class_exists('Symfony\Component\VarDumper\Dumper\HtmlDumper') && $throwable instanceof VarDumperAbort;
     }
 }
