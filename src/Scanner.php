@@ -13,9 +13,11 @@ declare(strict_types=1);
 
 namespace Max\Aop;
 
+use Attribute;
 use Composer\Autoload\ClassLoader;
 use Max\Aop\Collectors\AspectCollector;
 use Max\Aop\Collectors\PropertyAttributeCollector;
+use Max\Aop\Contracts\AspectInterface;
 use Max\Aop\Exceptions\ProcessException;
 use Max\Di\Reflection;
 use Max\Utils\Filesystem;
@@ -122,9 +124,20 @@ final class Scanner
             $reflectionClass = Reflection::class($class);
             // 收集类注解
             foreach ($reflectionClass->getAttributes() as $attribute) {
+                if ($attribute instanceof Attribute) {
+                    continue;
+                }
                 try {
+                    $attributeInstance = $attribute->newInstance();
                     foreach ($collectors as $collector) {
-                        $collector::collectClass($class, $attribute->newInstance());
+                        $collector::collectClass($class, $attributeInstance);
+                    }
+                    if ($attributeInstance instanceof AspectInterface) {
+                        foreach ($reflectionClass->getMethods() as $reflectionMethod) {
+                            if (!$reflectionMethod->isConstructor()) {
+                                AspectCollector::collectMethod($class, $reflectionMethod->getName(), $attributeInstance);
+                            }
+                        }
                     }
                 } catch (Throwable $throwable) {
                     echo '[NOTICE] ' . $class . ': ' . $throwable->getMessage() . PHP_EOL;

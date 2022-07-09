@@ -25,17 +25,7 @@ class AspectCollector extends AbstractCollector
     public static function collectMethod(string $class, string $method, object $attribute): void
     {
         if (self::isValid($attribute)) {
-            self::$container['method'][$class][$method][] = $attribute;
-        }
-    }
-
-    /**
-     * 收集类切面
-     */
-    public static function collectClass(string $class, object $attribute): void
-    {
-        if (self::isValid($attribute)) {
-            self::$container['class'][$class][] = $attribute;
+            self::$container[$class][$method][] = $attribute;
         }
     }
 
@@ -44,17 +34,7 @@ class AspectCollector extends AbstractCollector
      */
     public static function getMethodAspects(string $class, string $method): array
     {
-        return self::$container['method'][$class][$method] ?? [];
-    }
-
-    /**
-     * 返回某个类的切面
-     *
-     * @return AspectInterface[]
-     */
-    public static function getClassAspects(string $class): array
-    {
-        return self::$container['class'][$class] ?? [];
+        return self::$container[$class][$method] ?? [];
     }
 
     /**
@@ -64,7 +44,7 @@ class AspectCollector extends AbstractCollector
      */
     public static function getCollectedClasses(): array
     {
-        return array_unique([...array_keys(self::$container['class'] ?? []), ...array_keys(self::$container['method'] ?? [])]);
+        return array_keys(self::$container);
     }
 
     /**
