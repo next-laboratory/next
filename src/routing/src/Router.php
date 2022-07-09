@@ -127,6 +127,14 @@ class Router
     }
 
     /**
+     * 将命名空间和控制器拼接起来
+     */
+    protected function longNameController(string $controller): string
+    {
+        return trim($this->namespace . '\\' . ltrim($controller, '\\'), '\\');
+    }
+
+    /**
      * Allow multi request methods.
      */
     public function request(
@@ -137,10 +145,10 @@ class Router
     {
         if (is_array($action)) {
             [$controller, $action] = $action;
-            $action = [$this->namespace . '\\' . ltrim($controller, '\\'), $action];
+            $action = [$this->longNameController($controller), $action];
         }
         if (is_string($action)) {
-            $action = $this->namespace . '\\' . ltrim($action, '\\');
+            $action = $this->longNameController($action);
         }
         $route = new Route(
             $methods,
