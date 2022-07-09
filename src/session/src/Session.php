@@ -114,6 +114,14 @@ class Session
     }
 
     /**
+     * Return all session data.
+     */
+    public function all(): array
+    {
+        return $this->data;
+    }
+
+    /**
      * Destroy the session.
      */
     public function destroy(): void
