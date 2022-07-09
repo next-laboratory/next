@@ -5,7 +5,10 @@
     "autoload": {
         "psr-4": {
             "Max\\Framework\\": "src/"
-        }
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "authors": [
         {
@@ -14,7 +17,8 @@
         }
     ],
     "require": {
-        "symfony/console": "^6.0"
+        "symfony/console": "^6.0",
+        "symfony/var-dumper": "^6.0"
     },
     "extra": {
         "max": {
