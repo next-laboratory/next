@@ -196,8 +196,6 @@ class Router
 
     /**
      * 添加中间件
-     *
-     * @deprecated
      */
     public function middleware(string ...$middlewares): Router
     {
@@ -216,7 +214,8 @@ class Router
     }
 
     /**
-     * @deprecated
+     * 指定域名
+     * Example: *.git.com / www.git.com
      */
     public function domain(string $domain): Router
     {
@@ -227,7 +226,7 @@ class Router
     }
 
     /**
-     * @deprecated
+     * 变量规则
      */
     public function patterns(array $patterns): Router
     {
@@ -238,9 +237,7 @@ class Router
     }
 
     /**
-     * 设置前缀
-     *
-     * @deprecated
+     * 前缀
      */
     public function prefix(string $prefix): Router
     {
@@ -251,7 +248,7 @@ class Router
     }
 
     /**
-     * @deprecated
+     * 命名空间
      */
     public function namespace(string $namespace): Router
     {
@@ -267,61 +264,5 @@ class Router
     public function getRouteCollector(): RouteCollector
     {
         return $this->routeCollector;
-    }
-
-    public function withPrefix(string $prefix): Router
-    {
-        $new         = clone $this;
-        $new->prefix = $this->prefix . $prefix;
-
-        return $new;
-    }
-
-    public function withNamespace(string $namespace): Router
-    {
-        $new            = clone $this;
-        $new->namespace = sprintf('%s\\%s', $this->namespace, trim($namespace, '\\'));
-
-        return $new;
-    }
-
-    public function withPattern(string $parameter, string $pattern): Router
-    {
-        $new                       = clone $this;
-        $new->patterns[$parameter] = $pattern;
-        return $new;
-    }
-
-    public function withPatterns(array $patterns): Router
-    {
-        $new           = clone $this;
-        $new->patterns = array_merge($this->patterns, $patterns);
-
-        return $new;
-    }
-
-    public function withMiddleware(string $middleware): Router
-    {
-        $new = clone $this;
-        if (!in_array($middleware, $new->middlewares)) {
-            $new->middlewares[] = $middleware;
-        }
-        return $new;
-    }
-
-    public function withDomain(string $domain): Router
-    {
-        $new         = clone $this;
-        $new->domain = $domain;
-
-        return $new;
-    }
-
-    public function withMiddlewares(array $middlewares): Router
-    {
-        $new              = clone $this;
-        $new->middlewares = array_unique([...$this->middlewares, ...$middlewares]);
-
-        return $new;
     }
 }
