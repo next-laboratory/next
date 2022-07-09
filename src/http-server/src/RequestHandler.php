@@ -28,8 +28,9 @@ class RequestHandler implements RequestHandlerInterface
 {
     public function __construct(
         protected ContainerInterface $container,
-        protected array $middlewares = []
-    ) {
+        protected array              $middlewares = []
+    )
+    {
     }
 
     /**
@@ -91,6 +92,6 @@ class RequestHandler implements RequestHandlerInterface
             return $handler->process($request, $this);
         }
 
-        throw new InvalidMiddlewareException(sprintf('Middleware `%s must implement the `Psr\Http\Server\MiddlewareInterface` interface.', $middleware));
+        throw new InvalidMiddlewareException(sprintf('Middleware `%s must be an instance of Psr\Http\Server\MiddlewareInterface.', $middleware));
     }
 }

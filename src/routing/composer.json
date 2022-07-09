@@ -12,7 +12,7 @@
     ],
     "require": {
         "php": "^8.0",
-        "psr/http-message": "^1.0"
+        "max/http-message": "dev-master"
     },
     "autoload": {
         "psr-4": {

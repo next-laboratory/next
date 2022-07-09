@@ -13,65 +13,59 @@ declare(strict_types=1);
 
 namespace Max\Http\Server\Middlewares;
 
-use Max\Http\Message\Response;
-use Max\Http\Server\Exceptions\HttpException;
+use InvalidArgumentException;
+use Max\Http\Server\Contracts\ExceptionHandlerInterface;
+use Max\Http\Server\Contracts\StoppableExceptionHandlerInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use ReflectionException;
 use Throwable;
 
 class ExceptionHandleMiddleware implements MiddlewareInterface
 {
-    protected array $httpExceptions = [
-        'Max\Routing\Exceptions\MethodNotAllowedException',
-        'Max\Routing\Exceptions\RouteNotFoundException',
-    ];
+    /**
+     * @var ExceptionHandlerInterface[]|string[]
+     */
+    protected array $exceptionHandlers = [];
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws ReflectionException
+     */
+    public function __construct(ContainerInterface $container)
+    {
+        foreach ($this->exceptionHandlers as $key => $exceptionHandler) {
+            $this->exceptionHandlers[$key] = $container->make($exceptionHandler);
+        }
+    }
+
+    /**
+     * @throws Throwable
+     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {
             return $handler->handle($request);
         } catch (Throwable $throwable) {
-            return $this->handleException($throwable, $request);
+            $finalResponse = null;
+            foreach ($this->exceptionHandlers as $exceptionHandler) {
+                if ($exceptionHandler->isValid($throwable)) {
+                    if ($response = $exceptionHandler->handle($throwable, $request)) {
+                        $finalResponse = $response;
+                    }
+                    if ($exceptionHandler instanceof StoppableExceptionHandlerInterface) {
+                        return $finalResponse instanceof ResponseInterface ? $finalResponse
+                            : throw new InvalidArgumentException(
+                                'The final exception handler must return an instance of Psr\Http\Message\ResponseInterface'
+                            );
+                    }
+                }
+            }
+            throw $throwable;
         }
-    }
-
-    public function handleException(Throwable $throwable, ServerRequestInterface $request): ResponseInterface
-    {
-        $this->reportException($throwable, $request);
-
-        return $this->renderException($throwable, $request);
-    }
-
-    protected function reportException(Throwable $throwable, ServerRequestInterface $request): void
-    {
-    }
-
-    protected function renderException(Throwable $throwable, ServerRequestInterface $request): ResponseInterface
-    {
-        $message = sprintf('%s: %s in %s +%d', $throwable::class, $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
-        return new Response(
-            $this->getStatusCode($throwable),
-            [],
-            sprintf(
-            <<<'EOT'
-<html><head><title>%s</title></head><body><pre style="font-size: 1.5em; white-space: break-spaces"><p><b>%s</b></p><b>Stack Trace</b><br>%s</pre></body></html>
-EOT
-                ,
-            $message,
-            $message,
-            $throwable->getTraceAsString(),
-        )
-        );
-    }
-
-    protected function getStatusCode(Throwable $throwable): int
-    {
-        $statusCode = 500;
-        if (in_array($throwable::class, $this->httpExceptions) || $throwable instanceof HttpException) {
-            $statusCode = $throwable->getCode();
-        }
-        return (int) $statusCode;
     }
 }
