@@ -18,19 +18,14 @@ use Max\Event\Contracts\EventDispatcherInterface;
 
 class EventDispatcher implements EventDispatcherInterface
 {
-    /**
-     * @param ListenerProvider $listenerProvider
-     */
-    public function __construct(protected ListenerProvider $listenerProvider)
+    public function __construct(
+        protected ListenerProvider $listenerProvider
+    )
     {
     }
 
     /**
-     * 调度事件
-     *
-     * @param object $event
-     *
-     * @return object
+     * @inheritdoc
      */
     public function dispatch(object $event)
     {
@@ -43,9 +38,6 @@ class EventDispatcher implements EventDispatcherInterface
         return $event;
     }
 
-    /**
-     * @return ListenerProvider
-     */
     public function getListenerProvider(): ListenerProvider
     {
         return $this->listenerProvider;

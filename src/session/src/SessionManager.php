@@ -7,27 +7,22 @@ use Max\Config\Contracts\ConfigInterface;
 class SessionManager
 {
     /**
-     * @var array
+     * Session config.
      */
     protected array $config = [];
 
     /**
-     * @var array
+     * Session handlers.
      */
     protected array $handlers = [];
 
-    /**
-     * @param ConfigInterface $config
-     */
     public function __construct(ConfigInterface $config)
     {
         $this->config = $config->get('session');
     }
 
     /**
-     * @param string|null $name
-     *
-     * @return Session
+     * Create a new session.
      */
     public function create(?string $name = null): Session
     {

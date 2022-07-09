@@ -19,21 +19,19 @@ use Psr\EventDispatcher\ListenerProviderInterface;
 class ListenerProvider implements ListenerProviderInterface
 {
     /**
-     * @var array
+     * 事件
      */
     protected array $events = [];
 
     /**
      * 已经注册的监听器
      *
-     * @var array
+     * @var EventListenerInterface[]
      */
     protected array $listeners = [];
 
     /**
      * 注册单个事件监听
-     *
-     * @param EventListenerInterface $eventListener
      */
     public function addListener(EventListenerInterface $eventListener)
     {
@@ -47,7 +45,9 @@ class ListenerProvider implements ListenerProviderInterface
     }
 
     /**
-     * @return array
+     * 获取所有监听器
+     *
+     * @return EventListenerInterface[]
      */
     public function getListeners(): array
     {
@@ -56,10 +56,6 @@ class ListenerProvider implements ListenerProviderInterface
 
     /**
      * 判断是否已经监听
-     *
-     * @param string $listeners
-     *
-     * @return bool
      */
     public function listened(string $listeners): bool
     {
@@ -67,11 +63,7 @@ class ListenerProvider implements ListenerProviderInterface
     }
 
     /**
-     * 获取监听器
-     *
-     * @param object $event
-     *
-     * @return iterable
+     * @inheritdoc
      */
     public function getListenersForEvent(object $event): iterable
     {

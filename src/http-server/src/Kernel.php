@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Max\Http\Server;
 
 use Max\Http\Server\Events\OnRequest;
+use Max\Routing\Exceptions\RouteNotFoundException;
 use Max\Routing\RouteCollector;
 use Max\Routing\Router;
 use Psr\Container\ContainerExceptionInterface;
@@ -48,7 +49,7 @@ class Kernel
 
     /**
      * @throws ContainerExceptionInterface
-     * @throws ReflectionException
+     * @throws ReflectionException|RouteNotFoundException
      */
     public function through(ServerRequestInterface $request): ResponseInterface
     {

@@ -17,26 +17,22 @@ use InvalidArgumentException;
 use Max\Session\Exceptions\SessionException;
 use Max\Utils\Arr;
 use SessionHandlerInterface;
+use function ctype_alnum;
 
 class Session
 {
     /**
-     * Session ID.
-     *
-     * @var string
+     * session id
      */
     protected string $id = '';
 
     /**
-     * Session data.
-     *
-     * @var array
+     * session data.
      */
     protected array $data = [];
 
     /**
-     * 是否已经开启
-     * @var bool
+     * Check whether the session is started.
      */
     protected bool $started = false;
 
@@ -46,10 +42,6 @@ class Session
 
     /**
      * Start a new session.
-     *
-     * @param string|null $id
-     *
-     * @return void
      */
     public function start(?string $id = null): void
     {
@@ -64,7 +56,7 @@ class Session
     }
 
     /**
-     * @return void
+     * Save session data.
      */
     public function save(): void
     {
@@ -72,7 +64,7 @@ class Session
     }
 
     /**
-     * @return bool
+     * Close the session.
      */
     public function close(): bool
     {
@@ -80,9 +72,7 @@ class Session
     }
 
     /**
-     * @param string $key
-     *
-     * @return bool
+     * Check whether the key exists.
      */
     public function has(string $key): bool
     {
@@ -90,10 +80,7 @@ class Session
     }
 
     /**
-     * @param string $key
-     * @param        $default
-     *
-     * @return mixed
+     * Get the value of $key, or $default if it does not exist.
      */
     public function get(string $key, $default = null): mixed
     {
@@ -101,21 +88,15 @@ class Session
     }
 
     /**
-     * @param string $key
-     * @param        $value
-     *
-     * @return array
+     * Set value of the key.
      */
-    public function set(string $key, $value): array
+    public function set(string $key, $value): void
     {
-        return Arr::set($this->data, $key, $value);
+        Arr::set($this->data, $key, $value);
     }
 
     /**
-     * @param string $key
-     * @param mixed|null $default
-     *
-     * @return mixed
+     * Gets and deletes, or returns default if it does not exist.
      */
     public function pull(string $key, mixed $default = null): mixed
     {
@@ -125,9 +106,7 @@ class Session
     }
 
     /**
-     * @param string $key
-     *
-     * @return void
+     * Delete data for $key.
      */
     public function remove(string $key): void
     {
@@ -135,17 +114,17 @@ class Session
     }
 
     /**
-     * @return void
+     * Destroy the session.
      */
     public function destroy(): void
     {
         $this->sessionHandler->destroy($this->id);
         $this->data = [];
-        $this->id = '';
+        $this->id   = '';
     }
 
     /**
-     * @return string
+     * Get the session id.
      */
     public function getId(): string
     {
@@ -153,9 +132,7 @@ class Session
     }
 
     /**
-     * @param string $id
-     *
-     * @return void
+     * Set the session id.
      */
     public function setId(string $id): void
     {
@@ -166,17 +143,15 @@ class Session
     }
 
     /**
-     * @param string $id
-     *
-     * @return bool
+     * Check whether $id is a valid session id.
      */
     protected function isValidId(string $id): bool
     {
-        return \ctype_alnum($id);
+        return ctype_alnum($id);
     }
 
     /**
-     * @return bool
+     * Check whether the session is started.
      */
     public function isStarted(): bool
     {
