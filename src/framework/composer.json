@@ -18,7 +18,8 @@
     ],
     "require": {
         "symfony/console": "^6.0",
-        "symfony/var-dumper": "^6.0"
+        "symfony/var-dumper": "*",
+        "filp/whoops": "*"
     },
     "extra": {
         "max": {
