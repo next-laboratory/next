@@ -82,7 +82,8 @@ class IntexController {
 
 请求可以是任何实现了Psr的ServerRequestInterface实例
 
-> 请使用`App\Http\ServerRequest`，该类继承`Max\Http\Message\ServerRequest`类，是实现了`Psr7 ServerRequest` 的请求类，并且附加了一些简单的方法，开发者可以自定义相关方法
+> 请使用`App\Http\ServerRequest`，该类继承`Max\Http\Message\ServerRequest`类，是实现了`Psr7 ServerRequest`
+> 的请求类，并且附加了一些简单的方法，开发者可以自定义相关方法
 
 ## 请求头
 
@@ -365,3 +366,15 @@ return new \App\Http\Response($this->getStatusCode($throwable), [], $html);
 ```
 
 如果你是用swoole/workerman，可以直接响应json
+
+# 打印变量
+
+打印变量使用了symfony/var-dumper组件，但是为了兼容多种环境，建议使用`d`函数代替`dump`,`dd` 函数
+
+```php
+d(mixed ...$vars)
+```
+
+你可以传入多个变量，如果使用swoole/workerman，需要重启服务
+
+> 特别注意：异常处理使用中间件的方式，中间件未处理的异常需要用户手动处理，所以在中间件外执行的代码不能使用d函数打印变量
