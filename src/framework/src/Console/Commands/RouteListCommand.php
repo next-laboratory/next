@@ -72,7 +72,6 @@ class RouteListCommand extends Command
     }
 
     /**
-     * @return Collection
      * @throws ContainerExceptionInterface
      * @throws NotFoundException
      * @throws ReflectionException
@@ -91,7 +90,7 @@ class RouteListCommand extends Command
                 }
             }
         }
-        return collect($routes)->unique()->sortBy(function($item) {
+        return Collection::make($routes)->unique()->sortBy(function($item) {
             /** @var Route $item */
             return $item->getPath();
         });
