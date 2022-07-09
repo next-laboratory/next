@@ -208,6 +208,23 @@ class Container implements ContainerInterface
     }
 
     /**
+     * 转换类型
+     */
+    protected function castParameter($value, string $type): mixed
+    {
+        return match ($type) {
+            'int' => (int)$value,
+            'string' => (string)$value,
+            'bool' => (bool)$value,
+            'array' => (array)$value,
+            'float' => (float)$value,
+            'double' => (double)$value,
+            'object' => (object)$value,
+            default => $value,
+        };
+    }
+
+    /**
      * @param ReflectionFunctionAbstract $reflectionFunction 反射方法
      * @param array                      $arguments          参数列表（关联数组）
      *
@@ -220,7 +237,12 @@ class Container implements ContainerInterface
         foreach ($reflectionFunction->getParameters() as $parameter) {
             $name = $parameter->getName();
             if (array_key_exists($name, $arguments)) {
-                $funcArgs[] = $arguments[$name];
+                $injectValue = $arguments[$name];
+                $type        = $parameter->getType();
+                if ($type instanceof ReflectionNamedType && $type->isBuiltin()) {
+                    $injectValue = $this->castParameter($injectValue, $type->getName());
+                }
+                $funcArgs[] = $injectValue;
             } else {
                 $type = $parameter->getType();
                 if (is_null($type)
