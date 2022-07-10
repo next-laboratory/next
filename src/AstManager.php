@@ -1,16 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
 namespace Max\Aop;
 
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Namespace_;
-use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
 
 class AstManager
 {
     protected Parser $parser;
+
     protected array  $container = [];
 
     public function __construct()
@@ -20,7 +29,7 @@ class AstManager
 
     public function getNodes(string $realpath)
     {
-        if (!isset($this->container[$realpath])) {
+        if (! isset($this->container[$realpath])) {
             $this->container[$realpath] = $this->parser->parse(file_get_contents($realpath));
         }
         return $this->container[$realpath];

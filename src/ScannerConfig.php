@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
 namespace Max\Aop;
 
 use Max\Utils\Traits\AutoFillProperties;
@@ -9,8 +18,11 @@ class ScannerConfig
     use AutoFillProperties;
 
     protected bool   $cache      = false;
+
     protected array  $paths      = [];
+
     protected array  $collectors = [];
+
     protected string $runtimeDir = '';
 
     public function __construct(array $options)

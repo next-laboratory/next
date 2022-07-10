@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Aop;
@@ -59,7 +57,7 @@ class PropertyHandlerVisitor extends NodeVisitorAbstract
             if ($reflectionConstructor = $reflectionClass->getConstructor()) {
                 $declaringClass = $reflectionConstructor->getDeclaringClass()->getName();
                 if ($classPath = $this->metadata->loader->findFile($declaringClass)) {
-                    $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
+                    $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
                     $ast    = $parser->parse(file_get_contents($classPath));
                     foreach ($ast as $stmt) {
                         if ($stmt instanceof Node\Stmt\Namespace_) {
@@ -82,13 +80,12 @@ class PropertyHandlerVisitor extends NodeVisitorAbstract
                         || $type instanceof ReflectionUnionType
                         || ($type->getName()) === 'Closure') {
                         continue;
-                    } else {
-                        $params[$key]->type = new Name('\\' . $type->getName());
                     }
+                    $params[$key]->type = new Name('\\' . $type->getName());
                 }
             }
             $c = [];
-            if (!$this->metadata->hasConstructor) {
+            if (! $this->metadata->hasConstructor) {
                 $constructor        = new ClassMethod('__construct', [
                     'params' => $params,
                 ]);
@@ -100,22 +97,25 @@ class PropertyHandlerVisitor extends NodeVisitorAbstract
                     ]), [
                         'stmts' => [
                             new Expression(new StaticCall(
-                                new ConstFetch(new Name('parent')), '__construct',
-                                [new Arg(new FuncCall(new Name('func_get_args')), unpack: true),]
-                            ))
-                        ]
+                                new ConstFetch(new Name('parent')),
+                                '__construct',
+                                [new Arg(new FuncCall(new Name('func_get_args')), unpack: true)]
+                            )),
+                        ],
                     ]);
                 }
                 $constructor->stmts[] = new Expression(new MethodCall(
-                    new Variable(new Name('this')), '__handleProperties'
+                    new Variable(new Name('this')),
+                    '__handleProperties'
                 ));
                 $c                    = [$constructor];
             }
 
-            $node->stmts = array_merge([new TraitUse([new Name('\Max\Aop\PropertyHandler'),])], $c, $node->stmts);
+            $node->stmts = array_merge([new TraitUse([new Name('\Max\Aop\PropertyHandler')])], $c, $node->stmts);
         }
         if ($node instanceof ClassMethod && $node->name->toString() === '__construct') {
-            array_unshift($node->stmts,
+            array_unshift(
+                $node->stmts,
                 new Expression(new MethodCall(new Variable(new Name('this')), '__handleProperties'))
             );
         }
