@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Validator;
@@ -19,37 +17,21 @@ use function is_array;
 
 class Validator
 {
-    /**
-     * @var Rules
-     */
     protected Rules $rules;
 
-    /**
-     * @var array
-     */
     protected array $data = [];
-    /**
-     * @var array
-     */
+
     protected array $message = [];
 
-    /**
-     * @var array
-     */
     protected array $valid = [];
 
-    /**
-     * @var Errors
-     */
     protected Errors $errors;
 
-    /**
-     * @var bool
-     */
     protected bool $throwable = false;
 
     /**
-     * @return array|string|null
+     * @param  null|mixed        $key
+     * @return null|array|string
      */
     public function getData($key = null)
     {
@@ -57,24 +39,21 @@ class Validator
     }
 
     /**
-     * @return string|null
+     * @param  mixed       $key
+     * @param  mixed       $default
+     * @return null|string
      */
     public function getMessage($key, $default = '验证失败')
     {
         return $this->message[$key] ?? $default;
     }
 
-    /**
-     * @return bool
-     */
     public function isThrowable(): bool
     {
         return $this->throwable;
     }
 
     /**
-     * @param bool $throwable
-     *
      * @return Validator
      */
     public function setThrowable(bool $throwable): static
@@ -85,10 +64,6 @@ class Validator
     }
 
     /**
-     * @param array $data
-     * @param array $rules
-     * @param array $message
-     *
      * @return $this
      */
     public function make(array $data, array $rules, array $message = []): static
@@ -100,14 +75,14 @@ class Validator
 
         foreach ($rules as $key => $rule) {
             $value = $this->getData($key);
-            if (!is_array($rule)) {
+            if (! is_array($rule)) {
                 $rule = explode('|', $rule);
             }
             foreach ($rule as $ruleItem) {
                 $ruleItem   = explode(':', $ruleItem, 2);
                 $ruleName   = $ruleItem[0];
                 $ruleParams = empty($ruleItem[1]) ? [] : explode(',', $ruleItem[1]);
-                if ($this->rules->$ruleName($key, $value, ...$ruleParams)) {
+                if ($this->rules->{$ruleName}($key, $value, ...$ruleParams)) {
                     $this->valid[$key] = $value;
                 }
             }
@@ -126,17 +101,11 @@ class Validator
         return $this->valid;
     }
 
-    /**
-     * @return bool
-     */
     public function fails(): bool
     {
-        return !$this->errors->isEmpty();
+        return ! $this->errors->isEmpty();
     }
 
-    /**
-     * @return array
-     */
     public function failed(): array
     {
         return $this->errors->all();

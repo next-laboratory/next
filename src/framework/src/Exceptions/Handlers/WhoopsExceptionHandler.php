@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
 namespace Max\Framework\Exceptions\Handlers;
 
 use Max\Http\Message\Response;
@@ -27,7 +36,7 @@ class WhoopsExceptionHandler implements ExceptionHandlerInterface, StoppableExce
 
     public function handle(Throwable $throwable, ServerRequestInterface $request): ?ResponseInterface
     {
-        $whoops = new Run();
+        $whoops                  = new Run();
         [$handler, $contentType] = $this->negotiateHandler($request);
 
         $whoops->pushHandler($handler);
@@ -75,8 +84,7 @@ class WhoopsExceptionHandler implements ExceptionHandlerInterface, StoppableExce
                 $handler->addDataTableCallback('Session', [$request->session(), 'all']);
             } catch (\RuntimeException) {
             }
-
-        } else if ($handler instanceof JsonResponseHandler) {
+        } elseif ($handler instanceof JsonResponseHandler) {
             $handler->addTraceToOutput(true);
         }
 

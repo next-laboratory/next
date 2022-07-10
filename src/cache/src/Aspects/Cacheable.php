@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Cache\Aspects;
@@ -24,11 +22,10 @@ use ReflectionException;
 class Cacheable implements AspectInterface
 {
     public function __construct(
-        protected int     $ttl = 0,
-        protected string  $prefix = '',
+        protected int $ttl = 0,
+        protected string $prefix = '',
         protected ?string $key = null
-    )
-    {
+    ) {
     }
 
     /**
@@ -38,12 +35,12 @@ class Cacheable implements AspectInterface
     public function process(JoinPoint $joinPoint, Closure $next): mixed
     {
         $cache = make(CacheInterface::class);
-        return $cache->remember($this->getKey($joinPoint), fn() => $next($joinPoint), $this->ttl);
+        return $cache->remember($this->getKey($joinPoint), fn () => $next($joinPoint), $this->ttl);
     }
 
     protected function getKey(JoinPoint $joinPoint): string
     {
-        $key = $this->key ?? ($joinPoint->object::class . ':' . $joinPoint->method . ':' . serialize(array_filter($joinPoint->parameters, fn($item) => !is_object($item))));
+        $key = $this->key ?? ($joinPoint->object::class . ':' . $joinPoint->method . ':' . serialize(array_filter($joinPoint->parameters, fn ($item) => ! is_object($item))));
         return $this->prefix ? ($this->prefix . ':' . $key) : $key;
     }
 }

@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
 namespace Max\Http\Message\Bags;
 
 use Max\Http\Message\Stream\FileStream;
@@ -14,9 +23,6 @@ class FileBag
     {
     }
 
-    /**
-     * @return static
-     */
     public static function createFromGlobal(): static
     {
         $bag = new static();
@@ -24,6 +30,11 @@ class FileBag
             $bag->convertToUploadedFiles($bag->uploadedFiles, $key, $file['name'], $file['tmp_name'], $file['type'], $file['size'], $file['error']);
         }
         return $bag;
+    }
+
+    public function all(): array
+    {
+        return $this->uploadedFiles;
     }
 
     /**
@@ -34,8 +45,6 @@ class FileBag
      * @param $type
      * @param $size
      * @param $error
-     *
-     * @return void
      */
     protected function convertToUploadedFiles(&$uploadedFiles, $k, $name, $tmpName, $type, $size, $error): void
     {
@@ -46,13 +55,5 @@ class FileBag
                 $this->convertToUploadedFiles($uploadedFiles[$k], $key, $value, $tmpName[$key], $type[$key], $size[$key], $error[$key]);
             }
         }
-    }
-
-    /**
-     * @return array
-     */
-    public function all(): array
-    {
-        return $this->uploadedFiles;
     }
 }

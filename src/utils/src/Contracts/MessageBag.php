@@ -1,5 +1,13 @@
 <?php
+
 declare(strict_types=1);
+
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
 
 namespace Max\Utils\Contracts;
 
@@ -22,7 +30,7 @@ interface MessageBag
     /**
      * Merge a new array of messages into the bag.
      *
-     * @param array|MessageProvider $messages
+     * @param  array|MessageProvider $messages
      * @return $this
      */
     public function merge($messages);

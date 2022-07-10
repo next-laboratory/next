@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Config;
@@ -23,19 +21,15 @@ use function pathinfo;
 class Repository implements ConfigInterface
 {
     /**
-     * 配置数组
-     *
-     * @var array
+     * 配置数组.
      */
     protected array $items = [];
 
     /**
-     * 获取[支持点语法]
+     * 获取[支持点语法].
      *
-     * @param string|null $key
+     * @param null|string $key
      * @param null        $default
-     *
-     * @return mixed
      */
     public function get(string $key, $default = null): mixed
     {
@@ -43,10 +37,9 @@ class Repository implements ConfigInterface
     }
 
     /**
-     * 设置[支持点语法]
+     * 设置[支持点语法].
      *
-     * @param string $key
-     * @param        $value
+     * @param $value
      */
     public function set(string $key, $value): void
     {
@@ -54,23 +47,19 @@ class Repository implements ConfigInterface
     }
 
     /**
-     * 扫描目录
-     *
-     * @param string|array $dirs
-     *
-     * @return void
+     * 扫描目录.
      */
     public function scan(string|array $dirs): void
     {
-        foreach ((array)$dirs as $dir) {
+        foreach ((array) $dirs as $dir) {
             $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
             /** @var SplFileInfo $file */
             foreach ($files as $file) {
-                if (!$file->isFile()) {
+                if (! $file->isFile()) {
                     continue;
                 }
                 $path = $file->getRealPath() ?: $file->getPathname();
-                if ('php' !== pathinfo($path, PATHINFO_EXTENSION)) {
+                if (pathinfo($path, PATHINFO_EXTENSION) !== 'php') {
                     continue;
                 }
                 $this->loadOne($path);
@@ -80,9 +69,7 @@ class Repository implements ConfigInterface
     }
 
     /**
-     * 全部
-     *
-     * @return array
+     * 全部.
      */
     public function all(): array
     {
@@ -90,20 +77,13 @@ class Repository implements ConfigInterface
     }
 
     /**
-     * 加载多个配文件
-     *
-     * @param string|array $files
+     * 加载多个配文件.
      */
     public function load(string|array $files): void
     {
         is_array($files) ? $this->loadMany($files) : $this->loadOne($files);
     }
 
-    /**
-     * @param array $files
-     *
-     * @return void
-     */
     public function loadMany(array $files): void
     {
         foreach ($files as $file) {
@@ -112,9 +92,7 @@ class Repository implements ConfigInterface
     }
 
     /**
-     * 加载一个配置文件
-     *
-     * @param string $file
+     * 加载一个配置文件.
      */
     public function loadOne(string $file): void
     {

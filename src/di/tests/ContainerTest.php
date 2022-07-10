@@ -1,11 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
 namespace Max\Di\Tests;
 
 use Max\Di\Context;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class ContainerTest extends TestCase
 {
     protected ContainerInterface $container;
@@ -17,7 +30,6 @@ class ContainerTest extends TestCase
 
     public function testCallFunc()
     {
-
     }
 
     public function testBind()
@@ -28,51 +40,41 @@ class ContainerTest extends TestCase
 
     public function testCall()
     {
-
     }
 
     public function testBound()
     {
-
     }
 
     public function testHas()
     {
-
     }
 
     public function testGetBinding()
     {
-
     }
 
     public function testResolve()
     {
-
     }
 
     public function testSet()
     {
-
     }
 
     public function testGet()
     {
-
     }
 
     public function testRemove()
     {
-
     }
 
     public function testUnBind()
     {
-
     }
 
     public function testMake()
     {
-
     }
 }

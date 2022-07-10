@@ -1,53 +1,48 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
 namespace Max\Config\Tests;
 
 use Max\Config\Repository;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class RepositoryTest extends TestCase
 {
-    /**
-     * @var Repository
-     */
     protected Repository $repository;
 
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         $this->tearDown();
     }
 
-    /**
-     * @return void
-     */
     protected function tearDown(): void
     {
         $this->repository = new Repository();
     }
 
-    /**
-     * @return void
-     */
     public function testAll()
     {
         $this->assertEquals($this->repository->all(), []);
     }
 
-    /**
-     * @return void
-     */
     public function testLoadOne()
     {
         $this->repository->loadOne('./examples/app.php');
         $this->assertArrayHasKey('app', $this->repository->all());
     }
 
-    /**
-     * @return void
-     */
     public function testLoad()
     {
         $this->repository->load(['./examples/app.php', './examples/db.php']);
@@ -55,9 +50,6 @@ class RepositoryTest extends TestCase
         $this->assertArrayHasKey('db', $this->repository->all());
     }
 
-    /**
-     * @return void
-     */
     public function testGet()
     {
         $this->repository->loadOne('./examples/app.php');
@@ -65,9 +57,6 @@ class RepositoryTest extends TestCase
         $this->assertNull($this->repository->get('app.none'));
     }
 
-    /**
-     * @return void
-     */
     public function testSet()
     {
         $this->repository->set(__METHOD__, __METHOD__);

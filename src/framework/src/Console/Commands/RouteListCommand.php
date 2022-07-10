@@ -1,14 +1,12 @@
 <?php
 
-declare (strict_types=1);
+declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Framework\Console\Commands;
@@ -20,7 +18,6 @@ use Max\Routing\Route;
 use Max\Routing\RouteCollector;
 use Max\Utils\Collection;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 use ReflectionException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
@@ -31,21 +28,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 class RouteListCommand extends Command
 {
     /**
-     * @return void
-     */
-    protected function configure()
-    {
-        $this->setName('route:list')
-             ->setDescription('List the routes');
-    }
-
-    /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return int
      * @throws ContainerExceptionInterface
      * @throws ReflectionException
+     * @return int
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
@@ -56,7 +41,7 @@ class RouteListCommand extends Command
             $action = $route->getAction();
             if (is_array($action)) {
                 $action = implode('@', $action);
-            } else if ($action instanceof Closure) {
+            } elseif ($action instanceof Closure) {
                 $action = 'Closure';
             }
             $table->addRow([
@@ -64,11 +49,17 @@ class RouteListCommand extends Command
                 $route->getPath(),
                 $action,
                 implode(PHP_EOL, $route->getMiddlewares()),
-                $route->getDomain() ?: '*'
+                $route->getDomain() ?: '*',
             ]);
         }
         $table->render();
         return 0;
+    }
+
+    protected function configure()
+    {
+        $this->setName('route:list')
+            ->setDescription('List the routes');
     }
 
     /**
@@ -84,14 +75,14 @@ class RouteListCommand extends Command
         foreach ($routeCollector->all() as $registeredRoute) {
             foreach ($registeredRoute as $route) {
                 foreach ($route as $item) {
-                    if (!in_array($item, $routes)) {
+                    if (! in_array($item, $routes)) {
                         $routes[] = $item;
                     }
                 }
             }
         }
-        return Collection::make($routes)->unique()->sortBy(function($item) {
-            /** @var Route $item */
+        return Collection::make($routes)->unique()->sortBy(function ($item) {
+            /* @var Route $item */
             return $item->getPath();
         });
     }

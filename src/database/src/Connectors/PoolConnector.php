@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Database\Connectors;
@@ -24,22 +22,15 @@ use Swoole\Coroutine\Channel;
 
 class PoolConnector implements ConnectorInterface, PoolInterface
 {
-    /**
-     * @var Channel
-     */
     protected Channel $pool;
 
     /**
-     * 容量
-     *
-     * @var int
+     * 容量.
      */
     protected int $capacity;
 
     /**
-     * 大小
-     *
-     * @var int
+     * 大小.
      */
     protected int $size = 0;
 
@@ -55,7 +46,7 @@ class PoolConnector implements ConnectorInterface, PoolInterface
     }
 
     /**
-     * 取
+     * 取.
      *
      * @return mixed
      */
@@ -63,7 +54,7 @@ class PoolConnector implements ConnectorInterface, PoolInterface
     {
         $name = $this->config->getName();
         $key  = Connection::class;
-        if (!Context::has($key)) {
+        if (! Context::has($key)) {
             Context::put($key, new Connection());
         }
         /** @var ArrayObject $connection */
@@ -73,6 +64,31 @@ class PoolConnector implements ConnectorInterface, PoolInterface
             'item' => $this->size < $this->capacity ? $this->create() : $this->pool->pop(3),
         ]);
         return $connection->offsetGet($name)['item'];
+    }
+
+    /**
+     * 归还连接，如果连接不能使用则归还null.
+     *
+     * @param $PDO
+     */
+    public function put($PDO)
+    {
+        if (is_null($PDO)) {
+            --$this->size;
+        } elseif (! $this->pool->isFull()) {
+            $this->pool->push($PDO);
+        }
+    }
+
+    /**
+     * 填充连接池.
+     */
+    public function fill()
+    {
+        for ($i = 0; $i < $this->capacity; ++$i) {
+            $this->put($this->create());
+        }
+        $this->size = $this->capacity;
     }
 
     /**
@@ -86,33 +102,8 @@ class PoolConnector implements ConnectorInterface, PoolInterface
             $this->config->getPassword(),
             $this->config->getOptions()
         );
-        $this->size++;
+        ++$this->size;
 
         return $PDO;
-    }
-
-    /**
-     * 归还连接，如果连接不能使用则归还null
-     *
-     * @param $PDO
-     */
-    public function put($PDO)
-    {
-        if (is_null($PDO)) {
-            $this->size--;
-        } else if (!$this->pool->isFull()) {
-            $this->pool->push($PDO);
-        }
-    }
-
-    /**
-     * 填充连接池
-     */
-    public function fill()
-    {
-        for ($i = 0; $i < $this->capacity; $i++) {
-            $this->put($this->create());
-        }
-        $this->size = $this->capacity;
     }
 }

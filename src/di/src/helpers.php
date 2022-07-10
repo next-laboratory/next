@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 use Max\Di\Context;
@@ -16,9 +14,9 @@ use Max\Di\Exceptions\NotFoundException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 
-if (false === function_exists('container')) {
+if (function_exists('container') === false) {
     /**
-     * 容器实例化和获取实例
+     * 容器实例化和获取实例.
      */
     function container(): ContainerInterface
     {
@@ -26,14 +24,13 @@ if (false === function_exists('container')) {
     }
 }
 
-if (false === function_exists('call')) {
+if (function_exists('call') === false) {
     /**
-     * 容器调用方法
+     * 容器调用方法.
      *
-     * @param array|string|Closure $callback  数组、闭包、函数名
+     * @param array|Closure|string $callback  数组、闭包、函数名
      * @param array                $arguments 给方法传递的参数列表
      *
-     * @return mixed
      * @throws ContainerExceptionInterface
      * @throws ReflectionException
      */
@@ -43,10 +40,10 @@ if (false === function_exists('call')) {
     }
 }
 
-if (false === function_exists('make')) {
+if (function_exists('make') === false) {
     /**
      * @throws NotFoundException
-     * @throws ReflectionException|ContainerExceptionInterface
+     * @throws ContainerExceptionInterface|ReflectionException
      */
     function make(string $id, array $parameters = [])
     {

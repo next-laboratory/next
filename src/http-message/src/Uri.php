@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Http\Message;
@@ -19,61 +17,38 @@ use Psr\Http\Message\UriInterface;
 class Uri implements UriInterface
 {
     /**
-     * @var string
-     */
-    protected string $path = '/';
-
-    /**
-     * @var string
-     */
-    protected string $scheme = 'http';
-
-    /**
-     * @var string
-     */
-    protected string $host = 'localhost';
-
-    /**
-     * @var int|string
-     */
-    protected int|string $port = 80;
-
-    /**
-     * @var string
-     */
-    protected string $query = '';
-
-    /**
-     * @var string
-     */
-    protected string $fragment = '';
-
-    /**
-     * @var string
-     */
-    protected string $authority = '';
-
-    /**
-     * @var string|mixed
-     */
-    protected string $userinfo = '';
-
-    /**
-     * 默认端口
+     * 默认端口.
      */
     protected const DEFAULT_PORT = [
         'https' => 443,
         'http'  => 80,
     ];
 
+    protected string $path = '/';
+
+    protected string $scheme = 'http';
+
+    protected string $host = 'localhost';
+
+    protected int|string $port = 80;
+
+    protected string $query = '';
+
+    protected string $fragment = '';
+
+    protected string $authority = '';
+
     /**
-     * TODO
-     *
-     * @param string $uri
+     * @var mixed|string
+     */
+    protected string $userinfo = '';
+
+    /**
+     * TODO.
      */
     public function __construct(string $uri = '')
     {
-        if ('' !== $uri) {
+        if ($uri !== '') {
             if (false === $parts = parse_url($uri)) {
                 throw new InvalidArgumentException("Unable to parse URI: {$uri}");
             }
@@ -97,7 +72,7 @@ class Uri implements UriInterface
             if (isset($parts['fragment'])) {
                 $this->fragment = $parts['fragment'];
             }
-            if ('' !== $this->userinfo) {
+            if ($this->userinfo !== '') {
                 $port            = ($this->port > 655535 || $this->port < 0) ? '' : $this->getPortString();
                 $this->authority = $this->userinfo . '@' . $this->host . $port;
             }
@@ -105,8 +80,21 @@ class Uri implements UriInterface
     }
 
     /**
-     * @return int|null
+     * @return string
      */
+    public function __toString()
+    {
+        return sprintf(
+            '%s://%s%s%s%s%s',
+            $this->getScheme(),
+            $this->getHost(),
+            $this->getPortString(),
+            $this->getPath(),
+            ($this->query    === '') ? '' : ('?' . $this->query),
+            ($this->fragment === '') ? '' : ('#' . $this->fragment),
+        );
+    }
+
     public function getDefaultPort(): ?int
     {
         return self::DEFAULT_PORT[$this->scheme] ?? null;
@@ -177,7 +165,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function withScheme($scheme)
     {
@@ -191,7 +179,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function withUserInfo($user, $password = null)
     {
@@ -201,7 +189,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function withHost($host)
     {
@@ -214,7 +202,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function withPort($port)
     {
@@ -227,7 +215,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function withPath($path)
     {
@@ -240,7 +228,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function withQuery($query)
     {
@@ -253,7 +241,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function withFragment($fragment)
     {
@@ -266,31 +254,15 @@ class Uri implements UriInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function getPortString()
     {
-        if (('http' === $this->scheme && 80 === $this->port) ||
-            ('https' === $this->scheme && 443 === $this->port)) {
+        if (($this->scheme === 'http' && $this->port === 80)
+            || ($this->scheme === 'https' && $this->port === 443)) {
             return '';
         }
 
         return ':' . $this->port;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return sprintf(
-            '%s://%s%s%s%s%s',
-            $this->getScheme(),
-            $this->getHost(),
-            $this->getPortString(),
-            $this->getPath(),
-            ('' === $this->query) ? '' : ('?' . $this->query),
-            ('' === $this->fragment) ? '' : ('#' . $this->fragment),
-        );
     }
 }

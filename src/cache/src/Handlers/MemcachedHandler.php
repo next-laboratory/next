@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Cache\Handlers;
@@ -19,26 +17,15 @@ class MemcachedHandler extends CacheHandler
 {
     use AutoFillProperties;
 
-    /**
-     * @var string
-     */
     protected string $host = '127.0.0.1';
 
-    /**
-     * @var int
-     */
     protected int $port = 11211;
 
-    /**
-     * @var int
-     */
     protected int $weight = 0;
 
     /**
      * 初始化
      * Memcached constructor.
-     *
-     * @param array $options
      */
     public function __construct(array $options)
     {
@@ -48,7 +35,7 @@ class MemcachedHandler extends CacheHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function delete($key)
     {
@@ -56,24 +43,24 @@ class MemcachedHandler extends CacheHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function set($key, $value, $ttl = null)
     {
-        return $this->handler->set($key, serialize($value), (int)$ttl);
+        return $this->handler->set($key, serialize($value), (int) $ttl);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function has($key)
     {
         $status = $this->handler->get($key);
-        return false !== $status && !is_null($status);
+        return $status !== false && ! is_null($status);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function clear()
     {

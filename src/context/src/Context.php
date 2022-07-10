@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Context;
@@ -17,15 +15,10 @@ use Swoole\Coroutine;
 
 class Context
 {
-    /**
-     * @var array
-     */
     protected static array $container = [];
 
     /**
      * @param $key
-     *
-     * @return mixed
      */
     public static function get($key): mixed
     {
@@ -38,8 +31,6 @@ class Context
     /**
      * @param $key
      * @param $item
-     *
-     * @return void
      */
     public static function put($key, $item): void
     {
@@ -52,13 +43,11 @@ class Context
 
     /**
      * @param $key
-     *
-     * @return void
      */
     public static function delete($key = null): void
     {
         if (($cid = self::getCid()) > 0) {
-            if (!is_null($key)) {
+            if (! is_null($key)) {
                 unset(self::for($cid)[$key]);
             }
         } else {
@@ -72,8 +61,6 @@ class Context
 
     /**
      * @param $key
-     *
-     * @return bool
      */
     public static function has($key): bool
     {
@@ -83,19 +70,11 @@ class Context
         return isset(self::$container[$key]);
     }
 
-    /**
-     * @param int|null $cid
-     *
-     * @return mixed
-     */
     public static function for(?int $cid = null): mixed
     {
         return Coroutine::getContext($cid);
     }
 
-    /**
-     * @return mixed
-     */
     protected static function getCid(): mixed
     {
         if (class_exists('Swoole\Coroutine')) {

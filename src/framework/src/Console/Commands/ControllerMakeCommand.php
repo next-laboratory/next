@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
 namespace Max\Framework\Console\Commands;
 
 use Max\Utils\Exceptions\FileNotFoundException;
@@ -17,27 +26,24 @@ class ControllerMakeCommand extends Command
     protected function configure()
     {
         $this->setName('make:controller')
-             ->setDescription('Making controllers.')
-             ->setDefinition([
-                 new InputArgument('controller', InputArgument::REQUIRED, 'A controller name such as `user`.'),
-                 new InputOption('rest', 'r', InputOption::VALUE_OPTIONAL, 'Make a restful controller.')
-             ]);
+            ->setDescription('Making controllers.')
+            ->setDefinition([
+                new InputArgument('controller', InputArgument::REQUIRED, 'A controller name such as `user`.'),
+                new InputOption('rest', 'r', InputOption::VALUE_OPTIONAL, 'Make a restful controller.'),
+            ]);
     }
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return int
      * @throws FileNotFoundException
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $controller = $input->getArgument('controller');
-        $stubFile   = $this->stubsPath . ($input->hasOption('rest') ? 'controller_rest.stub' : 'controller.stub');
+        $controller               = $input->getArgument('controller');
+        $stubFile                 = $this->stubsPath . ($input->hasOption('rest') ? 'controller_rest.stub' : 'controller.stub');
         [$namespace, $controller] = $this->parse($controller);
-        $controllerPath = base_path('app/Http/Controllers/' . str_replace('\\', '/', $namespace) . '/');
-        $controllerFile = $controllerPath . $controller . 'Controller.php';
+        $controllerPath           = base_path('app/Http/Controllers/' . str_replace('\\', '/', $namespace) . '/');
+        $controllerFile           = $controllerPath . $controller . 'Controller.php';
         if (Filesystem::exists($controllerFile)) {
             $output->writeln('<comment>[WARN]</comment> 控制器已经存在!');
             return 1;
@@ -51,15 +57,13 @@ class ControllerMakeCommand extends Command
 
     /**
      * @param $input
-     *
-     * @return array
      */
     protected function parse($input): array
     {
         $array     = explode('/', $input);
         $class     = ucfirst(array_pop($array));
-        $namespace = implode('\\', array_map(fn($value) => ucfirst($value), $array));
-        if (!empty($namespace)) {
+        $namespace = implode('\\', array_map(fn ($value) => ucfirst($value), $array));
+        if (! empty($namespace)) {
             $namespace = '\\' . $namespace;
         }
         return [$namespace, $class];

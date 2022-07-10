@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Config\Annotations;
@@ -25,13 +23,12 @@ class Config implements PropertyAttribute
 {
     /**
      * @param string     $key     键
-     * @param mixed|null $default 默认值
+     * @param null|mixed $default 默认值
      */
     public function __construct(
         protected string $key,
-        protected mixed  $default = null
-    )
-    {
+        protected mixed $default = null
+    ) {
     }
 
     public function handle(object $object, string $property): void

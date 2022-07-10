@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Routing;
@@ -21,47 +19,28 @@ use function trim;
 class Route
 {
     /**
-     * 默认规则
+     * 默认规则.
      */
     protected const DEFAULT_PATTERN = '[^\/]+';
 
     /**
-     * 路径
-     *
-     * @var string
+     * 路径.
      */
     protected string $path;
 
     /**
-     * 路由参数
-     *
-     * @var array
+     * 路由参数.
      */
     protected array $parameters = [];
 
-    /**
-     * @var string|null
-     */
     protected ?string $regexp = null;
 
-    /**
-     * @var array
-     */
     protected array $middlewares = [];
 
-    /**
-     * @var string
-     */
     protected string $compiledDomain = '';
 
-    /**
-     * @var array
-     */
     protected array $withoutMiddleware = [];
 
-    /**
-     * @var string
-     */
     protected string $domain = '';
 
     /**
@@ -69,39 +48,31 @@ class Route
      * Route constructor.
      *
      * @param array                $methods
-     * @param string               $path
-     * @param string|Closure|array $action
+     * @param array|Closure|string $action
      * @param Router               $router
-     * @param string               $domain
      */
     public function __construct(
-        protected array                $methods,
-        string                         $path,
+        protected array $methods,
+        string $path,
         protected string|Closure|array $action,
-        protected Router               $router,
-        string                         $domain = '',
-    )
-    {
+        protected Router $router,
+        string $domain = '',
+    ) {
         $this->setPath($path)->domain($domain);
     }
 
-    /**
-     * @param Router $router
-     */
     public function setRouter(Router $router): void
     {
         $this->router = $router;
     }
 
     /**
-     * @param string $path
-     *
      * @return $this
      */
     public function setPath(string $path): Route
     {
         $this->path = '/' . trim($path, '/');
-        $regexp     = preg_replace_callback('/<(\w+)>/', function($matches) {
+        $regexp     = preg_replace_callback('/<(\w+)>/', function ($matches) {
             [, $name] = $matches;
             $this->setParameter($name, null);
             return sprintf('(?P<%s>%s)', $name, $this->getPattern($name));
@@ -112,72 +83,51 @@ class Route
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getCompiledDomain(): string
     {
         return $this->compiledDomain;
     }
 
     /**
-     * @param string $domain
-     *
      * @return $this
      */
     public function domain(string $domain): Route
     {
-        if ('' !== $domain) {
+        if ($domain !== '') {
             $this->domain         = $domain;
-            $this->compiledDomain = '#^' . str_replace(['.', '*',], ['\.', '(.+?)',], $domain) . '$#iU';
+            $this->compiledDomain = '#^' . str_replace(['.', '*'], ['\.', '(.+?)'], $domain) . '$#iU';
         }
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getDomain(): string
     {
         return $this->domain;
     }
 
-    /**
-     * @return string|null
-     */
     public function getRegexp(): ?string
     {
         return $this->regexp;
     }
 
     /**
-     * 获取路由参数规则
-     *
-     * @param string $key
-     *
-     * @return string
+     * 获取路由参数规则.
      */
     public function getPattern(string $key): string
     {
         return $this->getPatterns()[$key] ?? static::DEFAULT_PATTERN;
     }
 
-    /**
-     * @return array
-     */
     public function getPatterns(): array
     {
         return $this->router->getPatterns();
     }
 
     /**
-     * 设置单个路由参数
+     * 设置单个路由参数.
      *
-     * @param string $name
-     * @param        $value
-     *
-     * @return void
+     * @param $value
      */
     public function setParameter(string $name, $value): void
     {
@@ -185,11 +135,7 @@ class Route
     }
 
     /**
-     * 设置路由参数，全部
-     *
-     * @param array $parameters
-     *
-     * @return void
+     * 设置路由参数，全部.
      */
     public function setParameters(array $parameters): void
     {
@@ -197,11 +143,7 @@ class Route
     }
 
     /**
-     * 获取单个路由参数
-     *
-     * @param string $name
-     *
-     * @return string|null
+     * 获取单个路由参数.
      */
     public function getParameter(string $name): ?string
     {
@@ -209,9 +151,7 @@ class Route
     }
 
     /**
-     * 获取全部路由参数
-     *
-     * @return array
+     * 获取全部路由参数.
      */
     public function getParameters(): array
     {
@@ -219,9 +159,7 @@ class Route
     }
 
     /**
-     * 设置中间件
-     *
-     * @param string|array $middlewares
+     * 设置中间件.
      *
      * @return $this
      */
@@ -236,9 +174,7 @@ class Route
     }
 
     /**
-     * 排除的中间件
-     *
-     * @param string $middleware
+     * 排除的中间件.
      *
      * @return $this
      */
@@ -250,46 +186,32 @@ class Route
     }
 
     /**
-     * @param string $method
-     *
      * @return $this
      */
     public function addMethod(string $method): static
     {
-        if (!in_array($method, $this->methods)) {
+        if (! in_array($method, $this->methods)) {
             $this->methods[] = $method;
         }
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getPath(): string
     {
         return $this->path;
     }
 
-    /**
-     * @return array
-     */
     public function getMethods(): array
     {
         return $this->methods;
     }
 
-    /**
-     * @return array|Closure|string
-     */
     public function getAction(): array|string|Closure
     {
         return $this->action;
     }
 
-    /**
-     * @return array
-     */
     public function getMiddlewares(): array
     {
         $middlewares = array_unique([...($this->router?->getMiddlewares() ?? []), ...$this->middlewares]);

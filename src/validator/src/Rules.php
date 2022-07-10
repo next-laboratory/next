@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Validator;
@@ -25,25 +23,19 @@ use function strtolower;
 
 class Rules
 {
-    /**
-     * @var Validator
-     */
     protected Validator $validator;
 
-    /**
-     * @param Validator $validator
-     */
     public function __construct(Validator $validator)
     {
         $this->validator = $validator;
     }
 
     /**
-     * @param           $key
-     * @param           $value
+     * @param $key
+     * @param $value
      *
-     * @return false
      * @throws ValidateException
+     * @return false
      */
     public function required($key, $value): bool
     {
@@ -54,11 +46,10 @@ class Rules
     }
 
     /**
-     * @param           $key
-     * @param           $value
-     * @param           $max
+     * @param $key
+     * @param $value
+     * @param $max
      *
-     * @return bool
      * @throws ValidateException
      */
     public function max($key, $value, $max): bool
@@ -66,18 +57,17 @@ class Rules
         if (is_null($value)) {
             return false;
         }
-        if (mb_strlen((string)$value, 'utf8') > (int)$max) {
+        if (mb_strlen((string) $value, 'utf8') > (int) $max) {
             return $this->fail($this->validator->getMessage($key . '.' . __FUNCTION__, $key . '的长度最大' . $max));
         }
         return true;
     }
 
     /**
-     * @param           $key
-     * @param           $value
-     * @param           $min
+     * @param $key
+     * @param $value
+     * @param $min
      *
-     * @return bool
      * @throws ValidateException
      */
     public function min($key, $value, $min): bool
@@ -85,7 +75,7 @@ class Rules
         if (is_null($value)) {
             return false;
         }
-        if (mb_strlen((string)$value, 'utf8') < (int)$min) {
+        if (mb_strlen((string) $value, 'utf8') < (int) $min) {
             return $this->fail($this->validator->getMessage($key . '.' . __FUNCTION__, $key . '的长度最小' . $min));
         }
 
@@ -93,12 +83,11 @@ class Rules
     }
 
     /**
-     * @param           $key
-     * @param           $value
+     * @param     $key
+     * @param     $value
      * @param int $min
      * @param int $max
      *
-     * @return bool
      * @throws ValidateException
      */
     public function length($key, $value, $min, $max): bool
@@ -106,12 +95,12 @@ class Rules
         if (is_null($value)) {
             return false;
         }
-        $min = (int)$min;
-        $max = (int)$max;
+        $min = (int) $min;
+        $max = (int) $max;
         if ($min > $max) {
             [$min, $max] = [$max, $min];
         }
-        $length = mb_strlen((string)$value, 'utf8');
+        $length = mb_strlen((string) $value, 'utf8');
         if ($length <= $min || $length >= $max) {
             return $this->fail($this->validator->getMessage($key . '.' . __FUNCTION__, $key . '的取值范围为' . $min . '-' . $max));
         }
@@ -119,10 +108,9 @@ class Rules
     }
 
     /**
-     * @param           $key
-     * @param           $value
+     * @param $key
+     * @param $value
      *
-     * @return bool
      * @throws ValidateException
      */
     public function bool($key, $value): bool
@@ -137,11 +125,10 @@ class Rules
     }
 
     /**
-     * @param           $key
-     * @param           $value
-     * @param           ...$in
+     * @param $key
+     * @param $value
+     * @param ...$in
      *
-     * @return bool
      * @throws ValidateException
      */
     public function in($key, $value, ...$in): bool
@@ -156,11 +143,10 @@ class Rules
     }
 
     /**
-     * @param           $key
-     * @param           $value
-     * @param           $regex
+     * @param $key
+     * @param $value
+     * @param $regex
      *
-     * @return bool
      * @throws ValidateException
      */
     public function regex($key, $value, $regex): bool
@@ -175,11 +161,10 @@ class Rules
     }
 
     /**
-     * @param           $key
-     * @param           $value
-     * @param           $confirm
+     * @param $key
+     * @param $value
+     * @param $confirm
      *
-     * @return bool
      * @throws ValidateException
      */
     public function confirm($key, $value, $confirm): bool
@@ -195,7 +180,6 @@ class Rules
      * @param $key
      * @param $value
      *
-     * @return bool
      * @throws ValidateException
      */
     public function integer($key, $value): bool
@@ -213,7 +197,6 @@ class Rules
      * @param $key
      * @param $value
      *
-     * @return bool
      * @throws ValidateException
      */
     public function numeric($key, $value): bool
@@ -231,7 +214,6 @@ class Rules
      * @param $key
      * @param $value
      *
-     * @return bool
      * @throws ValidateException
      */
     public function array($key, $value): bool
@@ -250,14 +232,13 @@ class Rules
      * @param $value
      * @param ...$params
      *
-     * @return bool
      * @throws ValidateException
      */
     public function isset($key, $value, ...$params): bool
     {
         if ($this->array($key, $value)) {
             foreach ($params as $v) {
-                if (!isset($value[$v])) {
+                if (! isset($value[$v])) {
                     return $this->fail($this->validator->getMessage($key . '.' . __FUNCTION__, '需要的字段' . $v . '不存在'));
                 }
             }
@@ -270,26 +251,26 @@ class Rules
      * @param $key
      * @param $value
      *
-     * @return false|void
      * @throws ValidateException
+     * @return false|void
      */
     public function email($key, $value)
     {
         if (is_null($value)) {
             return false;
         }
-        if (false === filter_var($value, FILTER_VALIDATE_EMAIL)) {
+        if (filter_var($value, FILTER_VALIDATE_EMAIL) === false) {
             return $this->fail($this->validator->getMessage($key . '.' . __FUNCTION__, $key . '的Email不合法'));
         }
     }
 
     /**
-     * 验证失败
+     * 验证失败.
      *
      * @param $message
      *
-     * @return false
      * @throws ValidateException
+     * @return false
      */
     protected function fail($message): bool
     {

@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Event;
@@ -22,7 +20,7 @@ class ListenerCollector extends AbstractCollector
 
     public static function collectClass(string $class, object $attribute): void
     {
-        if ($attribute instanceof Listen && !in_array($class, self::$listeners)) {
+        if ($attribute instanceof Listen && ! in_array($class, self::$listeners)) {
             self::$listeners[] = $class;
         }
     }

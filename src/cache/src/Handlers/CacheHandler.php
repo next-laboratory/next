@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Cache\Handlers;
@@ -26,16 +24,16 @@ abstract class CacheHandler implements CacheInterface
     protected $handler;
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function get($key, $default = null)
     {
         $data = $this->handler->get($key);
-        return is_null($data) ? value($default) : unserialize((string)$data);
+        return is_null($data) ? value($default) : unserialize((string) $data);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function set($key, $value, $ttl = null)
     {
@@ -43,11 +41,11 @@ abstract class CacheHandler implements CacheInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getMultiple($keys, $default = null)
     {
-        return array_reduce((array)$keys, function($stack, $key) use ($default) {
+        return array_reduce((array) $keys, function ($stack, $key) use ($default) {
             $stack[$key] = $this->has($key) ? $this->get($key) :
                 (is_array($default) ? ($default[$key] ?? null) : $default);
             return $stack;
@@ -55,12 +53,12 @@ abstract class CacheHandler implements CacheInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function setMultiple($values, $ttl = null)
     {
         try {
-            foreach ((array)$values as $key => $value) {
+            foreach ((array) $values as $key => $value) {
                 $this->set($key, $value, $ttl);
             }
             return true;
@@ -70,12 +68,12 @@ abstract class CacheHandler implements CacheInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function deleteMultiple($keys)
     {
         try {
-            foreach ((array)$keys as $key) {
+            foreach ((array) $keys as $key) {
                 $this->delete($key);
             }
             return true;
@@ -85,44 +83,37 @@ abstract class CacheHandler implements CacheInterface
     }
 
     /**
-     * 记住缓存并返回
+     * 记住缓存并返回.
      *
-     * @param          $key
-     * @param Closure  $callback
-     * @param int|null $ttl
+     * @param $key
      *
-     * @return mixed
      * @throws InvalidArgumentException
      */
     public function remember($key, Closure $callback, ?int $ttl = null): mixed
     {
-        if (!$this->has($key)) {
+        if (! $this->has($key)) {
             $this->set($key, $callback(), $ttl);
         }
         return $this->get($key);
     }
 
     /**
-     * 自增
+     * 自增.
      *
      * @param string $key
-     * @param int    $step
      *
-     * @return bool
      * @throws InvalidArgumentException
      */
     public function incr($key, int $step = 1): bool
     {
-        return (bool)$this->set($key, (int)$this->get($key) + $step);
+        return (bool) $this->set($key, (int) $this->get($key) + $step);
     }
 
     /**
-     * 自减去
+     * 自减去.
      *
      * @param string $key
-     * @param int    $step
      *
-     * @return bool
      * @throws InvalidArgumentException
      */
     public function decr($key, int $step = 1): bool
@@ -131,11 +122,10 @@ abstract class CacheHandler implements CacheInterface
     }
 
     /**
-     * 取出并删除
+     * 取出并删除.
      *
      * @param string $key
      *
-     * @return mixed
      * @throws InvalidArgumentException
      */
     public function pull($key): mixed

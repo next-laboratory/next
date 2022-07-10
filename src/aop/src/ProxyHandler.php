@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Aop;
@@ -29,14 +27,14 @@ trait ProxyHandler
      */
     protected function __callViaProxy(string $method, Closure $callback, array $parameters): mixed
     {
-        if (!isset(static::$__aspectCache[$method])) {
+        if (! isset(static::$__aspectCache[$method])) {
             static::$__aspectCache[$method] = array_reverse(AspectCollector::getMethodAspects(__CLASS__, $method));
         }
         /** @var AspectInterface $aspect */
         $pipeline = array_reduce(
             self::$__aspectCache[$method],
-            fn($stack, $aspect) => fn(JoinPoint $joinPoint) => $aspect->process($joinPoint, $stack),
-            fn(JoinPoint $joinPoint) => $joinPoint->process()
+            fn ($stack, $aspect) => fn (JoinPoint $joinPoint) => $aspect->process($joinPoint, $stack),
+            fn (JoinPoint $joinPoint) => $joinPoint->process()
         );
         return $pipeline(
             new JoinPoint($this, $method, new ArrayObject(

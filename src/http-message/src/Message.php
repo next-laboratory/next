@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Http\Message;
@@ -21,11 +19,13 @@ use Psr\Http\Message\StreamInterface;
 class Message implements MessageInterface
 {
     protected string           $protocolVersion = '1.1';
+
     protected HeaderBag        $headers;
+
     protected ?StreamInterface $body            = null;
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getProtocolVersion()
     {
@@ -33,7 +33,7 @@ class Message implements MessageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function withProtocolVersion($version)
     {
@@ -44,7 +44,7 @@ class Message implements MessageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getHeaders()
     {
@@ -52,7 +52,7 @@ class Message implements MessageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function hasHeader($name)
     {
@@ -60,7 +60,7 @@ class Message implements MessageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getHeader($name)
     {
@@ -68,7 +68,7 @@ class Message implements MessageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getHeaderLine($name)
     {
@@ -79,7 +79,7 @@ class Message implements MessageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function withHeader($name, $value)
     {
@@ -91,7 +91,7 @@ class Message implements MessageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function withAddedHeader($name, $value)
     {
@@ -103,7 +103,7 @@ class Message implements MessageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function withoutHeader($name)
     {
@@ -115,7 +115,7 @@ class Message implements MessageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getBody()
     {
@@ -123,7 +123,7 @@ class Message implements MessageInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function withBody(StreamInterface $body)
     {
@@ -133,6 +133,6 @@ class Message implements MessageInterface
 
     protected function formatBody(string|StreamInterface|null $body)
     {
-        $this->body = $body instanceof StreamInterface ? $body : new StringStream((string)$body);
+        $this->body = $body instanceof StreamInterface ? $body : new StringStream((string) $body);
     }
 }

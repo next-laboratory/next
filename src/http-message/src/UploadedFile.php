@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Http\Message;
@@ -31,7 +29,7 @@ class UploadedFile implements UploadedFileInterface
     ];
 
     /**
-     * @param StreamInterface|null $stream          文件流
+     * @param null|StreamInterface $stream          文件流
      * @param int                  $size            文件大小
      * @param string               $clientFilename  客户端文件名
      * @param string               $clientMediaType 客户端媒体类型
@@ -39,16 +37,15 @@ class UploadedFile implements UploadedFileInterface
      */
     public function __construct(
         protected ?StreamInterface $stream = null,
-        protected int              $size = 0,
-        protected string           $clientFilename = '',
-        protected string           $clientMediaType = '',
-        protected int              $error = \UPLOAD_ERR_OK,
-    )
-    {
+        protected int $size = 0,
+        protected string $clientFilename = '',
+        protected string $clientMediaType = '',
+        protected int $error = \UPLOAD_ERR_OK,
+    ) {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getStream()
     {
@@ -56,7 +53,7 @@ class UploadedFile implements UploadedFileInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      * @return SplFileInfo
      */
     public function moveTo($targetPath)
@@ -65,7 +62,7 @@ class UploadedFile implements UploadedFileInterface
             throw new RuntimeException(static::ERROR_MESSAGES[$code], $code);
         }
         $path = pathinfo($targetPath, PATHINFO_DIRNAME);
-        !is_dir($path) && mkdir($path, 0755, true);
+        ! is_dir($path) && mkdir($path, 0755, true);
         if (move_uploaded_file($this->stream->getMetadata('uri'), $targetPath)) {
             return new SplFileInfo($targetPath);
         }
@@ -73,7 +70,7 @@ class UploadedFile implements UploadedFileInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getSize()
     {
@@ -81,7 +78,7 @@ class UploadedFile implements UploadedFileInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getError()
     {
@@ -89,7 +86,7 @@ class UploadedFile implements UploadedFileInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getClientFilename()
     {
@@ -97,7 +94,7 @@ class UploadedFile implements UploadedFileInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getClientMediaType()
     {

@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Aop;
@@ -40,17 +38,17 @@ class ProxyHandlerVisitor extends NodeVisitorAbstract
     {
         if ($node instanceof Class_) {
             $node->stmts = array_merge(
-                [new TraitUse([new Name('\Max\Aop\ProxyHandler'),]),],
+                [new TraitUse([new Name('\Max\Aop\ProxyHandler')])],
                 $node->stmts
             );
         }
         if ($node instanceof ClassMethod) {
             $methodName = $node->name->toString();
-            if($methodName === '__construct') {
+            if ($methodName === '__construct') {
                 $this->metadata->hasConstructor = true;
                 return;
             }
-            if(AspectCollector::getMethodAspects($this->metadata->className, $methodName)) {
+            if (AspectCollector::getMethodAspects($this->metadata->className, $methodName)) {
                 $methodCall = new MethodCall(
                     new Variable(new Name('this')),
                     '__callViaProxy',
@@ -60,7 +58,7 @@ class ProxyHandlerVisitor extends NodeVisitorAbstract
                             'params' => $node->getParams(),
                             'stmts'  => $node->stmts,
                         ])),
-                        new Arg(new FuncCall(new Name('func_get_args')))
+                        new Arg(new FuncCall(new Name('func_get_args'))),
                     ]
                 );
                 $returnType = $node->getReturnType();

@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Session;
@@ -22,7 +20,7 @@ use function ctype_alnum;
 class Session
 {
     /**
-     * session id
+     * session id.
      */
     protected string $id = '';
 
@@ -50,7 +48,7 @@ class Session
         }
         $this->id = ($id && $this->isValidId($id)) ? $id : \session_create_id();
         if ($data = $this->sessionHandler->read($this->id)) {
-            $this->data = (array)(@\unserialize($data) ?: []);
+            $this->data = (array) (@\unserialize($data) ?: []);
         }
         $this->started = true;
     }
@@ -81,6 +79,7 @@ class Session
 
     /**
      * Get the value of $key, or $default if it does not exist.
+     * @param null|mixed $default
      */
     public function get(string $key, $default = null): mixed
     {
@@ -89,6 +88,7 @@ class Session
 
     /**
      * Set value of the key.
+     * @param mixed $value
      */
     public function set(string $key, $value): void
     {
@@ -144,18 +144,10 @@ class Session
      */
     public function setId(string $id): void
     {
-        if (!$this->isValidId($id)) {
+        if (! $this->isValidId($id)) {
             throw new InvalidArgumentException('The length of the session ID must be 40.');
         }
         $this->id = $id;
-    }
-
-    /**
-     * Check whether $id is a valid session id.
-     */
-    protected function isValidId(string $id): bool
-    {
-        return ctype_alnum($id);
     }
 
     /**
@@ -164,5 +156,13 @@ class Session
     public function isStarted(): bool
     {
         return $this->started;
+    }
+
+    /**
+     * Check whether $id is a valid session id.
+     */
+    protected function isValidId(string $id): bool
+    {
+        return ctype_alnum($id);
     }
 }

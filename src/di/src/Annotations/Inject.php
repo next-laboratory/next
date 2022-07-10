@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Di\Annotations;
@@ -24,7 +22,7 @@ use Throwable;
 class Inject implements PropertyAttribute
 {
     /**
-     * @param string|null $id 注入的类型
+     * @param null|string $id 注入的类型
      */
     public function __construct(protected ?string $id = null)
     {
@@ -35,7 +33,7 @@ class Inject implements PropertyAttribute
         try {
             $container          = Context::getContainer();
             $reflectionProperty = Reflection::property($object::class, $property);
-            if ((!is_null($type = $reflectionProperty->getType()) && $type = $type->getName()) || $type = $this->id) {
+            if ((! is_null($type = $reflectionProperty->getType()) && $type = $type->getName()) || $type = $this->id) {
                 $reflectionProperty->setAccessible(true);
                 $reflectionProperty->setValue($object, $container->make($type));
             }

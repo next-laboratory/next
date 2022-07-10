@@ -1,14 +1,12 @@
 <?php
 
-declare (strict_types=1);
+declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Framework\Console\Commands;
@@ -17,14 +15,13 @@ use Max\Aop\Scanner;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Throwable;
 
 class VendorPublishCommand extends Command
 {
     protected function configure()
     {
         $this->setName('vendor:publish')
-             ->setDescription('Publish publishable packages');
+            ->setDescription('Publish publishable packages');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -34,7 +31,7 @@ class VendorPublishCommand extends Command
         if (isset($config['publish'])) {
             foreach ($config['publish'] as $publish) {
                 $destination = $publish['destination'];
-                if (!file_exists($destination)) {
+                if (! file_exists($destination)) {
                     copy($publish['source'], $publish['destination']);
                     $output->writeln('<info>[DEBUG]</info> Package `' . $publish['name'] . '` config file published.');
                 }

@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Database\Eloquent;
@@ -18,7 +16,6 @@ use Max\Database\Collection;
 
 class Paginate extends Collection
 {
-
     protected $page;
 
     protected $sizePerPage;
@@ -38,13 +35,13 @@ class Paginate extends Collection
             return '';
         }
         $pages = [];
-        for ($i = 1; $i >= 0; $i--) {
+        for ($i = 1; $i >= 0; --$i) {
             if ($page - 1 - $i > 0) {
                 $pages[$page - 1 - $i] = $page - 1 - $i;
             }
         }
-        $pages[$page] = (int)$page;
-        for ($i = 0; $i <= 1; $i++) {
+        $pages[$page] = (int) $page;
+        for ($i = 0; $i <= 1; ++$i) {
             if ($page + 1 + $i <= $totalPage) {
                 $pages[$page + 1 + $i] = $page + 1 + $i;
             }
@@ -56,7 +53,7 @@ class Paginate extends Collection
         $paginate     = ($page == 1) ? '' : '<li><a href="' . $query . '">首页</a></li>';
         foreach ($pages as $p => $name) {
             $query = '?p=' . $p;
-            if (!empty($request)) {
+            if (! empty($request)) {
                 $request['p'] = $p;
                 $query        = '?' . http_build_query($request);
             }

@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Queue\Queues;
@@ -19,24 +17,15 @@ use function sprintf;
 
 class Redis implements QueueHandlerInterface
 {
-    /**
-     * @var array
-     */
+    protected const QUEUE = 'maxphp:queue:%s';
+
     protected array $config = [
         'host' => '127.0.0.1',
         'port' => 6379,
     ];
 
-    protected const QUEUE = 'maxphp:queue:%s';
-
-    /**
-     * @var \Redis
-     */
     protected \Redis $redis;
 
-    /**
-     * @param array $config
-     */
     public function __construct(array $config)
     {
         $this->config = array_replace($this->config, $config);
@@ -50,8 +39,7 @@ class Redis implements QueueHandlerInterface
     }
 
     /**
-     * @param        $job
-     * @param string $queue
+     * @param $job
      */
     public function enqueue(string $queue, $job)
     {
@@ -59,8 +47,6 @@ class Redis implements QueueHandlerInterface
     }
 
     /**
-     * @param string $queue
-     *
      * @return bool|mixed
      */
     public function dequeue(string $queue)
@@ -72,7 +58,7 @@ class Redis implements QueueHandlerInterface
     }
 
     /**
-     * 停止队列
+     * 停止队列.
      */
     public function stop()
     {

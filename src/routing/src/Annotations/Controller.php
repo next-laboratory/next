@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Routing\Annotations;
@@ -24,8 +22,7 @@ class Controller
      */
     public function __construct(
         public string $prefix = '/',
-        public array  $middlewares = []
-    )
-    {
+        public array $middlewares = []
+    ) {
     }
 }

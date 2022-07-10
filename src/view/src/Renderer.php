@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\View;
@@ -19,14 +17,12 @@ use Max\View\Contracts\ViewEngineInterface;
 class Renderer
 {
     /**
-     * @var ViewEngineInterface|mixed
+     * @var mixed|ViewEngineInterface
      */
     protected ViewEngineInterface $engine;
 
     /**
      * Renderer constructor.
-     *
-     * @param ConfigInterface $config
      */
     public function __construct(ConfigInterface $config)
     {
@@ -37,16 +33,10 @@ class Renderer
         $this->engine = new $engine($config['options']);
     }
 
-    /**
-     * @param string $template
-     * @param array  $arguments
-     *
-     * @return string
-     */
     public function render(string $template, array $arguments = []): string
     {
         ob_start();
-        echo (string)$this->engine->render($template, $arguments);
-        return (string)ob_get_clean();
+        echo (string) $this->engine->render($template, $arguments);
+        return (string) ob_get_clean();
     }
 }

@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Database;
@@ -24,13 +22,10 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 class Manager
 {
     /**
-     * @var string|mixed
+     * @var mixed|string
      */
     protected string $defaultConnection;
 
-    /**
-     * @var ArrayObject
-     */
     protected ArrayObject $connections;
 
     /**
@@ -39,8 +34,7 @@ class Manager
     protected array $config = [];
 
     /**
-     * @param ConfigInterface               $config
-     * @param EventDispatcherInterface|null $eventDispatcher
+     * @param null|EventDispatcherInterface $eventDispatcher
      */
     public function __construct(ConfigInterface $config, protected ?EventDispatcherInterface $eventDispatcher = null)
     {
@@ -51,15 +45,21 @@ class Manager
     }
 
     /**
-     * @param string|null $name
-     *
+     * @return mixed
+     */
+    public function __call(string $name, array $arguments)
+    {
+        return $this->connection($this->defaultConnection)->{$name}(...$arguments);
+    }
+
+    /**
      * @return Query
      */
     public function connection(?string $name = null)
     {
         $name ??= $this->defaultConnection;
-        if (!$this->connections->offsetExists($name)) {
-            if (!isset($this->config[$name])) {
+        if (! $this->connections->offsetExists($name)) {
+            if (! isset($this->config[$name])) {
                 throw new InvalidArgumentException('没有相关数据库连接');
             }
             $config          = $this->config[$name];
@@ -69,16 +69,5 @@ class Manager
             $this->connections->offsetSet($name, new $connector(new DatabaseConfig($options)));
         }
         return new Query($this->connections->offsetGet($name), $this->eventDispatcher);
-    }
-
-    /**
-     * @param string $name
-     * @param array  $arguments
-     *
-     * @return mixed
-     */
-    public function __call(string $name, array $arguments)
-    {
-        return $this->connection($this->defaultConnection)->{$name}(...$arguments);
     }
 }

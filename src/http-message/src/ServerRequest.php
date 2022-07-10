@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Http\Message;
@@ -26,20 +24,24 @@ use function strpos;
 class ServerRequest extends Request implements ServerRequestInterface
 {
     protected ServerBag    $serverParams;
+
     protected CookieBag    $cookieParams;
+
     protected ParameterBag $queryParams;
+
     protected ParameterBag $attributes;
+
     protected FileBag      $uploadedFiles;
+
     protected ParameterBag $parsedBody;
 
     public function __construct(
-        string                      $method,
-        UriInterface|string         $uri,
-        array                       $headers = [],
+        string $method,
+        UriInterface|string $uri,
+        array $headers = [],
         StreamInterface|string|null $body = null,
-        string                      $protocolVersion = '1.1'
-    )
-    {
+        string $protocolVersion = '1.1'
+    ) {
         parent::__construct($method, $uri, $headers, $body, $protocolVersion);
         $this->attributes    = new ParameterBag();
         $this->queryParams   = new ParameterBag();
@@ -49,7 +51,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * uri部分代码来自hyperf
+     * uri部分代码来自hyperf.
      *
      * @param \Swoole\Http\Request $request
      *
@@ -68,11 +70,11 @@ class ServerRequest extends Request implements ServerRequestInterface
                 $hasPort = true;
                 $uri     = $uri->withPort($hostHeaderParts[1]);
             }
-        } else if (isset($server['server_name'])) {
+        } elseif (isset($server['server_name'])) {
             $uri = $uri->withHost($server['server_name']);
-        } else if (isset($server['server_addr'])) {
+        } elseif (isset($server['server_addr'])) {
             $uri = $uri->withHost($server['server_addr']);
-        } else if (isset($header['host'])) {
+        } elseif (isset($header['host'])) {
             $hasPort = true;
             if (strpos($header['host'], ':')) {
                 [$host, $port] = explode(':', $header['host'], 2);
@@ -86,7 +88,7 @@ class ServerRequest extends Request implements ServerRequestInterface
             $uri = $uri->withHost($host);
         }
 
-        if (!$hasPort && isset($server['server_port'])) {
+        if (! $hasPort && isset($server['server_port'])) {
             $uri = $uri->withPort($server['server_port']);
         }
 
@@ -100,7 +102,7 @@ class ServerRequest extends Request implements ServerRequestInterface
             }
         }
 
-        if (!$hasQuery && isset($server['query_string'])) {
+        if (! $hasQuery && isset($server['query_string'])) {
             $uri = $uri->withQuery($server['query_string']);
         }
 
@@ -110,7 +112,7 @@ class ServerRequest extends Request implements ServerRequestInterface
         $psrRequest->body          = new StringStream($request->getContent());
         $psrRequest->cookieParams  = new CookieBag($request->cookie ?? []);
         $psrRequest->queryParams   = new ParameterBag($request->get ?? []);
-        $psrRequest->uploadedFiles = new FileBag($request->files ?? []); // TODO Convert to UploadedFiles.
+        $psrRequest->uploadedFiles = new FileBag($request->files    ?? []); // TODO Convert to UploadedFiles.
         $psrRequest->attributes    = new ParameterBag($attributes);
 
         return $psrRequest;
@@ -118,9 +120,6 @@ class ServerRequest extends Request implements ServerRequestInterface
 
     /**
      * @param \Workerman\Protocols\Http\Request $request
-     * @param array                             $attributes
-     *
-     * @return static
      */
     public static function createFromWorkermanRequest($request, array $attributes = []): static
     {
@@ -137,9 +136,6 @@ class ServerRequest extends Request implements ServerRequestInterface
         return $psrRequest;
     }
 
-    /**
-     * @return static
-     */
     public static function createFromGlobals(): static
     {
         $psrRequest                = new static(
@@ -178,7 +174,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getServerParams()
     {
@@ -186,7 +182,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function withServerParams(array $serverParams)
     {
@@ -196,7 +192,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getCookieParams()
     {
@@ -204,7 +200,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function withCookieParams(array $cookies)
     {
@@ -222,7 +218,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function withQueryParams(array $query)
     {
@@ -233,7 +229,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      * @return UploadedFile[]
      */
     public function getUploadedFiles()
@@ -242,7 +238,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function withUploadedFiles(array $uploadedFiles)
     {
@@ -253,7 +249,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getParsedBody()
     {
@@ -261,18 +257,18 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function withParsedBody($data)
     {
         $new             = clone $this;
-        $new->parsedBody = $data instanceof ParameterBag ? $data : new ParameterBag((array)$data);
+        $new->parsedBody = $data instanceof ParameterBag ? $data : new ParameterBag((array) $data);
 
         return $new;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getAttributes()
     {
@@ -280,7 +276,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getAttribute($name, $default = null)
     {
@@ -288,7 +284,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function withAttribute($name, $value)
     {
@@ -300,7 +296,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function withoutAttribute($name)
     {

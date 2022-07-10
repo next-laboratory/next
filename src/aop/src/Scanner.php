@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Aop;
@@ -29,27 +27,33 @@ use Throwable;
 
 final class Scanner
 {
-    protected static ClassLoader $loader;
-    protected static AstManager  $astManager;
-    protected static string      $runtimeDir;
-    protected static string      $proxyMap;
-    protected static array       $classMap    = [];
-    protected static array       $collectors  = [AspectCollector::class, PropertyAttributeCollector::class];
-    protected static bool        $initialized = false;
+    private static ClassLoader $loader;
+
+    private static AstManager  $astManager;
+
+    private static string      $runtimeDir;
+
+    private static string      $proxyMap;
+
+    private static array       $classMap    = [];
+
+    private static array       $collectors  = [AspectCollector::class, PropertyAttributeCollector::class];
+
+    private static bool        $initialized = false;
 
     /**
      * @throws ReflectionException
      */
     public static function init(ClassLoader $loader, ScannerConfig $config): void
     {
-        if (!self::$initialized) {
+        if (! self::$initialized) {
             self::$loader     = $loader;
             self::$runtimeDir = $config->getRuntimeDir() . '/aop/';
             Filesystem::isDirectory(self::$runtimeDir) || Filesystem::makeDirectory(self::$runtimeDir, 0755, true);
             self::$astManager = new AstManager();
             self::$classMap   = self::scanDir($config->getPaths());
             self::$proxyMap   = $proxyMap = self::$runtimeDir . 'proxy.php';
-            if (!$config->isCache() || !Filesystem::exists($proxyMap)) {
+            if (! $config->isCache() || ! Filesystem::exists($proxyMap)) {
                 Filesystem::exists($proxyMap) && Filesystem::delete($proxyMap);
                 if (($pid = pcntl_fork()) == -1) {
                     throw new ProcessException('Process fork failed.');
@@ -80,12 +84,31 @@ final class Scanner
         return $classes;
     }
 
+    public static function scanConfig(string $installedJsonDir): array
+    {
+        $installed = json_decode(file_get_contents($installedJsonDir), true);
+        $installed = $installed['packages'] ?? $installed;
+        $config    = [];
+        foreach ($installed as $package) {
+            if (isset($package['extra']['max']['config'])) {
+                $configProvider = $package['extra']['max']['config'];
+                $configProvider = new $configProvider();
+                if (method_exists($configProvider, '__invoke')) {
+                    if (is_array($configItem = $configProvider())) {
+                        $config = array_merge_recursive($config, $configItem);
+                    }
+                }
+            }
+        }
+        return $config;
+    }
+
     /**
      * @throws ReflectionException
      */
-    protected static function getProxyMap(array $collectors): array
+    private static function getProxyMap(array $collectors): array
     {
-        if (!Filesystem::exists(self::$proxyMap)) {
+        if (! Filesystem::exists(self::$proxyMap)) {
             $proxyDir = self::$runtimeDir . 'proxy/';
             Filesystem::makeDirectory($proxyDir, 0755, true, true);
             Filesystem::cleanDirectory($proxyDir);
@@ -103,7 +126,7 @@ final class Scanner
         return include self::$proxyMap;
     }
 
-    protected static function generateProxyClass(string $class, string $path): string
+    private static function generateProxyClass(string $class, string $path): string
     {
         $ast       = self::$astManager->getNodes($path);
         $traverser = new NodeTraverser();
@@ -111,14 +134,14 @@ final class Scanner
         $traverser->addVisitor(new PropertyHandlerVisitor($metadata));
         $traverser->addVisitor(new ProxyHandlerVisitor($metadata));
         $modifiedStmts = $traverser->traverse($ast);
-        $prettyPrinter = new Standard;
+        $prettyPrinter = new Standard();
         return $prettyPrinter->prettyPrintFile($modifiedStmts);
     }
 
     /**
      * @throws ReflectionException
      */
-    protected static function collect(array $collectors): void
+    private static function collect(array $collectors): void
     {
         foreach (self::$classMap as $class => $path) {
             $reflectionClass = Reflection::class($class);
@@ -134,7 +157,7 @@ final class Scanner
                     }
                     if ($attributeInstance instanceof AspectInterface) {
                         foreach ($reflectionClass->getMethods() as $reflectionMethod) {
-                            if (!$reflectionMethod->isConstructor()) {
+                            if (! $reflectionMethod->isConstructor()) {
                                 AspectCollector::collectMethod($class, $reflectionMethod->getName(), $attributeInstance);
                             }
                         }
@@ -143,7 +166,7 @@ final class Scanner
                     echo '[NOTICE] ' . $class . ': ' . $throwable->getMessage() . PHP_EOL;
                 }
             }
-            //收集属性注解
+            // 收集属性注解
             foreach ($reflectionClass->getProperties() as $reflectionProperty) {
                 foreach ($reflectionProperty->getAttributes() as $attribute) {
                     try {
@@ -181,24 +204,5 @@ final class Scanner
                 }
             }
         }
-    }
-
-    public static function scanConfig(string $installedJsonDir): array
-    {
-        $installed = json_decode(file_get_contents($installedJsonDir), true);
-        $installed = $installed['packages'] ?? $installed;
-        $config    = [];
-        foreach ($installed as $package) {
-            if (isset($package['extra']['max']['config'])) {
-                $configProvider = $package['extra']['max']['config'];
-                $configProvider = new $configProvider;
-                if (method_exists($configProvider, '__invoke')) {
-                    if (is_array($configItem = $configProvider())) {
-                        $config = array_merge_recursive($config, $configItem);
-                    }
-                }
-            }
-        }
-        return $config;
     }
 }

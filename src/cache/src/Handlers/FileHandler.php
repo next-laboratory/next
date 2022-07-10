@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Cache\Handlers;
@@ -36,17 +34,13 @@ use function unlink;
 class FileHandler extends CacheHandler
 {
     /**
-     * 缓存路径
-     *
-     * @var string
+     * 缓存路径.
      */
     protected string $path;
 
     /**
      * 初始化
      * File constructor.
-     *
-     * @param array $config
      *
      * @throws Exception
      */
@@ -56,7 +50,7 @@ class FileHandler extends CacheHandler
             if (is_file($path)) {
                 throw new CacheException('已经存在同名文件，不能创建文件夹!');
             }
-            if (!is_writable($path) || !is_readable($path)) {
+            if (! is_writable($path) || ! is_readable($path)) {
                 chmod($path, 0755);
             }
         } else {
@@ -66,15 +60,15 @@ class FileHandler extends CacheHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function has($key)
     {
         try {
             $cacheFile = $this->getFile($key);
             if (file_exists($cacheFile)) {
-                $expire = (int)(unserialize($this->getCache($cacheFile))[0]);
-                if (0 !== $expire && filemtime($cacheFile) + $expire < time()) {
+                $expire = (int) (unserialize($this->getCache($cacheFile))[0]);
+                if ($expire !== 0 && filemtime($cacheFile) + $expire < time()) {
                     $this->remove($key);
                     return false;
                 }
@@ -87,7 +81,7 @@ class FileHandler extends CacheHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function delete($key)
     {
@@ -98,7 +92,7 @@ class FileHandler extends CacheHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function get($key, $default = null)
     {
@@ -109,15 +103,15 @@ class FileHandler extends CacheHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function set($key, $value, $ttl = null)
     {
-        return (bool)file_put_contents($this->getFile($key), serialize([(int)$ttl, $value]));
+        return (bool) file_put_contents($this->getFile($key), serialize([(int) $ttl, $value]));
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function clear(): bool
     {
@@ -130,7 +124,7 @@ class FileHandler extends CacheHandler
     }
 
     /**
-     * TODO 使用yield优化
+     * TODO 使用yield优化.
      *
      * @param $dir
      */
@@ -147,7 +141,7 @@ class FileHandler extends CacheHandler
     }
 
     /**
-     * 取得缓存内容
+     * 取得缓存内容.
      *
      * @param $cacheFile
      *
@@ -159,11 +153,7 @@ class FileHandler extends CacheHandler
     }
 
     /**
-     * 缓存hash
-     *
-     * @param string $key
-     *
-     * @return string
+     * 缓存hash.
      */
     protected function getID(string $key): string
     {
@@ -171,7 +161,7 @@ class FileHandler extends CacheHandler
     }
 
     /**
-     * 删除某一个缓存，必须在已知缓存存在的情况下调用，否则会报错
+     * 删除某一个缓存，必须在已知缓存存在的情况下调用，否则会报错.
      *
      * @param $key
      *
@@ -183,11 +173,9 @@ class FileHandler extends CacheHandler
     }
 
     /**
-     * 根据key获取文件
+     * 根据key获取文件.
      *
      * @param $key
-     *
-     * @return string
      */
     protected function getFile($key): string
     {

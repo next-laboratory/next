@@ -3,18 +3,15 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Redis\Connectors;
 
 use Max\Redis\Contracts\ConnectorInterface;
-use Max\Redis\Redis;
 use Max\Redis\RedisConfig;
 
 class BaseConnector implements ConnectorInterface
@@ -29,7 +26,7 @@ class BaseConnector implements ConnectorInterface
     public function get(): \Redis
     {
         $name = $this->config->getName();
-        if (!$this->pool->offsetExists($name)) {
+        if (! $this->pool->offsetExists($name)) {
             $redis = new \Redis();
             $redis->connect(
                 $this->config->getHost(),

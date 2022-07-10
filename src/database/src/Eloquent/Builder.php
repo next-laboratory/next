@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Database\Eloquent;
@@ -21,19 +19,11 @@ use Throwable;
 
 class Builder extends QueryBuilder
 {
-    /**
-     * @var Model
-     */
     protected Model $model;
 
-    /**
-     * @var string
-     */
     protected string $class;
 
     /**
-     * @param Model $model
-     *
      * @return $this
      */
     public function setModel(Model $model): static
@@ -45,11 +35,6 @@ class Builder extends QueryBuilder
         return $this;
     }
 
-    /**
-     * @param array $columns
-     *
-     * @return Collection
-     */
     public function get(array $columns = ['*']): Collection
     {
         return Collection::make(
@@ -57,11 +42,6 @@ class Builder extends QueryBuilder
         );
     }
 
-    /**
-     * @param array $columns
-     *
-     * @return Model|null
-     */
     public function first(array $columns = ['*']): ?Model
     {
         try {
@@ -72,24 +52,18 @@ class Builder extends QueryBuilder
     }
 
     /**
-     * @param array $columns
-     *
-     * @return Model
      * @throws ModelNotFoundException
      */
     public function firstOrFail(array $columns = ['*']): Model
     {
         return $this->query->statement(
-            $this->limit(1)->toSql($columns), $this->bindings
+            $this->limit(1)->toSql($columns),
+            $this->bindings
         )->fetchObject($this->class) ?: throw new ModelNotFoundException('No data was found.');
     }
 
     /**
-     * @param             $id
-     * @param array       $columns
-     * @param string|null $identifier
-     *
-     * @return Model|null
+     * @param $id
      */
     public function find($id, array $columns = ['*'], ?string $identifier = null): ?Model
     {
@@ -97,11 +71,8 @@ class Builder extends QueryBuilder
     }
 
     /**
-     * @param        $id
-     * @param array  $columns
-     * @param string $identifier
+     * @param $id
      *
-     * @return Model
      * @throws ModelNotFoundException
      */
     public function findOrFail($id, array $columns = ['*'], string $identifier = 'id'): Model

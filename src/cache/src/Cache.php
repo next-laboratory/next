@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Cache;
@@ -24,20 +22,15 @@ use Psr\SimpleCache\CacheInterface;
 class Cache implements CacheInterface
 {
     /**
-     * 当前缓存句柄
-     *
-     * @var CacheInterface
+     * 当前缓存句柄.
      */
     protected CacheInterface $handler;
 
     /**
-     * @var string|mixed
+     * @var mixed|string
      */
     protected string $defaultStore;
 
-    /**
-     * @var ArrayObject
-     */
     protected ArrayObject $stores;
 
     /**
@@ -45,9 +38,6 @@ class Cache implements CacheInterface
      */
     protected array $config = [];
 
-    /**
-     * @param ConfigInterface $config
-     */
     public function __construct(ConfigInterface $config)
     {
         $config             = $config->get('cache');
@@ -57,15 +47,21 @@ class Cache implements CacheInterface
     }
 
     /**
-     * @param string|null $name
-     *
+     * @return mixed
+     */
+    public function __call(string $name, array $arguments)
+    {
+        return $this->store()->{$name}(...$arguments);
+    }
+
+    /**
      * @return false|mixed
      */
     public function store(?string $name = null)
     {
         $name ??= $this->defaultStore;
-        if (!$this->stores->offsetExists($name)) {
-            if (!isset($this->config[$name])) {
+        if (! $this->stores->offsetExists($name)) {
+            if (! isset($this->config[$name])) {
                 throw new InvalidArgumentException('配置不正确');
             }
             $config  = $this->config[$name];
@@ -156,16 +152,5 @@ class Cache implements CacheInterface
     public function has($key)
     {
         return $this->__call(__FUNCTION__, func_get_args());
-    }
-
-    /**
-     * @param string $name
-     * @param array  $arguments
-     *
-     * @return mixed
-     */
-    public function __call(string $name, array $arguments)
-    {
-        return $this->store()->{$name}(...$arguments);
     }
 }

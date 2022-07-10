@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Utils\Resources;
@@ -22,24 +20,12 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class Pagination implements JsonSerializable
 {
-    /**
-     * @var Collection
-     */
     protected Collection $resources;
 
-    /**
-     * @var int
-     */
     protected int $total;
 
-    /**
-     * @var int
-     */
     protected int $page;
 
-    /**
-     * @var int
-     */
     protected int $perpage;
 
     /**
@@ -72,33 +58,21 @@ class Pagination implements JsonSerializable
         ];
     }
 
-    /**
-     * @return Collection
-     */
     public function getResources(): Collection
     {
         return $this->resources;
     }
 
-    /**
-     * @return int
-     */
     public function getTotal(): int
     {
         return $this->total;
     }
 
-    /**
-     * @return int
-     */
     public function getPage(): int
     {
         return $this->page;
     }
 
-    /**
-     * @return int
-     */
     public function getPerpage(): int
     {
         return $this->perpage;

@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
 namespace Max\Framework\Console\Commands;
 
 use InvalidArgumentException;
@@ -18,25 +27,22 @@ class MiddlewareMakeCommand extends Command
     protected function configure()
     {
         $this->setName('make:middleware')
-             ->setDescription('Making middleware.')
-             ->setDefinition([
-                 new InputArgument('middleware', InputArgument::REQUIRED, 'A middleware name such as `auth`.'),
-                 new InputOption('suffix', 's', InputOption::VALUE_OPTIONAL, 'File is suffixed when this option is available.')
-             ]);
+            ->setDescription('Making middleware.')
+            ->setDefinition([
+                new InputArgument('middleware', InputArgument::REQUIRED, 'A middleware name such as `auth`.'),
+                new InputOption('suffix', 's', InputOption::VALUE_OPTIONAL, 'File is suffixed when this option is available.'),
+            ]);
     }
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
+     * @throws \Exception|FileNotFoundException
      * @return int
-     * @throws FileNotFoundException|\Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $stubFile = $this->stubsPath . 'middleware.stub';
+        $stubFile                 = $this->stubsPath . 'middleware.stub';
         [$namespace, $middleware] = $this->parse($input->getArgument('middleware'));
-        $middlewarePath = base_path('app/Http/Middlewares/' . str_replace('\\', '/', $namespace) . '/');
+        $middlewarePath           = base_path('app/Http/Middlewares/' . str_replace('\\', '/', $namespace) . '/');
         Filesystem::exists($middlewarePath) || Filesystem::makeDirectory($middlewarePath, 0755, true);
         $suffix         = $input->getOption('suffix') ? 'Middleware' : '';
         $middlewareFile = $middlewarePath . $middleware . $suffix . '.php';
@@ -49,15 +55,13 @@ class MiddlewareMakeCommand extends Command
 
     /**
      * @param $input
-     *
-     * @return array
      */
     protected function parse($input): array
     {
         $array     = explode('/', $input);
         $class     = ucfirst(array_pop($array));
-        $namespace = implode('\\', array_map(fn($value) => ucfirst($value), $array));
-        if (!empty($namespace)) {
+        $namespace = implode('\\', array_map(fn ($value) => ucfirst($value), $array));
+        if (! empty($namespace)) {
             $namespace = '\\' . $namespace;
         }
         return [$namespace, $class];

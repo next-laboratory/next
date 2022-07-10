@@ -1,9 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
 namespace Max\Session\Handlers;
 
-use Max\Redis\RedisManager;
 use Max\Redis\Redis;
+use Max\Redis\RedisManager;
 use Max\Session\Exceptions\SessionException;
 use Max\Utils\Traits\AutoFillProperties;
 use Psr\Container\ContainerExceptionInterface;
@@ -14,31 +23,20 @@ class RedisHandler implements SessionHandlerInterface
 {
     use AutoFillProperties;
 
-    /**
-     * @var Redis
-     */
     protected Redis $handler;
 
-    /**
-     * @var string
-     */
     protected string $connection;
 
-    /**
-     * @var int
-     */
     protected int $expire = 3600;
 
     /**
-     * @param array $options
-     *
      * @throws ContainerExceptionInterface
      * @throws ReflectionException
      */
     public function __construct(array $options = [])
     {
         $this->fillProperties($options);
-        if (!class_exists('Max\Redis\RedisManager')) {
+        if (! class_exists('Max\Redis\RedisManager')) {
             throw new SessionException('You will need to install the Redis package using `composer require max/redis`');
         }
         /** @var RedisManager $manager */
@@ -90,7 +88,7 @@ class RedisHandler implements SessionHandlerInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     #[\ReturnTypeWillChange]
     public function read(string $id)
@@ -101,8 +99,6 @@ class RedisHandler implements SessionHandlerInterface
     /**
      * @param string $id
      * @param string $data
-     *
-     * @return void
      */
     #[\ReturnTypeWillChange]
     public function write(string $id, string $data)

@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Database\Eloquent;
@@ -28,16 +26,13 @@ use Throwable;
 /**
  * @method static Builder where(string $column, $value, string $operator = '=')
  * @method static Builder whereNull(string $column)
- * @method static Builder order(string|Expression $column, string $sort = 'ASC')
+ * @method static Builder order(Expression|string $column, string $sort = 'ASC')
  * @method static Builder limit(int $limit)
  */
 abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
 {
     use Relations;
 
-    /**
-     * @var string
-     */
     protected string $table;
 
     /**
@@ -45,369 +40,36 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
      */
     protected ?string $connection = null;
 
-    /**
-     * @var string
-     */
     protected string $createdAt = 'created_at';
 
-    /**
-     * @var string
-     */
     protected string $updatedAt = 'updated_at';
 
-    /**
-     * @var string
-     */
     protected string $key = 'id';
 
-    /**
-     * @var array
-     */
     protected array $cast = [];
 
-    /**
-     * @var array
-     */
     protected array $fillable = [];
 
-    /**
-     * @var array
-     */
     protected array $original = [];
 
-    /**
-     * @var array
-     */
     protected array $hidden = [];
 
-    /**
-     * @var array
-     */
     protected array $appends = [];
 
-    /**
-     * @var array
-     */
     protected array $attributes = [];
 
-    /**
-     * @param array $attributes
-     */
     public function __construct(array $attributes = [])
     {
-        if (!empty($attributes)) {
+        if (! empty($attributes)) {
             $this->fill($attributes);
         }
         $this->table ??= Str::camel(class_basename(static::class));
     }
 
     /**
-     * @return array
-     */
-    public function getFillable(): array
-    {
-        return $this->fillable;
-    }
-
-    /**
-     * @param array $attributes
-     *
-     * @return array
-     */
-    protected function fillableFromArray(array $attributes): array
-    {
-        $fillable = $this->getFillable();
-        if (count($fillable) > 0) {
-            return array_intersect_key($attributes, array_flip($fillable));
-        }
-        return $attributes;
-    }
-
-    /**
-     * @param array $attributes
-     *
-     * @return $this
-     */
-    public function fill(array $attributes): static
-    {
-        $this->original = $attributes;
-        foreach ($attributes as $key => $value) {
-            $this->setAttribute($key, $value);
-        }
-        return $this;
-    }
-
-    /**
-     * @param       $id
-     * @param array $columns
-     *
-     * @return Model|null
-     */
-    public static function find($id, array $columns = ['*']): ?static
-    {
-        try {
-            return static::findOrFail($id, $columns);
-        } catch (Throwable) {
-            return null;
-        }
-    }
-
-    /**
-     * @param       $id
-     * @param array $columns
-     *
-     * @return static
-     * @throws ModelNotFoundException
-     */
-    public static function findOrFail($id, array $columns = ['*']): static
-    {
-        return static::query()->findOrFail($id, $columns);
-    }
-
-    /**
-     * @param array $columns
-     *
-     * @return Model|null
-     */
-    public static function first(array $columns = ['*']): ?static
-    {
-        try {
-            return static::firstOrFail($columns);
-        } catch (Throwable) {
-            return null;
-        }
-    }
-
-    /**
-     * @param array $columns
-     *
-     * @return static
-     * @throws ModelNotFoundException
-     */
-    public static function firstOrFail(array $columns = ['*']): static
-    {
-        try {
-            return static::query()->firstOrFail($columns) ?? throw new ModelNotFoundException('No data was found.');
-        } catch (Throwable $throwable) {
-            throw new ModelNotFoundException($throwable->getMessage(), $throwable->getCode(), $throwable);
-        }
-    }
-
-    /**
-     * @return string
-     */
-    public function getKey(): string
-    {
-        return $this->key;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTable(): string
-    {
-        return $this->table;
-    }
-
-    /**
-     * @param array $columns
-     *
-     * @return Collection
-     */
-    public static function all(array $columns = ['*']): Collection
-    {
-        return static::query()->get($columns);
-    }
-
-    /**
-     * @return Builder
-     */
-    public static function query(): Builder
-    {
-        return (new static())->newQuery();
-    }
-
-    /**
-     * @return Builder
-     */
-    public function newQuery(): Builder
-    {
-        try {
-            /** @var Manager $query */
-            $query   = make(Manager::class);
-            $builder = new Builder($query->connection($this->connection));
-            return $builder->from($this->table)->setModel($this);
-        } catch (Throwable $throwable) {
-            throw new \RuntimeException($throwable->getMessage(), $throwable->getCode(), $throwable);
-        }
-    }
-
-    /**
-     * @return int
-     */
-    public function save(): int
-    {
-        $attributes = [];
-        foreach ($this->getAttributes() as $key => $value) {
-            if ($this->hasCast($key)) {
-                $value = $this->cast($value, $this->getCast($key), true);
-            }
-            $attributes[$key] = $value;
-        }
-        return self::query()->insert($attributes);
-    }
-
-    /**
-     * @param array $attributes
-     *
-     * @return static|null
-     */
-    public static function create(array $attributes): ?static
-    {
-        $lastInsertId = (new static($attributes))->save();
-
-        return $lastInsertId ? static::find($lastInsertId) : null;
-    }
-
-    /**
      * @param $key
      *
-     * @return bool
-     */
-    protected function hasCast($key): bool
-    {
-        return isset($this->cast[$key]);
-    }
-
-    /**
-     * @return array
-     */
-    public function getOriginal(): array
-    {
-        return $this->original;
-    }
-
-    /**
-     * @param      $value
-     * @param      $cast
-     * @param bool $isWrite
-     *
-     * @return mixed
-     */
-    protected function cast($value, $cast, bool $isWrite = false): mixed
-    {
-        return match ($cast) {
-            'boolean', 'bool' => (bool)$value,
-            'integer', 'int' => (int)$value,
-            'string' => (string)$value,
-            'double', 'float' => (float)$value,
-            'json' => $isWrite ? json_encode($value, JSON_UNESCAPED_UNICODE) : json_decode($value, true),
-            'serialize' => $isWrite ? serialize($value) : unserialize($value),
-            default => $value,
-        };
-    }
-
-    /**
-     * @param $key
-     *
-     * @return mixed
-     */
-    public function getCast($key): mixed
-    {
-        return $this->cast[$key];
-    }
-
-    /**
-     * @param $key
-     * @param $value
-     *
-     * @return void
-     */
-    public function setAttribute($key, $value): void
-    {
-        $this->original[$key] = $value;
-
-        if (in_array($key, $this->getFillable())) {
-            if ($this->hasCast($key)) {
-                $value = $this->cast($value, $this->getCast($key));
-            }
-            $this->attributes[$key] = $value;
-        }
-    }
-
-    /**
-     * @return array
-     */
-    public function toArray(): array
-    {
-        return Arr::except($this->getAttributes(), $this->getHidden());
-    }
-
-    /**
-     * @return array
-     */
-    public function getHidden(): array
-    {
-        return $this->hidden;
-    }
-
-    /**
-     * @param $key
-     *
-     * @return bool
-     */
-    public function hasAttribute($key): bool
-    {
-        return isset($this->attributes[$key]);
-    }
-
-    /**
-     * @param $key
-     *
-     * @return mixed
-     */
-    public function getAttribute($key): mixed
-    {
-        return $this->attributes[$key] ?? null;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAttributes(): array
-    {
-        return $this->attributes;
-    }
-
-    /**
-     * @param mixed $attributes
-     *
-     * @return void
-     */
-    public function setAttributes(mixed $attributes): void
-    {
-        if ($attributes instanceof Arrayable) {
-            $attributes = $attributes->toArray();
-        }
-        if (!is_array($attributes)) {
-            throw new \InvalidArgumentException('Cannot assign none array attributes to entity.');
-        }
-        $this->attributes = $attributes;
-    }
-
-    /**
-     * @return array
-     */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
-    {
-        return $this->toArray();
-    }
-
-    /**
-     * @param $key
-     *
-     * @return mixed|null
+     * @return null|mixed
      */
     public function __get($key)
     {
@@ -426,12 +88,214 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
     /**
      * @param $key
      * @param $value
-     *
-     * @return void
      */
     public function __set($key, $value)
     {
         $this->offsetSet($key, $value);
+    }
+
+    /**
+     * @return mixed
+     */
+    public static function __callStatic(string $name, array $arguments)
+    {
+        return static::query()->{$name}(...$arguments);
+    }
+
+    public function getFillable(): array
+    {
+        return $this->fillable;
+    }
+
+    /**
+     * @return $this
+     */
+    public function fill(array $attributes): static
+    {
+        $this->original = $attributes;
+        foreach ($attributes as $key => $value) {
+            $this->setAttribute($key, $value);
+        }
+        return $this;
+    }
+
+    /**
+     * @param $id
+     *
+     * @return null|Model
+     */
+    public static function find($id, array $columns = ['*']): ?static
+    {
+        try {
+            return static::findOrFail($id, $columns);
+        } catch (Throwable) {
+            return null;
+        }
+    }
+
+    /**
+     * @param $id
+     *
+     * @throws ModelNotFoundException
+     */
+    public static function findOrFail($id, array $columns = ['*']): static
+    {
+        return static::query()->findOrFail($id, $columns);
+    }
+
+    /**
+     * @return null|Model
+     */
+    public static function first(array $columns = ['*']): ?static
+    {
+        try {
+            return static::firstOrFail($columns);
+        } catch (Throwable) {
+            return null;
+        }
+    }
+
+    /**
+     * @throws ModelNotFoundException
+     */
+    public static function firstOrFail(array $columns = ['*']): static
+    {
+        try {
+            return static::query()->firstOrFail($columns) ?? throw new ModelNotFoundException('No data was found.');
+        } catch (Throwable $throwable) {
+            throw new ModelNotFoundException($throwable->getMessage(), $throwable->getCode(), $throwable);
+        }
+    }
+
+    public function getKey(): string
+    {
+        return $this->key;
+    }
+
+    public function getTable(): string
+    {
+        return $this->table;
+    }
+
+    public static function all(array $columns = ['*']): Collection
+    {
+        return static::query()->get($columns);
+    }
+
+    public static function query(): Builder
+    {
+        return (new static())->newQuery();
+    }
+
+    public function newQuery(): Builder
+    {
+        try {
+            /** @var Manager $query */
+            $query   = make(Manager::class);
+            $builder = new Builder($query->connection($this->connection));
+            return $builder->from($this->table)->setModel($this);
+        } catch (Throwable $throwable) {
+            throw new \RuntimeException($throwable->getMessage(), $throwable->getCode(), $throwable);
+        }
+    }
+
+    public function save(): int
+    {
+        $attributes = [];
+        foreach ($this->getAttributes() as $key => $value) {
+            if ($this->hasCast($key)) {
+                $value = $this->cast($value, $this->getCast($key), true);
+            }
+            $attributes[$key] = $value;
+        }
+        return self::query()->insert($attributes);
+    }
+
+    public static function create(array $attributes): ?static
+    {
+        $lastInsertId = (new static($attributes))->save();
+
+        return $lastInsertId ? static::find($lastInsertId) : null;
+    }
+
+    public function getOriginal(): array
+    {
+        return $this->original;
+    }
+
+    /**
+     * @param $key
+     */
+    public function getCast($key): mixed
+    {
+        return $this->cast[$key];
+    }
+
+    /**
+     * @param $key
+     * @param $value
+     */
+    public function setAttribute($key, $value): void
+    {
+        $this->original[$key] = $value;
+
+        if (in_array($key, $this->getFillable())) {
+            if ($this->hasCast($key)) {
+                $value = $this->cast($value, $this->getCast($key));
+            }
+            $this->attributes[$key] = $value;
+        }
+    }
+
+    public function toArray(): array
+    {
+        return Arr::except($this->getAttributes(), $this->getHidden());
+    }
+
+    public function getHidden(): array
+    {
+        return $this->hidden;
+    }
+
+    /**
+     * @param $key
+     */
+    public function hasAttribute($key): bool
+    {
+        return isset($this->attributes[$key]);
+    }
+
+    /**
+     * @param $key
+     */
+    public function getAttribute($key): mixed
+    {
+        return $this->attributes[$key] ?? null;
+    }
+
+    public function getAttributes(): array
+    {
+        return $this->attributes;
+    }
+
+    public function setAttributes(mixed $attributes): void
+    {
+        if ($attributes instanceof Arrayable) {
+            $attributes = $attributes->toArray();
+        }
+        if (! is_array($attributes)) {
+            throw new \InvalidArgumentException('Cannot assign none array attributes to entity.');
+        }
+        $this->attributes = $attributes;
+    }
+
+    /**
+     * @return array
+     */
+    #[\ReturnTypeWillChange]
+    public function jsonSerialize()
+    {
+        return $this->toArray();
     }
 
     /**
@@ -448,7 +312,7 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
     /**
      * @param $offset
      *
-     * @return mixed|null
+     * @return null|mixed
      */
     #[\ReturnTypeWillChange]
     public function offsetGet($offset)
@@ -459,8 +323,6 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
     /**
      * @param $offset
      * @param $value
-     *
-     * @return void
      */
     #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
@@ -471,8 +333,6 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
 
     /**
      * @param $offset
-     *
-     * @return void
      */
     #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
@@ -482,14 +342,37 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
         }
     }
 
-    /**
-     * @param string $name
-     * @param array  $arguments
-     *
-     * @return mixed
-     */
-    public static function __callStatic(string $name, array $arguments)
+    protected function fillableFromArray(array $attributes): array
     {
-        return static::query()->{$name}(...$arguments);
+        $fillable = $this->getFillable();
+        if (count($fillable) > 0) {
+            return array_intersect_key($attributes, array_flip($fillable));
+        }
+        return $attributes;
+    }
+
+    /**
+     * @param $key
+     */
+    protected function hasCast($key): bool
+    {
+        return isset($this->cast[$key]);
+    }
+
+    /**
+     * @param $value
+     * @param $cast
+     */
+    protected function cast($value, $cast, bool $isWrite = false): mixed
+    {
+        return match ($cast) {
+            'boolean', 'bool' => (bool) $value,
+            'integer', 'int' => (int) $value,
+            'string' => (string) $value,
+            'double', 'float' => (float) $value,
+            'json'      => $isWrite ? json_encode($value, JSON_UNESCAPED_UNICODE) : json_decode($value, true),
+            'serialize' => $isWrite ? serialize($value) : unserialize($value),
+            default     => $value,
+        };
     }
 }

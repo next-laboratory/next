@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Database\Connectors;
@@ -26,9 +24,6 @@ class AutoConnector implements ConnectorInterface
         'base' => BaseConnector::class,
     ];
 
-    /**
-     * @var array
-     */
     protected array $container = [];
 
     /**
@@ -49,8 +44,8 @@ class AutoConnector implements ConnectorInterface
                 $type = 'pool';
             }
         }
-        if (!isset($this->container[$type])) {
-            $connector = $this->connectors[$type];
+        if (! isset($this->container[$type])) {
+            $connector              = $this->connectors[$type];
             $this->container[$type] = new $connector($this->config);
         }
         return $this->container[$type]->get();

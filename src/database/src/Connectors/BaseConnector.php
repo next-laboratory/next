@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Database\Connectors;
@@ -20,9 +18,6 @@ use PDO;
 
 class BaseConnector implements ConnectorInterface
 {
-    /**
-     * @var ArrayObject
-     */
     protected ArrayObject $pool;
 
     /**
@@ -39,7 +34,7 @@ class BaseConnector implements ConnectorInterface
     public function get()
     {
         $name = $this->config->getName();
-        if (!$this->pool->offsetExists($name)) {
+        if (! $this->pool->offsetExists($name)) {
             $this->pool->offsetSet($name, $this->create());
         }
         return $this->pool->offsetGet($name);

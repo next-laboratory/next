@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Http\Message;
@@ -21,48 +19,48 @@ use Psr\Http\Message\UriInterface;
 class Request extends Message implements RequestInterface
 {
     protected UriInterface $uri;
+
     protected string $requestTarget = '/';
 
     public function __construct(
-        protected string            $method,
-        string|UriInterface         $uri,
-        array                       $headers = [],
+        protected string $method,
+        string|UriInterface $uri,
+        array $headers = [],
         string|null|StreamInterface $body = null,
-        protected string            $protocolVersion = '1.1'
-    )
-    {
+        protected string $protocolVersion = '1.1'
+    ) {
         $this->uri = $uri instanceof UriInterface ? $uri : new Uri($uri);
         $this->formatBody($body);
         $this->headers = new HeaderBag($headers);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getRequestTarget()
     {
-        if ('/' === $this->requestTarget) {
+        if ($this->requestTarget === '/') {
             return $this->uri->getPath() . $this->uri->getQuery();
         }
         return '/';
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function withRequestTarget($requestTarget)
     {
         if ($requestTarget === $this->requestTarget) {
             return $this;
         }
-        $new = clone $this;
+        $new                = clone $this;
         $new->requestTarget = $requestTarget;
 
         return $new;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getMethod()
     {
@@ -70,21 +68,21 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function withMethod($method)
     {
         if ($method === $this->method) {
             return $this;
         }
-        $new = clone $this;
+        $new         = clone $this;
         $new->method = $method;
 
         return $new;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getUri()
     {
@@ -92,7 +90,7 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function withUri(UriInterface $uri, $preserveHost = false)
     {
@@ -100,7 +98,7 @@ class Request extends Message implements RequestInterface
             return $this;
         }
         $new = clone $this;
-        if (true === $preserveHost) {
+        if ($preserveHost === true) {
             $uri = $uri->withHost($this->getHeaderLine('Host'));
         }
         $new->uri = $uri;

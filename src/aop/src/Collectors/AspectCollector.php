@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Aop\Collectors;
@@ -20,7 +18,7 @@ class AspectCollector extends AbstractCollector
     protected static array $container = [];
 
     /**
-     * 收集方法切面
+     * 收集方法切面.
      */
     public static function collectMethod(string $class, string $method, object $attribute): void
     {
@@ -30,7 +28,7 @@ class AspectCollector extends AbstractCollector
     }
 
     /**
-     * 返回某个类方法的切面
+     * 返回某个类方法的切面.
      */
     public static function getMethodAspects(string $class, string $method): array
     {
@@ -38,7 +36,7 @@ class AspectCollector extends AbstractCollector
     }
 
     /**
-     * 返回被收集过的类
+     * 返回被收集过的类.
      *
      * @return AspectInterface[]
      */
@@ -48,7 +46,7 @@ class AspectCollector extends AbstractCollector
     }
 
     /**
-     * 是否可以被收集
+     * 是否可以被收集.
      */
     public static function isValid(object $attribute): bool
     {

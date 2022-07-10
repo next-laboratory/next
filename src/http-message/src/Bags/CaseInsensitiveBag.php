@@ -1,16 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
 namespace Max\Http\Message\Bags;
 
 class CaseInsensitiveBag extends ParameterBag
 {
     protected array $map = [];
 
-    /**
-     * @param array $parameters
-     *
-     * @return void
-     */
     public function replace(array $parameters = [])
     {
         $arrayKeys        = array_keys($parameters);
@@ -19,10 +23,7 @@ class CaseInsensitiveBag extends ParameterBag
     }
 
     /**
-     * @param string $key
-     * @param        $default
-     *
-     * @return mixed
+     * @param $default
      */
     public function get(string $key, $default = null): mixed
     {
@@ -30,31 +31,18 @@ class CaseInsensitiveBag extends ParameterBag
     }
 
     /**
-     * @param string $key
-     * @param        $value
-     *
-     * @return void
+     * @param $value
      */
     public function set(string $key, $value)
     {
         parent::set(strtoupper($key), $value);
     }
 
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
     public function has(string $key): bool
     {
         return parent::has(strtoupper($key));
     }
 
-    /**
-     * @param string $key
-     *
-     * @return void
-     */
     public function remove(string $key)
     {
         parent::remove(strtoupper($key));

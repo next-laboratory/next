@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Event;
@@ -19,24 +17,24 @@ use Psr\EventDispatcher\ListenerProviderInterface;
 class ListenerProvider implements ListenerProviderInterface
 {
     /**
-     * 事件
+     * 事件.
      */
     protected array $events = [];
 
     /**
-     * 已经注册的监听器
+     * 已经注册的监听器.
      *
      * @var EventListenerInterface[]
      */
     protected array $listeners = [];
 
     /**
-     * 注册单个事件监听
+     * 注册单个事件监听.
      */
     public function addListener(EventListenerInterface $eventListener)
     {
         $listener = $eventListener::class;
-        if (!$this->listened($listener)) {
+        if (! $this->listened($listener)) {
             $this->listeners[$listener] = $eventListener;
             foreach ($eventListener->listen() as $event) {
                 $this->events[$event][] = $eventListener;
@@ -45,7 +43,7 @@ class ListenerProvider implements ListenerProviderInterface
     }
 
     /**
-     * 获取所有监听器
+     * 获取所有监听器.
      *
      * @return EventListenerInterface[]
      */
@@ -55,7 +53,7 @@ class ListenerProvider implements ListenerProviderInterface
     }
 
     /**
-     * 判断是否已经监听
+     * 判断是否已经监听.
      */
     public function listened(string $listeners): bool
     {
@@ -63,7 +61,7 @@ class ListenerProvider implements ListenerProviderInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getListenersForEvent(object $event): iterable
     {

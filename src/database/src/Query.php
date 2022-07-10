@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Database;
@@ -24,33 +22,26 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Query implements QueryInterface
 {
-    /**
-     * @var PDO
-     */
     protected PDO $PDO;
 
     /**
-     * @param ConnectorInterface $connector
-     * @param EventDispatcherInterface|null $eventDispatcher
+     * @param ConnectorInterface            $connector
+     * @param null|EventDispatcherInterface $eventDispatcher
      */
     public function __construct(
-        protected ConnectorInterface        $connector,
+        protected ConnectorInterface $connector,
         protected ?EventDispatcherInterface $eventDispatcher = null
-    )
-    {
+    ) {
         $this->PDO = $this->connector->get();
     }
 
     /**
-     * @param string $query
-     * @param array $bindings
-     *
      * @return false|\PDOStatement
      */
     public function statement(string $query, array $bindings = [])
     {
         try {
-            $startTime = microtime(true);
+            $startTime    = microtime(true);
             $PDOStatement = $this->PDO->prepare($query);
             foreach ($bindings as $key => $value) {
                 $PDOStatement->bindValue(
@@ -67,27 +58,19 @@ class Query implements QueryInterface
         } catch (PDOException $PDOException) {
             throw new PDOException(
                 $PDOException->getMessage() . sprintf(' (SQL: %s)', $query),
-                (int)$PDOException->getCode(),
+                (int) $PDOException->getCode(),
                 $PDOException->getPrevious()
             );
         }
     }
 
-    /**
-     * @return PDO
-     */
     public function getPDO(): PDO
     {
         return $this->PDO;
     }
 
     /**
-     * @param string $query
-     * @param array $bindings
-     * @param int $mode
-     * @param        ...$args
-     *
-     * @return bool|array
+     * @param ...$args
      */
     public function select(string $query, array $bindings = [], int $mode = PDO::FETCH_ASSOC, ...$args): bool|array
     {
@@ -95,10 +78,7 @@ class Query implements QueryInterface
     }
 
     /**
-     * @param string $query
-     * @param array $bindings
-     * @param int $mode
-     * @param        ...$args
+     * @param ...$args
      *
      * @return mixed
      */
@@ -108,9 +88,6 @@ class Query implements QueryInterface
     }
 
     /**
-     * @param string $table
-     * @param string|null $alias
-     *
      * @return Builder
      */
     public function table(string $table, ?string $alias = null)
@@ -118,35 +95,16 @@ class Query implements QueryInterface
         return (new Builder($this))->from($table, $alias);
     }
 
-    /**
-     * @param string $query
-     * @param array $bindings
-     *
-     * @return int
-     */
     public function update(string $query, array $bindings = []): int
     {
         return $this->statement($query, $bindings)->rowCount();
     }
 
-    /**
-     * @param string $query
-     * @param array $bindings
-     *
-     * @return int
-     */
     public function delete(string $query, array $bindings = []): int
     {
         return $this->statement($query, $bindings)->rowCount();
     }
 
-    /**
-     * @param string $query
-     * @param array $bindings
-     * @param string|null $id
-     *
-     * @return bool|string
-     */
     public function insert(string $query, array $bindings = [], ?string $id = null): bool|string
     {
         $this->statement($query, $bindings);
@@ -178,10 +136,8 @@ class Query implements QueryInterface
     }
 
     /**
-     * @param Closure $transaction
-     *
-     * @return mixed
      * @throws \Throwable
+     * @return mixed
      */
     public function transaction(Closure $transaction)
     {

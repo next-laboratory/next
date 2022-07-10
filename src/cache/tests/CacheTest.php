@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
 namespace Max\Cache\Tests;
 
 use Max\Cache\Cache;
@@ -9,17 +18,16 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\SimpleCache\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 use ReflectionException;
-use function PHPUnit\Framework\assertEquals;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class CacheTest extends TestCase
 {
-    /**
-     * @var CacheInterface|Cache
-     */
     protected Cache|CacheInterface $cache;
 
     /**
-     * @return void
      * @throws NotFoundException
      * @throws ContainerExceptionInterface
      * @throws ReflectionException
@@ -29,16 +37,12 @@ class CacheTest extends TestCase
         $this->cache = (new Cache(require '../publish/cache.php'))->store();
     }
 
-    /**
-     * @return void
-     */
     protected function tearDown(): void
     {
         $this->cache->clear();
     }
 
     /**
-     * @return void
      * @throws InvalidArgumentException
      */
     public function testGet()
@@ -48,7 +52,6 @@ class CacheTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws InvalidArgumentException
      */
     public function testDelete()
@@ -60,7 +63,6 @@ class CacheTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws InvalidArgumentException
      */
     public function testSet()
@@ -69,14 +71,12 @@ class CacheTest extends TestCase
         $this->assertEquals($this->cache->get(__METHOD__), __METHOD__);
     }
 
-
     /**
-     * @return void
      * @throws InvalidArgumentException
      */
     public function testRemember()
     {
-        $value = $this->cache->remember('value', function() {
+        $value = $this->cache->remember('value', function () {
             return 'value';
         }, 2);
         $this->assertEquals($value, 'value');
@@ -86,7 +86,6 @@ class CacheTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws InvalidArgumentException
      */
     public function testClear()
@@ -99,7 +98,6 @@ class CacheTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws InvalidArgumentException
      */
     public function testHas()
@@ -109,7 +107,6 @@ class CacheTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws InvalidArgumentException
      */
     public function testSetMultiple()
@@ -120,7 +117,6 @@ class CacheTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws InvalidArgumentException
      */
     public function testGetMultiple()
@@ -132,7 +128,6 @@ class CacheTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws InvalidArgumentException
      */
     public function testDeleteMultiple()
@@ -144,7 +139,6 @@ class CacheTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws InvalidArgumentException
      */
     public function testPull()
@@ -155,7 +149,6 @@ class CacheTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws InvalidArgumentException
      */
     public function testIncr()
@@ -169,7 +162,6 @@ class CacheTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws InvalidArgumentException
      */
     public function testDecr()

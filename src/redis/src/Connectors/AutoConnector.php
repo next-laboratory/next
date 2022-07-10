@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Redis\Connectors;
@@ -20,7 +18,8 @@ use Swoole\Coroutine;
 
 class AutoConnector implements ConnectorInterface
 {
-    protected array        $connectors = ['pool' => PoolConnector::class, 'base' => BaseConnector::class,];
+    protected array        $connectors = ['pool' => PoolConnector::class, 'base' => BaseConnector::class];
+
     protected ?ArrayObject $pool       = null;
 
     public function __construct(protected RedisConfig $config)
@@ -31,7 +30,7 @@ class AutoConnector implements ConnectorInterface
     public function get(): \Redis
     {
         $type = $this->getConnectorType();
-        if (!$this->pool->offsetExists($type)) {
+        if (! $this->pool->offsetExists($type)) {
             $connector = $this->connectors[$type];
             $this->pool->offsetSet($type, new $connector($this->config));
         }

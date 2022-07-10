@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Redis;
@@ -20,7 +18,9 @@ use Max\Config\Contracts\ConfigInterface;
 class RedisManager
 {
     protected string       $defaultConnection;
+
     protected array        $config      = [];
+
     protected ?ArrayObject $connections = null;
 
     public function __construct(ConfigInterface $config)
@@ -34,8 +34,8 @@ class RedisManager
     public function connection(?string $name = null): Redis
     {
         $name ??= $this->defaultConnection;
-        if (!$this->connections->offsetExists($name)) {
-            if (!isset($this->config[$name])) {
+        if (! $this->connections->offsetExists($name)) {
+            if (! isset($this->config[$name])) {
                 throw new InvalidArgumentException('没有相关Redis连接');
             }
             $config          = $this->config[$name];

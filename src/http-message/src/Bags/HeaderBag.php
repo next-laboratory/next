@@ -1,38 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
 namespace Max\Http\Message\Bags;
 
 use InvalidArgumentException;
 
 class HeaderBag extends ParameterBag
 {
-    /**
-     * @var array
-     */
     protected array $map = [];
 
     /**
-     * @param $value
-     *
-     * @return array|string[]
-     */
-    protected function formatValue($value): array
-    {
-        if (is_scalar($value)) {
-            $value = [(string)$value];
-        }
-        if (!is_array($value)) {
-            throw new InvalidArgumentException('The given header cannot be set.');
-        }
-
-        return array_values($value);
-    }
-
-    /**
-     * @param string $key
-     * @param        $default
-     *
-     * @return mixed
+     * @param $default
      */
     public function get(string $key, $default = []): mixed
     {
@@ -43,10 +29,7 @@ class HeaderBag extends ParameterBag
     }
 
     /**
-     * @param string $key
-     * @param        $value
-     *
-     * @return void
+     * @param $value
      */
     public function set(string $key, $value)
     {
@@ -59,36 +42,20 @@ class HeaderBag extends ParameterBag
         }
     }
 
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
     public function has(string $key): bool
     {
         return isset($this->map[strtoupper($key)]);
     }
 
-    /**
-     * @param string $key
-     *
-     * @return void
-     */
     public function remove(string $key)
     {
         if ($this->has($key)) {
             $uppercaseKey = strtoupper($key);
             $key          = $this->map[$uppercaseKey];
-            unset($this->parameters[$key]);
-            unset($this->map[$uppercaseKey]);
+            unset($this->parameters[$key], $this->map[$uppercaseKey]);
         }
     }
 
-    /**
-     * @param array $parameters
-     *
-     * @return void
-     */
     public function replace(array $parameters = [])
     {
         $this->parameters = [];
@@ -103,10 +70,27 @@ class HeaderBag extends ParameterBag
     {
         $uppercaseKey = strtoupper($key);
         if (isset($this->map[$uppercaseKey])) {
-            array_push($this->parameters[$this->map[$uppercaseKey]], ...(array)$value);
+            array_push($this->parameters[$this->map[$uppercaseKey]], ...(array) $value);
         } else {
             $this->map[$uppercaseKey] = $key;
             $this->parameters[$key]   = $this->formatValue($value);
         }
+    }
+
+    /**
+     * @param $value
+     *
+     * @return array|string[]
+     */
+    protected function formatValue($value): array
+    {
+        if (is_scalar($value)) {
+            $value = [(string) $value];
+        }
+        if (! is_array($value)) {
+            throw new InvalidArgumentException('The given header cannot be set.');
+        }
+
+        return array_values($value);
     }
 }

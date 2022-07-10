@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Http\Message;
@@ -83,19 +81,18 @@ class Response extends Message implements ResponseInterface
     protected string $reasonPhrase = '';
 
     public function __construct(
-        protected int               $status = 200,
-        array                       $headers = [],
+        protected int $status = 200,
+        array $headers = [],
         null|string|StreamInterface $body = null,
-        protected string            $protocolVersion = '1.1'
-    )
-    {
+        protected string $protocolVersion = '1.1'
+    ) {
         $this->reasonPhrase = static::PHRASES[$status] ?? '';
         $this->formatBody($body);
         $this->headers = new HeaderBag($headers);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getStatusCode()
     {
@@ -103,22 +100,22 @@ class Response extends Message implements ResponseInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function withStatus($code, $reasonPhrase = '')
     {
         if ($code === $this->status) {
             return $this;
         }
-        $new = clone $this;
-        $new->status = $code;
+        $new               = clone $this;
+        $new->status       = $code;
         $new->reasonPhrase = $reasonPhrase ?: (self::PHRASES[$code] ?? '');
 
         return $new;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getReasonPhrase()
     {

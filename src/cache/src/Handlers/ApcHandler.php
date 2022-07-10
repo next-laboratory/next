@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Cache\Handlers;
@@ -24,7 +22,7 @@ use function apc_store;
 class ApcHandler extends CacheHandler
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function incr(string $key, int $step = 1): bool
     {
@@ -32,7 +30,7 @@ class ApcHandler extends CacheHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function decr(string $key, int $step = 1): bool
     {
@@ -40,16 +38,16 @@ class ApcHandler extends CacheHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function get($key, $default = null)
     {
         $data = apc_fetch($key, $success);
-        return true === $success ? $data : $default;
+        return $success === true ? $data : $default;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function set($key, $value, $ttl = null)
     {
@@ -57,7 +55,7 @@ class ApcHandler extends CacheHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function delete($key)
     {
@@ -65,7 +63,7 @@ class ApcHandler extends CacheHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function clear(): bool
     {
@@ -73,7 +71,7 @@ class ApcHandler extends CacheHandler
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function has($key)
     {

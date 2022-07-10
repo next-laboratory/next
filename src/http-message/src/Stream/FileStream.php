@@ -1,5 +1,13 @@
 <?php
+
 declare(strict_types=1);
+
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
 
 namespace Max\Http\Message\Stream;
 
@@ -47,24 +55,28 @@ class FileStream implements StreamInterface
         $this->seek($offset);
     }
 
-    /**
-     * @return int
-     */
-    public function getLength(): int
+    public function __destruct()
     {
-        return $this->length;
+        if (is_resource($this->stream)) {
+            $this->close();
+        }
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __toString()
     {
         return stream_get_contents($this->stream, $this->length, $this->tell());
     }
 
+    public function getLength(): int
+    {
+        return $this->length;
+    }
+
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function close()
     {
@@ -72,7 +84,7 @@ class FileStream implements StreamInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function detach()
     {
@@ -80,7 +92,7 @@ class FileStream implements StreamInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      * @throws Exception
      */
     public function getSize()
@@ -91,15 +103,15 @@ class FileStream implements StreamInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function tell()
     {
-        return (int)ftell($this->stream);
+        return (int) ftell($this->stream);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function eof()
     {
@@ -107,7 +119,7 @@ class FileStream implements StreamInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function isSeekable()
     {
@@ -115,7 +127,7 @@ class FileStream implements StreamInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function seek($offset, $whence = SEEK_SET)
     {
@@ -123,7 +135,7 @@ class FileStream implements StreamInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function rewind()
     {
@@ -131,7 +143,7 @@ class FileStream implements StreamInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function isWritable()
     {
@@ -139,15 +151,15 @@ class FileStream implements StreamInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function write($string)
     {
-        return (int)fwrite($this->stream, $string);
+        return (int) fwrite($this->stream, $string);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function isReadable()
     {
@@ -155,7 +167,7 @@ class FileStream implements StreamInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function read($length)
     {
@@ -163,7 +175,7 @@ class FileStream implements StreamInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getContents()
     {
@@ -171,18 +183,11 @@ class FileStream implements StreamInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getMetadata($key = null)
     {
         $meta = stream_get_meta_data($this->stream);
         return $key ? $meta[$key] ?? null : $meta;
-    }
-
-    public function __destruct()
-    {
-        if (is_resource($this->stream)) {
-            $this->close();
-        }
     }
 }

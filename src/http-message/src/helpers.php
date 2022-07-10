@@ -1,13 +1,22 @@
 <?php
 
-if (false === function_exists('apache_request_headers')) {
+declare(strict_types=1);
+
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
+if (function_exists('apache_request_headers') === false) {
     function apache_request_headers(): array
     {
         $headers = [];
         foreach ($_SERVER as $key => $value) {
             if (str_starts_with($key, 'HTTP_')) {
                 $headers[str_replace('_', '-', substr($key, 5))] = $value;
-            } else if (in_array($key, ['CONTENT_TYPE', 'CONTENT_LENGTH', 'CONTENT_MD5'], true)) {
+            } elseif (in_array($key, ['CONTENT_TYPE', 'CONTENT_LENGTH', 'CONTENT_MD5'], true)) {
                 $headers[str_replace('_', '-', $key)] = $value;
             }
         }
@@ -33,24 +42,24 @@ if (false === function_exists('apache_request_headers')) {
             $authorizationHeader = null;
             if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
                 $authorizationHeader = $_SERVER['HTTP_AUTHORIZATION'];
-            } else if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+            } elseif (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
                 $authorizationHeader = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
             }
 
-            if (null !== $authorizationHeader) {
-                if (0 === stripos($authorizationHeader, 'basic ')) {
+            if ($authorizationHeader !== null) {
+                if (stripos($authorizationHeader, 'basic ') === 0) {
                     // Decode AUTHORIZATION header into PHP_AUTH_USER and PHP_AUTH_PW when authorization header is basic
                     $exploded = explode(':', base64_decode(substr($authorizationHeader, 6)), 2);
-                    if (2 == count($exploded)) {
+                    if (count($exploded) == 2) {
                         [$headers['PHP_AUTH_USER'], $headers['PHP_AUTH_PW']] = $exploded;
                     }
-                } else if (empty($_SERVER['PHP_AUTH_DIGEST'])
-                    && (0
-                        === stripos($authorizationHeader, 'digest '))) {
+                } elseif (empty($_SERVER['PHP_AUTH_DIGEST'])
+                    && (stripos($authorizationHeader, 'digest ')
+                        === 0)) {
                     // In some circumstances PHP_AUTH_DIGEST needs to be set
                     $headers['PHP_AUTH_DIGEST'] = $authorizationHeader;
                     $_SERVER['PHP_AUTH_DIGEST'] = $authorizationHeader;
-                } else if (0 === stripos($authorizationHeader, 'bearer ')) {
+                } elseif (stripos($authorizationHeader, 'bearer ') === 0) {
                     /*
                      * XXX: Since there is no PHP_AUTH_BEARER in PHP predefined variables,
                      *      I'll just set $headers['AUTHORIZATION'] here.
@@ -69,7 +78,7 @@ if (false === function_exists('apache_request_headers')) {
         if (isset($headers['PHP_AUTH_USER'])) {
             $headers['AUTHORIZATION'] =
                 'Basic ' . base64_encode($headers['PHP_AUTH_USER'] . ':' . $headers['PHP_AUTH_PW']);
-        } else if (isset($headers['PHP_AUTH_DIGEST'])) {
+        } elseif (isset($headers['PHP_AUTH_DIGEST'])) {
             $headers['AUTHORIZATION'] = $headers['PHP_AUTH_DIGEST'];
         }
 

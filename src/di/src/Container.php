@@ -3,20 +3,20 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Di;
 
 use BadMethodCallException;
 use Closure;
-use Max\Di\Exceptions\{ContainerException, NotFoundException};
-use Psr\Container\{ContainerExceptionInterface, ContainerInterface};
+use Max\Di\Exceptions\ContainerException;
+use Max\Di\Exceptions\NotFoundException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionFunction;
@@ -36,7 +36,7 @@ class Container implements ContainerInterface
     protected array $resolved = [];
 
     /**
-     * 将实例化的类存放到数组中
+     * 将实例化的类存放到数组中.
      *
      * @param string $id       标识
      * @param object $instance 实例
@@ -47,7 +47,7 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function get(string $id)
     {
@@ -55,7 +55,7 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function has(string $id): bool
     {
@@ -65,8 +65,6 @@ class Container implements ContainerInterface
     /**
      * @param string $id    标识，可以是接口
      * @param string $class 类名
-     *
-     * @return void
      */
     public function bind(string $id, string $class): void
     {
@@ -100,23 +98,23 @@ class Container implements ContainerInterface
     }
 
     /**
-     * 注入的外部接口方法
+     * 注入的外部接口方法.
      *
      * @template T
      *
-     * @param string|class-string<T> $id        标识
+     * @param class-string<T>|string $id        标识
      * @param array                  $arguments 构造函数参数列表（关联数组）
      *
+     * @throws ContainerExceptionInterface|NotFoundException|ReflectionException
      * @return mixed|<T>
-     * @throws ReflectionException|NotFoundException|ContainerExceptionInterface
      */
     public function make(string $id, array $arguments = []): mixed
     {
-        if (false === $this->has($id)) {
+        if ($this->has($id) === false) {
             $id              = $this->getBinding($id);
             $reflectionClass = Reflection::class($id);
             if ($reflectionClass->isInterface()) {
-                if (!$this->bound($id)) {
+                if (! $this->bound($id)) {
                     throw new ContainerException('The ' . $id . ' has no implementation class. ', 600);
                 }
                 // TODO 当绑定的类并没有实现该接口
@@ -129,9 +127,7 @@ class Container implements ContainerInterface
     }
 
     /**
-     * 注销实例
-     *
-     * @param string $id
+     * 注销实例.
      */
     public function remove(string $id): void
     {
@@ -145,13 +141,12 @@ class Container implements ContainerInterface
     }
 
     /**
-     * 调用类的方法
+     * 调用类的方法.
      *
-     * @param array|string|Closure $callable  $callable 可调用的类或者实例和方法数组
+     * @param array|Closure|string $callable  $callable 可调用的类或者实例和方法数组
      * @param array                $arguments 给方法传递的参数（关联数组）
      *
-     * @return mixed
-     * @throws ReflectionException|ContainerExceptionInterface
+     * @throws ContainerExceptionInterface|ReflectionException
      */
     public function call(array|string|Closure $callable, array $arguments = []): mixed
     {
@@ -159,10 +154,10 @@ class Container implements ContainerInterface
             return $this->callFunc($callable, $arguments);
         }
         [$objectOrClass, $method] = $callable;
-        $isObject         = is_object($objectOrClass);
-        $reflectionMethod = Reflection::method($isObject ? get_class($objectOrClass) : $this->getBinding($objectOrClass), $method);
-        if (false === $reflectionMethod->isAbstract()) {
-            if (!$reflectionMethod->isPublic()) {
+        $isObject                 = is_object($objectOrClass);
+        $reflectionMethod         = Reflection::method($isObject ? get_class($objectOrClass) : $this->getBinding($objectOrClass), $method);
+        if ($reflectionMethod->isAbstract() === false) {
+            if (! $reflectionMethod->isPublic()) {
                 $reflectionMethod->setAccessible(true);
             }
 
@@ -175,12 +170,12 @@ class Container implements ContainerInterface
     }
 
     /**
-     * 调用闭包
+     * 调用闭包.
      *
-     * @param string|Closure $function  函数
+     * @param Closure|string $function  函数
      * @param array          $arguments 参数列表（关联数组）
      *
-     * @throws ReflectionException|NotFoundException
+     * @throws NotFoundException|ReflectionException
      * @throws ContainerExceptionInterface
      */
     public function callFunc(string|Closure $function, array $arguments = [])
@@ -193,7 +188,7 @@ class Container implements ContainerInterface
     }
 
     /**
-     * 获取构造函数的参数
+     * 获取构造函数的参数.
      *
      * @throws ContainerExceptionInterface
      * @throws ReflectionException
@@ -207,23 +202,6 @@ class Container implements ContainerInterface
             return $this->getFuncArgs($constructor, $arguments);
         }
         throw new ContainerException('Cannot initialize class: ' . $reflectionClass->getName(), 599);
-    }
-
-    /**
-     * 转换类型
-     */
-    protected function castParameter($value, string $type): mixed
-    {
-        return match ($type) {
-            'int' => (int)$value,
-            'string' => (string)$value,
-            'bool' => (bool)$value,
-            'array' => (array)$value,
-            'float' => (float)$value,
-            'double' => (double)$value,
-            'object' => (object)$value,
-            default => $value,
-        };
     }
 
     /**
@@ -266,5 +244,22 @@ class Container implements ContainerInterface
         }
 
         return $funcArgs;
+    }
+
+    /**
+     * 转换类型.
+     * @param mixed $value
+     */
+    protected function castParameter($value, string $type): mixed
+    {
+        return match ($type) {
+            'int'    => (int) $value,
+            'string' => (string) $value,
+            'bool'   => (bool) $value,
+            'array'  => (array) $value,
+            'float', 'double' => (float) $value,
+            'object' => (object) $value,
+            default  => $value,
+        };
     }
 }

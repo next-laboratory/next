@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Routing;
@@ -22,7 +20,7 @@ use function sprintf;
 class Router
 {
     /**
-     * 分组中间件
+     * 分组中间件.
      */
     protected array $middlewares = [];
 
@@ -32,22 +30,22 @@ class Router
     protected string $prefix = '';
 
     /**
-     * 命名空间
+     * 命名空间.
      */
     protected string $namespace = '';
 
     /**
-     * 域名
+     * 域名.
      */
     protected string $domain = '';
 
     /**
-     * 参数规则
+     * 参数规则.
      */
     protected array $patterns = [];
 
     /**
-     * 路由收集器
+     * 路由收集器.
      */
     protected RouteCollector $routeCollector;
 
@@ -56,7 +54,7 @@ class Router
      */
     public function __construct(array $options = [], ?RouteCollector $routeCollector = null)
     {
-        if ([] !== $options) {
+        if ($options !== []) {
             foreach ($options as $key => $value) {
                 if (property_exists($this, $key)) {
                     $this->{$key} = $value;
@@ -68,10 +66,10 @@ class Router
 
     /**
      * Allow almost all methods.
-     * For example: $router->any('/', [IndexController::class, 'index'])
+     * For example: $router->any('/', [IndexController::class, 'index']).
      *
-     * @param string               $path   The request path.
-     * @param array|Closure|string $action The handling method.
+     * @param string               $path   the request path
+     * @param array|Closure|string $action the handling method
      */
     public function any(string $path, array|Closure|string $action): Route
     {
@@ -127,25 +125,16 @@ class Router
     }
 
     /**
-     * 将命名空间和控制器拼接起来
-     */
-    protected function longNameController(string $controller): string
-    {
-        return trim($this->namespace . '\\' . ltrim($controller, '\\'), '\\');
-    }
-
-    /**
      * Allow multi request methods.
      */
     public function request(
-        string               $path,
+        string $path,
         array|Closure|string $action,
-        array                $methods = ['GET', 'HEAD', 'POST']
-    ): Route
-    {
+        array $methods = ['GET', 'HEAD', 'POST']
+    ): Route {
         if (is_array($action)) {
             [$controller, $action] = $action;
-            $action = [$this->longNameController($controller), $action];
+            $action                = [$this->longNameController($controller), $action];
         }
         if (is_string($action)) {
             $action = $this->longNameController($action);
@@ -163,47 +152,35 @@ class Router
     }
 
     /**
-     * 分组路由
+     * 分组路由.
      */
     public function group(Closure $group): void
     {
         $group($this);
     }
 
-    /**
-     * @return array
-     */
     public function getMiddlewares(): array
     {
         return $this->middlewares;
     }
 
-    /**
-     * @return string
-     */
     public function getPrefix(): string
     {
         return $this->prefix;
     }
 
-    /**
-     * @return string
-     */
     public function getNamespace(): string
     {
         return $this->namespace;
     }
 
-    /**
-     * @return array
-     */
     public function getPatterns(): array
     {
         return $this->patterns;
     }
 
     /**
-     * 添加中间件
+     * 添加中间件.
      */
     public function middleware(string ...$middlewares): Router
     {
@@ -213,9 +190,6 @@ class Router
         return $new;
     }
 
-    /**
-     * @return string
-     */
     public function getDomain(): string
     {
         return $this->domain;
@@ -223,7 +197,7 @@ class Router
 
     /**
      * 指定域名
-     * Example: *.git.com / www.git.com
+     * Example: *.git.com / www.git.com.
      */
     public function domain(string $domain): Router
     {
@@ -234,7 +208,7 @@ class Router
     }
 
     /**
-     * 变量规则
+     * 变量规则.
      */
     public function patterns(array $patterns): Router
     {
@@ -256,7 +230,7 @@ class Router
     }
 
     /**
-     * 命名空间
+     * 命名空间.
      */
     public function namespace(string $namespace): Router
     {
@@ -266,11 +240,16 @@ class Router
         return $new;
     }
 
-    /**
-     * @return RouteCollector
-     */
     public function getRouteCollector(): RouteCollector
     {
         return $this->routeCollector;
+    }
+
+    /**
+     * 将命名空间和控制器拼接起来.
+     */
+    protected function longNameController(string $controller): string
+    {
+        return trim($this->namespace . '\\' . ltrim($controller, '\\'), '\\');
     }
 }

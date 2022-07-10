@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Queue;
@@ -30,19 +28,10 @@ use function usleep;
 
 class Queue
 {
-    /**
-     * @var array
-     */
     protected array $config;
 
-    /**
-     * @var QueueHandlerInterface
-     */
     protected QueueHandlerInterface $handler;
 
-    /**
-     * @param ConfigInterface $config
-     */
     public function __construct(ConfigInterface $config)
     {
         $this->config  = $config->get('queue');
@@ -50,20 +39,7 @@ class Queue
     }
 
     /**
-     * @return mixed
-     */
-    protected function makeQueue()
-    {
-        $queue  = $this->config['default'];
-        $config = $this->config['connections'][$queue];
-        $queue  = $config['driver'];
-        $config = $config['config'];
-        return new $queue($config);
-    }
-
-    /**
-     * @param string|object|array $job
-     * @param string              $queue
+     * @param array|object|string $job
      */
     public function push($job, string $queue = 'default'): void
     {
@@ -71,8 +47,7 @@ class Queue
     }
 
     /**
-     * @param DelayedJob $delayJob
-     * @param float      $delay 延时时长/秒
+     * @param float $delay 延时时长/秒
      */
     public function later(DelayedJob $delayJob, float $delay = 15): void
     {
@@ -80,9 +55,6 @@ class Queue
         $this->handler->enqueue('delay', serialize($delayJob));
     }
 
-    /**
-     * @param string|null $queue
-     */
     public function work(?string $queue): void
     {
         while (true) {
@@ -99,10 +71,22 @@ class Queue
     }
 
     /**
+     * @return mixed
+     */
+    protected function makeQueue()
+    {
+        $queue  = $this->config['default'];
+        $config = $this->config['connections'][$queue];
+        $queue  = $config['driver'];
+        $config = $config['config'];
+        return new $queue($config);
+    }
+
+    /**
      * @param $queue
      *
-     * @return false|Job
      * @throws InvalidJobException
+     * @return false|Job
      */
     protected function dequeueJob($queue): Job|bool
     {
@@ -113,7 +97,7 @@ class Queue
                 [$job, $params] = $job;
             }
             if (is_string($job)) {
-                $job = new $job(...(array)$params);
+                $job = new $job(...(array) $params);
             }
             if ($job instanceof Job) {
                 return $job;
@@ -123,14 +107,11 @@ class Queue
         return false;
     }
 
-    /**
-     * @param Job $job
-     */
     protected function handleJob(Job $job): void
     {
         try {
             if ($job instanceof DelayedJob && ($leftTime = $job->leftTime()) > 0) {
-                usleep((int)($leftTime * 1e6));
+                usleep((int) ($leftTime * 1e6));
             }
             $job->handle();
         } catch (Throwable $throwable) {

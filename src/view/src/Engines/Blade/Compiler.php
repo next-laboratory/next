@@ -3,17 +3,14 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\View\Engines\Blade;
 
-use Exception;
 use Max\View\Engines\Blade;
 use Max\View\Exceptions\ViewNotExistException;
 use function file_exists;
@@ -28,25 +25,14 @@ use function trim;
 
 class Compiler
 {
-    /**
-     * @var array
-     */
     protected array $sections = [];
 
-    /**
-     * @var string|null
-     */
     protected ?string $parent;
 
-    /**
-     * @var Blade
-     */
     protected Blade $blade;
 
     /**
      * Compiler constructor.
-     *
-     * @param Blade $blade
      */
     public function __construct(Blade $blade)
     {
@@ -54,41 +40,10 @@ class Compiler
     }
 
     /**
-     * 读模板
+     * 编译.
      *
      * @param $template
      *
-     * @return false|string
-     * @throws ViewNotExistException
-     */
-    protected function readFile($template): bool|string
-    {
-        if (file_exists($template) && (false !== ($content = file_get_contents($template)))) {
-            return $content;
-        }
-        throw new ViewNotExistException('View ' . $template . ' does not exist');
-    }
-
-    /**
-     * @param $template
-     *
-     * @return string
-     */
-    protected function getRealPath($template): string
-    {
-        return sprintf('%s%s%s',
-            $this->blade->getPath(),
-            str_replace('.', '/', $template),
-            $this->blade->getSuffix()
-        );
-    }
-
-    /**
-     * 编译
-     *
-     * @param $template
-     *
-     * @return string
      * @throws ViewNotExistException
      */
     public function compile($template): string
@@ -96,8 +51,8 @@ class Compiler
         $compileDir   = $this->blade->getCompileDir();
         $compiledFile = $compileDir . md5($template) . '.php';
 
-        if (false === $this->blade->isCache() || false === file_exists($compiledFile)) {
-            !is_dir($compileDir) && mkdir($compileDir, 0755, true);
+        if ($this->blade->isCache() === false || file_exists($compiledFile) === false) {
+            ! is_dir($compileDir) && mkdir($compileDir, 0755, true);
             $content = $this->compileView($template);
             while (isset($this->parent)) {
                 $parent       = $this->parent;
@@ -111,11 +66,37 @@ class Compiler
     }
 
     /**
-     * 编译文件
+     * 读模板
      *
-     * @param string $file
+     * @param $template
      *
-     * @return string
+     * @throws ViewNotExistException
+     * @return false|string
+     */
+    protected function readFile($template): bool|string
+    {
+        if (file_exists($template) && (false !== ($content = file_get_contents($template)))) {
+            return $content;
+        }
+        throw new ViewNotExistException('View ' . $template . ' does not exist');
+    }
+
+    /**
+     * @param $template
+     */
+    protected function getRealPath($template): string
+    {
+        return sprintf(
+            '%s%s%s',
+            $this->blade->getPath(),
+            str_replace('.', '/', $template),
+            $this->blade->getSuffix()
+        );
+    }
+
+    /**
+     * 编译文件.
+     *
      * @throws ViewNotExistException
      */
     protected function compileView(string $file): string
@@ -125,38 +106,29 @@ class Compiler
             '/\{!!([\s\S]*?)!!\}/'                                                     => [$this, 'compileRaw'],
             '/\{\{((--)?)([\s\S]*?)\\1\}\}/'                                           => [$this, 'compileEchos'],
             '/@(section|switch)\((.*?)\)([\s\S]*?)@end\\1/'                            => [$this, 'compileParcel'],
-            '/@(php|else|endphp|endforeach|endfor|endif|endunless|endempty|endisset)/' => [$this, 'compileDirective']
+            '/@(php|else|endphp|endforeach|endfor|endif|endunless|endempty|endisset)/' => [$this, 'compileDirective'],
         ], $this->readFile($this->getRealPath($file)));
     }
 
-    /**
-     * @param array $matches
-     *
-     * @return string
-     */
     protected function compileRaw(array $matches): string
     {
         return sprintf('<?php echo %s; ?>', $matches[1]);
     }
 
     /**
-     * 编译输出内容
-     *
-     * @param array $matches
+     * 编译输出内容.
      *
      * @return string
      */
     protected function compileEchos(array $matches)
     {
-        if ('' === $matches[1]) {
+        if ($matches[1] === '') {
             return sprintf('<?php echo htmlspecialchars((string)%s, ENT_QUOTES); ?>', $matches[3]);
         }
     }
 
     /**
-     * 编译包裹内容
-     *
-     * @param array $matches
+     * 编译包裹内容.
      *
      * @return string
      */
@@ -169,8 +141,8 @@ class Compiler
                 break;
             case 'switch':
                 $segment = preg_replace(
-                    ['/@case\((.*)\)/', '/@default/',],
-                    ["<?php case \\1: ?>", '<?php default: ?>',],
+                    ['/@case\((.*)\)/', '/@default/'],
+                    ['<?php case \\1: ?>', '<?php default: ?>'],
                     $segment
                 );
                 return sprintf('<?php switch(%s): ?>%s<?php endswitch; ?>', $condition, trim($segment));
@@ -178,30 +150,24 @@ class Compiler
     }
 
     /**
-     * 编译指令
-     *
-     * @param array $matches
-     *
-     * @return string
+     * 编译指令.
      */
     protected function compileDirective(array $matches): string
     {
         return match ($directive = $matches[1]) {
-            'php' => '<?php ',
+            'php'    => '<?php ',
             'endphp' => '?>',
-            'else' => '<?php else: ?>',
+            'else'   => '<?php else: ?>',
             'endisset', 'endunless', 'endempty' => '<?php endif; ?>',
             default => sprintf('<?php %s; ?>', $directive),
         };
     }
 
     /**
-     * 编译函数
+     * 编译函数.
      *
-     * @param array $matches
-     *
-     * @return mixed|string|void
      * @throws ViewNotExistException
+     * @return mixed|string|void
      */
     protected function compileFunc(array $matches)
     {
@@ -231,11 +197,6 @@ class Compiler
         }
     }
 
-    /**
-     * @param string $value
-     *
-     * @return string
-     */
     protected function trim(string $value): string
     {
         return trim($value, '\'" ');
