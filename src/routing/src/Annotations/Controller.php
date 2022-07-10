@@ -23,7 +23,7 @@ class Controller
      * @param array  $middlewares 中间件
      */
     public function __construct(
-        public string $prefix = '',
+        public string $prefix = '/',
         public array  $middlewares = []
     )
     {

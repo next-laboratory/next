@@ -33,7 +33,7 @@ class RequestMapping implements MappingInterface
      * @param string         $domain      域名
      */
     public function __construct(
-        public string $path,
+        public string $path = '/',
         array         $methods = [],
         public array  $middlewares = [],
         public string $domain = ''
