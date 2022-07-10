@@ -11,7 +11,7 @@ use Max\Utils\Contracts\Enumerable;
 use Max\Utils\Exceptions\ItemNotFoundException;
 use Max\Utils\Exceptions\MultipleItemsFoundException;
 use Max\Utils\Traits\EnumeratesValues;
-use Max\Utils\Traits\Macroable;
+use Max\Macro\Macroable;
 use ReturnTypeWillChange;
 use stdClass;
 use Traversable;

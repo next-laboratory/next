@@ -4,7 +4,7 @@ namespace Max\Utils;
 
 use Closure;
 use Max\Utils\Traits\Conditionable;
-use Max\Utils\Traits\Macroable;
+use Max\Macro\Macroable;
 use Max\Utils\Traits\Tappable;
 use JsonSerializable;
 use Symfony\Component\VarDumper\VarDumper;
