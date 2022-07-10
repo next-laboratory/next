@@ -11,7 +11,11 @@ declare(strict_types=1);
 
 namespace Max\Aop\Collectors;
 
+use Max\Aop\Annotations\AspectConfig;
 use Max\Aop\Contracts\AspectInterface;
+use Max\Aop\Scanner;
+use Max\Di\Reflection;
+use ReflectionException;
 
 class AspectCollector extends AbstractCollector
 {
@@ -22,8 +26,35 @@ class AspectCollector extends AbstractCollector
      */
     public static function collectMethod(string $class, string $method, object $attribute): void
     {
-        if (self::isValid($attribute)) {
+        if ($attribute instanceof AspectInterface) {
             self::$container[$class][$method][] = $attribute;
+        }
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    public static function collectClass(string $class, object $attribute): void
+    {
+        if ($attribute instanceof AspectInterface) {
+            foreach (Reflection::class($class)->getMethods() as $reflectionMethod) {
+                if (! $reflectionMethod->isConstructor()) {
+                    self::$container[$class][$reflectionMethod->getName()][] = $attribute;
+                }
+            }
+        } elseif ($attribute instanceof AspectConfig) {
+            $reflectionClass = Reflection::class($attribute->class);
+            $annotation      = new $class(...$attribute->params);
+            if ($attribute->method === '*') {
+                foreach ($reflectionClass->getMethods() as $reflectionMethod) {
+                    if (! $reflectionMethod->isConstructor() && ! $reflectionMethod->isStatic()) {
+                        self::$container[$attribute->class][$reflectionMethod->getName()][] = $annotation;
+                    }
+                }
+            } else {
+                self::$container[$attribute->class][$attribute->method][] = $annotation;
+            }
+            Scanner::addClass($attribute->class, $reflectionClass->getFileName());
         }
     }
 
@@ -43,13 +74,5 @@ class AspectCollector extends AbstractCollector
     public static function getCollectedClasses(): array
     {
         return array_keys(self::$container);
-    }
-
-    /**
-     * 是否可以被收集.
-     */
-    public static function isValid(object $attribute): bool
-    {
-        return $attribute instanceof AspectInterface;
     }
 }
