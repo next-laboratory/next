@@ -13,6 +13,7 @@ namespace Max\Aop;
 
 use Attribute;
 use Composer\Autoload\ClassLoader;
+use Max\Aop\Annotations\AspectConfig;
 use Max\Aop\Collectors\AspectCollector;
 use Max\Aop\Collectors\PropertyAttributeCollector;
 use Max\Aop\Contracts\AspectInterface;
@@ -29,17 +30,17 @@ final class Scanner
 {
     private static ClassLoader $loader;
 
-    private static AstManager  $astManager;
+    private static AstManager $astManager;
 
-    private static string      $runtimeDir;
+    private static string $runtimeDir;
 
-    private static string      $proxyMap;
+    private static string $proxyMap;
 
-    private static array       $classMap    = [];
+    private static array $classMap = [];
 
-    private static array       $collectors  = [AspectCollector::class, PropertyAttributeCollector::class];
+    private static array $collectors = [AspectCollector::class, PropertyAttributeCollector::class];
 
-    private static bool        $initialized = false;
+    private static bool $initialized = false;
 
     /**
      * @throws ReflectionException
@@ -147,11 +148,15 @@ final class Scanner
             $reflectionClass = Reflection::class($class);
             // 收集类注解
             foreach ($reflectionClass->getAttributes() as $attribute) {
-                if ($attribute instanceof Attribute) {
+                $attributeInstance = $attribute->newInstance();
+                if ($attributeInstance instanceof Attribute) {
                     continue;
                 }
+                if ($attributeInstance instanceof AspectConfig) {
+                    $attributeInstance->register($class);
+                    self::$classMap[$attributeInstance->class] = Reflection::class($attributeInstance->class)->getFileName();
+                }
                 try {
-                    $attributeInstance = $attribute->newInstance();
                     foreach ($collectors as $collector) {
                         $collector::collectClass($class, $attributeInstance);
                     }

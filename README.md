@@ -25,11 +25,10 @@ $loader = require_once __DIR__ . '/vendor/autoload.php';
 ]));
 ```
 
-* cache      是否缓存，true时下次启动不会重新生成代理类
-* paths      注解扫描路径
+* cache 是否缓存，true时下次启动不会重新生成代理类
+* paths 注解扫描路径
 * collectors 用户自定义注解收集器
 * runtimeDir 运行时，生成的代理类和代理类地图会被缓存到这里
-
 
 ## 编写切面类，实现AspectInterface接口
 
@@ -83,6 +82,34 @@ class Index
 
 >
 注意上面添加了两个注解，属性和方法注解的作用分别为注入属性和切入方法，可以直接在控制器中打印属性$request发现已经被注入了，切面注解可以有多个，会按照顺序执行。具体实现可以参考这两个类，注意这里的Inject注解并不是从webman容器中获取实例，所以使用的话需要重新定义Inject以保证单例
+
+你也可以使用`AspectConfig`注解类配置要切入的类，例如上面的切面类
+
+```php
+<?php
+
+namespace App\aspects;
+
+use Closure;
+use Max\Aop\Annotations\AspectConfig;use Max\Aop\JoinPoint;
+use Max\Aop\Contracts\AspectInterface;
+
+#[\Attribute(\Attribute::TARGET_METHOD)]
+#[AspectConfig('BaconQrCode\Writer', 'writeFile')]
+class Round implements AspectInterface
+{
+    public function process(JoinPoint $joinPoint, Closure $next): mixed
+    {
+        echo 'before';
+        $response = $next($joinPoint);
+        echo 'after';
+        return $response;
+    }
+}
+
+```
+
+那么`BaconQrCode\Writer`类的`writeFile`方法将会被切入，该注解可以传递第三个参数数组，作为该切面构造函数的参数
 
 ## 启动
 
