@@ -64,12 +64,12 @@ class WhoopsExceptionHandler implements ExceptionHandlerInterface, StoppableExce
                 $handler->setApplicationRootPath(BASE_PATH);
             }
 
-            $handler->addDataTableCallback('PSR7 Query', [$request, 'getQueryParams']);
-            $handler->addDataTableCallback('PSR7 Post', [$request, 'getParsedBody']);
-            $handler->addDataTableCallback('PSR7 Server', [$request, 'getServerParams']);
-            $handler->addDataTableCallback('PSR7 Cookie', [$request, 'getCookieParams']);
-            $handler->addDataTableCallback('PSR7 File', [$request, 'getUploadedFiles']);
-            $handler->addDataTableCallback('PSR7 Attribute', [$request, 'getAttributes']);
+            $handler->addDataTableCallback('GET Data', [$request, 'getQueryParams']);
+            $handler->addDataTableCallback('POST Data', [$request, 'getParsedBody']);
+            $handler->addDataTableCallback('Server/Request Data', [$request, 'getServerParams']);
+            $handler->addDataTableCallback('Cookies', [$request, 'getCookieParams']);
+            $handler->addDataTableCallback('Files', [$request, 'getUploadedFiles']);
+            $handler->addDataTableCallback('Attribute', [$request, 'getAttributes']);
 
             try {
                 $handler->addDataTableCallback('Session', [$request->session(), 'all']);
