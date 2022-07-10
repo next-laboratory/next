@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Max\Http\Server\Middlewares;
 
-use InvalidArgumentException;
 use Max\Http\Server\Contracts\ExceptionHandlerInterface;
 use Max\Http\Server\Contracts\StoppableExceptionHandlerInterface;
 use Psr\Container\ContainerExceptionInterface;
@@ -21,6 +20,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use ReflectionException;
+use RuntimeException;
 use Throwable;
 
 class ExceptionHandleMiddleware implements MiddlewareInterface
@@ -49,21 +49,28 @@ class ExceptionHandleMiddleware implements MiddlewareInterface
         try {
             return $handler->handle($request);
         } catch (Throwable $throwable) {
-            $finalResponse = null;
-            foreach ($this->exceptionHandlers as $exceptionHandler) {
-                if ($exceptionHandler->isValid($throwable)) {
-                    if ($response = $exceptionHandler->handle($throwable, $request)) {
-                        $finalResponse = $response;
-                    }
-                    if ($exceptionHandler instanceof StoppableExceptionHandlerInterface) {
-                        return $finalResponse instanceof ResponseInterface ? $finalResponse
-                            : throw new InvalidArgumentException(
-                                'The final exception handler must return an instance of Psr\Http\Message\ResponseInterface'
-                            );
-                    }
+            return $this->convertToResponse($throwable, $request);
+        }
+    }
+
+    /**
+     * @throws Throwable
+     */
+    protected function convertToResponse(Throwable $throwable, ServerRequestInterface $request): ResponseInterface
+    {
+        $finalResponse = null;
+        foreach ($this->exceptionHandlers as $exceptionHandler) {
+            if ($exceptionHandler->isValid($throwable)) {
+                if ($response = $exceptionHandler->handle($throwable, $request)) {
+                    $finalResponse = $response;
+                }
+                if ($exceptionHandler instanceof StoppableExceptionHandlerInterface) {
+                    return $finalResponse instanceof ResponseInterface
+                        ? $finalResponse
+                        : throw new RuntimeException('The final exception handler must return an instance of Psr\Http\Message\ResponseInterface');
                 }
             }
-            throw $throwable;
         }
+        throw $throwable;
     }
 }
