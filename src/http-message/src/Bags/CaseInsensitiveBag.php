@@ -17,10 +17,11 @@ class CaseInsensitiveBag extends ParameterBag
 
     public function replace(array $parameters = [])
     {
-        $arrayKeys        = array_keys($parameters);
-        $this->parameters = array_change_key_case($parameters, CASE_UPPER);
-        // TODO bug, 客户端如果传递大小写不一致的字符串，会导致bug
-        $this->map        = array_combine(array_keys($this->parameters), $arrayKeys);
+        foreach ($parameters as $key => $parameter) {
+            $upperCaseKey                    = strtoupper($key);
+            $this->parameters[$upperCaseKey] = $parameter;
+            $this->map[$upperCaseKey]        = $key;
+        }
     }
 
     public function get(string $key, $default = null): mixed
