@@ -12,14 +12,12 @@ use Psr\Container\ContainerInterface;
 class Pipeline
 {
     /**
-     * 容器
-     *
-     * @var ContainerInterface
+     * Container.
      */
     protected ContainerInterface $container;
 
     /**
-     * @var array
+     * Pipes.
      */
     protected array $pipes = [];
 
@@ -35,8 +33,6 @@ class Pipeline
 
     /**
      * Pipeline constructor.
-     *
-     * @param ContainerInterface|null $container
      */
     public function __construct(?ContainerInterface $container = null)
     {
@@ -48,7 +44,7 @@ class Pipeline
      *
      * @return $this
      */
-    public function send($passable)
+    public function send($passable): static
     {
         $this->passable = $passable;
 
@@ -58,7 +54,7 @@ class Pipeline
     /**
      * Set the method to call on the pipes.
      */
-    public function via(string $method)
+    public function via(string $method): static
     {
         $this->method = $method;
 
