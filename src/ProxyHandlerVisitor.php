@@ -16,8 +16,6 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\MagicConst\Function_;
@@ -49,8 +47,8 @@ class ProxyHandlerVisitor extends NodeVisitorAbstract
                 return;
             }
             if (AspectCollector::getMethodAspects($this->metadata->className, $methodName)) {
-                $methodCall = new MethodCall(
-                    new Variable(new Name('this')),
+                $methodCall = new Node\Expr\StaticCall(
+                    new Node\Expr\ConstFetch(new Name('self')),
                     '__callViaProxy',
                     [
                         new Arg(new Function_()),

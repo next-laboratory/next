@@ -47,7 +47,7 @@ class AspectCollector extends AbstractCollector
             $annotation      = new $class(...$attribute->params);
             if ($attribute->method === '*') {
                 foreach ($reflectionClass->getMethods() as $reflectionMethod) {
-                    if (! $reflectionMethod->isConstructor() && ! $reflectionMethod->isStatic()) {
+                    if (! $reflectionMethod->isConstructor()) {
                         self::$container[$attribute->class][$reflectionMethod->getName()][] = $annotation;
                     }
                 }
