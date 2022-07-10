@@ -102,10 +102,12 @@ class Container implements ContainerInterface
     /**
      * 注入的外部接口方法
      *
-     * @param string $id        标识
+     * @template T
+     *
+     * @param string|class-string<T> $id        标识
      * @param array  $arguments 构造函数参数列表（关联数组）
      *
-     * @return mixed
+     * @return mixed|<T>
      * @throws ReflectionException|NotFoundException|ContainerExceptionInterface
      */
     public function make(string $id, array $arguments = []): object
