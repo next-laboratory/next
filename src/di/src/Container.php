@@ -105,12 +105,12 @@ class Container implements ContainerInterface
      * @template T
      *
      * @param string|class-string<T> $id        标识
-     * @param array  $arguments 构造函数参数列表（关联数组）
+     * @param array                  $arguments 构造函数参数列表（关联数组）
      *
      * @return mixed|<T>
      * @throws ReflectionException|NotFoundException|ContainerExceptionInterface
      */
-    public function make(string $id, array $arguments = []): object
+    public function make(string $id, array $arguments = []): mixed
     {
         if (false === $this->has($id)) {
             $id              = $this->getBinding($id);
