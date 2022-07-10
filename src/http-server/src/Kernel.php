@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Http\Server;
 
+use InvalidArgumentException;
 use Max\Http\Server\Events\OnRequest;
 use Max\Routing\Exceptions\RouteNotFoundException;
 use Max\Routing\RouteCollector;
@@ -25,6 +26,11 @@ use ReflectionException;
 class Kernel
 {
     /**
+     * 初始路由对象
+     */
+    protected Router $router;
+
+    /**
      * 全局中间件.
      */
     protected array $middlewares = [
@@ -38,11 +44,12 @@ class Kernel
      * @param ?EventDispatcherInterface $eventDispatcher 事件调度器
      */
     final public function __construct(
-        protected RouteCollector $routeCollector,
-        protected ContainerInterface $container,
+        protected RouteCollector            $routeCollector,
+        protected ContainerInterface        $container,
         protected ?EventDispatcherInterface $eventDispatcher = null,
-    ) {
-        $this->map(new Router([], $routeCollector));
+    )
+    {
+        $this->map($this->router = new Router([], $routeCollector));
     }
 
     /**
@@ -61,5 +68,16 @@ class Kernel
      */
     protected function map(Router $router): void
     {
+    }
+
+    /**
+     * 文件外部注册路由
+     */
+    public function __call(string $name, array $arguments)
+    {
+        if (in_array($name, ['get', 'post', 'request', 'any', 'put', 'options', 'delete'])) {
+            return $this->router->{$name}(...$arguments);
+        }
+        throw new InvalidArgumentException('Method ' . $name . ' does not exist.');
     }
 }
