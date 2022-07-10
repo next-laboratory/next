@@ -25,10 +25,11 @@ trait ProxyHandler
     /**
      * @throws ReflectionException
      */
-    protected function __callViaProxy(string $method, Closure $callback, array $parameters): mixed
+    protected static function __callViaProxy(string $method, Closure $callback, array $parameters): mixed
     {
+        $class = static::class;
         if (! isset(static::$__aspectCache[$method])) {
-            static::$__aspectCache[$method] = array_reverse(AspectCollector::getMethodAspects(__CLASS__, $method));
+            static::$__aspectCache[$method] = array_reverse(AspectCollector::getMethodAspects($class, $method));
         }
         /** @var AspectInterface $aspect */
         $pipeline = array_reduce(
@@ -37,8 +38,8 @@ trait ProxyHandler
             fn (JoinPoint $joinPoint) => $joinPoint->process()
         );
         return $pipeline(
-            new JoinPoint($this, $method, new ArrayObject(
-                array_combine(Reflection::methodParameterNames(__CLASS__, $method), $parameters)
+            new JoinPoint($class, $method, new ArrayObject(
+                array_combine(Reflection::methodParameterNames($class, $method), $parameters)
             ), $callback)
         );
     }
