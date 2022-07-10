@@ -24,7 +24,7 @@ class SwooleResponseEmitter implements ResponseEmitterInterface
     /**
      * @param Response $sender
      */
-    public function emit(ResponseInterface $psrResponse, $sender = null): void
+    public function emit(ResponseInterface $psrResponse, $sender = null)
     {
         $sender->status($psrResponse->getStatusCode(), $psrResponse->getReasonPhrase());
         foreach ($psrResponse->getHeader('Set-Cookie') as $cookie) {

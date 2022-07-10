@@ -158,6 +158,16 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
+     * @param \Amp\Http\Server\Request $request
+     */
+    public static function createFromAmp($request): static
+    {
+        $psrRequest = new static($request->getMethod(), $request->getUri(), $request->getHeaders(), null);
+
+        return $psrRequest;
+    }
+
+    /**
      * @inheritDoc
      */
     public function getServerParams()

@@ -25,7 +25,7 @@ class WorkerManResponseEmitter implements ResponseEmitterInterface
     /**
      * @param TcpConnection $sender
      */
-    public function emit(ResponseInterface $psrResponse, $sender = null): void
+    public function emit(ResponseInterface $psrResponse, $sender = null)
     {
         $response    = new Response($psrResponse->getStatusCode());
         $cookies     = $psrResponse->getHeader('Set-Cookie');
@@ -51,7 +51,7 @@ class WorkerManResponseEmitter implements ResponseEmitterInterface
                     $cookie->getSamesite()
                 );
             }
-            $sender->send($response->withBody((string) $body?->getContents()));
+            $sender->send($response->withBody((string)$body?->getContents()));
         }
         $body?->close();
         $sender->close();
