@@ -23,15 +23,15 @@ use function strpos;
 
 class ServerRequest extends Request implements ServerRequestInterface
 {
-    protected ServerBag    $serverParams;
+    protected ServerBag $serverParams;
 
-    protected CookieBag    $cookieParams;
+    protected CookieBag $cookieParams;
 
     protected ParameterBag $queryParams;
 
     protected ParameterBag $attributes;
 
-    protected FileBag      $uploadedFiles;
+    protected FileBag $uploadedFiles;
 
     protected ParameterBag $parsedBody;
 
@@ -158,7 +158,12 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public static function createFromAmp($request): static
     {
-        return new static($request->getMethod(), $request->getUri(), $request->getHeaders(), null);
+        $psrRequest               = new static($request->getMethod(), $request->getUri(), $request->getHeaders(), null);
+        $psrRequest->cookieParams = new CookieBag();
+        foreach ($request->getCookies() as $requestCookie) {
+            $psrRequest->cookieParams->set($requestCookie->getName(), $requestCookie->getValue());
+        }
+        return $psrRequest;
     }
 
     public static function createFromPsrRequest(ServerRequestInterface $request): static

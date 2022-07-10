@@ -19,20 +19,15 @@ class CaseInsensitiveBag extends ParameterBag
     {
         $arrayKeys        = array_keys($parameters);
         $this->parameters = array_change_key_case($parameters, CASE_UPPER);
+        // TODO bug, 客户端如果传递大小写不一致的字符串，会导致bug
         $this->map        = array_combine(array_keys($this->parameters), $arrayKeys);
     }
 
-    /**
-     * @param $default
-     */
     public function get(string $key, $default = null): mixed
     {
         return parent::get(strtoupper($key), $default);
     }
 
-    /**
-     * @param $value
-     */
     public function set(string $key, $value)
     {
         parent::set(strtoupper($key), $value);
