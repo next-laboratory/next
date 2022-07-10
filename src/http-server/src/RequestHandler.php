@@ -64,7 +64,6 @@ class RequestHandler implements RequestHandlerInterface
      */
     protected function handleRequest(ServerRequestInterface $request): ResponseInterface
     {
-        /** @var Route $route */
         if ($route = $request->getAttribute(Route::class)) {
             $action = $route->getAction();
             if (is_string($action)) {
