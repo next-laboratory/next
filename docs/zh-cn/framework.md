@@ -349,30 +349,26 @@ $validator->setThrowable(true);
 
 # 错误处理
 
-如果你使用内置cli-server或者FPM。则可以使用类似laravel的错误处理模板，需要安装以下扩展
+框架继承了filp/whoops，可以很方便地查看异常情况，使用前需要添加异常处理类`Max\Framework\Exceptions\Handlers\WhoopsExceptionHandler` 到`App/Http/Middlewares/ExceptionHandleMiddleware` 中间件中
+
+如果没有安装，需要执行下面的命令安装
 
 ```shell
 composer require filp/whoops
 ```
 
-然后修改`App\Http\Middlewares\ExceptionHandler`中的render方法，如下：
-
-```php
-$whoops = new \Whoops\Run();
-$whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
-$whoops->register();
-$html = $whoops->handleException($throwable);
-return new \App\Http\Response($this->getStatusCode($throwable), [], $html);
-```
-
-如果你是用swoole/workerman，可以直接响应json
-
 # 打印变量
 
-打印变量使用了symfony/var-dumper组件，但是为了兼容多种环境，建议使用`d`函数代替`dump`,`dd` 函数
+打印变量使用了symfony/var-dumper组件，但是为了兼容多种环境，建议使用`d`函数代替`dump`,`dd` 函数。使用前需要添加异常处理类`Max\Framework\Exceptions\Handlers\VarDumperAbortHandler` 到`App/Http/Middlewares/ExceptionHandleMiddleware` 中间件中
 
 ```php
 d(mixed ...$vars)
+```
+
+如果你没有安装`symfony/var-dumper`，需要先安装
+
+```shell
+composer require symfony/var-dumper
 ```
 
 你可以传入多个变量，如果使用swoole/workerman，需要重启服务
