@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Http\Server;
 
-use InvalidArgumentException;
+use BadMethodCallException;
 use Max\Http\Server\Events\OnRequest;
 use Max\Routing\Exceptions\RouteNotFoundException;
 use Max\Routing\RouteCollector;
@@ -78,6 +78,6 @@ class Kernel
         if (in_array($name, ['get', 'post', 'request', 'any', 'put', 'options', 'delete'])) {
             return $this->router->{$name}(...$arguments);
         }
-        throw new InvalidArgumentException('Method ' . $name . ' does not exist.');
+        throw new BadMethodCallException('Method ' . $name . ' does not exist.');
     }
 }
