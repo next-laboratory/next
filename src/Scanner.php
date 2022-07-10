@@ -13,10 +13,8 @@ namespace Max\Aop;
 
 use Attribute;
 use Composer\Autoload\ClassLoader;
-use Max\Aop\Annotations\AspectConfig;
 use Max\Aop\Collectors\AspectCollector;
 use Max\Aop\Collectors\PropertyAttributeCollector;
-use Max\Aop\Contracts\AspectInterface;
 use Max\Aop\Exceptions\ProcessException;
 use Max\Di\Reflection;
 use Max\Utils\Filesystem;
@@ -104,6 +102,11 @@ final class Scanner
         return $config;
     }
 
+    public static function addClass(string $class, string $path)
+    {
+        self::$classMap[$class] = $path;
+    }
+
     /**
      * @throws ReflectionException
      */
@@ -152,20 +155,9 @@ final class Scanner
                 if ($attributeInstance instanceof Attribute) {
                     continue;
                 }
-                if ($attributeInstance instanceof AspectConfig) {
-                    $attributeInstance->register($class);
-                    self::$classMap[$attributeInstance->class] = Reflection::class($attributeInstance->class)->getFileName();
-                }
                 try {
                     foreach ($collectors as $collector) {
                         $collector::collectClass($class, $attributeInstance);
-                    }
-                    if ($attributeInstance instanceof AspectInterface) {
-                        foreach ($reflectionClass->getMethods() as $reflectionMethod) {
-                            if (! $reflectionMethod->isConstructor()) {
-                                AspectCollector::collectMethod($class, $reflectionMethod->getName(), $attributeInstance);
-                            }
-                        }
                     }
                 } catch (Throwable $throwable) {
                     echo '[NOTICE] ' . $class . ': ' . $throwable->getMessage() . PHP_EOL;

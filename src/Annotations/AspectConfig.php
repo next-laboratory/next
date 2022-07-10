@@ -12,9 +12,6 @@ declare(strict_types=1);
 namespace Max\Aop\Annotations;
 
 use Attribute;
-use Max\Aop\Collectors\AspectCollector;
-use Max\Di\Reflection;
-use ReflectionException;
 
 #[Attribute(Attribute::TARGET_CLASS)]
 class AspectConfig
@@ -29,25 +26,5 @@ class AspectConfig
         public string $method = '*',
         public array $params = []
     ) {
-    }
-
-    /**
-     * 注册
-     *
-     * @throws ReflectionException
-     */
-    public function register(string $annotation): void
-    {
-        $reflectionClass = Reflection::class($this->class);
-        $annotation      = new $annotation(...$this->params);
-        if ($this->method === '*') {
-            foreach ($reflectionClass->getMethods() as $reflectionMethod) {
-                if (! $reflectionMethod->isConstructor()) {
-                    AspectCollector::collectMethod($this->class, $reflectionMethod->getName(), $annotation);
-                }
-            }
-        } else {
-            AspectCollector::collectMethod($this->class, $this->method, $annotation);
-        }
     }
 }
