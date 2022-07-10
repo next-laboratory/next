@@ -22,6 +22,7 @@
     },
     "require": {
         "php": "^8.0",
+        "max/macro": "*",
         "ramsey/uuid": "^4.2",
         "symfony/mime": "*",
         "voku/portable-ascii": "^1.5",

@@ -5,7 +5,7 @@ namespace Max\Utils;
 use ErrorException;
 use FilesystemIterator;
 use Max\Utils\Exceptions\FileNotFoundException;
-use Max\Utils\Traits\Macroable;
+use Max\Macro\Macroable;
 use RuntimeException;
 use SplFileObject;
 use Symfony\Component\Filesystem\Filesystem as SymfonyFilesystem;

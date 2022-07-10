@@ -4,7 +4,7 @@ namespace Max\Utils;
 
 use ArrayAccess;
 use ArrayObject;
-use Max\Utils\Traits\Macroable;
+use Max\Macro\Macroable;
 use ReturnTypeWillChange;
 
 /**
@@ -123,11 +123,12 @@ class Optional implements ArrayAccess
     /**
      * Dynamically pass a method to the underlying object.
      *
-     * @param  string  $method
-     * @param  array  $parameters
+     * @param string $method
+     * @param array  $parameters
+     *
      * @return mixed
      */
-    public function __call($method, $parameters)
+    public function __call(string $method, array $parameters)
     {
         if (static::hasMacro($method)) {
             return $this->macroCall($method, $parameters);

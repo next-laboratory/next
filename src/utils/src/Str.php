@@ -4,7 +4,7 @@ namespace Max\Utils;
 
 use Countable;
 use Exception;
-use Max\Utils\Traits\Macroable;
+use Max\Macro\Macroable;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 use Ramsey\Uuid\Codec\TimestampFirstCombCodec;
 use Ramsey\Uuid\Generator\CombGenerator;
