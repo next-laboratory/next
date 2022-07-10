@@ -162,7 +162,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function getServerParams()
     {
-        return $this->serverParams;
+        return $this->serverParams->all();
     }
 
     /**
