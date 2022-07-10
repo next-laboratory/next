@@ -162,7 +162,17 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public static function createFromAmp($request): static
     {
-        $psrRequest = new static($request->getMethod(), $request->getUri(), $request->getHeaders(), null);
+        return new static($request->getMethod(), $request->getUri(), $request->getHeaders(), null);
+    }
+
+    public static function createFromPsrRequest(ServerRequestInterface $request): static
+    {
+        $psrRequest                = new static($request->getMethod(), $request->getUri(), $request->getHeaders(), $request->getBody());
+        $psrRequest->serverParams  = new ServerBag($request->getServerParams());
+        $psrRequest->cookieParams  = new CookieBag($request->getCookieParams());
+        $psrRequest->queryParams   = new ParameterBag($request->getQueryParams());
+        $psrRequest->parsedBody    = new ParameterBag($_POST);
+        $psrRequest->uploadedFiles = new FileBag($request->getUploadedFiles());
 
         return $psrRequest;
     }
@@ -186,7 +196,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * @return array
+     * @inheritdoc
      */
     public function getCookieParams()
     {
