@@ -47,11 +47,19 @@ class Container implements ContainerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @template T
+     *
+     * @param class-string<T> $id
+     *
+     * @throws NotFoundException
+     * @return T
      */
     public function get(string $id)
     {
-        return $this->resolved[$this->getBinding($id)] ?? new NotFoundException('No instance found: ' . $id);
+        if ($resolved = $this->resolved[$this->getBinding($id)]) {
+            return $resolved;
+        }
+        throw new NotFoundException('No instance found: ' . $id);
     }
 
     /**
@@ -102,13 +110,13 @@ class Container implements ContainerInterface
      *
      * @template T
      *
-     * @param class-string<T>|string $id        标识
-     * @param array                  $arguments 构造函数参数列表（关联数组）
+     * @param class-string<T> $id        标识
+     * @param array           $arguments 构造函数参数列表（关联数组）
      *
      * @throws ContainerExceptionInterface|NotFoundException|ReflectionException
-     * @return mixed|<T>
+     * @return T
      */
-    public function make(string $id, array $arguments = []): mixed
+    public function make(string $id, array $arguments = [])
     {
         if ($this->has($id) === false) {
             $id              = $this->getBinding($id);
@@ -248,9 +256,8 @@ class Container implements ContainerInterface
 
     /**
      * 转换类型.
-     * @param mixed $value
      */
-    protected function castParameter($value, string $type): mixed
+    protected function castParameter(mixed $value, string $type): mixed
     {
         return match ($type) {
             'int'    => (int) $value,
