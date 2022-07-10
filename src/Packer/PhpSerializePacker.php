@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
 namespace Max\Utils\Packer;
 
 use Max\Utils\Contracts\PackerInterface;
@@ -10,8 +19,6 @@ class PhpSerializePacker implements PackerInterface
 {
     /**
      * @param $data
-     *
-     * @return string
      */
     public function pack($data): string
     {
@@ -19,8 +26,6 @@ class PhpSerializePacker implements PackerInterface
     }
 
     /**
-     * @param string $data
-     *
      * @return mixed
      */
     public function unpack(string $data)

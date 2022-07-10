@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
 namespace Max\Utils;
 
 use Countable;
@@ -68,7 +77,7 @@ class Pluralizer
             $count = count($count);
         }
 
-        if ((int)abs($count) === 1 || static::uncountable($value) || preg_match('/^(.*)[A-Za-z0-9\x{0080}-\x{FFFF}]$/u', $value) == 0) {
+        if ((int) abs($count) === 1 || static::uncountable($value) || preg_match('/^(.*)[A-Za-z0-9\x{0080}-\x{FFFF}]$/u', $value) == 0) {
             return $value;
         }
 
@@ -89,6 +98,20 @@ class Pluralizer
         $singular = static::inflector()->singularize($value);
 
         return static::matchCase($singular, $value);
+    }
+
+    /**
+     * Get the inflector instance.
+     */
+    public static function inflector(): Inflector
+    {
+        static $inflector;
+
+        if (is_null($inflector)) {
+            $inflector = InflectorFactory::createForLanguage('english')->build();
+        }
+
+        return $inflector;
     }
 
     /**
@@ -122,19 +145,5 @@ class Pluralizer
         }
 
         return $value;
-    }
-
-    /**
-     * Get the inflector instance.
-     */
-    public static function inflector(): Inflector
-    {
-        static $inflector;
-
-        if (is_null($inflector)) {
-            $inflector = InflectorFactory::createForLanguage('english')->build();
-        }
-
-        return $inflector;
     }
 }

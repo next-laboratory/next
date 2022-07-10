@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
 namespace Max\Utils;
 
 use ArrayAccess;
@@ -59,46 +68,6 @@ class Optional implements ArrayAccess
     }
 
     /**
-     * @inheritdoc
-     */
-    #[\ReturnTypeWillChange]
-    public function offsetExists($key)
-    {
-        return Arr::accessible($this->value) && Arr::exists($this->value, $key);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    #[\ReturnTypeWillChange]
-    public function offsetGet($key)
-    {
-        return Arr::get($this->value, $key);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    #[\ReturnTypeWillChange]
-    public function offsetSet($key, $value)
-    {
-        if (Arr::accessible($this->value)) {
-            $this->value[$key] = $value;
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    #[\ReturnTypeWillChange]
-    public function offsetUnset($key)
-    {
-        if (Arr::accessible($this->value)) {
-            unset($this->value[$key]);
-        }
-    }
-
-    /**
      * Dynamically pass a method to the underlying object.
      *
      * @return mixed
@@ -111,6 +80,46 @@ class Optional implements ArrayAccess
 
         if (is_object($this->value)) {
             return $this->value->{$method}(...$parameters);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    #[\ReturnTypeWillChange]
+    public function offsetExists($key)
+    {
+        return Arr::accessible($this->value) && Arr::exists($this->value, $key);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    #[\ReturnTypeWillChange]
+    public function offsetGet($key)
+    {
+        return Arr::get($this->value, $key);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    #[\ReturnTypeWillChange]
+    public function offsetSet($key, $value)
+    {
+        if (Arr::accessible($this->value)) {
+            $this->value[$key] = $value;
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    #[\ReturnTypeWillChange]
+    public function offsetUnset($key)
+    {
+        if (Arr::accessible($this->value)) {
+            unset($this->value[$key]);
         }
     }
 }

@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 /**
- * This file is part of the Max package.
+ * This file is part of MaxPHP.
  *
- * (c) Cheng Yao <987861463@qq.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
 namespace Max\Utils\Resources;
@@ -24,10 +22,13 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 abstract class JsonResource implements Arrayable, JsonSerializable, ArrayAccess
 {
-    protected int $perpage = 15;
-    protected int $page    = 1;
     protected const PAGE    = 'page';
+
     protected const PERPAGE = 'perpage';
+
+    protected int $perpage = 15;
+
+    protected int $page    = 1;
 
     /**
      * @var
@@ -43,8 +44,13 @@ abstract class JsonResource implements Arrayable, JsonSerializable, ArrayAccess
     }
 
     /**
-     * @return array
+     * @return mixed
      */
+    public function __get(string $name)
+    {
+        return $this->resource->{$name};
+    }
+
     public function toArray(): array
     {
         return $this->resource->toArray();
@@ -52,55 +58,44 @@ abstract class JsonResource implements Arrayable, JsonSerializable, ArrayAccess
 
     /**
      * @param $resources
-     *
-     * @return ResourceCollection
      */
     public static function collection($resources): ResourceCollection
     {
-        if (!$resources instanceof Collection) {
+        if (! $resources instanceof Collection) {
             $resources = Collection::make($resources);
         }
-        return new ResourceCollection($resources->map(function($resource) {
+        return new ResourceCollection($resources->map(function ($resource) {
             return new static($resource);
         }));
     }
 
     /**
-     * 分页
+     * 分页.
      *
-     * @param                             $resources
-     * @param ServerRequestInterface|null $request
-     *
-     * @return Pagination
+     * @param $resources
      */
     public static function paginate($resources, ?ServerRequestInterface $request = null): Pagination
     {
-        if (!$resources instanceof Collection) {
+        if (! $resources instanceof Collection) {
             $resources = Collection::make($resources);
         }
         $resource = new static();
         $page     = $resource->getPage();
         $perpage  = $resource->getPerpage();
-        if (!is_null($request)) {
-            $page    = $request->getParsedBody()[static::PAGE] ?? ($request->getQueryParams()[static::PAGE] ?? $page);
+        if (! is_null($request)) {
+            $page    = $request->getParsedBody()[static::PAGE]    ?? ($request->getQueryParams()[static::PAGE]    ?? $page);
             $perpage = $request->getParsedBody()[static::PERPAGE] ?? ($request->getQueryParams()[static::PERPAGE] ?? $perpage);
         }
-        $page    = max(0, (int)$page);
-        $perpage = max(0, (int)$perpage);
-        return new Pagination($resources->forPage($page, $perpage)->map(fn($resource) => new static($resource))->values(), $resources->count(), $page, $perpage, $request);
+        $page    = max(0, (int) $page);
+        $perpage = max(0, (int) $perpage);
+        return new Pagination($resources->forPage($page, $perpage)->map(fn ($resource) => new static($resource))->values(), $resources->count(), $page, $perpage, $request);
     }
 
-    /**
-     * @return int
-     */
     public function getPerpage(): int
     {
         return $this->perpage;
     }
 
-    /**
-     * @return int
-     */
     public function getPage(): int
     {
         return $this->page;
@@ -112,17 +107,6 @@ abstract class JsonResource implements Arrayable, JsonSerializable, ArrayAccess
     public function getResource()
     {
         return $this->resource;
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return mixed
-     */
-    public
-    function __get(string $name)
-    {
-        return $this->resource->{$name};
     }
 
     /**
@@ -149,7 +133,7 @@ abstract class JsonResource implements Arrayable, JsonSerializable, ArrayAccess
     /**
      * @param mixed $offset
      *
-     * @return mixed|null
+     * @return null|mixed
      */
     #[\ReturnTypeWillChange]
     public function offsetGet($offset)

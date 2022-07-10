@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
 namespace Max\Utils\Proxy;
 
 /**
@@ -19,7 +28,6 @@ class HigherOrderTapProxy
      * Create a new tap proxy instance.
      *
      * @param mixed $target
-     * @return void
      */
     public function __construct($target)
     {
@@ -29,8 +37,8 @@ class HigherOrderTapProxy
     /**
      * Dynamically pass method calls to the target.
      *
-     * @param string $method
-     * @param array $parameters
+     * @param  string $method
+     * @param  array  $parameters
      * @return mixed
      */
     public function __call($method, $parameters)

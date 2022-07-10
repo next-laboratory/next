@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
 namespace Max\Utils\Traits;
 
 /**
@@ -11,16 +20,17 @@ trait Conditionable
     /**
      * Apply the callback if the given "value" is truthy.
      *
-     * @param mixed $value
-     * @param callable $callback
-     * @param callable|null $default
+     * @param  mixed         $value
+     * @param  callable      $callback
+     * @param  null|callable $default
      * @return $this|mixed
      */
     public function when($value, $callback, $default = null)
     {
         if ($value) {
             return $callback($this, $value) ?: $this;
-        } elseif ($default) {
+        }
+        if ($default) {
             return $default($this, $value) ?: $this;
         }
 
@@ -30,16 +40,17 @@ trait Conditionable
     /**
      * Apply the callback if the given "value" is falsy.
      *
-     * @param mixed $value
-     * @param callable $callback
-     * @param callable|null $default
+     * @param  mixed         $value
+     * @param  callable      $callback
+     * @param  null|callable $default
      * @return $this|mixed
      */
     public function unless($value, $callback, $default = null)
     {
-        if (!$value) {
+        if (! $value) {
             return $callback($this, $value) ?: $this;
-        } elseif ($default) {
+        }
+        if ($default) {
             return $default($this, $value) ?: $this;
         }
 
