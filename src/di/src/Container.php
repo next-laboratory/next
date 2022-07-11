@@ -54,10 +54,11 @@ class Container implements ContainerInterface
      * @throws NotFoundException
      * @return T
      */
-    public function get(string $id)
+   public function get(string $id)
     {
-        if ($resolved = $this->resolved[$this->getBinding($id)]) {
-            return $resolved;
+        $binding = $this->getBinding($id);
+        if (isset($this->resolved[$binding])) {
+            return $this->resolved[$binding];
         }
         throw new NotFoundException('No instance found: ' . $id);
     }
