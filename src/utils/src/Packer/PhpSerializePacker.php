@@ -17,17 +17,11 @@ use function unserialize;
 
 class PhpSerializePacker implements PackerInterface
 {
-    /**
-     * @param $data
-     */
     public function pack($data): string
     {
         return serialize($data);
     }
 
-    /**
-     * @return mixed
-     */
     public function unpack(string $data)
     {
         return unserialize($data);
