@@ -19,13 +19,8 @@ trait Conditionable
 {
     /**
      * Apply the callback if the given "value" is truthy.
-     *
-     * @param  mixed         $value
-     * @param  callable      $callback
-     * @param  null|callable $default
-     * @return $this|mixed
      */
-    public function when($value, $callback, $default = null)
+    public function when(mixed $value, callable $callback, ?callable $default = null): mixed
     {
         if ($value) {
             return $callback($this, $value) ?: $this;
@@ -39,15 +34,10 @@ trait Conditionable
 
     /**
      * Apply the callback if the given "value" is falsy.
-     *
-     * @param  mixed         $value
-     * @param  callable      $callback
-     * @param  null|callable $default
-     * @return $this|mixed
      */
-    public function unless($value, $callback, $default = null)
+    public function unless(mixed $value, callable $callback, ?callable $default = null): mixed
     {
-        if (! $value) {
+        if (!$value) {
             return $callback($this, $value) ?: $this;
         }
         if ($default) {
