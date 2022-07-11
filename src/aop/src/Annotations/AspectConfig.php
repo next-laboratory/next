@@ -13,7 +13,7 @@ namespace Max\Aop\Annotations;
 
 use Attribute;
 
-#[Attribute(Attribute::TARGET_CLASS)]
+#[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
 class AspectConfig
 {
     /**
