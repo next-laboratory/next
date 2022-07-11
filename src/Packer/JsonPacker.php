@@ -17,17 +17,11 @@ use function json_encode;
 
 class JsonPacker implements PackerInterface
 {
-    /**
-     * @param $data
-     */
     public function pack($data): string
     {
         return json_encode($data, JSON_UNESCAPED_UNICODE);
     }
 
-    /**
-     * @return mixed
-     */
     public function unpack(string $data)
     {
         return json_decode($data, true);
