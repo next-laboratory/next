@@ -12,55 +12,33 @@ declare(strict_types=1);
 namespace Max\Routing;
 
 use Closure;
+use InvalidArgumentException;
 use function array_merge;
 use function array_unique;
-use function property_exists;
 use function sprintf;
 
 class Router
 {
-    /**
-     * 分组中间件.
-     */
-    protected array $middlewares = [];
-
-    /**
-     * 前缀
-     */
-    protected string $prefix = '';
-
-    /**
-     * 命名空间.
-     */
-    protected string $namespace = '';
-
-    /**
-     * 域名.
-     */
-    protected string $domain = '';
-
-    /**
-     * 参数规则.
-     */
-    protected array $patterns = [];
-
     /**
      * 路由收集器.
      */
     protected RouteCollector $routeCollector;
 
     /**
-     * @param array $options 初始配置
+     * @param string $prefix      url前缀
+     * @param array  $patterns    参数规则
+     * @param array  $middlewares 中间件
+     * @param string $namespace   命名空间
+     * @param string $domain      域名
      */
-    public function __construct(array $options = [], ?RouteCollector $routeCollector = null)
-    {
-        if ($options !== []) {
-            foreach ($options as $key => $value) {
-                if (property_exists($this, $key)) {
-                    $this->{$key} = $value;
-                }
-            }
-        }
+    public function __construct(
+        protected string $prefix = '',
+        protected array $patterns = [],
+        protected string $namespace = '',
+        protected array $middlewares = [],
+        protected string $domain = '',
+        ?RouteCollector $routeCollector = null
+    ) {
         $this->routeCollector = $routeCollector ?? new RouteCollector();
     }
 
@@ -117,14 +95,6 @@ class Router
     }
 
     /**
-     * Method OPTIONS.
-     */
-    public function options(string $uri, string|array|Closure $action): Route
-    {
-        return $this->request($uri, $action, ['OPTIONS']);
-    }
-
-    /**
      * Allow multi request methods.
      */
     public function request(
@@ -132,23 +102,20 @@ class Router
         array|Closure|string $action,
         array $methods = ['GET', 'HEAD', 'POST']
     ): Route {
-        if (is_array($action)) {
+        if (is_string($action)) {
+            $action = explode('::', $this->longNameController($action), 2);
+        }
+        if (is_array($action) && count($action) === 2) {
             [$controller, $action] = $action;
             $action                = [$this->longNameController($controller), $action];
         }
-        if (is_string($action)) {
-            $action = $this->longNameController($action);
-        }
-        $route = new Route(
-            $methods,
-            $this->prefix . $path,
-            $action,
-            $this,
-            $this->domain,
-        );
-        $this->routeCollector->add($route);
+        if (is_array($action) || $action instanceof Closure) {
+            $route = new Route($methods, $this->prefix . $path, $action, $this->patterns);
+            $this->routeCollector->add($route->middlewares($this->middlewares)->domain($this->domain));
 
-        return $route;
+            return $route;
+        }
+        throw new InvalidArgumentException('Invalid route action: ' . $path);
     }
 
     /**
@@ -157,26 +124,6 @@ class Router
     public function group(Closure $group): void
     {
         $group($this);
-    }
-
-    public function getMiddlewares(): array
-    {
-        return $this->middlewares;
-    }
-
-    public function getPrefix(): string
-    {
-        return $this->prefix;
-    }
-
-    public function getNamespace(): string
-    {
-        return $this->namespace;
-    }
-
-    public function getPatterns(): array
-    {
-        return $this->patterns;
     }
 
     /**
@@ -188,11 +135,6 @@ class Router
         $new->middlewares = array_unique([...$this->middlewares, ...$middlewares]);
 
         return $new;
-    }
-
-    public function getDomain(): string
-    {
-        return $this->domain;
     }
 
     /**

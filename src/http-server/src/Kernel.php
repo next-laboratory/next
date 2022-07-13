@@ -44,12 +44,11 @@ class Kernel
      * @param ?EventDispatcherInterface $eventDispatcher 事件调度器
      */
     final public function __construct(
-        protected RouteCollector            $routeCollector,
-        protected ContainerInterface        $container,
+        protected RouteCollector $routeCollector,
+        protected ContainerInterface $container,
         protected ?EventDispatcherInterface $eventDispatcher = null,
-    )
-    {
-        $this->map($this->router = new Router([], $routeCollector));
+    ) {
+        $this->map($this->router = new Router(routeCollector: $routeCollector));
     }
 
     /**

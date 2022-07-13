@@ -53,41 +53,41 @@ class RouteCollector
         $path   = '/' . trim($request->getUri()->getPath(), '/');
         $method = $request->getMethod();
         $map    = $this->routes[$method] ?? throw new MethodNotAllowedException('Method not allowed: ' . $method, 405);
-        $routes = $map['']               ?? [];
-        foreach ($map as $domain => $item) {
-            if ($domain === '') {
-                continue;
-            }
-            if (preg_match($domain, $request->getUri()->getHost())) {
-                $routes = array_merge($item, $routes);
+        if (! $resolvedRoute = $this->resolveRoute($map[''], $path)) {
+            foreach ($map as $domain => $routes) {
+                if ($domain === '') {
+                    continue;
+                }
+                if (preg_match($domain, $request->getUri()->getHost())) {
+                    $resolvedRoute = $this->resolveRoute($routes, $path);
+                }
             }
         }
+        return $resolvedRoute ?? throw new RouteNotFoundException('Not Found', 404);
+    }
 
-        $resolvedRoute = null;
-        /* @var Route $route */
+    /**
+     * @param array<Route> $routes
+     */
+    protected function resolveRoute(array &$routes, string $path): ?Route
+    {
         foreach ($routes as $route) {
-            // 相等匹配
             if ($route->getPath() === $path) {
+                return clone $route;
+            }
+            $regexp = $route->getRegexp();
+            if (! is_null($regexp) && preg_match($regexp, $path, $match)) {
                 $resolvedRoute = clone $route;
-            } else {
-                // 正则匹配
-                $regexp = $route->getRegexp();
-                if (! is_null($regexp) && preg_match($regexp, $path, $match)) {
-                    $resolvedRoute = clone $route;
-                    if (! empty($match)) {
-                        foreach ($route->getParameters() as $key => $value) {
-                            if (array_key_exists($key, $match)) {
-                                $resolvedRoute->setParameter($key, trim($match[$key], '/'));
-                            }
+                if (! empty($match)) {
+                    foreach ($route->getParameters() as $key => $value) {
+                        if (array_key_exists($key, $match)) {
+                            $resolvedRoute->setParameter($key, $match[$key]);
                         }
                     }
                 }
-            }
-
-            if (! is_null($resolvedRoute)) {
                 return $resolvedRoute;
             }
         }
-        throw new RouteNotFoundException('Not Found', 404);
+        return null;
     }
 }
