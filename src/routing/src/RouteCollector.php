@@ -53,7 +53,7 @@ class RouteCollector
         $path   = '/' . trim($request->getUri()->getPath(), '/');
         $method = $request->getMethod();
         $map    = $this->routes[$method] ?? throw new MethodNotAllowedException('Method not allowed: ' . $method, 405);
-        if (! $resolvedRoute = $this->resolveRoute($map[''], $path)) {
+        if (! $resolvedRoute = $this->resolveRoute($map[''] ?? [], $path)) {
             foreach ($map as $domain => $routes) {
                 if ($domain === '') {
                     continue;
@@ -69,7 +69,7 @@ class RouteCollector
     /**
      * @param array<Route> $routes
      */
-    protected function resolveRoute(array &$routes, string $path): ?Route
+    protected function resolveRoute(array $routes, string $path): ?Route
     {
         foreach ($routes as $route) {
             if ($route->getPath() === $path) {
