@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Max\Http\Server;
 
-use Max\Http\Server\Exceptions\InvalidMiddlewareException;
 use Max\Routing\Exceptions\RouteNotFoundException;
 use Max\Routing\Route;
 use Psr\Container\ContainerExceptionInterface;
@@ -24,22 +23,31 @@ use ReflectionException;
 
 class RequestHandler implements RequestHandlerInterface
 {
+    /**
+     * 容器是否有make方法
+     */
+    private bool $hasMakeMethod;
+
     public function __construct(
         protected ContainerInterface $container,
         protected array $middlewares = []
     ) {
+        $this->hasMakeMethod = method_exists($this->container, 'make');
     }
 
     /**
      * @throws ContainerExceptionInterface
-     * @throws ReflectionException|RouteNotFoundException
+     * @throws ReflectionException
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        if ($this->middlewares === []) {
-            return $this->handleRequest($request);
+        if ($middleware = array_shift($this->middlewares)) {
+            return $this->handleMiddleware(
+                $this->hasMakeMethod ? $this->container->make($middleware) : new $middleware(),
+                $request
+            );
         }
-        return $this->handleMiddleware(array_shift($this->middlewares), $request);
+        return $this->handleRequest($request);
     }
 
     /**
@@ -69,21 +77,14 @@ class RequestHandler implements RequestHandlerInterface
             $parameters['request'] = $request;
             return $this->container->call($route->getAction(), $parameters);
         }
-        throw new RouteNotFoundException('No route was matched', 404);
+        throw new RouteNotFoundException('No route in request attributes', 404);
     }
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws ReflectionException
+     * 处理中间件
      */
-    protected function handleMiddleware(string $middleware, ServerRequestInterface $request): ResponseInterface
+    protected function handleMiddleware(MiddlewareInterface $middleware, ServerRequestInterface $request): ResponseInterface
     {
-        $handler = is_null($this->container) ? new $middleware() : $this->container->make($middleware);
-
-        if ($handler instanceof MiddlewareInterface) {
-            return $handler->process($request, $this);
-        }
-
-        throw new InvalidMiddlewareException(sprintf('Middleware `%s must be an instance of Psr\Http\Server\MiddlewareInterface.', $middleware));
+        return $middleware->process($request, $this);
     }
 }
