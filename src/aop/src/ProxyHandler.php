@@ -16,7 +16,6 @@ use Closure;
 use Max\Aop\Collectors\AspectCollector;
 use Max\Aop\Contracts\AspectInterface;
 use Max\Di\Reflection;
-use Max\Utils\Pipeline;
 use ReflectionException;
 
 trait ProxyHandler
@@ -30,13 +29,14 @@ trait ProxyHandler
         /** @var AspectInterface $aspect */
         $pipeline = array_reduce(
             array_reverse(AspectCollector::getMethodAspects($class, $method)),
-            fn($stack, $aspect) => fn(JoinPoint $joinPoint) => $aspect->process($joinPoint, $stack),
-            fn(JoinPoint $joinPoint) => $joinPoint->process()
+            fn ($stack, $aspect) => fn (JoinPoint $joinPoint) => $aspect->process($joinPoint, $stack),
+            fn (JoinPoint $joinPoint) => $joinPoint->process()
         );
-        return $pipeline(
-            new JoinPoint($class, $method, new ArrayObject(
-                array_combine(Reflection::methodParameterNames($class, $method), $parameters)
-            ), $callback)
-        );
+        $funcArgs         = new ArrayObject();
+        $methodParameters = Reflection::methodParameterNames($class, $method);
+        foreach ($parameters as $key => $parameter) {
+            $funcArgs->offsetSet($methodParameters[$key], $parameter);
+        }
+        return $pipeline(new JoinPoint($class, $method, $funcArgs, $callback));
     }
 }
