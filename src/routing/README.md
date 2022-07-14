@@ -13,16 +13,16 @@ $router->prefix('api')
     ->middleware('api')
     ->pattterns(['id' => '\d+'])
     ->group(function(Router $router) {
-        $router->get('/user/{id}', function($id = 0) {   //可选id
+        $router->get('/user/{id}', function($id = 0) { 
             var_dump('user');
-        })->middleware('auth');
+        })->middlewares('auth');
         $router->middleware('user')->group(function() {
             //
         }
     });
 
 // 带参数类型限制, 其中id只有为数字的时候会匹配到
-$router->get('/book/{id:\d+}', 'BoolController::show');
+$router->get('/book/{id:\d+}', 'BookController::show');
 
 // 解析路由，返回匹配到的Route对象
 $route = $router->getRouteCollector()->resolve('GET', '/');

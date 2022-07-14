@@ -32,7 +32,6 @@ class Route
      * 路径.
      */
     protected string $path;
-
     protected string $compiledPath = '';
 
     /**
@@ -40,13 +39,16 @@ class Route
      */
     protected array $parameters = [];
 
+    /**
+     * 路由中间件
+     */
     protected array $middlewares = [];
 
+    /**
+     * 域名
+     */
+    protected string $domain         = '';
     protected string $compiledDomain = '';
-
-    protected array $withoutMiddleware = [];
-
-    protected string $domain = '';
 
     /**
      * 初始化数据.
@@ -72,9 +74,6 @@ class Route
         return $this->compiledDomain;
     }
 
-    /**
-     * @return $this
-     */
     public function domain(string $domain): Route
     {
         if ($domain !== '') {
@@ -164,18 +163,8 @@ class Route
      */
     public function withoutMiddleware(string $middleware): Route
     {
-        $this->withoutMiddleware[] = $middleware;
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function addMethod(string $method): static
-    {
-        if (!in_array($method, $this->methods)) {
-            $this->methods[] = $method;
+        if (($key = array_search($middleware, $this->middlewares)) !== false) {
+            unset($this->middlewares[$key]);
         }
 
         return $this;
