@@ -21,7 +21,9 @@ class Route
     /**
      * 默认规则.
      */
-    protected const DEFAULT_PATTERN = '[^\/]+';
+    protected const DEFAULT_VARIABLE_REGEX = '[^\/]+';
+
+    protected const VARIABLE_REGEX         = '\{\s*([a-zA-Z_][a-zA-Z0-9_-]*)\s*(?::\s*([^{}]*(?:\{(?-1)\}[^{}]*)*))?\}';
 
     /**
      * 路径.
@@ -44,43 +46,26 @@ class Route
     protected string $domain = '';
 
     /**
-     * 初始化数据
-     * Route constructor.
-     *
-     * @param array                $methods
-     * @param array|Closure|string $action
-     * @param Router               $router
+     * 初始化数据.
      */
     public function __construct(
         protected array $methods,
         string $path,
-        protected string|Closure|array $action,
-        protected Router $router,
-        string $domain = '',
+        protected Closure|array $action,
+        protected array $patterns = [],
     ) {
-        $this->setPath($path)->domain($domain);
-    }
-
-    public function setRouter(Router $router): void
-    {
-        $this->router = $router;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setPath(string $path): Route
-    {
-        $this->path = '/' . trim($path, '/');
-        $regexp     = preg_replace_callback('/<(\w+)>/', function ($matches) {
-            [, $name] = $matches;
+        $this->path = $path = '/' . trim($path, '/');
+        $regexp     = preg_replace_callback(sprintf('#%s#', self::VARIABLE_REGEX), function ($matches) {
+            $name = $matches[1];
+            if (isset($matches[2])) {
+                $this->patterns[$name] = $matches[2];
+            }
             $this->setParameter($name, null);
             return sprintf('(?P<%s>%s)', $name, $this->getPattern($name));
-        }, $this->path);
-        if ($regexp !== $this->path) {
+        }, $path);
+        if ($regexp !== $path) {
             $this->regexp = sprintf('#^%s$#iU', $regexp);
         }
-        return $this;
     }
 
     public function getCompiledDomain(): string
@@ -97,7 +82,6 @@ class Route
             $this->domain         = $domain;
             $this->compiledDomain = '#^' . str_replace(['.', '*'], ['\.', '(.+?)'], $domain) . '$#iU';
         }
-
         return $this;
     }
 
@@ -116,12 +100,12 @@ class Route
      */
     public function getPattern(string $key): string
     {
-        return $this->getPatterns()[$key] ?? static::DEFAULT_PATTERN;
+        return $this->getPatterns()[$key] ?? static::DEFAULT_VARIABLE_REGEX;
     }
 
     public function getPatterns(): array
     {
-        return $this->router->getPatterns();
+        return $this->patterns;
     }
 
     /**
@@ -214,8 +198,6 @@ class Route
 
     public function getMiddlewares(): array
     {
-        $middlewares = array_unique([...($this->router?->getMiddlewares() ?? []), ...$this->middlewares]);
-
-        return array_diff($middlewares, $this->withoutMiddleware);
+        return $this->middlewares;
     }
 }

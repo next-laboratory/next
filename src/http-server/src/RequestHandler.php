@@ -66,9 +66,6 @@ class RequestHandler implements RequestHandlerInterface
     {
         if ($route = $request->getAttribute(Route::class)) {
             $action = $route->getAction();
-            if (is_string($action)) {
-                $action = explode('@', $action, 2);
-            }
             $parameters            = $route->getParameters();
             $parameters['request'] = $request;
             return $this->container->call($action, $parameters);

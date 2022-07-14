@@ -54,7 +54,7 @@ class Container implements ContainerInterface
      * @throws NotFoundException
      * @return T
      */
-   public function get(string $id)
+    public function get(string $id)
     {
         $binding = $this->getBinding($id);
         if (isset($this->resolved[$binding])) {
@@ -227,7 +227,8 @@ class Container implements ContainerInterface
             $name = $parameter->getName();
             if (array_key_exists($name, $arguments)) {
                 $injectValue = $arguments[$name];
-                $type        = $parameter->getType();
+                unset($arguments[$name]);
+                $type = $parameter->getType();
                 if ($type instanceof ReflectionNamedType && $type->isBuiltin()) {
                     $injectValue = $this->castParameter($injectValue, $type->getName());
                 }
@@ -239,9 +240,14 @@ class Container implements ContainerInterface
                     || $type instanceof ReflectionUnionType
                     || ($typeName = $type->getName()) === 'Closure'
                 ) {
-                    $funcArgs[] = $parameter->isOptional()
-                        ? $parameter->getDefaultValue()
-                        : throw new ContainerException(sprintf('Missing parameter `%s`', $name));
+                    if (! $parameter->isVariadic()) {
+                        $funcArgs[] = $parameter->isOptional()
+                            ? $parameter->getDefaultValue()
+                            : throw new ContainerException(sprintf('Missing parameter `%s`', $name));
+                    } else {
+                        // 末尾的可变参数
+                        array_push($funcArgs, ...array_values($arguments));
+                    }
                 } else {
                     try {
                         $funcArgs[] = $this->make($typeName);
