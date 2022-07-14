@@ -40,7 +40,7 @@ class RouteListCommand extends Command
             /** @var Route $route */
             $action = $route->getAction();
             if (is_array($action)) {
-                $action = implode('@', $action);
+                $action = implode('#', $action);
             } elseif ($action instanceof Closure) {
                 $action = 'Closure';
             }
