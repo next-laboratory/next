@@ -247,6 +247,7 @@ class Container implements ContainerInterface
                     } else {
                         // 末尾的可变参数
                         array_push($funcArgs, ...array_values($arguments));
+                        break;
                     }
                 } else {
                     try {
