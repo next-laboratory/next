@@ -65,10 +65,9 @@ class RequestHandler implements RequestHandlerInterface
     protected function handleRequest(ServerRequestInterface $request): ResponseInterface
     {
         if ($route = $request->getAttribute(Route::class)) {
-            $action = $route->getAction();
             $parameters            = $route->getParameters();
             $parameters['request'] = $request;
-            return $this->container->call($action, $parameters);
+            return $this->container->call($route->getAction(), $parameters);
         }
         throw new RouteNotFoundException('No route was matched', 404);
     }
