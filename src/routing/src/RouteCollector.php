@@ -53,7 +53,7 @@ class RouteCollector
         $path   = '/' . trim($request->getUri()->getPath(), '/');
         $method = $request->getMethod();
         $map    = $this->routes[$method] ?? throw new MethodNotAllowedException('Method not allowed: ' . $method, 405);
-        if (! $resolvedRoute = $this->resolveRoute($map[''] ?? [], $path)) {
+        if (!$resolvedRoute = $this->resolveRoute($map[''] ?? [], $path)) {
             foreach ($map as $domain => $routes) {
                 if ($domain === '') {
                     continue;
@@ -75,10 +75,9 @@ class RouteCollector
             if ($route->getPath() === $path) {
                 return clone $route;
             }
-            $regexp = $route->getRegexp();
-            if (! is_null($regexp) && preg_match($regexp, $path, $match)) {
+            if (($compiledPath = $route->getCompiledPath()) && preg_match($compiledPath, $path, $match)) {
                 $resolvedRoute = clone $route;
-                if (! empty($match)) {
+                if (!empty($match)) {
                     foreach ($route->getParameters() as $key => $value) {
                         if (array_key_exists($key, $match)) {
                             $resolvedRoute->setParameter($key, $match[$key]);
