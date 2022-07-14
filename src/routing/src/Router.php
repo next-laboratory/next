@@ -97,17 +97,14 @@ class Router
     /**
      * Allow multi request methods.
      */
-    public function request(
-        string $path,
-        array|Closure|string $action,
-        array $methods = ['GET', 'HEAD', 'POST']
-    ): Route {
+    public function request(string $path, array|Closure|string $action, array $methods = ['GET', 'HEAD', 'POST']): Route
+    {
         if (is_string($action)) {
-            $action = explode('::', $this->longNameController($action), 2);
+            $action = explode('::', $this->formatController($action), 2);
         }
         if (is_array($action) && count($action) === 2) {
             [$controller, $action] = $action;
-            $action                = [$this->longNameController($controller), $action];
+            $action = [$this->formatController($controller), $action];
         }
         if (is_array($action) || $action instanceof Closure) {
             $route = new Route($methods, $this->prefix . $path, $action, $this->patterns);
@@ -190,7 +187,7 @@ class Router
     /**
      * 将命名空间和控制器拼接起来.
      */
-    protected function longNameController(string $controller): string
+    protected function formatController(string $controller): string
     {
         return trim($this->namespace . '\\' . ltrim($controller, '\\'), '\\');
     }
