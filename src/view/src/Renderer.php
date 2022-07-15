@@ -11,32 +11,25 @@ declare(strict_types=1);
 
 namespace Max\View;
 
-use Max\Config\Contracts\ConfigInterface;
 use Max\View\Contracts\ViewEngineInterface;
 
 class Renderer
 {
-    /**
-     * @var mixed|ViewEngineInterface
-     */
-    protected ViewEngineInterface $engine;
+    public function __construct(
+        protected ViewEngineInterface $engine,
+        protected array $arguments = []
+    ) {
+    }
 
-    /**
-     * Renderer constructor.
-     */
-    public function __construct(ConfigInterface $config)
+    public function assign(string $name, mixed $value): void
     {
-        $config       = $config->get('view');
-        $engine       = $config['default'];
-        $config       = $config['engines'][$engine];
-        $engine       = $config['engine'];
-        $this->engine = new $engine($config['options']);
+        $this->arguments[$name] = $value;
     }
 
     public function render(string $template, array $arguments = []): string
     {
         ob_start();
-        echo (string) $this->engine->render($template, $arguments);
+        echo (string) $this->engine->render($template, array_merge($this->arguments, $arguments));
         return (string) ob_get_clean();
     }
 }
