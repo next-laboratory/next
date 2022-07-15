@@ -64,16 +64,13 @@ return [
 
 ## 使用
 
-> 如果你使用MaxPHP, 则可以直接注入Renderer实例来使用，否则需要按照下面的方式使用
-
 ```php
-$engine = config('view.engine');
-$renderer = new Renderer(new $engine(config('view.options')));
-return $renderer->render('index', ['test' => ['123']]);
+$viewFactory = new ViewFactory(config('view'));
+$renderer = $viewFactory->getRenderer();
+$renderer->assign('key', 'value');
+$renderer->render('index', ['key2' => 'value2']);
 ```
 
 ## 自定义引擎
 
-自定义引擎必须实现`ViewEngineInterface`接口, 将新的引擎实例传递给渲染器即可
-
-> 官网：https://www.1kmb.com
+自定义引擎必须实现`ViewEngineInterface`接口

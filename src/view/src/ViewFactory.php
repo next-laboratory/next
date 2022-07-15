@@ -11,27 +11,25 @@ declare(strict_types=1);
 
 namespace Max\View;
 
-use Max\Config\Contracts\ConfigInterface;
+use Max\View\Contracts\ViewEngineInterface;
 
 class ViewFactory
 {
-    protected string $engine;
-
-    protected array  $config;
+    protected ViewEngineInterface $engine;
 
     /**
      * Renderer constructor.
      */
-    public function __construct(ConfigInterface $config)
+    public function __construct(array $config)
     {
-        $config       = $config->get('view');
-        $this->engine = $config['engine'];
-        $this->config = $config['options'];
+        $engine       = $config['engine'];
+        $options      = $config['options'];
+        $this->engine = new $engine($options);
     }
 
     public function getRenderer(): Renderer
     {
-        return new Renderer(new $this->engine($this->config));
+        return new Renderer($this->engine);
     }
 
     public function render(string $template, array $arguments = []): string
