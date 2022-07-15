@@ -69,7 +69,7 @@ class AspectCollector extends AbstractCollector
     /**
      * 返回被收集过的类.
      *
-     * @return AspectInterface[]
+     * @return string[]
      */
     public static function getCollectedClasses(): array
     {
