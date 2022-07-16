@@ -44,7 +44,7 @@ class FileHandler implements SessionHandlerInterface
     public function __construct(array $options = [])
     {
         $this->fillProperties($options);
-        ! is_dir($this->path) && mkdir($this->path, 0755, true);
+        !is_dir($this->path) && mkdir($this->path, 0755, true);
     }
 
     /**
@@ -53,15 +53,21 @@ class FileHandler implements SessionHandlerInterface
     #[\ReturnTypeWillChange]
     public function gc($maxLifeTime): int|false
     {
-        $now   = time();
-        $files = $this->findFiles($this->path, function (SplFileInfo $item) use ($maxLifeTime, $now) {
-            return $now - $maxLifeTime > $item->getMTime();
-        });
+        try {
+            $number = 0;
+            $now    = time();
+            $files  = $this->findFiles($this->path, function(SplFileInfo $item) use ($maxLifeTime, $now) {
+                return $now - $maxLifeTime > $item->getMTime();
+            });
 
-        foreach ($files as $file) {
-            $this->unlink($file->getPathname());
+            foreach ($files as $file) {
+                $this->unlink($file->getPathname());
+                $number++;
+            }
+            return $number;
+        } catch (\Throwable $throwable) {
+            return false;
         }
-        return true;
     }
 
     public function delete(string $id): bool
@@ -94,12 +100,12 @@ class FileHandler implements SessionHandlerInterface
     #[\ReturnTypeWillChange]
     public function write($id, $data): bool
     {
-        return (bool) file_put_contents($this->getSessionFile($id), $data, LOCK_EX);
+        return (bool)file_put_contents($this->getSessionFile($id), $data, LOCK_EX);
     }
 
     /**
-     * @throws Exception
      * @return bool
+     * @throws Exception
      */
     #[\ReturnTypeWillChange]
     public function close(): bool
@@ -135,7 +141,7 @@ class FileHandler implements SessionHandlerInterface
 
         /** @var SplFileInfo $item */
         foreach ($items as $item) {
-            if ($item->isDir() && ! $item->isLink()) {
+            if ($item->isDir() && !$item->isLink()) {
                 yield from $this->findFiles($item->getPathname(), $filter);
             } else {
                 if ($filter($item)) {
