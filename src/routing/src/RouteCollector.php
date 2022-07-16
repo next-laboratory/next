@@ -15,7 +15,6 @@ use Max\Routing\Exceptions\MethodNotAllowedException;
 use Max\Routing\Exceptions\RouteNotFoundException;
 use Psr\Http\Message\ServerRequestInterface;
 use function array_key_exists;
-use function is_null;
 use function preg_match;
 
 class RouteCollector
@@ -30,9 +29,8 @@ class RouteCollector
      */
     public function add(Route $route): void
     {
-        $domain = $route->getCompiledDomain();
         foreach ($route->getMethods() as $method) {
-            $this->routes[$method][$domain][] = $route;
+            $this->routes[$method][] = $route;
         }
     }
 
@@ -48,29 +46,16 @@ class RouteCollector
      * @throws MethodNotAllowedException
      * @throws RouteNotFoundException
      */
-    public function resolve(ServerRequestInterface $request): Route
+    public function resolveRequest(ServerRequestInterface $request): Route
     {
         $path   = '/' . trim($request->getUri()->getPath(), '/');
         $method = $request->getMethod();
-        $map    = $this->routes[$method] ?? throw new MethodNotAllowedException('Method not allowed: ' . $method, 405);
-        if (!$resolvedRoute = $this->resolveRoute($map[''] ?? [], $path)) {
-            foreach ($map as $domain => $routes) {
-                if ($domain === '') {
-                    continue;
-                }
-                if (preg_match($domain, $request->getUri()->getHost())) {
-                    $resolvedRoute = $this->resolveRoute($routes, $path);
-                }
-            }
-        }
-        return $resolvedRoute ?? throw new RouteNotFoundException('Not Found', 404);
+        return $this->resolve($method, $path);
     }
 
-    /**
-     * @param array<Route> $routes
-     */
-    protected function resolveRoute(array $routes, string $path): ?Route
+    public function resolve(string $method, string $path)
     {
+        $routes    = $this->routes[$method] ?? throw new MethodNotAllowedException('Method not allowed: ' . $method, 405);
         foreach ($routes as $route) {
             if ($route->getPath() === $path) {
                 return clone $route;
@@ -87,6 +72,7 @@ class RouteCollector
                 return $resolvedRoute;
             }
         }
-        return null;
+
+        throw new RouteNotFoundException('Not Found', 404);
     }
 }

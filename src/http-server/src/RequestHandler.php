@@ -51,17 +51,9 @@ class RequestHandler implements RequestHandlerInterface
     }
 
     /**
-     * 向尾部追加中间件.
-     */
-    public function appendMiddlewares(array $middlewares): void
-    {
-        array_push($this->middlewares, ...$middlewares);
-    }
-
-    /**
      * 向当前中间件后插入中间件.
      */
-    public function prependMiddlewares(array $middlewares): void
+    public function appendMiddlewares(array $middlewares): void
     {
         array_unshift($this->middlewares, ...$middlewares);
     }
