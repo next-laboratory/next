@@ -28,7 +28,6 @@ class RequestMapping implements MappingInterface
      * @param string         $path        路径
      * @param array|string[] $methods     方法
      * @param array          $middlewares 中间件
-     * @param string         $domain      域名
      */
     public function __construct(
         public string $path = '/',
