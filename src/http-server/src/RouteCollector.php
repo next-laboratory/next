@@ -86,8 +86,7 @@ class RouteCollector extends AbstractCollector
     {
         if ($attribute instanceof MappingInterface && self::$class === $class && !is_null(self::$router)) {
             self::$router->request($attribute->path, [$class, $method], $attribute->methods)
-                         ->middlewares($attribute->middlewares)
-                         ->domain($attribute->domain);
+                         ->middlewares($attribute->middlewares);
         }
     }
 

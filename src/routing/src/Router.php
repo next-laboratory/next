@@ -29,14 +29,12 @@ class Router
      * @param array  $patterns    参数规则
      * @param array  $middlewares 中间件
      * @param string $namespace   命名空间
-     * @param string $domain      域名
      */
     public function __construct(
         protected string $prefix = '',
         protected array $patterns = [],
         protected string $namespace = '',
         protected array $middlewares = [],
-        protected string $domain = '',
         ?RouteCollector $routeCollector = null
     ) {
         $this->routeCollector = $routeCollector ?? new RouteCollector();
@@ -102,13 +100,13 @@ class Router
         if (is_string($action)) {
             $action = explode('::', $this->formatController($action), 2);
         }
-        if (is_array($action) && count($action) === 2) {
-            [$controller, $action] = $action;
-            $action = [$this->formatController($controller), $action];
-        }
-        if (is_array($action) || $action instanceof Closure) {
+        if ($action instanceof Closure || count($action) === 2) {
+            if (is_array($action)) {
+                [$controller, $action] = $action;
+                $action = [$this->formatController($controller), $action];
+            }
             $route = new Route($methods, $this->prefix . $path, $action, $this->patterns);
-            $this->routeCollector->add($route->middlewares($this->middlewares)->domain($this->domain));
+            $this->routeCollector->add($route->middlewares($this->middlewares));
 
             return $route;
         }
@@ -130,18 +128,6 @@ class Router
     {
         $new              = clone $this;
         $new->middlewares = array_unique([...$this->middlewares, ...$middlewares]);
-
-        return $new;
-    }
-
-    /**
-     * 指定域名
-     * Example: *.git.com / www.git.com.
-     */
-    public function domain(string $domain): Router
-    {
-        $new         = clone $this;
-        $new->domain = $domain;
 
         return $new;
     }

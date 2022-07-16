@@ -41,10 +41,6 @@ class Compiler
 
     /**
      * 编译.
-     *
-     * @param $template
-     *
-     * @throws ViewNotExistException
      */
     public function compile($template): string
     {
@@ -52,7 +48,7 @@ class Compiler
         $compiledFile = $compileDir . md5($template) . '.php';
 
         if ($this->blade->isCache() === false || file_exists($compiledFile) === false) {
-            ! is_dir($compileDir) && mkdir($compileDir, 0755, true);
+            !is_dir($compileDir) && mkdir($compileDir, 0755, true);
             $content = $this->compileView($template);
             while (isset($this->parent)) {
                 $parent       = $this->parent;
@@ -68,12 +64,9 @@ class Compiler
     /**
      * 读模板
      *
-     * @param $template
-     *
      * @throws ViewNotExistException
-     * @return false|string
      */
-    protected function readFile($template): bool|string
+    protected function readFile(string $template): bool|string
     {
         if (file_exists($template) && (false !== ($content = file_get_contents($template)))) {
             return $content;
@@ -81,10 +74,7 @@ class Compiler
         throw new ViewNotExistException('View ' . $template . ' does not exist');
     }
 
-    /**
-     * @param $template
-     */
-    protected function getRealPath($template): string
+    protected function getRealPath(string $template): string
     {
         return sprintf(
             '%s%s%s',
@@ -155,9 +145,9 @@ class Compiler
     protected function compileDirective(array $matches): string
     {
         return match ($directive = $matches[1]) {
-            'php'    => '<?php ',
+            'php' => '<?php ',
             'endphp' => '?>',
-            'else'   => '<?php else: ?>',
+            'else' => '<?php else: ?>',
             'endisset', 'endunless', 'endempty' => '<?php endif; ?>',
             default => sprintf('<?php %s; ?>', $directive),
         };
@@ -166,8 +156,8 @@ class Compiler
     /**
      * 编译函数.
      *
-     * @throws ViewNotExistException
      * @return mixed|string|void
+     * @throws ViewNotExistException
      */
     protected function compileFunc(array $matches)
     {

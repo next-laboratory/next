@@ -34,7 +34,6 @@ class RequestMapping implements MappingInterface
         public string $path = '/',
         array $methods = [],
         public array $middlewares = [],
-        public string $domain = ''
     ) {
         if (! empty($methods)) {
             $this->methods = $methods;

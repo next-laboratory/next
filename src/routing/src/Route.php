@@ -45,12 +45,6 @@ class Route
     protected array $middlewares = [];
 
     /**
-     * 域名
-     */
-    protected string $domain         = '';
-    protected string $compiledDomain = '';
-
-    /**
      * 初始化数据.
      */
     public function __construct(protected array $methods, string $path, protected Closure|array $action, protected array $patterns = [])
@@ -67,25 +61,6 @@ class Route
         if ($compiledPath !== $path) {
             $this->compiledPath = sprintf('#^%s$#iU', $compiledPath);
         }
-    }
-
-    public function getCompiledDomain(): string
-    {
-        return $this->compiledDomain;
-    }
-
-    public function domain(string $domain): Route
-    {
-        if ($domain !== '') {
-            $this->domain         = $domain;
-            $this->compiledDomain = '#^' . str_replace(['.', '*'], ['\.', '(.+?)'], $domain) . '$#iU';
-        }
-        return $this;
-    }
-
-    public function getDomain(): string
-    {
-        return $this->domain;
     }
 
     /**
