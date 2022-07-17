@@ -19,10 +19,12 @@ class Controller
     /**
      * @param string $prefix      前缀
      * @param array  $middlewares 中间件
+     * @param array  $patterns    参数规则
      */
     public function __construct(
         public string $prefix = '/',
-        public array $middlewares = []
+        public array $middlewares = [],
+        public array $patterns = [],
     ) {
     }
 }
