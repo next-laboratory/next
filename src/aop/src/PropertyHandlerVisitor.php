@@ -81,11 +81,12 @@ class PropertyHandlerVisitor extends NodeVisitorAbstract
                         || ($type->getName()) === 'Closure') {
                         continue;
                     }
-                    $params[$key]->type = new Name('\\' . $type->getName());
+                    $allowsNull         = $reflectionParameter->allowsNull() ? '?' : '';
+                    $params[$key]->type = new Name($allowsNull . '\\' . $type->getName());
                 }
             }
             $c = [];
-            if (! $this->metadata->hasConstructor) {
+            if (!$this->metadata->hasConstructor) {
                 $constructor        = new ClassMethod('__construct', [
                     'params' => $params,
                 ]);
