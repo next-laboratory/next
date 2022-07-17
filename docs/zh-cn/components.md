@@ -106,25 +106,27 @@ composer require max/routing:dev-master
 
 $router = new Router();
 
-$router->get('index/<name>', function($name) {
+$router->get('index/{name}', function($name) {
     return $name;
 });
 
 // 路由分组示例
 $router->prefix('api')
-    ->middleware('api')
+    ->middlewares('class_name')
     ->pattterns(['id' => '\d+'])
     ->group(function(Router $router) {
-        $router->get('/user/<id>', function($id = 0) {   //可选id
+        $router->get('/user/{id}', function($id = 0) {  
             var_dump('user');
-        })->middleware('auth');
-        $router->middleware('user')->group(function() {
+        })->middlewares('auth');
+        $router->middlewares('user')->group(function() {
             //
-        }
+        });
     });
 
 // 解析路由，返回匹配到的Route对象
 $route = $router->getRouteCollector()->resolve('GET', '/');
+// 或者直接解析ServerRequestInterface对象
+$route = $router->getRouteCollector()->resolveRequest($request);
 
 var_dump($route);
 ```
@@ -355,7 +357,7 @@ class Collector implements \Max\Di\Contracts\CollectorInterface
 
 #### 注册收集器
 
-收集器可以产地给ScannerConfig的collectors参数
+收集器可以传递给ScannerConfig的collectors参数
 
 ### 示例
 
@@ -605,7 +607,7 @@ $response = $kernel->through($request);
 ### 安装
 
 ```
-composer require max/view:dev-master
+composer require max/view
 ```
 
 ### 使用
@@ -653,17 +655,16 @@ return [
 
 ## 使用
 
-> 如果你使用MaxPHP, 则可以直接注入Renderer实例来使用，否则需要按照下面的方式使用
-
 ```php
-$engine = config('view.engine');
-$renderer = new Renderer(new $engine(config('view.options')));
-return $renderer->render('index', ['test' => ['123']]);
+$viewFactory = new ViewFactory(config('view'));
+$renderer = $viewFactory->getRenderer();
+$renderer->assign('key', 'value');
+$renderer->render('index', ['key2' => 'value2']);
 ```
 
 #### 自定义引擎
 
-自定义引擎必须实现`ViewEngineInterface`接口, 将新的引擎实例传递给渲染器即可
+自定义引擎必须实现`ViewEngineInterface`接口
 
 ## max/cache
 
@@ -712,6 +713,7 @@ Cache::decr($key, int $step = 1)
 文档待补全
 
 ## max/database
+
 > 文档更新不及时，可能会有大量出入
 
 ### 安装

@@ -374,3 +374,9 @@ composer require symfony/var-dumper
 你可以传入多个变量，如果使用swoole/workerman，需要重启服务
 
 > 特别注意：异常处理使用中间件的方式，中间件未处理的异常需要用户手动处理，所以在中间件外执行的代码不能使用d函数打印变量
+
+# swagger文档
+
+推荐使用下面的扩展包
+
+https://zircote.github.io/swagger-php

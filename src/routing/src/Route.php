@@ -49,18 +49,16 @@ class Route
      */
     public function __construct(protected array $methods, string $path, protected Closure|array $action, protected array $patterns = [])
     {
-        $this->path   = $path = '/' . trim($path, '/');
-        $compiledPath = preg_replace_callback(sprintf('#%s#', self::VARIABLE_REGEX), function($matches) {
+        $this->path         = $path = '/' . trim($path, '/');
+        $compiledPath       = preg_replace_callback(sprintf('#%s#', self::VARIABLE_REGEX), function($matches) {
             $name = $matches[1];
             if (isset($matches[2])) {
                 $this->patterns[$name] = $matches[2];
             }
             $this->setParameter($name, null);
             return sprintf('(?P<%s>%s)', $name, $this->getPattern($name));
-        }, $path);
-        if ($compiledPath !== $path) {
-            $this->compiledPath = sprintf('#^%s$#iU', $compiledPath);
-        }
+        }, str_replace(['.', '+', '*'], ['\.', '\+', '\*'], $path));
+        $this->compiledPath = sprintf('#^%s$#iU', $compiledPath);
     }
 
     /**
