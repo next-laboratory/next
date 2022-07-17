@@ -55,11 +55,8 @@ class RouteCollector
 
     public function resolve(string $method, string $path)
     {
-        $routes    = $this->routes[$method] ?? throw new MethodNotAllowedException('Method not allowed: ' . $method, 405);
+        $routes = $this->routes[$method] ?? throw new MethodNotAllowedException('Method not allowed: ' . $method, 405);
         foreach ($routes as $route) {
-            if ($route->getPath() === $path) {
-                return clone $route;
-            }
             if (($compiledPath = $route->getCompiledPath()) && preg_match($compiledPath, $path, $match)) {
                 $resolvedRoute = clone $route;
                 if (!empty($match)) {
