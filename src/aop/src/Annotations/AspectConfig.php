@@ -17,13 +17,13 @@ use Attribute;
 class AspectConfig
 {
     /**
-     * @param string $class  要切入的类名
-     * @param string $method 要切入的方法
-     * @param array  $params 注解参数
+     * @param string       $class   要切入的类名
+     * @param string|array $methods 要切入的方法
+     * @param array        $params  注解参数
      */
     public function __construct(
         public string $class,
-        public string $method = '*',
+        public string|array $methods = '*',
         public array $params = []
     ) {
     }
