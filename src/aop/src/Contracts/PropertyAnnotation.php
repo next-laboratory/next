@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Aop\Contracts;
 
-interface PropertyAttribute
+interface PropertyAnnotation
 {
     public function handle(object $object, string $property): void;
 }
