@@ -12,11 +12,11 @@ declare(strict_types=1);
 namespace Max\Aop;
 
 use Attribute;
-use Composer\Autoload\ClassLoader;
 use Max\Aop\Collectors\AspectCollector;
-use Max\Aop\Collectors\PropertyAttributeCollector;
+use Max\Aop\Collectors\PropertyAnnotationCollector;
 use Max\Aop\Exceptions\ProcessException;
 use Max\Di\Reflection;
+use Max\Utils\Composer;
 use Max\Utils\Filesystem;
 use PhpParser\NodeTraverser;
 use PhpParser\PrettyPrinter\Standard;
@@ -26,8 +26,6 @@ use Throwable;
 
 final class Scanner
 {
-    private static ClassLoader $loader;
-
     private static AstManager $astManager;
 
     private static string $runtimeDir;
@@ -36,38 +34,32 @@ final class Scanner
 
     private static array $classMap = [];
 
-    private static array $collectors = [AspectCollector::class, PropertyAttributeCollector::class];
+    private static array $collectors = [AspectCollector::class, PropertyAnnotationCollector::class];
 
     private static bool $initialized = false;
 
     /**
      * @throws ReflectionException
      */
-    public static function init(ClassLoader $loader, ScannerConfig $config): void
+    public static function init(ScannerConfig $config): void
     {
-        if (! self::$initialized) {
-            self::$loader     = $loader;
+        if (!self::$initialized) {
             self::$runtimeDir = $config->getRuntimeDir() . '/aop/';
             Filesystem::isDirectory(self::$runtimeDir) || Filesystem::makeDirectory(self::$runtimeDir, 0755, true);
             self::$astManager = new AstManager();
             self::$classMap   = self::scanDir($config->getPaths());
             self::$proxyMap   = $proxyMap = self::$runtimeDir . 'proxy.php';
-            if (! $config->isCache() || ! Filesystem::exists($proxyMap)) {
+            if (!$config->isCache() || !Filesystem::exists($proxyMap)) {
                 Filesystem::exists($proxyMap) && Filesystem::delete($proxyMap);
                 if (($pid = pcntl_fork()) == -1) {
                     throw new ProcessException('Process fork failed.');
                 }
                 pcntl_wait($pid);
             }
-            $loader->addClassMap(self::getProxyMap(self::$collectors));
+            Composer::getClassLoader()->addClassMap(self::getProxyMap(self::$collectors));
             self::collect([...self::$collectors, ...$config->getCollectors()]);
             self::$initialized = true;
         }
-    }
-
-    public static function getLoader(): ClassLoader
-    {
-        return self::$loader;
     }
 
     public static function scanDir(array $dirs): array
@@ -112,12 +104,12 @@ final class Scanner
      */
     private static function getProxyMap(array $collectors): array
     {
-        if (! Filesystem::exists(self::$proxyMap)) {
+        if (!Filesystem::exists(self::$proxyMap)) {
             $proxyDir = self::$runtimeDir . 'proxy/';
             Filesystem::makeDirectory($proxyDir, 0755, true, true);
             Filesystem::cleanDirectory($proxyDir);
             self::collect($collectors);
-            $collectedClasses = array_unique(array_merge(AspectCollector::getCollectedClasses(), PropertyAttributeCollector::getCollectedClasses()));
+            $collectedClasses = array_unique(array_merge(AspectCollector::getCollectedClasses(), PropertyAnnotationCollector::getCollectedClasses()));
             $scanMap          = [];
             foreach ($collectedClasses as $class) {
                 $proxyPath = $proxyDir . str_replace('\\', '_', $class) . '_Proxy.php';
@@ -134,7 +126,7 @@ final class Scanner
     {
         $ast       = self::$astManager->getNodes($path);
         $traverser = new NodeTraverser();
-        $metadata  = new Metadata(self::$loader, $class);
+        $metadata  = new Metadata($class);
         $traverser->addVisitor(new PropertyHandlerVisitor($metadata));
         $traverser->addVisitor(new ProxyHandlerVisitor($metadata));
         $modifiedStmts = $traverser->traverse($ast);
