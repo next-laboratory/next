@@ -16,7 +16,7 @@ trait AutoFillProperties
     /**
      * 使用数组填充属性.
      */
-    protected function fillProperties(array $properties, bool $force = false)
+    protected function fillProperties(array $properties, bool $force = false): void
     {
         foreach ($properties as $key => $value) {
             if ($force || property_exists($this, $key)) {
