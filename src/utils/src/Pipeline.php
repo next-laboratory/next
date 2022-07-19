@@ -20,34 +20,17 @@ use Psr\Container\ContainerInterface;
  */
 class Pipeline
 {
-    /**
-     * Container.
-     */
     protected ContainerInterface $container;
+    protected array              $pipes  = [];
+    protected mixed              $passable;
+    protected string             $method = 'handle';
 
-    /**
-     * Pipes.
-     */
-    protected array $pipes = [];
-
-    protected object $passable;
-
-    protected string $method = 'handle';
-
-    /**
-     * Pipeline constructor.
-     */
     public function __construct(?ContainerInterface $container = null)
     {
         $this->container = $container;
     }
 
-    /**
-     * @param $passable object
-     *
-     * @return $this
-     */
-    public function send($passable): static
+    public function send(mixed $passable): static
     {
         $this->passable = $passable;
 
@@ -64,9 +47,6 @@ class Pipeline
         return $this;
     }
 
-    /**
-     * @return $this
-     */
     public function through(array $pipes): static
     {
         $this->pipes = $pipes;
@@ -86,22 +66,22 @@ class Pipeline
 
     protected function prepareDestination(Closure $destination): Closure
     {
-        return static function ($passable) use ($destination) {
+        return static function($passable) use ($destination) {
             return $destination($passable);
         };
     }
 
     protected function carry(): Closure
     {
-        return function ($stack, $pipe) {
-            return function ($passable) use ($stack, $pipe) {
+        return function($stack, $pipe) {
+            return function($passable) use ($stack, $pipe) {
                 if (is_callable($pipe)) {
                     // If the pipe is an instance of a Closure, we will just call it directly but
                     // otherwise we'll resolve the pipes out of the container and call it with
                     // the appropriate method and arguments, returning the results back out.
                     return $pipe($passable, $stack);
                 }
-                if (! is_object($pipe)) {
+                if (!is_object($pipe)) {
                     [$name, $parameters] = $this->parsePipeString($pipe);
 
                     // If the pipe is a string we will parse the string and resolve the class out
