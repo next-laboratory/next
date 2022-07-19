@@ -38,21 +38,24 @@ class AspectCollector extends AbstractCollector
     {
         if ($attribute instanceof AspectInterface) {
             foreach (Reflection::class($class)->getMethods() as $reflectionMethod) {
-                if (! $reflectionMethod->isConstructor()) {
+                if (!$reflectionMethod->isConstructor()) {
                     self::$container[$class][$reflectionMethod->getName()][] = $attribute;
                 }
             }
-        } elseif ($attribute instanceof AspectConfig) {
+        } else if ($attribute instanceof AspectConfig) {
             $reflectionClass = Reflection::class($attribute->class);
             $annotation      = new $class(...$attribute->params);
-            if ($attribute->method === '*') {
+            $methods         = $attribute->methods;
+            if ($methods === '*') {
                 foreach ($reflectionClass->getMethods() as $reflectionMethod) {
-                    if (! $reflectionMethod->isConstructor()) {
+                    if (!$reflectionMethod->isConstructor()) {
                         self::$container[$attribute->class][$reflectionMethod->getName()][] = $annotation;
                     }
                 }
             } else {
-                self::$container[$attribute->class][$attribute->method][] = $annotation;
+                foreach ((array)$methods as $method) {
+                    self::$container[$attribute->class][$method][] = $annotation;
+                }
             }
             Scanner::addClass($attribute->class, $reflectionClass->getFileName());
         }
