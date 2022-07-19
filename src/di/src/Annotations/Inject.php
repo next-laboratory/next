@@ -12,14 +12,14 @@ declare(strict_types=1);
 namespace Max\Di\Annotations;
 
 use Attribute;
-use Max\Aop\Contracts\PropertyAttribute;
+use Max\Aop\Contracts\PropertyAnnotation;
 use Max\Aop\Exceptions\PropertyHandleException;
 use Max\Di\Context;
 use Max\Di\Reflection;
 use Throwable;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
-class Inject implements PropertyAttribute
+class Inject implements PropertyAnnotation
 {
     /**
      * @param null|string $id 注入的类型
