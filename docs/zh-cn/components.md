@@ -254,9 +254,7 @@ composer require max/aop:dev-master
 #### 修改start.php文件
 
 ```php
-$loader = require_once __DIR__ . '/vendor/autoload.php';
-
-\Max\Di\Scanner::init($loader, new \Max\Aop\ScannerConfig([
+\Max\Di\Scanner::init(new \Max\Aop\ScannerConfig([
     'cache'      => false,
     'paths'      => [
         BASE_PATH . '/app',
@@ -384,7 +382,7 @@ class ValidationCollector extends AbstractCollector
     	}
     }
     
-    public static function getClassPropertyAttributes(string $class) {
+    public static function getByClass(string $class) {
     	return self::$container[$class] ?? [];
     }
     
@@ -398,7 +396,7 @@ class DoSomething {
 	protected $a = '1212';
 	
 	public function do() {
-		$properties = ValidationCollector::getClassPropertyAttributes(__CLASS__);
+		$properties = ValidationCollector::getByClass(__CLASS__);
     	$len = $properties['a']->max;
         if(mb_strlen($this->a > $len)) {
         	throw new InvalidArgumentException('Length is invalid.');

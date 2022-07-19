@@ -13,9 +13,7 @@ composer require max/aop:dev-master
 ## 修改start.php文件
 
 ```php
-$loader = require_once __DIR__ . '/vendor/autoload.php';
-
-\Max\Di\Scanner::init($loader, new \Max\Aop\ScannerConfig([
+\Max\Di\Scanner::init(new \Max\Aop\ScannerConfig([
     'cache'      => false,
     'paths'      => [
         BASE_PATH . '/app',

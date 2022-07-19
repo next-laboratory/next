@@ -12,14 +12,14 @@ declare(strict_types=1);
 namespace Max\Config\Annotations;
 
 use Attribute;
-use Max\Aop\Contracts\PropertyAttribute;
+use Max\Aop\Contracts\PropertyAnnotation;
 use Max\Aop\Exceptions\PropertyHandleException;
 use Max\Config\Contracts\ConfigInterface;
 use Max\Di\Context;
 use Max\Di\Reflection;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
-class Config implements PropertyAttribute
+class Config implements PropertyAnnotation
 {
     /**
      * @param string     $key     键

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Max\Aop;
 
 use Max\Di\Reflection;
+use Max\Utils\Composer;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ClassConstFetch;
@@ -56,7 +57,7 @@ class PropertyHandlerVisitor extends NodeVisitorAbstract
             $reflectionClass = Reflection::class($this->metadata->className);
             if ($reflectionConstructor = $reflectionClass->getConstructor()) {
                 $declaringClass = $reflectionConstructor->getDeclaringClass()->getName();
-                if ($classPath = $this->metadata->loader->findFile($declaringClass)) {
+                if ($classPath = Composer::getClassLoader()->findFile($declaringClass)) {
                     $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
                     $ast    = $parser->parse(file_get_contents($classPath));
                     foreach ($ast as $stmt) {
