@@ -20,11 +20,6 @@ use function sprintf;
 class Router
 {
     /**
-     * 路由收集器.
-     */
-    protected RouteCollector $routeCollector;
-
-    /**
      * @param string $prefix      url前缀
      * @param array  $patterns    参数规则
      * @param array  $middlewares 中间件
@@ -35,9 +30,9 @@ class Router
         protected array $patterns = [],
         protected string $namespace = '',
         protected array $middlewares = [],
-        ?RouteCollector $routeCollector = null
+        protected ?RouteCollector $routeCollector = null
     ) {
-        $this->routeCollector = $routeCollector ?? new RouteCollector();
+        $this->routeCollector ??= new RouteCollector();
     }
 
     /**
@@ -105,8 +100,8 @@ class Router
                 [$controller, $action] = $action;
                 $action = [$this->formatController($controller), $action];
             }
-            $route = new Route($methods, $this->prefix . $path, $action, $this->patterns);
-            $this->routeCollector->add($route->middlewares($this->middlewares));
+            $route = new Route($methods, $this->prefix . $path, $action, $this->patterns, $this->middlewares);
+            $this->routeCollector->add($route);
 
             return $route;
         }

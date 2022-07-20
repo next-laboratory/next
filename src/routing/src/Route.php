@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace Max\Routing;
 
 use Closure;
+use Max\Utils\Arr;
+
 use function preg_replace_callback;
 use function sprintf;
 use function trim;
@@ -28,10 +30,6 @@ class Route
      */
     protected const VARIABLE_REGEX = '\{\s*([a-zA-Z_][a-zA-Z0-9_-]*)\s*(?::\s*([^{}]*(?:\{(?-1)\}[^{}]*)*))?\}';
 
-    /**
-     * 路径.
-     */
-    protected string $path;
     protected string $compiledPath = '';
 
     /**
@@ -40,24 +38,24 @@ class Route
     protected array $parameters = [];
 
     /**
-     * 路由中间件
-     */
-    protected array $middlewares = [];
-
-    /**
      * 初始化数据.
      */
-    public function __construct(protected array $methods, string $path, protected Closure|array $action, protected array $patterns = [])
-    {
-        $this->path         = $path = '/' . trim($path, '/');
-        $compiledPath       = preg_replace_callback(sprintf('#%s#', self::VARIABLE_REGEX), function($matches) {
+    public function __construct(
+        protected array $methods,
+        protected string $path,
+        protected Closure|array $action,
+        protected array $patterns = [],
+        protected array $middlewares = []
+    ) {
+        $this->path         = '/' . trim($this->path, '/');
+        $compiledPath       = preg_replace_callback(sprintf('#%s#', self::VARIABLE_REGEX), function ($matches) {
             $name = $matches[1];
             if (isset($matches[2])) {
                 $this->patterns[$name] = $matches[2];
             }
             $this->setParameter($name, null);
             return sprintf('(?P<%s>%s)', $name, $this->getPattern($name));
-        }, str_replace(['.', '+', '*'], ['\.', '\+', '\*'], $path));
+        }, str_replace(['.', '+', '*'], ['\.', '\+', '\*'], $this->path));
         $this->compiledPath = sprintf('#^%s$#iU', $compiledPath);
     }
 
@@ -119,13 +117,10 @@ class Route
      *
      * @return $this
      */
-    public function middlewares(string|array $middlewares): Route
+    public function middleware(string ...$middlewares): Route
     {
-        if (is_string($middlewares)) {
-            $middlewares = [$middlewares];
-        }
-        $this->middlewares = $middlewares;
-
+        $this->middlewares = array_unique([...$this->middlewares, $middlewares]);
+        
         return $this;
     }
 

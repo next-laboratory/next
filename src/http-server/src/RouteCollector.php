@@ -65,11 +65,11 @@ class RouteCollector extends AbstractCollector
     public static function collectClass(string $class, object $attribute): void
     {
         $routeCollector = Context::getContainer()->make(\Max\Routing\RouteCollector::class);
+        $router = new Router($attribute->prefix, $attribute->patterns, middlewares: $attribute->middlewares, routeCollector: $routeCollector);
         if ($attribute instanceof Controller) {
-            self::$router = new Router($attribute->prefix, $attribute->patterns, middlewares: $attribute->middlewares, routeCollector: $routeCollector);
+            self::$router = $router;
             self::$class  = $class;
         } else if ($attribute instanceof AutoController) {
-            $router = new Router($attribute->prefix, patterns: $attribute->patterns, middlewares: $attribute->middlewares, routeCollector: $routeCollector);
             foreach (Reflection::class($class)->getMethods() as $reflectionMethod) {
                 $methodName = $reflectionMethod->getName();
                 if (!self::isIgnoredMethod($methodName) && $reflectionMethod->isPublic() && !$reflectionMethod->isAbstract()) {
@@ -85,8 +85,7 @@ class RouteCollector extends AbstractCollector
     public static function collectMethod(string $class, string $method, object $attribute): void
     {
         if ($attribute instanceof MappingInterface && self::$class === $class && !is_null(self::$router)) {
-            self::$router->request($attribute->path, [$class, $method], $attribute->methods)
-                         ->middlewares($attribute->middlewares);
+            self::$router->request($attribute->path, [$class, $method], $attribute->methods, $attribute->middlewares);
         }
     }
 
