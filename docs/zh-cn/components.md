@@ -97,7 +97,7 @@ $conatiner->call(callable $callable, array $arguments = []);
 ### 安装
 
 ```shell
-composer require max/routing:dev-master
+composer require max/routing
 ```
 
 ### 使用
@@ -112,13 +112,13 @@ $router->get('index/{name}', function($name) {
 
 // 路由分组示例
 $router->prefix('api')
-    ->middlewares('class_name')
+    ->middleware('class_name')
     ->pattterns(['id' => '\d+'])
     ->group(function(Router $router) {
         $router->get('/user/{id}', function($id = 0) {  
             var_dump('user');
         })->middlewares('auth');
-        $router->middlewares('user')->group(function() {
+        $router->middleware('user')->group(function() {
             //
         });
     });

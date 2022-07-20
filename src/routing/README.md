@@ -10,13 +10,13 @@ $router->get('index/{name}', function($name) {
 
 // 路由分组示例
 $router->prefix('api')
-    ->middlewares('api')
+    ->middleware('api')
     ->pattterns(['id' => '\d+'])
     ->group(function(Router $router) {
         $router->get('/user/{id}', function($id = 0) { 
             var_dump('user');
-        })->middlewares('auth');
-        $router->middlewares('user')->group(function() {
+        })->middleware('auth');
+        $router->middleware('user')->group(function() {
             //
         });
     });

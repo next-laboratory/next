@@ -59,7 +59,7 @@ class RouteCollector
         foreach ($routes as $route) {
             if (($compiledPath = $route->getCompiledPath()) && preg_match($compiledPath, $path, $match)) {
                 $resolvedRoute = clone $route;
-                if (!empty($match)) {
+                if (! empty($match)) {
                     foreach ($route->getParameters() as $key => $value) {
                         if (array_key_exists($key, $match)) {
                             $resolvedRoute->setParameter($key, $match[$key]);
