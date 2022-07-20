@@ -12,8 +12,6 @@ declare(strict_types=1);
 namespace Max\Routing;
 
 use Closure;
-use Max\Utils\Arr;
-
 use function preg_replace_callback;
 use function sprintf;
 use function trim;
@@ -26,7 +24,7 @@ class Route
     protected const DEFAULT_VARIABLE_REGEX = '[^\/]+';
 
     /**
-     * 变量正则
+     * 变量正则.
      */
     protected const VARIABLE_REGEX = '\{\s*([a-zA-Z_][a-zA-Z0-9_-]*)\s*(?::\s*([^{}]*(?:\{(?-1)\}[^{}]*)*))?\}';
 
@@ -73,7 +71,7 @@ class Route
     }
 
     /**
-     * 返回编译后的正则
+     * 返回编译后的正则.
      */
     public function getCompiledPath(): string
     {
@@ -83,7 +81,7 @@ class Route
     /**
      * 设置单个路由参数.
      */
-    public function setParameter(string $name, $value): void
+    public function setParameter(string $name, mixed $value): void
     {
         $this->parameters[$name] = $value;
     }
@@ -114,20 +112,16 @@ class Route
 
     /**
      * 设置中间件.
-     *
-     * @return $this
      */
     public function middleware(string ...$middlewares): Route
     {
         $this->middlewares = array_unique([...$this->middlewares, $middlewares]);
-        
+
         return $this;
     }
 
     /**
      * 排除的中间件.
-     *
-     * @return $this
      */
     public function withoutMiddleware(string $middleware): Route
     {

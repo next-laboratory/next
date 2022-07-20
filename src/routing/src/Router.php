@@ -98,7 +98,7 @@ class Router
         if ($action instanceof Closure || count($action) === 2) {
             if (is_array($action)) {
                 [$controller, $action] = $action;
-                $action = [$this->formatController($controller), $action];
+                $action                = [$this->formatController($controller), $action];
             }
             $route = new Route($methods, $this->prefix . $path, $action, $this->patterns, $this->middlewares);
             $this->routeCollector->add($route);
