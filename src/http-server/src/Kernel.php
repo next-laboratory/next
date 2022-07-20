@@ -52,6 +52,17 @@ class Kernel
     }
 
     /**
+     * 文件外部注册路由.
+     */
+    public function __call(string $name, array $arguments)
+    {
+        if (in_array($name, ['get', 'post', 'request', 'any', 'put', 'options', 'delete'])) {
+            return $this->router->{$name}(...$arguments);
+        }
+        throw new BadMethodCallException('Method ' . $name . ' does not exist.');
+    }
+
+    /**
      * @throws ContainerExceptionInterface
      * @throws ReflectionException|RouteNotFoundException
      */
@@ -67,16 +78,5 @@ class Kernel
      */
     protected function map(Router $router): void
     {
-    }
-
-    /**
-     * 文件外部注册路由
-     */
-    public function __call(string $name, array $arguments)
-    {
-        if (in_array($name, ['get', 'post', 'request', 'any', 'put', 'options', 'delete'])) {
-            return $this->router->{$name}(...$arguments);
-        }
-        throw new BadMethodCallException('Method ' . $name . ' does not exist.');
     }
 }

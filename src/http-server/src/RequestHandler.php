@@ -24,7 +24,7 @@ use ReflectionException;
 class RequestHandler implements RequestHandlerInterface
 {
     /**
-     * 容器是否有make方法
+     * 容器是否有make方法.
      */
     private bool $hasMakeMethod;
 
@@ -73,7 +73,7 @@ class RequestHandler implements RequestHandlerInterface
     }
 
     /**
-     * 处理中间件
+     * 处理中间件.
      */
     protected function handleMiddleware(MiddlewareInterface $middleware, ServerRequestInterface $request): ResponseInterface
     {
