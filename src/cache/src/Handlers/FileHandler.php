@@ -50,7 +50,7 @@ class FileHandler extends CacheHandler
             if (is_file($path)) {
                 throw new CacheException('已经存在同名文件，不能创建文件夹!');
             }
-            if (! is_writable($path) || ! is_readable($path)) {
+            if (!is_writable($path) || !is_readable($path)) {
                 chmod($path, 0755);
             }
         } else {
@@ -125,10 +125,8 @@ class FileHandler extends CacheHandler
 
     /**
      * TODO 使用yield优化.
-     *
-     * @param $dir
      */
-    protected function unlink($dir)
+    protected function unlink(string $dir)
     {
         foreach (glob(rtrim($dir, '/') . '/*') as $item) {
             if (is_dir($item)) {
@@ -142,12 +140,8 @@ class FileHandler extends CacheHandler
 
     /**
      * 取得缓存内容.
-     *
-     * @param $cacheFile
-     *
-     * @return false|string
      */
-    protected function getCache($cacheFile): bool|string
+    protected function getCache(string $cacheFile): bool|string
     {
         return file_get_contents($cacheFile);
     }
@@ -162,22 +156,16 @@ class FileHandler extends CacheHandler
 
     /**
      * 删除某一个缓存，必须在已知缓存存在的情况下调用，否则会报错.
-     *
-     * @param $key
-     *
-     * @return bool
      */
-    protected function remove($key)
+    protected function remove(string $key): bool
     {
         return unlink($this->getFile($key));
     }
 
     /**
      * 根据key获取文件.
-     *
-     * @param $key
      */
-    protected function getFile($key): string
+    protected function getFile(string $key): string
     {
         return $this->path . $this->getID($key);
     }
