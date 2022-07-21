@@ -13,7 +13,7 @@ namespace Max\Redis\Contracts;
 
 interface ConnectorInterface
 {
-    public function get(): \Redis;
+    public function get();
 
-    public function release(\Redis $redis);
+    public function release($redis);
 }
