@@ -34,8 +34,9 @@ class Session
      */
     protected bool $started = false;
 
-    public function __construct(protected SessionHandlerInterface $sessionHandler)
-    {
+    public function __construct(
+        protected SessionHandlerInterface $sessionHandler
+    ) {
     }
 
     /**
@@ -48,7 +49,7 @@ class Session
         }
         $this->id = ($id && $this->isValidId($id)) ? $id : \session_create_id();
         if ($data = $this->sessionHandler->read($this->id)) {
-            $this->data = (array) (@\unserialize($data) ?: []);
+            $this->data = (array)(@\unserialize($data) ?: []);
         }
         $this->started = true;
     }
@@ -79,18 +80,16 @@ class Session
 
     /**
      * Get the value of $key, or $default if it does not exist.
-     * @param null|mixed $default
      */
-    public function get(string $key, $default = null): mixed
+    public function get(string $key, mixed $default = null): mixed
     {
         return Arr::get($this->data, $key, $default);
     }
 
     /**
      * Set value of the key.
-     * @param mixed $value
      */
-    public function set(string $key, $value): void
+    public function set(string $key, mixed $value): void
     {
         Arr::set($this->data, $key, $value);
     }
@@ -144,7 +143,7 @@ class Session
      */
     public function setId(string $id): void
     {
-        if (! $this->isValidId($id)) {
+        if (!$this->isValidId($id)) {
             throw new InvalidArgumentException('The length of the session ID must be 40.');
         }
         $this->id = $id;

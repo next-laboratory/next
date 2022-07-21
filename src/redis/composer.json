@@ -12,12 +12,6 @@
         }
     ],
     "require": {
-        "php": "^8.0",
-        "max/config": "dev-master"
-    },
-    "extra": {
-        "max": {
-            "config": "Max\\Redis\\ConfigProvider"
-        }
+        "php": "^8.0"
     }
 }

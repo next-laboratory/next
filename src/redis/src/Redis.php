@@ -11,30 +11,50 @@ declare(strict_types=1);
 
 namespace Max\Redis;
 
+use Closure;
 use Max\Redis\Contracts\ConnectorInterface;
+use Throwable;
 
 /**
  * @mixin \Redis
  */
 class Redis
 {
-    protected \Redis $redis;
-
-    public function __construct(protected ConnectorInterface $connector)
-    {
-        $this->redis = $this->connector->get();
+    public function __construct(
+        protected ConnectorInterface $connector
+    ) {
     }
 
-    public function __destruct()
+    public function __call(string $name, array $arguments)
     {
-        $this->connector->release($this->redis);
+        return $this->connector->get()->{$name}(...$arguments);
     }
 
     /**
-     * @throws \RedisException
+     * @param  null|mixed $redis
+     * @throws Throwable
      */
-    public function __call(string $name, array $arguments)
+    public function wrap(Closure $wrapper, $redis = null)
     {
-        return $this->redis->{$name}(...$arguments);
+        return $wrapper($redis ?? $this->connector->get());
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function multi(Closure $wrapper, int $mode = \Redis::MULTI)
+    {
+        return $this->wrap(function ($redis) use ($wrapper, $mode) {
+            try {
+                /* @var \Redis $redis */
+                $redis->multi($mode);
+                $result = $wrapper($redis);
+                $redis->exec();
+                return $result;
+            } catch (Throwable $throwable) {
+                $redis->discard();
+                throw $throwable;
+            }
+        });
     }
 }
