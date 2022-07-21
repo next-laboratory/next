@@ -270,7 +270,8 @@ class Container implements ContainerInterface
             'string' => (string)$value,
             'bool' => (bool)$value,
             'array' => (array)$value,
-            'float', 'double' => (float)$value,
+            'float' => (float)$value,
+            'double' => (double)$value,
             'object' => (object)$value,
             default => $value,
         };
