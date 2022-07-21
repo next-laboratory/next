@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Max\Cache\Handlers;
 
 use Max\Redis\Connectors\BaseConnector;
+use Max\Redis\Redis;
 use Max\Utils\Traits\AutoFillProperties;
 
 class RedisHandler extends CacheHandler
@@ -24,7 +25,7 @@ class RedisHandler extends CacheHandler
     public function __construct(array $config)
     {
         $this->fillProperties($config);
-        $this->handler = new $this->connector();
+        $this->handler = new Redis(new $this->connector());
     }
 
     /**
