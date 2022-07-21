@@ -21,7 +21,7 @@ return [
         'redis'     => [
             'handler' => 'Max\Cache\Handlers\RedisHandler',
             'options' => [
-                'connector' => \Max\Redis\Connectors\BaseConnector::class,
+                'connector' => 'Max\Redis\Connectors\BaseConnector',
                 'config'    => [],
             ],
         ],

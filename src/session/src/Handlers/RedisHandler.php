@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Max\Session\Handlers;
 
 use Max\Redis\Redis;
-use Max\Session\Exceptions\SessionException;
 use Max\Utils\Traits\AutoFillProperties;
 use SessionHandlerInterface;
 
@@ -22,18 +21,18 @@ class RedisHandler implements SessionHandlerInterface
 
     protected Redis $handler;
 
-    protected string $connection;
+    protected string $connector;
+
+    protected string $host = '127.0.0.1';
+
+    protected int $port = 6379;
 
     protected int $expire = 3600;
 
     public function __construct(array $options = [])
     {
         $this->fillProperties($options);
-        if (!class_exists('Max\Redis\Redis')) {
-            throw new SessionException('You will need to install the Redis package using `composer require max/redis`');
-        }
-        $connector     = $options['connector'];
-        $this->handler = new Redis(new $connector);
+        $this->handler = new Redis(new $this->connector($this->host, $this->port));
     }
 
     #[\ReturnTypeWillChange]
@@ -45,7 +44,7 @@ class RedisHandler implements SessionHandlerInterface
     #[\ReturnTypeWillChange]
     public function destroy(string $id): bool
     {
-        return (bool)$this->handler->del($id);
+        return (bool) $this->handler->del($id);
     }
 
     /**
@@ -73,7 +72,7 @@ class RedisHandler implements SessionHandlerInterface
     public function read(string $id): string|false
     {
         if ($data = $this->handler->get($id)) {
-            return (string)$data;
+            return (string) $data;
         }
         return false;
     }
@@ -84,6 +83,6 @@ class RedisHandler implements SessionHandlerInterface
     #[\ReturnTypeWillChange]
     public function write(string $id, string $data): bool
     {
-        return (bool)$this->handler->set($id, $data, $this->expire);
+        return (bool) $this->handler->set($id, $data, $this->expire);
     }
 }

@@ -24,8 +24,10 @@ return [
         'redis' => [
             'handler' => 'Max\Session\Handlers\RedisHandler',
             'options' => [
-                'connector' => \Max\Redis\Connectors\BaseConnector::class,
-                'config'    => []
+                'connector' => 'Max\Redis\Connectors\BaseConnector',
+                'host'      => '127.0.0.1',
+                'port'      => 6379,
+                'expire'    => 3600,
             ],
         ],
     ],

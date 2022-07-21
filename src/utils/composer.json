@@ -2,7 +2,7 @@
     "name": "max/utils",
     "type": "library",
     "license": "Apache-2.0",
-    "homepage": "https://github.com/topyao/max-utils",
+    "homepage": "https://github.com/marxphp/utils",
     "minimum-stability": "dev",
     "prefer-stable": true,
     "authors": [

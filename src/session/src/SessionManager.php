@@ -11,23 +11,16 @@ declare(strict_types=1);
 
 namespace Max\Session;
 
-use Max\Config\Contracts\ConfigInterface;
-
 class SessionManager
 {
-    /**
-     * Session config.
-     */
-    protected array $config = [];
-
     /**
      * Session handlers.
      */
     protected array $handlers = [];
 
-    public function __construct(ConfigInterface $config)
-    {
-        $this->config = $config->get('session');
+    public function __construct(
+        protected array $config = []
+    ) {
     }
 
     /**
