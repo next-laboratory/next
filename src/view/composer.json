@@ -1,7 +1,7 @@
 {
     "name": "max/view",
     "license": "Apache-2.0",
-    "homepage": "https://github.com/topyao/max-view",
+    "homepage": "https://github.com/marxphp/view",
     "description": "A simple blade view engine.",
     "authors": [
         {

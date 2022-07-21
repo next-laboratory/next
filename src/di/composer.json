@@ -1,7 +1,7 @@
 {
     "name": "max/di",
     "description": "A lightweight dependency injection tool, container based on the PSR-11 specification.",
-    "homepage": "https://github.com/topyao/max-di",
+    "homepage": "https://github.com/marxphp/di",
     "license": "Apache-2.0",
     "keywords": [
         "container",

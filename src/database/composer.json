@@ -3,7 +3,7 @@
     "type": "library",
     "license": "Apache-2.0",
     "description": "MaxPHP数据库操作组件！",
-    "homepage": "https://github.com/topyao/max-database",
+    "homepage": "https://github.com/marxphp/database",
     "authors": [
         {
             "name": "chengyao",

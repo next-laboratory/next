@@ -3,7 +3,7 @@
     "description": "A simple validator.",
     "type": "library",
     "license": "Apache-2.0",
-    "homepage": "https://github.com/topyao/max-validator",
+    "homepage": "https://github.com/marxphp/validator",
     "authors": [
         {
             "name": "chengyao",

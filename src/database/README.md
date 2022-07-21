@@ -1,7 +1,7 @@
 <br>
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/topyao/max/master/public/favicon.ico" width="120" alt="Max">
+<img src="https://raw.githubusercontent.com/marxphp/max/master/public/favicon.ico" width="120" alt="Max">
 </p>
 
 <p align="center">轻量 • 简单 • 快速</p>

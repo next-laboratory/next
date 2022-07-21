@@ -1,7 +1,7 @@
 {
     "name": "max/http-server",
     "license": "Apache-2.0",
-    "homepage": "https://github.com/topyao/max-http-server",
+    "homepage": "https://github.com/marxphp/http-server",
     "autoload": {
         "psr-4": {
             "Max\\Http\\Server\\": "src/"

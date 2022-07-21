@@ -1,7 +1,7 @@
 {
     "name": "max/routing",
     "description": "A lightweight and fast routing component.",
-    "homepage": "https://github.com/topyao/max-routing",
+    "homepage": "https://github.com/marxphp/routing",
     "license": "Apache-2.0",
     "authors": [
         {
