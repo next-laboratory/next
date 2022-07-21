@@ -11,27 +11,20 @@ declare(strict_types=1);
 
 namespace Max\Cache\Handlers;
 
-use Max\Redis\RedisManager;
+use Max\Redis\Connectors\BaseConnector;
 use Max\Utils\Traits\AutoFillProperties;
-use Psr\Container\ContainerExceptionInterface;
-use ReflectionException;
 
 class RedisHandler extends CacheHandler
 {
     use AutoFillProperties;
 
-    protected string $connection;
+    protected string $connector = BaseConnector::class;
+    protected array  $config    = [];
 
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws ReflectionException
-     */
     public function __construct(array $config)
     {
         $this->fillProperties($config);
-        /** @var RedisManager $manager */
-        $manager       = make(RedisManager::class);
-        $this->handler = $manager->connection($this->connection);
+        $this->handler = new $this->connector();
     }
 
     /**
@@ -39,7 +32,7 @@ class RedisHandler extends CacheHandler
      */
     public function delete($key)
     {
-        return (bool) $this->handler->del($key);
+        return (bool)$this->handler->del($key);
     }
 
     /**
@@ -47,7 +40,7 @@ class RedisHandler extends CacheHandler
      */
     public function has($key)
     {
-        return (bool) $this->handler->exists($key);
+        return (bool)$this->handler->exists($key);
     }
 
     /**

@@ -12,21 +12,19 @@ declare(strict_types=1);
 return [
     'default' => 'file',
     'stores'  => [
-        // 文件缓存
         'file'      => [
             'handler' => 'Max\Cache\Handlers\FileHandler',
             'options' => [
                 'path' => __DIR__ . '/../runtime/cache/app',
             ],
         ],
-        // redis缓存
         'redis'     => [
             'handler' => 'Max\Cache\Handlers\RedisHandler',
             'options' => [
-                'connection' => 'redis',
+                'connector' => \Max\Redis\Connectors\BaseConnector::class,
+                'config'    => [],
             ],
         ],
-        // memcached缓存
         'memcached' => [
             'handler' => 'Max\Cache\Handlers\MemcachedHandler',
             'options' => [
