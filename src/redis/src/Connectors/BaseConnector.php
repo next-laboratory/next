@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Max\Redis\Connectors;
 
 use Max\Redis\Contracts\ConnectorInterface;
+use Max\Redis\RedisProxy;
 
 class BaseConnector implements ConnectorInterface
 {
@@ -43,7 +44,7 @@ class BaseConnector implements ConnectorInterface
         );
         $redis->select($this->database);
         $this->auth && $redis->auth($this->auth);
-        return $redis;
+        return new RedisProxy($this, $redis);
     }
 
     public function release($redis)
