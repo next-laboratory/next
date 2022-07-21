@@ -47,7 +47,7 @@ final class Scanner
             self::$runtimeDir = $config->getRuntimeDir() . '/aop/';
             Filesystem::isDirectory(self::$runtimeDir) || Filesystem::makeDirectory(self::$runtimeDir, 0755, true);
             self::$astManager = new AstManager();
-            self::$classMap   = self::scanDir($config->getPaths());
+            self::$classMap   = self::findClasses($config->getPaths());
             self::$proxyMap   = $proxyMap = self::$runtimeDir . 'proxy.php';
             if (!$config->isCache() || !Filesystem::exists($proxyMap)) {
                 Filesystem::exists($proxyMap) && Filesystem::delete($proxyMap);
@@ -62,7 +62,7 @@ final class Scanner
         }
     }
 
-    public static function scanDir(array $dirs): array
+    public static function findClasses(array $dirs): array
     {
         $files   = (new Finder())->in($dirs)->name('*.php')->files();
         $classes = [];
@@ -94,7 +94,7 @@ final class Scanner
         return $config;
     }
 
-    public static function addClass(string $class, string $path)
+    public static function addClass(string $class, string $path): void
     {
         self::$classMap[$class] = $path;
     }
