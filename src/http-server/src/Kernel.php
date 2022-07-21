@@ -23,6 +23,9 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use ReflectionException;
 
+/**
+ * @mixin Router
+ */
 class Kernel
 {
     /**
@@ -56,10 +59,7 @@ class Kernel
      */
     public function __call(string $name, array $arguments)
     {
-        if (in_array($name, ['get', 'post', 'request', 'any', 'put', 'options', 'delete'])) {
-            return $this->router->{$name}(...$arguments);
-        }
-        throw new BadMethodCallException('Method ' . $name . ' does not exist.');
+        return $this->router->{$name}(...$arguments);
     }
 
     /**
