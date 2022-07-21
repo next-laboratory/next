@@ -18,6 +18,7 @@ use Generator;
 use Max\Utils\Traits\AutoFillProperties;
 use SessionHandlerInterface;
 use SplFileInfo;
+
 use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
@@ -44,7 +45,7 @@ class FileHandler implements SessionHandlerInterface
     public function __construct(array $options = [])
     {
         $this->fillProperties($options);
-        !is_dir($this->path) && mkdir($this->path, 0755, true);
+        ! is_dir($this->path) && mkdir($this->path, 0755, true);
     }
 
     /**
@@ -56,13 +57,13 @@ class FileHandler implements SessionHandlerInterface
         try {
             $number = 0;
             $now    = time();
-            $files  = $this->findFiles($this->path, function(SplFileInfo $item) use ($maxLifeTime, $now) {
+            $files  = $this->findFiles($this->path, function (SplFileInfo $item) use ($maxLifeTime, $now) {
                 return $now - $maxLifeTime > $item->getMTime();
             });
 
             foreach ($files as $file) {
                 $this->unlink($file->getPathname());
-                $number++;
+                ++$number;
             }
             return $number;
         } catch (\Throwable $throwable) {
@@ -100,11 +101,10 @@ class FileHandler implements SessionHandlerInterface
     #[\ReturnTypeWillChange]
     public function write($id, $data): bool
     {
-        return (bool)file_put_contents($this->getSessionFile($id), $data, LOCK_EX);
+        return (bool) file_put_contents($this->getSessionFile($id), $data, LOCK_EX);
     }
 
     /**
-     * @return bool
      * @throws Exception
      */
     #[\ReturnTypeWillChange]
@@ -141,7 +141,7 @@ class FileHandler implements SessionHandlerInterface
 
         /** @var SplFileInfo $item */
         foreach ($items as $item) {
-            if ($item->isDir() && !$item->isLink()) {
+            if ($item->isDir() && ! $item->isLink()) {
                 yield from $this->findFiles($item->getPathname(), $filter);
             } else {
                 if ($filter($item)) {

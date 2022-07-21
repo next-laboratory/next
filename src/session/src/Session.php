@@ -15,6 +15,7 @@ use InvalidArgumentException;
 use Max\Session\Exceptions\SessionException;
 use Max\Utils\Arr;
 use SessionHandlerInterface;
+
 use function ctype_alnum;
 
 class Session
@@ -49,7 +50,7 @@ class Session
         }
         $this->id = ($id && $this->isValidId($id)) ? $id : \session_create_id();
         if ($data = $this->sessionHandler->read($this->id)) {
-            $this->data = (array)(@\unserialize($data) ?: []);
+            $this->data = (array) (@\unserialize($data) ?: []);
         }
         $this->started = true;
     }
@@ -143,7 +144,7 @@ class Session
      */
     public function setId(string $id): void
     {
-        if (!$this->isValidId($id)) {
+        if (! $this->isValidId($id)) {
             throw new InvalidArgumentException('The length of the session ID must be 40.');
         }
         $this->id = $id;

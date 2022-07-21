@@ -1,7 +1,7 @@
 {
     "name": "max/session",
     "license": "Apache-2.0",
-    "homepage": "https://github.com/topyao/max-session",
+    "homepage": "https://github.com/marxphp/session",
     "authors": [
         {
             "name": "chengyao",
@@ -17,7 +17,7 @@
     "require": {
         "php": "^8.0",
         "max/utils": "dev-master",
-        "max/config": "dev-master"
+        "max/redis": "dev-master"
     },
     "extra": {
         "max": {
