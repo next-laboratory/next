@@ -1,3 +1,51 @@
+# nginx配置参考
+
+swoole/workerman
+
+```
+server {
+    server_name www.domain.com;
+    listen 80;
+
+    location / {
+        proxy_http_version 1.1;
+        proxy_set_header Connection "keep-alive";
+        proxy_set_header Host $http_host;
+        proxy_set_header Scheme $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        if (!-f $request_filename) {
+             proxy_pass http://127.0.0.1:9501;
+        }
+    }
+}
+```
+
+FPM
+
+```
+server {
+    server_name www.domain.com;
+    listen 80;
+    root /data/project/public;
+    index index.html index.php;
+
+    location / {
+        if (!-e $request_filename) {
+            rewrite ^/(.*)$ /index.php/$1 last;
+        }
+    }
+
+    location ~ ^(.+\.php)(.*)$ {
+        fastcgi_pass 127.0.0.1:9000;
+        fastcgi_split_path_info ^(.+\.php)(.*)$;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}
+```
+
 # 路由
 
 ## 配置
