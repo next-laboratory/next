@@ -85,7 +85,7 @@ class RouteCollector extends AbstractCollector
     public static function collectMethod(string $class, string $method, object $attribute): void
     {
         if ($attribute instanceof MappingInterface && self::$class === $class && ! is_null(self::$router)) {
-            self::$router->request($attribute->path, [$class, $method], $attribute->methods, $attribute->middlewares);
+            self::$router->request($attribute->path, [$class, $method], $attribute->methods)->middleware(...$attribute->middlewares);
         }
     }
 
