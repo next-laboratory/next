@@ -37,7 +37,7 @@ class Router
 
     /**
      * Allow almost all methods.
-     * For example: $router->any('/', [IndexController::class, 'index']).
+     * For example: $router->any('/', [IndexController@class, 'index']).
      *
      * @param string               $path   the request path
      * @param array|Closure|string $action the handling method
@@ -93,7 +93,7 @@ class Router
     public function request(string $path, array|Closure|string $action, array $methods = ['GET', 'HEAD', 'POST']): Route
     {
         if (is_string($action)) {
-            $action = explode('::', $this->formatController($action), 2);
+            $action = explode('@', $this->formatController($action), 2);
         }
         if ($action instanceof Closure || count($action) === 2) {
             if (is_array($action)) {

@@ -22,7 +22,7 @@ $router->prefix('api')
     });
 
 // 带参数类型限制, 其中id只有为数字的时候会匹配到
-$router->get('/book/{id:\d+}', 'BookController::show');
+$router->get('/book/{id:\d+}', 'BookController@show');
 
 // 解析路由，返回匹配到的Route对象
 $route = $router->getRouteCollector()->resolve('GET', '/');
