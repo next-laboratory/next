@@ -64,6 +64,14 @@ class Session
     }
 
     /**
+     * Generate a new session id.
+     */
+    public function regenerateId(): void
+    {
+        $this->id = \session_create_id();
+    }
+    
+    /**
      * Close the session.
      */
     public function close(): bool

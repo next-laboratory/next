@@ -1,3 +1,51 @@
+# nginx配置参考
+
+swoole/workerman
+
+```
+server {
+    server_name www.domain.com;
+    listen 80;
+
+    location / {
+        proxy_http_version 1.1;
+        proxy_set_header Connection "keep-alive";
+        proxy_set_header Host $http_host;
+        proxy_set_header Scheme $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        if (!-f $request_filename) {
+             proxy_pass http://127.0.0.1:9501;
+        }
+    }
+}
+```
+
+FPM
+
+```
+server {
+    server_name www.domain.com;
+    listen 80;
+    root /data/project/public;
+    index index.html index.php;
+
+    location / {
+        if (!-e $request_filename) {
+            rewrite ^/(.*)$ /index.php/$1 last;
+        }
+    }
+
+    location ~ ^(.+\.php)(.*)$ {
+        fastcgi_pass 127.0.0.1:9000;
+        fastcgi_split_path_info ^(.+\.php)(.*)$;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}
+```
+
 # 路由
 
 ## 配置
@@ -45,7 +93,7 @@ $this->get('/', [IndexController::class, 'index']);
 #[Controller(prefix: 'index', middleware: [BasicAuthentication::class])]
 class Index
 {
-    #[GetMapping(path: '/user/<id>\.html', domain: '*.1kmb.com')]
+    #[GetMapping(path: '/user/{id}.html', domain: '*.1kmb.com')]
     public function index(\Psr\Http\Message\ServerRequestInterface $request, $id)
     {
         return new \Max\Http\Message\Response(200, [], 'Hello, world!');
@@ -54,7 +102,7 @@ class Index
 ```
 
 上面的代码定义了一个 Index 控制器，并使用 Controller 注解设置了路由的前缀为 index, 该控制器中全部方法的中间件为`BasicAuthentication::class`， 并且使用`GetMapping`
-注解定义了一个路由，`path`为`/user/<id>.html`， 那么实际请求的地址可以为`/index/user/1.html`，注意在该路由中还注册了对应的域名`*.1kmb.com` 表示该方法仅能被该泛域名访问到,
+注解定义了一个路由，`path`为`/user/{id}.html`， 那么实际请求的地址可以为`/index/user/1.html`，注意在该路由中还注册了对应的域名`*.1kmb.com` 表示该方法仅能被该泛域名访问到,
 支持的注解如下，分别对应了不同的请求方法，其中RequestMapping对应的请求方法默认为`GET`，`POST`，`HEAD`，可使用`method`参数来自定义
 
 - GetMapping
@@ -69,7 +117,7 @@ class Index
 ```php
 class IntexController {
 
-	#[GetMapping(path: '/<id>')]
+	#[GetMapping(path: '/{id}')]
 	public functin index(ServerRequestInterface $request, $id) {
 		return ['test'];
 	}
