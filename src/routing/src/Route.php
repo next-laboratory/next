@@ -115,7 +115,7 @@ class Route
      */
     public function middleware(string ...$middlewares): Route
     {
-        $this->middlewares = array_unique([...$this->middlewares, $middlewares]);
+        $this->middlewares = array_unique([...$this->middlewares, ...$middlewares]);
 
         return $this;
     }
