@@ -129,11 +129,23 @@ class Router
 
     /**
      * 变量规则.
+     * @deprecated
      */
     public function patterns(array $patterns): Router
     {
         $new           = clone $this;
         $new->patterns = array_merge($this->patterns, $patterns);
+
+        return $new;
+    }
+
+    /**
+     * 单个变量规则
+     */
+    public function where(string $name, string $pattern): Router
+    {
+        $new = clone $this;
+        $new->patterns[$name] = $pattern;
 
         return $new;
     }
