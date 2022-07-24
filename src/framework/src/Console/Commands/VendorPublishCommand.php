@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Framework\Console\Commands;
+namespace Max\Console\Commands;
 
 use Max\Aop\Scanner;
 use Symfony\Component\Console\Command\Command;

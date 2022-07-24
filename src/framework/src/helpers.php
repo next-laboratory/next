@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-use Max\Framework\Exceptions\VarDumperAbort;
+use Max\Exceptions\VarDumperAbort;
 
 if (function_exists('d') === false) {
     /**
