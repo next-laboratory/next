@@ -33,7 +33,7 @@ class Filesystem
     /**
      * Determine if a file or directory exists.
      */
-    public static function exists(string $path): bool
+    public function exists(string $path): bool
     {
         return file_exists($path);
     }
@@ -41,7 +41,7 @@ class Filesystem
     /**
      * Determine if a file or directory is missing.
      */
-    public static function missing(string $path): bool
+    public function missing(string $path): bool
     {
         return ! static::exists($path);
     }
@@ -51,7 +51,7 @@ class Filesystem
      *
      * @throws FileNotFoundException
      */
-    public static function get(string $path, bool $lock = false): string
+    public function get(string $path, bool $lock = false): string
     {
         if (static::isFile($path)) {
             return $lock ? static::sharedGet($path) : file_get_contents($path);
@@ -63,7 +63,7 @@ class Filesystem
     /**
      * Get contents of a file with shared access.
      */
-    public static function sharedGet(string $path): string
+    public function sharedGet(string $path): string
     {
         $contents = '';
         $handle   = fopen($path, 'rb');
@@ -86,9 +86,8 @@ class Filesystem
      * Get the returned value of a file.
      *
      * @throws FileNotFoundException
-     * @return mixed
      */
-    public static function getRequire(string $path, array $data = [])
+    public function getRequire(string $path, array $data = []): mixed
     {
         if (static::isFile($path)) {
             $__path = $path;
@@ -110,7 +109,7 @@ class Filesystem
      * @throws FileNotFoundException
      * @return mixed
      */
-    public static function requireOnce(string $path, array $data = [])
+    public function requireOnce(string $path, array $data = [])
     {
         if (static::isFile($path)) {
             $__path = $path;
@@ -131,7 +130,7 @@ class Filesystem
      *
      * @throws FileNotFoundException
      */
-    public static function lines(string $path): LazyCollection
+    public function lines(string $path): LazyCollection
     {
         if (! static::isFile($path)) {
             throw new FileNotFoundException(
@@ -153,17 +152,15 @@ class Filesystem
     /**
      * Get the MD5 hash of the file at the given path.
      */
-    public static function hash(string $path): string
+    public function hash(string $path): string
     {
         return md5_file($path);
     }
 
     /**
      * Write the contents of a file.
-     *
-     * @return bool|int
      */
-    public static function put(string $path, string $contents, bool $lock = false)
+    public function put(string $path, string $contents, bool $lock = false): bool|int
     {
         return file_put_contents($path, $contents, $lock ? LOCK_EX : 0);
     }
@@ -171,7 +168,7 @@ class Filesystem
     /**
      * Write the contents of a file, replacing it atomically if it already exists.
      */
-    public static function replace(string $path, string $content)
+    public function replace(string $path, string $content): void
     {
         // If the path already exists and is a symlink, get the real path...
         clearstatcache(true, $path);
@@ -187,11 +184,8 @@ class Filesystem
 
     /**
      * Replace a given string within a given file.
-     *
-     * @param array|string $search
-     * @param array|string $replace
      */
-    public static function replaceInFile($search, $replace, string $path)
+    public function replaceInFile(array|string $search, array|string $replace, string $path): void
     {
         file_put_contents($path, str_replace($search, $replace, file_get_contents($path)));
     }
@@ -200,9 +194,8 @@ class Filesystem
      * Prepend to a file.
      *
      * @throws FileNotFoundException
-     * @return bool|int
      */
-    public static function prepend(string $path, string $data)
+    public function prepend(string $path, string $data): bool|int
     {
         if (static::exists($path)) {
             return static::put($path, $data . static::get($path));
@@ -213,20 +206,16 @@ class Filesystem
 
     /**
      * Append to a file.
-     *
-     * @return bool|int
      */
-    public static function append(string $path, string $data)
+    public function append(string $path, string $data): bool|int
     {
         return file_put_contents($path, $data, FILE_APPEND);
     }
 
     /**
      * Get or set UNIX mode of a file or directory.
-     *
-     * @return bool|string
      */
-    public static function chmod(string $path, ?int $mode = null)
+    public function chmod(string $path, ?int $mode = null): bool|string
     {
         if ($mode) {
             return chmod($path, $mode);
@@ -237,10 +226,8 @@ class Filesystem
 
     /**
      * Delete the file at a given path.
-     *
-     * @param array|string $paths
      */
-    public static function delete($paths): bool
+    public function delete(array|string $paths): bool
     {
         $paths   = is_array($paths) ? $paths : func_get_args();
         $success = true;
@@ -261,7 +248,7 @@ class Filesystem
     /**
      * Move a file to a new location.
      */
-    public static function move(string $path, string $target): bool
+    public function move(string $path, string $target): bool
     {
         return rename($path, $target);
     }
@@ -269,7 +256,7 @@ class Filesystem
     /**
      * Copy a file to a new location.
      */
-    public static function copy(string $path, string $target): bool
+    public function copy(string $path, string $target): bool
     {
         return copy($path, $target);
     }
@@ -277,7 +264,7 @@ class Filesystem
     /**
      * Create a symlink to the target file or directory. On Windows, a hard link is created if the target is a file.
      */
-    public static function link(string $target, string $link): bool
+    public function link(string $target, string $link): bool
     {
         if (! windows_os()) {
             return symlink($target, $link);
@@ -293,7 +280,7 @@ class Filesystem
      *
      * @throws RuntimeException
      */
-    public static function relativeLink(string $target, string $link)
+    public function relativeLink(string $target, string $link): void
     {
         if (! class_exists(SymfonyFilesystem::class)) {
             throw new RuntimeException(
@@ -309,7 +296,7 @@ class Filesystem
     /**
      * Extract the file name from a file path.
      */
-    public static function name(string $path): string
+    public function name(string $path): string
     {
         return pathinfo($path, PATHINFO_FILENAME);
     }
@@ -317,7 +304,7 @@ class Filesystem
     /**
      * Extract the trailing name component from a file path.
      */
-    public static function basename(string $path): string
+    public function basename(string $path): string
     {
         return pathinfo($path, PATHINFO_BASENAME);
     }
@@ -325,7 +312,7 @@ class Filesystem
     /**
      * Extract the parent directory from a file path.
      */
-    public static function dirname(string $path): string
+    public function dirname(string $path): string
     {
         return pathinfo($path, PATHINFO_DIRNAME);
     }
@@ -333,7 +320,7 @@ class Filesystem
     /**
      * Extract the file extension from a file path.
      */
-    public static function extension(string $path): string
+    public function extension(string $path): string
     {
         return pathinfo($path, PATHINFO_EXTENSION);
     }
@@ -343,7 +330,7 @@ class Filesystem
      *
      * @throws RuntimeException
      */
-    public static function guessExtension(string $path): ?string
+    public function guessExtension(string $path): ?string
     {
         if (! class_exists(MimeTypes::class)) {
             throw new RuntimeException(
@@ -357,7 +344,7 @@ class Filesystem
     /**
      * Get the file type of given file.
      */
-    public static function type(string $path): string
+    public function type(string $path): string
     {
         return filetype($path);
     }
@@ -365,7 +352,7 @@ class Filesystem
     /**
      * Get the mime-type of a given file.
      */
-    public static function mimeType(string $path)
+    public function mimeType(string $path): bool|string
     {
         return finfo_file(finfo_open(FILEINFO_MIME_TYPE), $path);
     }
@@ -373,7 +360,7 @@ class Filesystem
     /**
      * Get the file size of a given file.
      */
-    public static function size(string $path): int
+    public function size(string $path): int
     {
         return filesize($path);
     }
@@ -381,7 +368,7 @@ class Filesystem
     /**
      * Get the file's last modification time.
      */
-    public static function lastModified(string $path): int
+    public function lastModified(string $path): int
     {
         return filemtime($path);
     }
@@ -389,7 +376,7 @@ class Filesystem
     /**
      * Determine if the given path is a directory.
      */
-    public static function isDirectory(string $directory): bool
+    public function isDirectory(string $directory): bool
     {
         return is_dir($directory);
     }
@@ -397,7 +384,7 @@ class Filesystem
     /**
      * Determine if the given path is readable.
      */
-    public static function isReadable(string $path): bool
+    public function isReadable(string $path): bool
     {
         return is_readable($path);
     }
@@ -405,7 +392,7 @@ class Filesystem
     /**
      * Determine if the given path is writable.
      */
-    public static function isWritable(string $path): bool
+    public function isWritable(string $path): bool
     {
         return is_writable($path);
     }
@@ -413,17 +400,15 @@ class Filesystem
     /**
      * Determine if the given path is a file.
      */
-    public static function isFile(string $file): bool
+    public function isFile(string $file): bool
     {
         return is_file($file);
     }
 
     /**
      * Find path names matching a given pattern.
-     *
-     * @return array|false
      */
-    public static function glob(string $pattern, int $flags = 0)
+    public function glob(string $pattern, int $flags = 0): bool|array
     {
         return glob($pattern, $flags);
     }
@@ -433,7 +418,7 @@ class Filesystem
      *
      * @return SplFileInfo[]
      */
-    public static function files(string $directory, bool $hidden = false): array
+    public function files(string $directory, bool $hidden = false): array
     {
         return iterator_to_array(
             Finder::create()->files()->ignoreDotFiles(! $hidden)->in($directory)->depth(0)->sortByName(),
@@ -446,7 +431,7 @@ class Filesystem
      *
      * @return SplFileInfo[]
      */
-    public static function allFiles(string $directory, bool $hidden = false): array
+    public function allFiles(string $directory, bool $hidden = false): array
     {
         return iterator_to_array(
             Finder::create()->files()->ignoreDotFiles(! $hidden)->in($directory)->sortByName(),
@@ -457,7 +442,7 @@ class Filesystem
     /**
      * Get all the directories within a given directory.
      */
-    public static function directories(string $directory): array
+    public function directories(string $directory): array
     {
         $directories = [];
 
@@ -471,7 +456,7 @@ class Filesystem
     /**
      * Ensure a directory exists.
      */
-    public static function ensureDirectoryExists(string $path, int $mode = 0755, bool $recursive = true)
+    public function ensureDirectoryExists(string $path, int $mode = 0755, bool $recursive = true): void
     {
         if (! static::isDirectory($path)) {
             static::makeDirectory($path, $mode, $recursive);
@@ -481,7 +466,7 @@ class Filesystem
     /**
      * Create a directory.
      */
-    public static function makeDirectory(string $path, int $mode = 0755, bool $recursive = false, bool $force = false): bool
+    public function makeDirectory(string $path, int $mode = 0755, bool $recursive = false, bool $force = false): bool
     {
         if ($force) {
             return @mkdir($path, $mode, $recursive);
@@ -493,7 +478,7 @@ class Filesystem
     /**
      * Move a directory.
      */
-    public static function moveDirectory(string $from, string $to, bool $overwrite = false): bool
+    public function moveDirectory(string $from, string $to, bool $overwrite = false): bool
     {
         if ($overwrite && static::isDirectory($to) && ! static::deleteDirectory($to)) {
             return false;
@@ -505,7 +490,7 @@ class Filesystem
     /**
      * Copy a directory from one location to another.
      */
-    public static function copyDirectory(string $directory, string $destination, ?int $options = null): bool
+    public function copyDirectory(string $directory, string $destination, ?int $options = null): bool
     {
         if (! static::isDirectory($directory)) {
             return false;
@@ -551,7 +536,7 @@ class Filesystem
      * Recursively delete a directory.
      * The directory itself may be optionally preserved.
      */
-    public static function deleteDirectory(string $directory, bool $preserve = false): bool
+    public function deleteDirectory(string $directory, bool $preserve = false): bool
     {
         if (! static::isDirectory($directory)) {
             return false;
@@ -585,7 +570,7 @@ class Filesystem
     /**
      * Remove all the directories within a given directory.
      */
-    public static function deleteDirectories(string $directory): bool
+    public function deleteDirectories(string $directory): bool
     {
         $allDirectories = static::directories($directory);
 
@@ -603,7 +588,7 @@ class Filesystem
     /**
      * Empty the specified directory of all files and folders.
      */
-    public static function cleanDirectory(string $directory): bool
+    public function cleanDirectory(string $directory): bool
     {
         return static::deleteDirectory($directory, true);
     }
