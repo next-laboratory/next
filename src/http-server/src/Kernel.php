@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Max\Http\Server;
 
-use BadMethodCallException;
 use Max\Http\Server\Events\OnRequest;
 use Max\Routing\Exceptions\RouteNotFoundException;
 use Max\Routing\RouteCollector;
