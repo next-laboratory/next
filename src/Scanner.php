@@ -38,19 +38,22 @@ final class Scanner
 
     private static bool $initialized = false;
 
+    private static Filesystem $filesystem;
+
     /**
      * @throws ReflectionException
      */
     public static function init(ScannerConfig $config): void
     {
         if (!self::$initialized) {
+            self::$filesystem = new Filesystem();
             self::$runtimeDir = $config->getRuntimeDir() . '/aop/';
-            Filesystem::isDirectory(self::$runtimeDir) || Filesystem::makeDirectory(self::$runtimeDir, 0755, true);
+            self::$filesystem->isDirectory(self::$runtimeDir) || self::$filesystem->makeDirectory(self::$runtimeDir, 0755, true);
             self::$astManager = new AstManager();
-            self::$classMap   = self::findClasses($config->getPaths());
-            self::$proxyMap   = $proxyMap = self::$runtimeDir . 'proxy.php';
-            if (!$config->isCache() || !Filesystem::exists($proxyMap)) {
-                Filesystem::exists($proxyMap) && Filesystem::delete($proxyMap);
+            self::$classMap = self::findClasses($config->getPaths());
+            self::$proxyMap = $proxyMap = self::$runtimeDir . 'proxy.php';
+            if (!$config->isCache() || !self::$filesystem->exists($proxyMap)) {
+                self::$filesystem->exists($proxyMap) && self::$filesystem->delete($proxyMap);
                 if (($pid = pcntl_fork()) == -1) {
                     throw new ProcessException('Process fork failed.');
                 }
@@ -64,7 +67,7 @@ final class Scanner
 
     public static function findClasses(array $dirs): array
     {
-        $files   = (new Finder())->in($dirs)->name('*.php')->files();
+        $files = (new Finder())->in($dirs)->name('*.php')->files();
         $classes = [];
         foreach ($files as $file) {
             $realPath = $file->getRealPath();
@@ -79,7 +82,7 @@ final class Scanner
     {
         $installed = json_decode(file_get_contents($installedJsonDir), true);
         $installed = $installed['packages'] ?? $installed;
-        $config    = [];
+        $config = [];
         foreach ($installed as $package) {
             if (isset($package['extra']['max']['config'])) {
                 $configProvider = $package['extra']['max']['config'];
@@ -104,19 +107,19 @@ final class Scanner
      */
     private static function getProxyMap(array $collectors): array
     {
-        if (!Filesystem::exists(self::$proxyMap)) {
+        if (!self::$filesystem->exists(self::$proxyMap)) {
             $proxyDir = self::$runtimeDir . 'proxy/';
-            Filesystem::makeDirectory($proxyDir, 0755, true, true);
-            Filesystem::cleanDirectory($proxyDir);
+            self::$filesystem->makeDirectory($proxyDir, 0755, true, true);
+            self::$filesystem->cleanDirectory($proxyDir);
             self::collect($collectors);
             $collectedClasses = array_unique(array_merge(AspectCollector::getCollectedClasses(), PropertyAnnotationCollector::getCollectedClasses()));
-            $scanMap          = [];
+            $scanMap = [];
             foreach ($collectedClasses as $class) {
                 $proxyPath = $proxyDir . str_replace('\\', '_', $class) . '_Proxy.php';
-                Filesystem::put($proxyPath, self::generateProxyClass($class, self::$classMap[$class]));
+                self::$filesystem->put($proxyPath, self::generateProxyClass($class, self::$classMap[$class]));
                 $scanMap[$class] = $proxyPath;
             }
-            Filesystem::put(self::$proxyMap, sprintf("<?php \nreturn %s;", var_export($scanMap, true)));
+            self::$filesystem->put(self::$proxyMap, sprintf("<?php \nreturn %s;", var_export($scanMap, true)));
             exit;
         }
         return include self::$proxyMap;
@@ -124,9 +127,9 @@ final class Scanner
 
     private static function generateProxyClass(string $class, string $path): string
     {
-        $ast       = self::$astManager->getNodes($path);
+        $ast = self::$astManager->getNodes($path);
         $traverser = new NodeTraverser();
-        $metadata  = new Metadata($class);
+        $metadata = new Metadata($class);
         $traverser->addVisitor(new PropertyHandlerVisitor($metadata));
         $traverser->addVisitor(new ProxyHandlerVisitor($metadata));
         $modifiedStmts = $traverser->traverse($ast);
