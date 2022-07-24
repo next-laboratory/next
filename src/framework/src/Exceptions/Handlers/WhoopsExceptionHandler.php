@@ -13,8 +13,6 @@ namespace Max\Framework\Exceptions\Handlers;
 
 use Max\Http\Message\Response;
 use Max\Http\Message\Stream\StringStream;
-use Max\Http\Server\Contracts\ExceptionHandlerInterface;
-use Max\Http\Server\Contracts\StoppableExceptionHandlerInterface;
 use Max\Utils\Str;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -26,7 +24,7 @@ use Whoops\Handler\XmlResponseHandler;
 use Whoops\Run;
 use Whoops\RunInterface;
 
-class WhoopsExceptionHandler implements ExceptionHandlerInterface, StoppableExceptionHandlerInterface
+class WhoopsExceptionHandler
 {
     protected static array $preference = [
         'text/html'        => PrettyPageHandler::class,
@@ -46,11 +44,6 @@ class WhoopsExceptionHandler implements ExceptionHandlerInterface, StoppableExce
         $content = ob_get_clean();
 
         return new Response(500, ['Content-Type' => $contentType], new StringStream($content));
-    }
-
-    public function isValid(Throwable $throwable): bool
-    {
-        return class_exists('Whoops\Run');
     }
 
     protected function negotiateHandler(ServerRequestInterface $request)
