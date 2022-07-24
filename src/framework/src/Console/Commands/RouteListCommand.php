@@ -73,7 +73,7 @@ class RouteListCommand extends Command
         $routes         = [];
         foreach ($routeCollector->all() as $registeredRoute) {
             foreach ($registeredRoute as $route) {
-                if (!in_array($route, $routes)) {
+                if (! in_array($route, $routes)) {
                     $routes[] = $route;
                 }
             }

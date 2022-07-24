@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace Max\Framework\Console\Commands;
 
+use Exception;
 use InvalidArgumentException;
-use Max\Utils\Exceptions\FileNotFoundException;
 use Max\Utils\Filesystem;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -35,19 +35,20 @@ class MiddlewareMakeCommand extends Command
     }
 
     /**
-     * @throws \Exception|FileNotFoundException
+     * @throws Exception
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $filesystem               = new Filesystem();
         $stubFile                 = $this->stubsPath . 'middleware.stub';
         [$namespace, $middleware] = $this->parse($input->getArgument('middleware'));
         $middlewarePath           = base_path('app/Http/Middlewares/' . str_replace('\\', '/', $namespace) . '/');
-        Filesystem::exists($middlewarePath) || Filesystem::makeDirectory($middlewarePath, 0755, true);
+        $filesystem->exists($middlewarePath) || $filesystem->makeDirectory($middlewarePath, 0755, true);
         $suffix         = $input->getOption('suffix') ? 'Middleware' : '';
         $middlewareFile = $middlewarePath . $middleware . $suffix . '.php';
-        Filesystem::exists($middlewareFile) && throw new InvalidArgumentException('中间件已经存在！');
-        Filesystem::put($middlewareFile, str_replace(['{{namespace}}', '{{class}}'], ['App\\Http\\Middlewares' . $namespace, $middleware . $suffix], file_get_contents($stubFile)));
+        $filesystem->exists($middlewareFile) && throw new InvalidArgumentException('中间件已经存在！');
+        $filesystem->put($middlewareFile, str_replace(['{{namespace}}', '{{class}}'], ['App\\Http\\Middlewares' . $namespace, $middleware . $suffix], file_get_contents($stubFile)));
         $output->writeln("<info>[DEBU]</info>中间件App\\Http\\Middlewares{$namespace}\\{$middleware}创建成功！");
 
         return 1;
