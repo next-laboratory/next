@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Framework\Exceptions\Handlers;
+namespace Max\Exceptions\Handlers;
 
 use Max\Http\Message\Response;
 use Max\Http\Message\Stream\StringStream;

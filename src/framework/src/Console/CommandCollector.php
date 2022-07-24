@@ -9,10 +9,10 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Framework\Console;
+namespace Max\Console;
 
 use Max\Aop\Collectors\AbstractCollector;
-use Max\Framework\Console\Annotations\Command;
+use Max\Console\Annotations\Command;
 
 class CommandCollector extends AbstractCollector
 {

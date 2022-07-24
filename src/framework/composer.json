@@ -1,29 +1,29 @@
 {
-    "name": "max/framework",
-    "license": "Apache-2.0",
-    "homepage": "https://github.com/marxphp/framework",
-    "autoload": {
-        "psr-4": {
-            "Max\\Framework\\": "src/"
-        },
-        "files": [
-            "src/helpers.php"
-        ]
+  "name": "max/framework",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/marxphp/framework",
+  "autoload": {
+    "psr-4": {
+      "Max\\": "src/"
     },
-    "authors": [
-        {
-            "name": "chengyao",
-            "email": "987861463@qq.com"
-        }
-    ],
-    "require": {
-        "symfony/console": "^6.0",
-        "symfony/var-dumper": "*",
-        "filp/whoops": "*"
-    },
-    "extra": {
-        "max": {
-            "config": "Max\\Framework\\ConfigProvider"
-        }
+    "files": [
+      "src/helpers.php"
+    ]
+  },
+  "authors": [
+    {
+      "name": "chengyao",
+      "email": "987861463@qq.com"
     }
+  ],
+  "require": {
+    "symfony/console": "^6.0",
+    "symfony/var-dumper": "*",
+    "filp/whoops": "*"
+  },
+  "extra": {
+    "max": {
+      "config": "Max\\ConfigProvider"
+    }
+  }
 }

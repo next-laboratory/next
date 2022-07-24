@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Framework;
+namespace Max;
 
 class ConfigProvider
 {
@@ -20,9 +20,9 @@ class ConfigProvider
     {
         return [
             'commands' => [
-                'Max\Framework\Console\Commands\RouteListCommand',
-                'Max\Framework\Console\Commands\ControllerMakeCommand',
-                'Max\Framework\Console\Commands\MiddlewareMakeCommand',
+                'Max\Console\Commands\RouteListCommand',
+                'Max\Console\Commands\ControllerMakeCommand',
+                'Max\Console\Commands\MiddlewareMakeCommand',
             ],
         ];
     }
