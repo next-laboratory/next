@@ -14,6 +14,7 @@ namespace Max\Routing;
 use Max\Routing\Exceptions\MethodNotAllowedException;
 use Max\Routing\Exceptions\RouteNotFoundException;
 use Psr\Http\Message\ServerRequestInterface;
+
 use function array_key_exists;
 use function preg_match;
 

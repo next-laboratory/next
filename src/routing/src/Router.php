@@ -13,6 +13,7 @@ namespace Max\Routing;
 
 use Closure;
 use InvalidArgumentException;
+
 use function array_merge;
 use function array_unique;
 use function sprintf;
@@ -140,11 +141,11 @@ class Router
     }
 
     /**
-     * 单个变量规则
+     * 单个变量规则.
      */
     public function where(string $name, string $pattern): Router
     {
-        $new = clone $this;
+        $new                  = clone $this;
         $new->patterns[$name] = $pattern;
 
         return $new;

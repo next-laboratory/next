@@ -15,8 +15,6 @@ use ErrorException;
 use Max\Framework\Exceptions\VarDumperAbort;
 use Max\Http\Message\Response;
 use Max\Http\Message\Stream\StringStream;
-use Max\Http\Server\Contracts\ExceptionHandlerInterface;
-use Max\Http\Server\Contracts\StoppableExceptionHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\VarDumper\Caster\ReflectionCaster;
@@ -24,7 +22,7 @@ use Symfony\Component\VarDumper\Cloner\VarCloner;
 use Symfony\Component\VarDumper\Dumper\HtmlDumper;
 use Throwable;
 
-class VarDumperAbortHandler implements ExceptionHandlerInterface, StoppableExceptionHandlerInterface
+class VarDumperAbortHandler
 {
     /**
      * @param VarDumperAbort $throwable
@@ -41,10 +39,5 @@ class VarDumperAbortHandler implements ExceptionHandlerInterface, StoppableExcep
         }
 
         return new Response(body: new StringStream(ob_get_clean()));
-    }
-
-    public function isValid(Throwable $throwable): bool
-    {
-        return class_exists('Symfony\Component\VarDumper\Dumper\HtmlDumper') && $throwable instanceof VarDumperAbort;
     }
 }

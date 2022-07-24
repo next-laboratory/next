@@ -11,66 +11,56 @@ declare(strict_types=1);
 
 namespace Max\Http\Server\Middlewares;
 
-use Max\Http\Server\Contracts\ExceptionHandlerInterface;
-use Max\Http\Server\Contracts\StoppableExceptionHandlerInterface;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\ContainerInterface;
+use Max\Http\Message\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use ReflectionException;
-use RuntimeException;
 use Throwable;
 
 class ExceptionHandleMiddleware implements MiddlewareInterface
 {
     /**
-     * @var ExceptionHandlerInterface[]|string[]
-     */
-    protected array $exceptionHandlers = [];
-
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws ReflectionException
-     */
-    public function __construct(ContainerInterface $container)
-    {
-        foreach ($this->exceptionHandlers as $key => $exceptionHandler) {
-            $this->exceptionHandlers[$key] = $container->make($exceptionHandler);
-        }
-    }
-
-    /**
      * @throws Throwable
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    final public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {
             return $handler->handle($request);
         } catch (Throwable $throwable) {
-            return $this->convertToResponse($throwable, $request);
+            $this->reportException($throwable, $request);
+
+            return $this->renderException($throwable, $request);
         }
     }
 
     /**
-     * @throws Throwable
+     * 报告异常.
      */
-    protected function convertToResponse(Throwable $throwable, ServerRequestInterface $request): ResponseInterface
+    protected function reportException(Throwable $throwable, ServerRequestInterface $request): void
     {
-        $finalResponse = null;
-        foreach ($this->exceptionHandlers as $exceptionHandler) {
-            if ($exceptionHandler->isValid($throwable)) {
-                if ($response = $exceptionHandler->handle($throwable, $request)) {
-                    $finalResponse = $response;
-                }
-                if ($exceptionHandler instanceof StoppableExceptionHandlerInterface) {
-                    return $finalResponse instanceof ResponseInterface
-                        ? $finalResponse
-                        : throw new RuntimeException('The final exception handler must return an instance of Psr\Http\Message\ResponseInterface');
-                }
-            }
+    }
+
+    /**
+     * 将异常转为ResponseInterface对象
+     */
+    protected function renderException(Throwable $throwable, ServerRequestInterface $request): ResponseInterface
+    {
+        $message = $throwable->getMessage();
+        if (str_contains($request->getHeaderLine('Accept'), 'application/json')
+            || strcasecmp('XMLHttpRequest', $request->getHeaderLine('X-REQUESTED-WITH')) === 0) {
+            return new Response(500, [], json_encode([
+                'status'  => false,
+                'code'    => 500,
+                'data'    => $throwable->getTrace(),
+                'message' => $message,
+            ], JSON_UNESCAPED_UNICODE));
         }
-        throw $throwable;
+        return new Response(500, [], sprintf(
+            '<html lang="zh"><head><title>%s</title></head><body><pre style="font-size: 1.5em; white-space: break-spaces"><p><b>%s</b></p><b>Stack Trace</b><br>%s</pre></body></html>',
+            $message,
+            $message,
+            $throwable->getTraceAsString(),
+        ));
     }
 }

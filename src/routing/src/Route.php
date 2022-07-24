@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Max\Routing;
 
 use Closure;
+
 use function preg_replace_callback;
 use function sprintf;
 use function trim;
@@ -45,19 +46,19 @@ class Route
         protected array $patterns = [],
         protected array $middlewares = []
     ) {
-        $this->path         = '/' . trim($this->path, '/');
         $compiledPath       = preg_replace_callback(sprintf('#%s#', self::VARIABLE_REGEX), function ($matches) {
-            $name = $matches[1];
+            $name           = $matches[1];
             if (isset($matches[2])) {
                 $this->patterns[$name] = $matches[2];
             }
             $this->setParameter($name, null);
             return sprintf('(?P<%s>%s)', $name, $this->getPattern($name));
-        }, str_replace(['.', '+', '*'], ['\.', '\+', '\*'], $this->path));
+        }, $this->path      = '/' . trim($this->path, '/'));
         $this->compiledPath = sprintf('#^%s$#iU', $compiledPath);
     }
 
     /**
+     * /**
      * 获取路由参数规则.
      */
     public function getPattern(string $key): string
