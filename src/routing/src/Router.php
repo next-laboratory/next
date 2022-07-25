@@ -94,17 +94,16 @@ class Router
     public function request(string $path, array|Closure|string $action, array $methods = ['GET', 'HEAD', 'POST']): Route
     {
         if (is_string($action)) {
-            $action = explode('@', $this->formatController($action), 2);
+            $action = str_contains($action, '@')
+                ? explode('@', $this->formatController($action), 2)
+                : [$this->formatController($action), '__invoke'];
         }
         if ($action instanceof Closure || count($action) === 2) {
             if (is_array($action)) {
                 [$controller, $action] = $action;
-                $action                = [$this->formatController($controller), $action];
+                $action = [$this->formatController($controller), $action];
             }
-            $route = new Route($methods, $this->prefix . $path, $action, $this->patterns, $this->middlewares);
-            $this->routeCollector->add($route);
-
-            return $route;
+            return $this->routeCollector->add(new Route($methods, $this->prefix . $path, $action, $this->patterns, $this->middlewares));
         }
         throw new InvalidArgumentException('Invalid route action: ' . $path);
     }
@@ -130,6 +129,7 @@ class Router
 
     /**
      * 变量规则.
+     *
      * @deprecated
      */
     public function patterns(array $patterns): Router
@@ -173,6 +173,9 @@ class Router
         return $new;
     }
 
+    /**
+     * 路由收集器
+     */
     public function getRouteCollector(): RouteCollector
     {
         return $this->routeCollector;
