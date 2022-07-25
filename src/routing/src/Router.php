@@ -101,7 +101,7 @@ class Router
         if ($action instanceof Closure || count($action) === 2) {
             if (is_array($action)) {
                 [$controller, $action] = $action;
-                $action = [$this->formatController($controller), $action];
+                $action                = [$this->formatController($controller), $action];
             }
             return $this->routeCollector->add(new Route($methods, $this->prefix . $path, $action, $this->patterns, $this->middlewares));
         }
@@ -174,7 +174,7 @@ class Router
     }
 
     /**
-     * 路由收集器
+     * 路由收集器.
      */
     public function getRouteCollector(): RouteCollector
     {
