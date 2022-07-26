@@ -28,11 +28,12 @@ class RouteCollector
     /**
      * 添加一个路由.
      */
-    public function add(Route $route): void
+    public function add(Route $route): Route
     {
         foreach ($route->getMethods() as $method) {
             $this->routes[$method][] = $route;
         }
+        return $route;
     }
 
     /**
@@ -44,6 +45,7 @@ class RouteCollector
     }
 
     /**
+     * 使用ServerRequestInterface对象解析路由.
      * @throws MethodNotAllowedException
      * @throws RouteNotFoundException
      */
@@ -54,6 +56,9 @@ class RouteCollector
         return $this->resolve($method, $path);
     }
 
+    /**
+     * 使用请求方法和请求路径解析路由.
+     */
     public function resolve(string $method, string $path)
     {
         $routes = $this->routes[$method] ?? throw new MethodNotAllowedException('Method not allowed: ' . $method, 405);

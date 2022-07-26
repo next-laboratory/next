@@ -17,7 +17,7 @@
             "Max\\Database\\": "src/database/src",
             "Max\\Di\\": "src/di/src",
             "Max\\Event\\": "src/event/src",
-            "Max\\Framework\\": "src/framework/src",
+            "Max\\": "src/framework/src",
             "Max\\Http\\Server\\": "src/http-server/src",
             "Max\\Http\\Message\\": "src/http-message/src",
             "Max\\Queue\\": "src/queue/src",
