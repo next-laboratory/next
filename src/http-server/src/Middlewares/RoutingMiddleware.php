@@ -22,8 +22,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class RoutingMiddleware implements MiddlewareInterface
 {
-    public function __construct(protected RouteCollector $routeCollector)
-    {
+    public function __construct(
+        protected RouteCollector $routeCollector
+    ) {
     }
 
     /**

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Http\Server\Middlewares;
 
+use Max\Http\Message\Exceptions\HttpException;
 use Max\Http\Message\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -46,21 +47,27 @@ class ExceptionHandleMiddleware implements MiddlewareInterface
      */
     protected function renderException(Throwable $throwable, ServerRequestInterface $request): ResponseInterface
     {
-        $message = $throwable->getMessage();
+        $message    = $throwable->getMessage();
+        $statusCode = $this->getStatusCode($throwable);
         if (str_contains($request->getHeaderLine('Accept'), 'application/json')
             || strcasecmp('XMLHttpRequest', $request->getHeaderLine('X-REQUESTED-WITH')) === 0) {
-            return new Response(500, [], json_encode([
+            return new Response($statusCode, [], json_encode([
                 'status'  => false,
-                'code'    => 500,
+                'code'    => $statusCode,
                 'data'    => $throwable->getTrace(),
                 'message' => $message,
             ], JSON_UNESCAPED_UNICODE));
         }
-        return new Response(500, [], sprintf(
+        return new Response($statusCode, [], sprintf(
             '<html lang="zh"><head><title>%s</title></head><body><pre style="font-size: 1.5em; white-space: break-spaces"><p><b>%s</b></p><b>Stack Trace</b><br>%s</pre></body></html>',
             $message,
             $message,
             $throwable->getTraceAsString(),
         ));
+    }
+
+    protected function getStatusCode(Throwable $throwable)
+    {
+        return $throwable instanceof HttpException ? $throwable->getCode() : 500;
     }
 }

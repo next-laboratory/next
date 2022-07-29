@@ -28,7 +28,7 @@ class RouteCollector
     /**
      * 添加一个路由.
      */
-    public function add(Route $route): Route
+    public function addRoute(Route $route): Route
     {
         foreach ($route->getMethods() as $method) {
             $this->routes[$method][] = $route;
