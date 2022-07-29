@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Redis;
 
+use Closure;
 use Max\Redis\Contracts\ConnectorInterface;
 
 /**
@@ -28,8 +29,13 @@ class Redis
         return $this->getHandler()->{$name}(...$arguments);
     }
 
-    public function getHandler() 
+    public function getHandler()
     {
         return $this->connector->get();
+    }
+
+    public function wrap(Closure $callable)
+    {
+        return $callable($this->getHandler());
     }
 }

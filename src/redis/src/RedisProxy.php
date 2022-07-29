@@ -14,6 +14,9 @@ namespace Max\Redis;
 use Max\Redis\Contracts\ConnectorInterface;
 use RedisException;
 
+/**
+ * @mixin \Redis
+ */
 class RedisProxy
 {
     public function __construct(
