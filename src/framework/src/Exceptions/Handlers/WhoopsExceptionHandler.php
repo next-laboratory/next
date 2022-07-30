@@ -72,10 +72,9 @@ class WhoopsExceptionHandler
             $handler->addDataTableCallback('Cookies', [$request, 'getCookieParams']);
             $handler->addDataTableCallback('Files', [$request, 'getUploadedFiles']);
             $handler->addDataTableCallback('Attribute', [$request, 'getAttributes']);
-
             try {
                 $handler->addDataTableCallback('Session', [$request->session(), 'all']);
-            } catch (\RuntimeException) {
+            } catch (Throwable) {
             }
         } elseif ($handler instanceof JsonResponseHandler) {
             $handler->addTraceToOutput(true);
