@@ -129,8 +129,6 @@ class Router
 
     /**
      * 变量规则.
-     *
-     * @deprecated
      */
     public function patterns(array $patterns): Router
     {

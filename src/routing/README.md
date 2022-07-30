@@ -17,7 +17,8 @@ $router->prefix('api')
             var_dump('user');
         })->middleware('auth');
         $router->middleware('user')->group(function() {
-            //
+            // 使用引入文件的方式
+            require_once './route.php';
         });
     });
 
@@ -41,6 +42,6 @@ $router->namespace('App\Http\Controllers')->get('/', 'Index::index');
 ```
 
 - prefix
-- middlewares
+- middleware
 - namespace
 - patterns
