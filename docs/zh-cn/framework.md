@@ -80,13 +80,6 @@ protected function map(Router $router) {
 }
 ```
 
-如果你引入了其他文件，则可以在该文件中使用`$this`来访问`Router`对象, 例如文件`routes.php`中定义路由
-
-```php
-/** @var Router $this */
-$this->get('/', [IndexController::class, 'index']);
-```
-
 > 也可以使用注解方式
 
 ```php
