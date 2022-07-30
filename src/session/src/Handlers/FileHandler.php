@@ -143,10 +143,8 @@ class FileHandler implements SessionHandlerInterface
         foreach ($items as $item) {
             if ($item->isDir() && ! $item->isLink()) {
                 yield from $this->findFiles($item->getPathname(), $filter);
-            } else {
-                if ($filter($item)) {
-                    yield $item;
-                }
+            } else if ($filter($item)) {
+                yield $item;
             }
         }
     }

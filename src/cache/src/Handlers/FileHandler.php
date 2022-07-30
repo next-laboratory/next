@@ -53,9 +53,7 @@ class FileHandler extends CacheHandler
             if (!is_writable($path) || !is_readable($path)) {
                 chmod($path, 0755);
             }
-        } else {
-            mkdir($path, 0755, true);
-        }
+        } else mkdir($path, 0755, true);
         $this->path = rtrim($path, DIRECTORY_SEPARATOR) . '/';
     }
 
@@ -132,9 +130,7 @@ class FileHandler extends CacheHandler
             if (is_dir($item)) {
                 $this->unlink($item);
                 rmdir($item);
-            } else {
-                unlink($item);
-            }
+            } else unlink($item);
         }
     }
 

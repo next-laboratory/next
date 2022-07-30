@@ -22,16 +22,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use ReflectionException;
 
-/**
- * @mixin Router
- */
 class Kernel
 {
-    /**
-     * 初始路由对象
-     */
-    protected Router $router;
-
     /**
      * 全局中间件.
      */
@@ -50,15 +42,7 @@ class Kernel
         protected ContainerInterface $container,
         protected ?EventDispatcherInterface $eventDispatcher = null,
     ) {
-        $this->map($this->router = new Router(routeCollector: $routeCollector));
-    }
-
-    /**
-     * 文件外部注册路由.
-     */
-    public function __call(string $name, array $arguments)
-    {
-        return $this->router->{$name}(...$arguments);
+        $this->map(new Router(routeCollector: $routeCollector));
     }
 
     /**
@@ -77,5 +61,13 @@ class Kernel
      */
     protected function map(Router $router): void
     {
+    }
+
+    /**
+     * @param array|string[] $middlewares
+     */
+    public function setMiddlewares(array $middlewares): void
+    {
+        $this->middlewares = $middlewares;
     }
 }

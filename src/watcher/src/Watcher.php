@@ -36,11 +36,9 @@ class Watcher
                 if (! isset($original[$realPath])) {
                     $original[$realPath] = $fileMTime;
                     $modified[]          = $realPath;
-                } else {
-                    if ($original[$realPath] != $fileMTime) {
-                        $original[$realPath] = $fileMTime;
-                        $modified[]          = $realPath;
-                    }
+                } else if ($original[$realPath] != $fileMTime) {
+                    $original[$realPath] = $fileMTime;
+                    $modified[]          = $realPath;
                 }
             }
             if (! empty($modified)) {
