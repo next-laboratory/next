@@ -23,6 +23,7 @@ use ReflectionFunction;
 use ReflectionFunctionAbstract;
 use ReflectionNamedType;
 use ReflectionUnionType;
+
 use function is_null;
 use function is_object;
 use function is_string;
@@ -39,11 +40,11 @@ class Container implements ContainerInterface
      * 将实例化的类存放到数组中.
      *
      * @param string $id       标识
-     * @param object $instance 实例
+     * @param object $concrete 实例
      */
-    public function set(string $id, object $instance)
+    public function set(string $id, object $concrete)
     {
-        $this->resolved[$this->getBinding($id)] = $instance;
+        $this->resolved[$this->getBinding($id)] = $concrete;
     }
 
     /**
@@ -51,8 +52,8 @@ class Container implements ContainerInterface
      *
      * @param class-string<T> $id
      *
-     * @return T
      * @throws NotFoundException
+     * @return T
      */
     public function get(string $id)
     {
@@ -114,8 +115,8 @@ class Container implements ContainerInterface
      * @param class-string<T> $id        标识
      * @param array           $arguments 构造函数参数列表（关联数组）
      *
-     * @return T
      * @throws ContainerExceptionInterface|NotFoundException|ReflectionException
+     * @return T
      */
     public function make(string $id, array $arguments = [])
     {
@@ -123,7 +124,7 @@ class Container implements ContainerInterface
             $id              = $this->getBinding($id);
             $reflectionClass = Reflection::class($id);
             if ($reflectionClass->isInterface()) {
-                if (!$this->bound($id)) {
+                if (! $this->bound($id)) {
                     throw new ContainerException('The ' . $id . ' has no implementation class. ', 600);
                 }
                 // TODO 当绑定的类并没有实现该接口
@@ -161,10 +162,10 @@ class Container implements ContainerInterface
             return $this->callFunc($callable, $arguments);
         }
         [$objectOrClass, $method] = $callable;
-        $isObject         = is_object($objectOrClass);
-        $reflectionMethod = Reflection::method($isObject ? get_class($objectOrClass) : $this->getBinding($objectOrClass), $method);
+        $isObject                 = is_object($objectOrClass);
+        $reflectionMethod         = Reflection::method($isObject ? get_class($objectOrClass) : $this->getBinding($objectOrClass), $method);
         if ($reflectionMethod->isAbstract() === false) {
-            if (!$reflectionMethod->isPublic()) {
+            if (! $reflectionMethod->isPublic()) {
                 $reflectionMethod->setAccessible(true);
             }
 
@@ -238,7 +239,7 @@ class Container implements ContainerInterface
                     || $type instanceof ReflectionUnionType
                     || ($typeName = $type->getName()) === 'Closure'
                 ) {
-                    if (!$parameter->isVariadic()) {
+                    if (! $parameter->isVariadic()) {
                         $funcArgs[] = $parameter->isOptional()
                             ? $parameter->getDefaultValue()
                             : throw new ContainerException(sprintf('Missing parameter `%s`', $name));
@@ -266,14 +267,14 @@ class Container implements ContainerInterface
     protected function castParameter(mixed $value, string $type): mixed
     {
         return match ($type) {
-            'int' => (int)$value,
-            'string' => (string)$value,
-            'bool' => (bool)$value,
-            'array' => (array)$value,
-            'float' => (float)$value,
-            'double' => (double)$value,
-            'object' => (object)$value,
-            default => $value,
+            'int'    => (int) $value,
+            'string' => (string) $value,
+            'bool'   => (bool) $value,
+            'array'  => (array) $value,
+            'float'  => (float) $value,
+            'double' => (float) $value,
+            'object' => (object) $value,
+            default  => $value,
         };
     }
 }
