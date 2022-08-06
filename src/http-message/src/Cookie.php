@@ -15,16 +15,6 @@ use InvalidArgumentException;
 
 class Cookie
 {
-    /**
-     * @param string $name
-     * @param string $value
-     * @param int    $expires
-     * @param string $path
-     * @param string $domain
-     * @param bool   $secure
-     * @param bool   $httponly
-     * @param string $samesite
-     */
     public function __construct(
         protected string $name,
         protected string $value,

@@ -13,6 +13,7 @@ namespace Max\Http\Message\Stream;
 
 use Exception;
 use Psr\Http\Message\StreamInterface;
+
 use function fclose;
 use function feof;
 use function fopen;
