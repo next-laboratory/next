@@ -23,10 +23,19 @@ class RedisHandler implements SessionHandlerInterface
 
     protected string $connector;
 
+    /**
+     * @var string 主机
+     */
     protected string $host = '127.0.0.1';
 
+    /**
+     * @var int 端口
+     */
     protected int $port = 6379;
 
+    /**
+     * @var int 过期时间
+     */
     protected int $expire = 3600;
 
     public function __construct(array $options = [])
@@ -35,12 +44,18 @@ class RedisHandler implements SessionHandlerInterface
         $this->handler = new Redis(new $this->connector($this->host, $this->port));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     #[\ReturnTypeWillChange]
     public function close(): bool
     {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     #[\ReturnTypeWillChange]
     public function destroy(string $id): bool
     {

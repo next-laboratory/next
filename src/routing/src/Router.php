@@ -13,6 +13,7 @@ namespace Max\Routing;
 
 use Closure;
 use InvalidArgumentException;
+use Max\Http\Message\Contracts\RequestMethodInterface;
 
 use function array_merge;
 use function array_unique;
@@ -45,7 +46,19 @@ class Router
      */
     public function any(string $path, array|Closure|string $action): Route
     {
-        return $this->request($path, $action, ['GET', 'HEAD', 'POST', 'OPTIONS', 'PUT', 'PATCH', 'DELETE']);
+        return $this->request(
+            $path,
+            $action,
+            [
+                RequestMethodInterface::METHOD_GET,
+                RequestMethodInterface::METHOD_HEAD,
+                RequestMethodInterface::METHOD_POST,
+                RequestMethodInterface::METHOD_OPTIONS,
+                RequestMethodInterface::METHOD_PUT,
+                RequestMethodInterface::METHOD_PATCH,
+                RequestMethodInterface::METHOD_DELETE,
+            ]
+        );
     }
 
     /**
@@ -53,7 +66,7 @@ class Router
      */
     public function patch(string $uri, string|array|Closure $action): Route
     {
-        return $this->request($uri, $action, ['PATCH']);
+        return $this->request($uri, $action, [RequestMethodInterface::METHOD_PATCH]);
     }
 
     /**
@@ -61,7 +74,7 @@ class Router
      */
     public function put(string $uri, string|array|Closure $action): Route
     {
-        return $this->request($uri, $action, ['PUT']);
+        return $this->request($uri, $action, [RequestMethodInterface::METHOD_PUT]);
     }
 
     /**
@@ -69,7 +82,7 @@ class Router
      */
     public function delete(string $uri, string|array|Closure $action): Route
     {
-        return $this->request($uri, $action, ['DELETE']);
+        return $this->request($uri, $action, [RequestMethodInterface::METHOD_DELETE]);
     }
 
     /**
@@ -77,7 +90,7 @@ class Router
      */
     public function post(string $uri, string|array|Closure $action): Route
     {
-        return $this->request($uri, $action, ['POST']);
+        return $this->request($uri, $action, [RequestMethodInterface::METHOD_POST]);
     }
 
     /**
@@ -85,7 +98,7 @@ class Router
      */
     public function get(string $uri, string|array|Closure $action): Route
     {
-        return $this->request($uri, $action, ['GET', 'HEAD']);
+        return $this->request($uri, $action, [RequestMethodInterface::METHOD_GET, RequestMethodInterface::METHOD_HEAD]);
     }
 
     /**

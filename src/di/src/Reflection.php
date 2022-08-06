@@ -124,7 +124,7 @@ final class Reflection
     /**
      * @return null|mixed
      */
-    public static function propertyDefaultValue(ReflectionProperty $property)
+    public static function propertyDefaultValue(ReflectionProperty $property): mixed
     {
         return method_exists($property, 'getDefaultValue')
             ? $property->getDefaultValue()

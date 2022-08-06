@@ -19,6 +19,7 @@ use Max\Http\Message\Stream\StringStream;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
+
 use function strpos;
 
 class ServerRequest extends Request implements ServerRequestInterface

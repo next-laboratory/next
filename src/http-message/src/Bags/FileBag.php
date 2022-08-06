@@ -16,9 +16,6 @@ use Max\Http\Message\UploadedFile;
 
 class FileBag
 {
-    /**
-     * @param array $uploadedFiles
-     */
     public function __construct(protected array $uploadedFiles = [])
     {
     }
@@ -50,8 +47,10 @@ class FileBag
     {
         if (is_string($name)) {
             $uploadedFiles[$k] = new UploadedFile($error > 0 ? null : new FileStream($tmpName), $size, $name, $type, $error);
-        } else foreach ($name as $key => $value) {
-            $this->convertToUploadedFiles($uploadedFiles[$k], $key, $value, $tmpName[$key], $type[$key], $size[$key], $error[$key]);
+        } else {
+            foreach ($name as $key => $value) {
+                $this->convertToUploadedFiles($uploadedFiles[$k], $key, $value, $tmpName[$key], $type[$key], $size[$key], $error[$key]);
+            }
         }
     }
 }

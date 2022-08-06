@@ -18,6 +18,7 @@ use Generator;
 use Max\Utils\Traits\AutoFillProperties;
 use SessionHandlerInterface;
 use SplFileInfo;
+use Throwable;
 
 use function file_exists;
 use function file_get_contents;
@@ -66,7 +67,7 @@ class FileHandler implements SessionHandlerInterface
                 ++$number;
             }
             return $number;
-        } catch (\Throwable $throwable) {
+        } catch (Throwable) {
             return false;
         }
     }
@@ -126,6 +127,9 @@ class FileHandler implements SessionHandlerInterface
         return $this->unlink($this->getSessionFile($id));
     }
 
+    /**
+     * 打开session.
+     */
     #[\ReturnTypeWillChange]
     public function open(string $path, string $name): bool
     {
@@ -143,12 +147,15 @@ class FileHandler implements SessionHandlerInterface
         foreach ($items as $item) {
             if ($item->isDir() && ! $item->isLink()) {
                 yield from $this->findFiles($item->getPathname(), $filter);
-            } else if ($filter($item)) {
+            } elseif ($filter($item)) {
                 yield $item;
             }
         }
     }
 
+    /**
+     * 生成session文件名.
+     */
     protected function getSessionFile(string $id): string
     {
         return rtrim($this->path, '/\\') . '/sess_' . $id;
