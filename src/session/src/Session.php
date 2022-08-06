@@ -70,7 +70,7 @@ class Session
     {
         $this->id = \session_create_id();
     }
-    
+
     /**
      * Close the session.
      */
