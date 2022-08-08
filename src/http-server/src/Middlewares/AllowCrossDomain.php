@@ -20,7 +20,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 class AllowCrossDomain implements MiddlewareInterface
 {
     /** @var array 允许域，全部可以使用`*` */
-    protected array $allowOrigin = [];
+    protected array $allowOrigin = ['*'];
 
     /** @var array 附加的响应头 */
     protected array $addedHeaders = [

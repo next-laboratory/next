@@ -12,9 +12,10 @@ declare(strict_types=1);
 namespace Max\Routing\Annotations;
 
 use Attribute;
+use Max\Routing\Contracts\ControllerInterface;
 
 #[Attribute(Attribute::TARGET_CLASS)]
-class Controller
+class Controller implements ControllerInterface
 {
     /**
      * @param string $prefix      前缀
