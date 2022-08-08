@@ -15,7 +15,10 @@ use Symfony\Component\Finder\Finder;
 
 class Watcher
 {
-    public function watch(array $dirs, string $pattern, callable $callback, float $interval = 1)
+    /**
+     * @param int $interval 微秒
+     */
+    public function watch(array $dirs, string $pattern, callable $callback, int $interval = 1000000): void
     {
         $original = [];
         $files    = Finder::create()->in($dirs)->name($pattern)->files();
@@ -26,14 +29,14 @@ class Watcher
         echo 'Watching changed files.' . PHP_EOL;
 
         while (true) {
-            sleep($interval);
+            usleep($interval);
             clearstatcache();
             $modified = [];
             $files    = Finder::create()->in($dirs)->name($pattern)->files();
             foreach ($files as $file) {
                 $realPath  = $file->getRealPath();
                 $fileMTime = $file->getMTime();
-                if (! isset($original[$realPath])) {
+                if (!isset($original[$realPath])) {
                     $original[$realPath] = $fileMTime;
                     $modified[]          = $realPath;
                 } else if ($original[$realPath] != $fileMTime) {
@@ -41,7 +44,7 @@ class Watcher
                     $modified[]          = $realPath;
                 }
             }
-            if (! empty($modified)) {
+            if (!empty($modified)) {
                 $callback($modified);
             }
         }

@@ -57,17 +57,17 @@ class Kernel
     }
 
     /**
-     * 路由注册.
-     */
-    protected function map(Router $router): void
-    {
-    }
-
-    /**
      * @param array|string[] $middlewares
      */
     public function setMiddlewares(array $middlewares): void
     {
         $this->middlewares = $middlewares;
+    }
+
+    /**
+     * 路由注册.
+     */
+    protected function map(Router $router): void
+    {
     }
 }

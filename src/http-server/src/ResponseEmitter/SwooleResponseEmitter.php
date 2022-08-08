@@ -53,7 +53,7 @@ class SwooleResponseEmitter implements ResponseEmitterInterface
             $cookie->getDomain(),
             $cookie->isSecure(),
             $cookie->isHttponly(),
-            $cookie->getSamesite()
+            $cookie->getSameSite()
         );
     }
 }

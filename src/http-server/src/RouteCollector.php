@@ -17,6 +17,7 @@ use Max\Di\Exceptions\NotFoundException;
 use Max\Di\Reflection;
 use Max\Routing\Annotations\AutoController;
 use Max\Routing\Annotations\Controller;
+use Max\Routing\Contracts\ControllerInterface;
 use Max\Routing\Contracts\MappingInterface;
 use Max\Routing\Router;
 use Max\Utils\Str;
@@ -64,16 +65,18 @@ class RouteCollector extends AbstractCollector
      */
     public static function collectClass(string $class, object $attribute): void
     {
-        $routeCollector = Context::getContainer()->make(\Max\Routing\RouteCollector::class);
-        $router         = new Router($attribute->prefix, $attribute->patterns, middlewares: $attribute->middlewares, routeCollector: $routeCollector);
-        if ($attribute instanceof Controller) {
-            self::$router = $router;
-            self::$class  = $class;
-        } elseif ($attribute instanceof AutoController) {
-            foreach (Reflection::class($class)->getMethods() as $reflectionMethod) {
-                $methodName = $reflectionMethod->getName();
-                if (! self::isIgnoredMethod($methodName) && $reflectionMethod->isPublic() && ! $reflectionMethod->isAbstract()) {
-                    $router->request($attribute->prefix . Str::snake($methodName, '-'), [$class, $methodName], $attribute->methods);
+        if ($attribute instanceof ControllerInterface) {
+            $routeCollector = Context::getContainer()->make(\Max\Routing\RouteCollector::class);
+            $router         = new Router($attribute->prefix, $attribute->patterns, middlewares: $attribute->middlewares, routeCollector: $routeCollector);
+            if ($attribute instanceof Controller) {
+                self::$router = $router;
+                self::$class  = $class;
+            } elseif ($attribute instanceof AutoController) {
+                foreach (Reflection::class($class)->getMethods() as $reflectionMethod) {
+                    $methodName = $reflectionMethod->getName();
+                    if (! self::isIgnoredMethod($methodName) && $reflectionMethod->isPublic() && ! $reflectionMethod->isAbstract()) {
+                        $router->request($attribute->prefix . Str::snake($methodName, '-'), [$class, $methodName], $attribute->methods);
+                    }
                 }
             }
         }
