@@ -16,7 +16,7 @@
 # 安装
 
 ```
-composer require max/view:dev-master
+composer require max/view
 ```
 
 # 使用
@@ -67,8 +67,13 @@ return [
 ## 使用
 
 ```php
-$viewFactory = new ViewFactory(config('view'));
+// 如果你使用maxphp的容器实例化该类，则不需要传入任何参数，只需要添加相应配置文件即可。
+$viewFactory = new ViewFactory($config);
 $renderer = $viewFactory->getRenderer();
+
+// 如果你没有使用maxphp, 则需要实例化renderer, 传入对应的驱动
+$renderer = new \Max\View\Renderer(new \Max\View\Engines\Blade($options));
+
 $renderer->assign('key', 'value');
 $renderer->render('index', ['key2' => 'value2']);
 ```
