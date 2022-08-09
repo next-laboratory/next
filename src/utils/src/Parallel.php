@@ -2,6 +2,13 @@
 
 declare(strict_types=1);
 
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
 namespace Max\Utils;
 
 use Max\Utils\Exception\ParallelExecutionException;
@@ -48,7 +55,7 @@ class Parallel
         $wg->add(count($this->callbacks));
         foreach ($this->callbacks as $key => $callback) {
             $this->concurrentChannel && $this->concurrentChannel->push(true);
-            Coroutine::create(function() use ($callback, $key, $wg, &$result, &$throwables) {
+            Coroutine::create(function () use ($callback, $key, $wg, &$result, &$throwables) {
                 try {
                     $result[$key] = call($callback);
                 } catch (\Throwable $throwable) {

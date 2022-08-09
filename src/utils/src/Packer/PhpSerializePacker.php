@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Max\Utils\Packer;
 
 use Max\Utils\Contracts\PackerInterface;
+
 use function serialize;
 use function unserialize;
 
