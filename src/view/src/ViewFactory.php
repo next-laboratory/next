@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Max\View;
 
+use Max\Config\Contracts\ConfigInterface;
 use Max\View\Contracts\ViewEngineInterface;
 
 class ViewFactory
@@ -20,10 +21,10 @@ class ViewFactory
     /**
      * Renderer constructor.
      */
-    public function __construct(array $config)
+    public function __construct(ConfigInterface $config)
     {
-        $engine       = $config['engine'];
-        $options      = $config['options'];
+        $engine       = $config->get('view.engine');
+        $options      = $config->get('view.options', []);
         $this->engine = new $engine($options);
     }
 
