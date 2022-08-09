@@ -2,11 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Max\Utils\Exception;
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
+namespace Max\Utils\Exceptions;
 
 class ParallelExecutionException extends \RuntimeException
 {
     private array $results;
+
     private array $throwables;
 
     public function getResults(): array

@@ -37,7 +37,7 @@ trait Conditionable
      */
     public function unless(mixed $value, callable $callback, ?callable $default = null): mixed
     {
-        if (!$value) {
+        if (! $value) {
             return $callback($this, $value) ?: $this;
         }
         if ($default) {
