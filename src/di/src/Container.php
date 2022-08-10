@@ -231,7 +231,11 @@ class Container implements ContainerInterface
                 if ($type instanceof ReflectionNamedType && $type->isBuiltin()) {
                     $injectValue = $this->castParameter($injectValue, $type->getName());
                 }
-                $funcArgs[] = $injectValue;
+                if ($parameter->isPassedByReference()) {
+                    $funcArgs[] = &$injectValue;
+                } else {
+                    $funcArgs[] = $injectValue;
+                }
             } else {
                 $type = $parameter->getType();
                 if (is_null($type)
