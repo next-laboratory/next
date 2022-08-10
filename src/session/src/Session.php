@@ -17,6 +17,7 @@ use Max\Utils\Arr;
 use SessionHandlerInterface;
 
 use function ctype_alnum;
+use function session_create_id;
 
 class Session
 {
@@ -48,7 +49,7 @@ class Session
         if ($this->isStarted()) {
             throw new SessionException('Cannot restart session.');
         }
-        $this->id = ($id && $this->isValidId($id)) ? $id : \session_create_id();
+        $this->id = ($id && $this->isValidId($id)) ? $id : session_create_id();
         if ($data = $this->sessionHandler->read($this->id)) {
             $this->data = (array) (@\unserialize($data) ?: []);
         }
@@ -68,7 +69,7 @@ class Session
      */
     public function regenerateId(): void
     {
-        $this->id = \session_create_id();
+        $this->id = session_create_id();
     }
 
     /**
