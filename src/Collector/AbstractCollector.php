@@ -9,9 +9,9 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Aop\Collectors;
+namespace Max\Aop\Collector;
 
-use Max\Aop\Contracts\CollectorInterface;
+use Max\Aop\Contract\CollectorInterface;
 
 abstract class AbstractCollector implements CollectorInterface
 {

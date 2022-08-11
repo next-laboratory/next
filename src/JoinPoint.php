@@ -20,7 +20,6 @@ class JoinPoint
      * @param string      $class      切入的类名
      * @param string      $method     切入的方法
      * @param ArrayObject $parameters 当前方法传递的参数列表【索引数组】
-     * @param Closure     $callback
      */
     public function __construct(
         public string $class,

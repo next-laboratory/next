@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Aop\Annotations;
+namespace Max\Aop\Annotation;
 
 use Attribute;
 
@@ -18,7 +18,7 @@ class AspectConfig
 {
     /**
      * @param string       $class   要切入的类名
-     * @param string|array $methods 要切入的方法
+     * @param array|string $methods 要切入的方法
      * @param array        $params  注解参数
      */
     public function __construct(

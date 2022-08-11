@@ -9,10 +9,10 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Aop\Collectors;
+namespace Max\Aop\Collector;
 
-use Max\Aop\Annotations\AspectConfig;
-use Max\Aop\Contracts\AspectInterface;
+use Max\Aop\Annotation\AspectConfig;
+use Max\Aop\Contract\AspectInterface;
 use Max\Aop\Scanner;
 use Max\Di\Reflection;
 use ReflectionException;
@@ -38,22 +38,24 @@ class AspectCollector extends AbstractCollector
     {
         if ($attribute instanceof AspectInterface) {
             foreach (Reflection::class($class)->getMethods() as $reflectionMethod) {
-                if (!$reflectionMethod->isConstructor()) {
+                if (! $reflectionMethod->isConstructor()) {
                     self::$container[$class][$reflectionMethod->getName()][] = $attribute;
                 }
             }
-        } else if ($attribute instanceof AspectConfig) {
+        } elseif ($attribute instanceof AspectConfig) {
             $reflectionClass = Reflection::class($attribute->class);
             $annotation      = new $class(...$attribute->params);
             $methods         = $attribute->methods;
             if ($methods === '*') {
                 foreach ($reflectionClass->getMethods() as $reflectionMethod) {
-                    if (!$reflectionMethod->isConstructor()) {
+                    if (! $reflectionMethod->isConstructor()) {
                         self::$container[$attribute->class][$reflectionMethod->getName()][] = $annotation;
                     }
                 }
-            } else foreach ((array)$methods as $method) {
-                self::$container[$attribute->class][$method][] = $annotation;
+            } else {
+                foreach ((array) $methods as $method) {
+                    self::$container[$attribute->class][$method][] = $annotation;
+                }
             }
             Scanner::addClass($attribute->class, $reflectionClass->getFileName());
         }

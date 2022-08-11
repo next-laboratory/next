@@ -9,9 +9,10 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Aop\Contracts;
+namespace Max\Aop\Exception;
 
-interface PropertyAnnotation
+use RuntimeException;
+
+class ProcessException extends RuntimeException
 {
-    public function handle(object $object, string $property): void;
 }

@@ -13,8 +13,8 @@ namespace Max\Aop;
 
 use ArrayObject;
 use Closure;
-use Max\Aop\Collectors\AspectCollector;
-use Max\Aop\Contracts\AspectInterface;
+use Max\Aop\Collector\AspectCollector;
+use Max\Aop\Contract\AspectInterface;
 use Max\Di\Reflection;
 use ReflectionException;
 

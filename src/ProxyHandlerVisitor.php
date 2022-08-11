@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Aop;
 
-use Max\Aop\Collectors\AspectCollector;
+use Max\Aop\Collector\AspectCollector;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Closure;
