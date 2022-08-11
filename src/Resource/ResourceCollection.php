@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Utils\Resources;
+namespace Max\Utils\Resource;
 
 use JsonSerializable;
 

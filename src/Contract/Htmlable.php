@@ -9,9 +9,14 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Utils\Contracts;
+namespace Max\Utils\Contract;
 
-interface Xmlable
+interface Htmlable
 {
-    public function __toString(): string;
+    /**
+     * Get content as a string of HTML.
+     *
+     * @return string
+     */
+    public function toHtml();
 }

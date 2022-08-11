@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Utils\Contracts;
+namespace Max\Utils\Contract;
 
 use Countable;
 use Exception;

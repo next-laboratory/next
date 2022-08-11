@@ -9,10 +9,9 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Utils\Exceptions;
+namespace Max\Utils\Contract;
 
-use RuntimeException;
-
-class ItemNotFoundException extends RuntimeException
+interface Xmlable
 {
+    public function __toString(): string;
 }

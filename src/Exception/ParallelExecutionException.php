@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Utils\Exceptions;
+namespace Max\Utils\Exception;
 
 class ParallelExecutionException extends \RuntimeException
 {

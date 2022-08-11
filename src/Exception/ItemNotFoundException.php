@@ -9,12 +9,10 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Utils\Contracts;
+namespace Max\Utils\Exception;
 
-interface MessageProvider
+use RuntimeException;
+
+class ItemNotFoundException extends RuntimeException
 {
-    /**
-     * Get the messages for the instance.
-     */
-    public function getMessageBag(): MessageBag;
 }

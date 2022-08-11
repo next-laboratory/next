@@ -9,12 +9,12 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Utils\Resources;
+namespace Max\Utils\Resource;
 
 use ArrayAccess;
 use JsonSerializable;
 use Max\Utils\Collection;
-use Max\Utils\Contracts\Arrayable;
+use Max\Utils\Contract\Arrayable;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**

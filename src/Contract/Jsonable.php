@@ -9,11 +9,9 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Utils\Contracts;
+namespace Max\Utils\Contract;
 
-interface PackerInterface
+interface Jsonable
 {
-    public function pack($data): string;
-
-    public function unpack(string $data);
+    public function __toString(): string;
 }

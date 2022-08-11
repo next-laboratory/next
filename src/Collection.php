@@ -16,9 +16,9 @@ use ArrayIterator;
 use Closure;
 use InvalidArgumentException;
 use Max\Macro\Macroable;
-use Max\Utils\Contracts\Enumerable;
-use Max\Utils\Exceptions\ItemNotFoundException;
-use Max\Utils\Exceptions\MultipleItemsFoundException;
+use Max\Utils\Contract\Enumerable;
+use Max\Utils\Exception\ItemNotFoundException;
+use Max\Utils\Exception\MultipleItemsFoundException;
 use Max\Utils\Traits\EnumeratesValues;
 use stdClass;
 

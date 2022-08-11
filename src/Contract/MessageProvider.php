@@ -9,9 +9,12 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Utils\Contracts;
+namespace Max\Utils\Contract;
 
-interface Arrayable
+interface MessageProvider
 {
-    public function toArray(): array;
+    /**
+     * Get the messages for the instance.
+     */
+    public function getMessageBag(): MessageBag;
 }
