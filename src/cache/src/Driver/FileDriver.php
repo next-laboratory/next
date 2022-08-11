@@ -9,40 +9,17 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Cache\Handlers;
+namespace Max\Cache\Driver;
 
-use Exception;
-use Max\Cache\Exceptions\CacheException;
+use Max\Cache\Exception\CacheException;
 use Throwable;
-use function chmod;
-use function file_exists;
-use function file_get_contents;
-use function file_put_contents;
-use function glob;
-use function is_dir;
-use function is_file;
-use function is_readable;
-use function is_writable;
-use function md5;
-use function mkdir;
-use function rmdir;
-use function rtrim;
-use function serialize;
-use function strtolower;
-use function unlink;
 
-class FileHandler extends CacheHandler
+class FileDriver extends AbstractDriver
 {
-    /**
-     * 缓存路径.
-     */
     protected string $path;
 
     /**
-     * 初始化
-     * File constructor.
-     *
-     * @throws Exception
+     * @throws CacheException
      */
     public function __construct(array $config)
     {
@@ -50,22 +27,21 @@ class FileHandler extends CacheHandler
             if (is_file($path)) {
                 throw new CacheException('已经存在同名文件，不能创建文件夹!');
             }
-            if (!is_writable($path) || !is_readable($path)) {
+            if (! is_writable($path) || ! is_readable($path)) {
                 chmod($path, 0755);
             }
-        } else mkdir($path, 0755, true);
+        } else {
+            mkdir($path, 0755, true);
+        }
         $this->path = rtrim($path, DIRECTORY_SEPARATOR) . '/';
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function has($key)
+    public function has(string $key): bool
     {
         try {
             $cacheFile = $this->getFile($key);
             if (file_exists($cacheFile)) {
-                $expire = (int) (unserialize($this->getCache($cacheFile))[0]);
+                $expire = (int) unserialize($this->getCache($cacheFile))[0];
                 if ($expire !== 0 && filemtime($cacheFile) + $expire < time()) {
                     $this->remove($key);
                     return false;
@@ -78,39 +54,19 @@ class FileHandler extends CacheHandler
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function delete($key)
-    {
-        if ($this->has($key)) {
-            return $this->remove($key);
-        }
-        return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function get($key, $default = null)
+    public function get(string $key): mixed
     {
         if ($this->has($key)) {
             return unserialize($this->getCache($this->getFile($key)))[1];
         }
-        return $default;
+        return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function set($key, $value, $ttl = null)
+    public function set(string $key, mixed $value, ?int $ttl = null): bool
     {
         return (bool) file_put_contents($this->getFile($key), serialize([(int) $ttl, $value]));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function clear(): bool
     {
         try {
@@ -119,6 +75,14 @@ class FileHandler extends CacheHandler
         } catch (Throwable) {
             return false;
         }
+    }
+
+    public function delete(string $key): bool
+    {
+        if ($this->has($key)) {
+            return $this->remove($key);
+        }
+        return true;
     }
 
     /**
@@ -130,7 +94,9 @@ class FileHandler extends CacheHandler
             if (is_dir($item)) {
                 $this->unlink($item);
                 rmdir($item);
-            } else unlink($item);
+            } else {
+                unlink($item);
+            }
         }
     }
 

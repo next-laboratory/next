@@ -17,8 +17,8 @@ class ConfigProvider
     {
         return [
             'bindings' => [
-                'Psr\SimpleCache\CacheInterface'     => 'Max\Cache\Cache',
-                'Max\Cache\Contracts\CacheInterface' => 'Max\Cache\Cache',
+                'Psr\SimpleCache\CacheInterface'    => 'Max\Cache\Cache',
+                'Max\Cache\Contract\CacheInterface' => 'Max\Cache\Cache',
             ],
             'publish'  => [
                 [

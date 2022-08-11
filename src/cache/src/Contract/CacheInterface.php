@@ -9,18 +9,18 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Cache\Contracts;
+namespace Max\Cache\Contract;
 
 use Closure;
 use Psr\SimpleCache\CacheInterface as PsrCacheInterface;
 
 interface CacheInterface extends PsrCacheInterface
 {
-    public function remember($key, Closure $callback, ?int $ttl = null): mixed;
+    public function remember(string $key, Closure $callback, ?int $ttl = null): mixed;
 
-    public function incr($key, int $step = 1): bool;
+    public function increment(string $key, int $step = 1): int;
 
-    public function decr($key, int $step = 1): bool;
+    public function decrement(string $key, int $step = 1): int;
 
-    public function pull($key): mixed;
+    public function pull(string $key): mixed;
 }
