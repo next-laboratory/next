@@ -13,8 +13,8 @@ namespace Max\Di;
 
 use BadMethodCallException;
 use Closure;
-use Max\Di\Exceptions\ContainerException;
-use Max\Di\Exceptions\NotFoundException;
+use Max\Di\Exception\ContainerException;
+use Max\Di\Exception\NotFoundException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;

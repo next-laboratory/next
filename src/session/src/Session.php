@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Max\Session;
 
 use InvalidArgumentException;
-use Max\Session\Exceptions\SessionException;
+use Max\Session\Exception\SessionException;
 use Max\Utils\Arr;
 use SessionHandlerInterface;
 

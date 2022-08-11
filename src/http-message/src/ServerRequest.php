@@ -11,10 +11,10 @@ declare(strict_types=1);
 
 namespace Max\Http\Message;
 
-use Max\Http\Message\Bags\CookieBag;
-use Max\Http\Message\Bags\FileBag;
-use Max\Http\Message\Bags\ParameterBag;
-use Max\Http\Message\Bags\ServerBag;
+use Max\Http\Message\Bag\CookieBag;
+use Max\Http\Message\Bag\FileBag;
+use Max\Http\Message\Bag\ParameterBag;
+use Max\Http\Message\Bag\ServerBag;
 use Max\Http\Message\Stream\StringStream;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;

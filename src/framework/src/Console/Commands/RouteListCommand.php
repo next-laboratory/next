@@ -13,7 +13,7 @@ namespace Max\Console\Commands;
 
 use App\Http\Kernel;
 use Closure;
-use Max\Di\Exceptions\NotFoundException;
+use Max\Di\Exception\NotFoundException;
 use Max\Routing\Route;
 use Max\Routing\RouteCollector;
 use Max\Utils\Collection;

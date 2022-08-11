@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Event;
 
-use Max\Event\Contracts\EventDispatcherInterface;
+use Max\Event\Contract\EventDispatcherInterface;
 use Psr\EventDispatcher\StoppableEventInterface;
 
 class EventDispatcher implements EventDispatcherInterface

@@ -19,7 +19,7 @@ class ConfigProvider
             'bindings' => [
                 'Psr\EventDispatcher\ListenerProviderInterface' => 'Max\Event\ListenerProvider',
                 'Psr\EventDispatcher\EventDispatcherInterface'  => 'Max\Event\EventDispatcher',
-                'Max\Event\Contracts\EventDispatcherInterface'  => 'Max\Event\EventDispatcher',
+                'Max\Event\Contract\EventDispatcherInterface'   => 'Max\Event\EventDispatcher',
             ],
         ];
     }

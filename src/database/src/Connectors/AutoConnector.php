@@ -26,9 +26,6 @@ class AutoConnector implements ConnectorInterface
 
     protected array $container = [];
 
-    /**
-     * @param DatabaseConfig $config
-     */
     public function __construct(protected DatabaseConfig $config)
     {
     }

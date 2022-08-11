@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace Max\View;
 
-use Max\Config\Contracts\ConfigInterface;
-use Max\View\Contracts\ViewEngineInterface;
+use Max\Config\Contract\ConfigInterface;
+use Max\View\Contract\ViewEngineInterface;
 
 class ViewFactory
 {

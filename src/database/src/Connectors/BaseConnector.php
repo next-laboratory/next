@@ -20,9 +20,6 @@ class BaseConnector implements ConnectorInterface
 {
     protected ArrayObject $pool;
 
-    /**
-     * @param DatabaseConfig $config
-     */
     public function __construct(protected DatabaseConfig $config)
     {
         $this->pool = new ArrayObject();

@@ -15,7 +15,7 @@ namespace Max\Utils\Proxy;
  * Most of the methods in this file come from illuminate
  * thanks Laravel Team provide such a useful class.
  */
-use Max\Utils\Contracts\Enumerable;
+use Max\Utils\Contract\Enumerable;
 
 /**
  * @mixin Enumerable

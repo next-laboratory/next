@@ -11,7 +11,8 @@ declare(strict_types=1);
 
 namespace Max\Validator;
 
-use Max\Validator\Exceptions\ValidateException;
+use Max\Validator\Exception\ValidateException;
+
 use function in_array;
 use function is_bool;
 use function is_int;

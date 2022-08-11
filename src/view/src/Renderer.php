@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Max\View;
 
-use Max\View\Contracts\ViewEngineInterface;
+use Max\View\Contract\ViewEngineInterface;
 
 class Renderer
 {

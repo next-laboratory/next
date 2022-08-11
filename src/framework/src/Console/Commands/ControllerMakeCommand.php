@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Console\Commands;
 
-use Max\Utils\Exceptions\FileNotFoundException;
+use Max\Utils\Exception\FileNotFoundException;
 use Max\Utils\Filesystem;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Max\Queue\Queues;
 
 use Max\Queue\Contracts\QueueHandlerInterface;
+
 use function array_replace;
 use function sprintf;
 

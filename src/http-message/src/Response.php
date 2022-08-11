@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Http\Message;
 
-use Max\Http\Message\Bags\HeaderBag;
+use Max\Http\Message\Bag\HeaderBag;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
@@ -81,12 +81,12 @@ class Response extends Message implements ResponseInterface
     protected string $reasonPhrase = '';
 
     public function __construct(
-        protected int $status = 200,
+        protected int $statusCode = 200,
         array $headers = [],
         null|string|StreamInterface $body = null,
         protected string $protocolVersion = '1.1'
     ) {
-        $this->reasonPhrase = static::PHRASES[$status] ?? '';
+        $this->reasonPhrase = static::PHRASES[$statusCode] ?? '';
         $this->formatBody($body);
         $this->headers = new HeaderBag($headers);
     }
@@ -96,7 +96,7 @@ class Response extends Message implements ResponseInterface
      */
     public function getStatusCode()
     {
-        return $this->status;
+        return $this->statusCode;
     }
 
     /**
@@ -104,11 +104,11 @@ class Response extends Message implements ResponseInterface
      */
     public function withStatus($code, $reasonPhrase = '')
     {
-        if ($code === $this->status) {
+        if ($code === $this->statusCode) {
             return $this;
         }
         $new               = clone $this;
-        $new->status       = $code;
+        $new->statusCode   = $code;
         $new->reasonPhrase = $reasonPhrase ?: (self::PHRASES[$code] ?? '');
 
         return $new;
@@ -120,5 +120,102 @@ class Response extends Message implements ResponseInterface
     public function getReasonPhrase()
     {
         return $this->reasonPhrase ?: (self::PHRASES[$this->getStatusCode()] ?? '');
+    }
+
+    /**
+     * Is response invalid?
+     *
+     * @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+     */
+    public function isInvalid(): bool
+    {
+        return $this->statusCode < 100 || $this->statusCode >= 600;
+    }
+
+    /**
+     * Is response informative?
+     */
+    public function isInformational(): bool
+    {
+        return $this->statusCode >= 100 && $this->statusCode < 200;
+    }
+
+    /**
+     * Is response successful?
+     */
+    public function isSuccessful(): bool
+    {
+        return $this->statusCode >= 200 && $this->statusCode < 300;
+    }
+
+    /**
+     * Is the response a redirect?
+     */
+    public function isRedirection(): bool
+    {
+        return $this->statusCode >= 300 && $this->statusCode < 400;
+    }
+
+    /**
+     * Is there a client error?
+     */
+    public function isClientError(): bool
+    {
+        return $this->statusCode >= 400 && $this->statusCode < 500;
+    }
+
+    /**
+     * Was there a server side error?
+     */
+    public function isServerError(): bool
+    {
+        return $this->statusCode >= 500 && $this->statusCode < 600;
+    }
+
+    /**
+     * Is the response OK?
+     */
+    public function isOk(): bool
+    {
+        return $this->statusCode === 200;
+    }
+
+    /**
+     * Is the response forbidden?
+     */
+    public function isForbidden(): bool
+    {
+        return $this->statusCode === 403;
+    }
+
+    /**
+     * Is the response a not found error?
+     */
+    public function isNotFound(): bool
+    {
+        return $this->statusCode === 404;
+    }
+
+    /**
+     * Is the response a redirect of some form?
+     */
+    public function isRedirect(string $location = null): bool
+    {
+        return in_array($this->statusCode, [
+            201,
+            301,
+            302,
+            303,
+            307,
+            308,
+        ]) && ($location === null || $location == $this->getHeaderLine('Location'));
+    }
+
+    /**
+     * Is the response empty?
+     */
+    public function isEmpty(): bool
+    {
+        return in_array($this->statusCode, [204, 304]);
     }
 }

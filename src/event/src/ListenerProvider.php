@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Event;
 
-use Max\Event\Contracts\EventListenerInterface;
+use Max\Event\Contract\EventListenerInterface;
 use Psr\EventDispatcher\ListenerProviderInterface;
 
 class ListenerProvider implements ListenerProviderInterface

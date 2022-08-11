@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 
 use Max\Di\Context;
-use Max\Di\Exceptions\NotFoundException;
+use Max\Di\Exception\NotFoundException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 

@@ -11,14 +11,14 @@ declare(strict_types=1);
 
 namespace Max\Http\Server;
 
-use Max\Aop\Collectors\AbstractCollector;
+use Max\Aop\Collector\AbstractCollector;
 use Max\Di\Context;
-use Max\Di\Exceptions\NotFoundException;
+use Max\Di\Exception\NotFoundException;
 use Max\Di\Reflection;
-use Max\Routing\Annotations\AutoController;
-use Max\Routing\Annotations\Controller;
-use Max\Routing\Contracts\ControllerInterface;
-use Max\Routing\Contracts\MappingInterface;
+use Max\Routing\Annotation\AutoController;
+use Max\Routing\Annotation\Controller;
+use Max\Routing\Contract\ControllerInterface;
+use Max\Routing\Contract\MappingInterface;
 use Max\Routing\Router;
 use Max\Utils\Str;
 use Psr\Container\ContainerExceptionInterface;

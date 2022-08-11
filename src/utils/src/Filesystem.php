@@ -14,7 +14,7 @@ namespace Max\Utils;
 use ErrorException;
 use FilesystemIterator;
 use Max\Macro\Macroable;
-use Max\Utils\Exceptions\FileNotFoundException;
+use Max\Utils\Exception\FileNotFoundException;
 use RuntimeException;
 use SplFileObject;
 use Symfony\Component\Filesystem\Filesystem as SymfonyFilesystem;

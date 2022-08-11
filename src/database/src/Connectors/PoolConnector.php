@@ -34,9 +34,6 @@ class PoolConnector implements ConnectorInterface, PoolInterface
      */
     protected int $size = 0;
 
-    /**
-     * @param DatabaseConfig $config
-     */
     public function __construct(protected DatabaseConfig $config)
     {
         $this->pool = new Channel($this->capacity = $config->getPoolSize());

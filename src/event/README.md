@@ -2,7 +2,7 @@
 
 ## 如何使用
 
-1. 需要创建一个`Listener`类并实现`\Max\Event\Contracts\EventListenerInterface` 中的`listen`和`process`方法。`listen`
+1. 需要创建一个`Listener`类并实现`\Max\Event\Contract\EventListenerInterface` 中的`listen`和`process`方法。`listen`
    方法要求返回一个数组，数组内的值为该事件监听器监听的事件，
    `process`方法要求传入一个事件对象，该方法不需要返回值，例如
 

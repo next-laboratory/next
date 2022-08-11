@@ -284,7 +284,7 @@ namespace App\aspects;
 
 use Closure;
 use Max\Aop\JoinPoint;
-use Max\Aop\Contracts\AspectInterface;
+use Max\Aop\Contract\AspectInterface;
 
 #[\Attribute(\Attribute::TARGET_METHOD)]
 class Round implements AspectInterface
@@ -644,7 +644,7 @@ composer require max/view
 <?php
 
 return [
-    'engine'  => '\Max\View\Engines\Blade',
+    'engine'  => '\Max\View\Engine\Blade',
     'options' => [
         // 模板目录
         'path'        => __DIR__ . '/../views/',

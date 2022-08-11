@@ -16,7 +16,6 @@
     },
     "require": {
         "php": "^8.0",
-        "max/http-message": "dev-master",
         "max/utils": "dev-master",
         "max/redis": "dev-master"
     }

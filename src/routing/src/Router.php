@@ -13,7 +13,7 @@ namespace Max\Routing;
 
 use Closure;
 use InvalidArgumentException;
-use Max\Http\Message\Contracts\RequestMethodInterface;
+use Max\Http\Message\Contract\RequestMethodInterface;
 
 use function array_merge;
 use function array_unique;

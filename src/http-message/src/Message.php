@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Http\Message;
 
-use Max\Http\Message\Bags\HeaderBag;
+use Max\Http\Message\Bag\HeaderBag;
 use Max\Http\Message\Stream\StringStream;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\StreamInterface;
