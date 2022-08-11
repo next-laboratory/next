@@ -16,9 +16,12 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class OnRequest
 {
+    public float $requestedAt;
+
     public function __construct(
-        public ServerRequestInterface $request,
-        public ResponseInterface $response
+        public ?ServerRequestInterface $request = null,
+        public ?ResponseInterface $response = null
     ) {
+        $this->requestedAt = microtime(true);
     }
 }

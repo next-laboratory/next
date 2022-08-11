@@ -51,8 +51,10 @@ class Kernel
      */
     public function through(ServerRequestInterface $request): ResponseInterface
     {
+        $event = new OnRequest($request);
         $response = (new RequestHandler($this->container, $this->middlewares))->handle($request);
-        $this->eventDispatcher?->dispatch(new OnRequest($request, $response));
+        $event->response = $response;
+        $this->eventDispatcher?->dispatch($event);
         return $response;
     }
 
