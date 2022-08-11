@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Http\Server;
 
-use Max\Http\Server\Events\OnRequest;
+use Max\Http\Server\Event\OnRequest;
 use Max\Routing\Exception\RouteNotFoundException;
 use Max\Routing\RouteCollector;
 use Max\Routing\Router;

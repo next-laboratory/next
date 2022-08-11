@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Http\Server\Contracts;
+namespace Max\Http\Server\Contract;
 
 use Psr\Http\Message\ResponseInterface;
 
