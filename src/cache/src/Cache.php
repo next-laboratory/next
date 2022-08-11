@@ -16,6 +16,8 @@ use Exception;
 use Max\Cache\Contract\CacheDriverInterface;
 use Max\Cache\Contract\CacheInterface;
 
+use function Max\Utils\value;
+
 class Cache implements CacheInterface
 {
     public function __construct(
@@ -37,7 +39,7 @@ class Cache implements CacheInterface
     public function get($key, $default = null)
     {
         if (! $this->has($key)) {
-            return $default;
+            return value($default, $key);
         }
         return $this->driver->get($key);
     }
