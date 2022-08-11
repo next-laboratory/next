@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\JWT\Contracts;
+namespace Max\JWT\Contract;
 
 interface Authenticatable
 {

@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Queue\Jobs;
+namespace Max\Queue\Job;
 
 use function microtime;
 

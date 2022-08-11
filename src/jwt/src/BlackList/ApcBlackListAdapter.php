@@ -9,9 +9,9 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\JWT\BlackLists;
+namespace Max\JWT\BlackList;
 
-use Max\JWT\Contracts\BlackListInterface;
+use Max\JWT\Contract\BlackListInterface;
 
 class ApcBlackListAdapter implements BlackListInterface
 {

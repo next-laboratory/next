@@ -9,9 +9,9 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Queue\Queues;
+namespace Max\Queue\Queue;
 
-use Max\Queue\Contracts\QueueHandlerInterface;
+use Max\Queue\Contract\QueueHandlerInterface;
 
 use function array_replace;
 use function sprintf;
