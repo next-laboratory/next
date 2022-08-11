@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Http\Server;
 
-use Max\Routing\Exceptions\RouteNotFoundException;
+use Max\Routing\Exception\RouteNotFoundException;
 use Max\Routing\Route;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;

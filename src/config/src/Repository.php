@@ -11,11 +11,12 @@ declare(strict_types=1);
 
 namespace Max\Config;
 
-use Max\Config\Contracts\ConfigInterface;
+use Max\Config\Contract\ConfigInterface;
 use Max\Utils\Arr;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
+
 use function pathinfo;
 
 class Repository implements ConfigInterface
@@ -27,9 +28,7 @@ class Repository implements ConfigInterface
 
     /**
      * 获取[支持点语法].
-     *
-     * @param null|string $key
-     * @param null        $default
+     * @param null|mixed $default
      */
     public function get(string $key, $default = null): mixed
     {
@@ -38,8 +37,7 @@ class Repository implements ConfigInterface
 
     /**
      * 设置[支持点语法].
-     *
-     * @param $value
+     * @param mixed $value
      */
     public function set(string $key, $value): void
     {

@@ -36,15 +36,15 @@ class Watcher
             foreach ($files as $file) {
                 $realPath  = $file->getRealPath();
                 $fileMTime = $file->getMTime();
-                if (!isset($original[$realPath])) {
+                if (! isset($original[$realPath])) {
                     $original[$realPath] = $fileMTime;
                     $modified[]          = $realPath;
-                } else if ($original[$realPath] != $fileMTime) {
+                } elseif ($original[$realPath] != $fileMTime) {
                     $original[$realPath] = $fileMTime;
                     $modified[]          = $realPath;
                 }
             }
-            if (!empty($modified)) {
+            if (! empty($modified)) {
                 $callback($modified);
             }
         }

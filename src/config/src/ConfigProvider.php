@@ -17,7 +17,7 @@ class ConfigProvider
     {
         return [
             'bindings' => [
-                'Max\Config\Contracts\ConfigInterface' => 'Max\Config\Repository',
+                'Max\Config\Contract\ConfigInterface' => 'Max\Config\Repository',
             ],
         ];
     }

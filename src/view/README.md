@@ -49,7 +49,7 @@ composer require max/view
 <?php
 
 return [
-    'engine'  => '\Max\View\Engines\Blade',
+    'engine'  => '\Max\View\Engine\Blade',
     'options' => [
         // 模板目录
         'path'        => __DIR__ . '/../views/',
@@ -72,7 +72,7 @@ $viewFactory = new ViewFactory($config);
 $renderer = $viewFactory->getRenderer();
 
 // 如果你没有使用maxphp, 则需要实例化renderer, 传入对应的驱动
-$renderer = new \Max\View\Renderer(new \Max\View\Engines\Blade($options));
+$renderer = new \Max\View\Renderer(new \Max\View\Engine\Blade($options));
 
 $renderer->assign('key', 'value');
 $renderer->render('index', ['key2' => 'value2']);

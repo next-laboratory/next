@@ -13,8 +13,8 @@ namespace Max\Di;
 
 use BadMethodCallException;
 use Closure;
-use Max\Di\Exceptions\ContainerException;
-use Max\Di\Exceptions\NotFoundException;
+use Max\Di\Exception\ContainerException;
+use Max\Di\Exception\NotFoundException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
@@ -231,7 +231,7 @@ class Container implements ContainerInterface
                 if ($type instanceof ReflectionNamedType && $type->isBuiltin()) {
                     $injectValue = $this->castParameter($injectValue, $type->getName());
                 }
-                $funcArgs[] = $injectValue;
+                $funcArgs[] = &$injectValue;
             } else {
                 $type = $parameter->getType();
                 if (is_null($type)

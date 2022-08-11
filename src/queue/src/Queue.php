@@ -11,12 +11,13 @@ declare(strict_types=1);
 
 namespace Max\Queue;
 
-use Max\Config\Contracts\ConfigInterface;
+use Max\Config\Contract\ConfigInterface;
 use Max\Queue\Contracts\QueueHandlerInterface;
 use Max\Queue\Exceptions\InvalidJobException;
 use Max\Queue\Jobs\DelayedJob;
 use Max\Queue\Jobs\Job;
 use Throwable;
+
 use function count;
 use function is_array;
 use function is_string;

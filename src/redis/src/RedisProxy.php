@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Redis;
 
-use Max\Redis\Contracts\ConnectorInterface;
+use Max\Redis\Contract\ConnectorInterface;
 use RedisException;
 
 /**

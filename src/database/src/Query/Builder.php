@@ -62,9 +62,6 @@ class Builder
      */
     protected array $column;
 
-    /**
-     * @param QueryInterface $query
-     */
     public function __construct(protected QueryInterface $query)
     {
     }
@@ -480,7 +477,7 @@ class Builder
 
     protected function compileJoin(): string
     {
-        $joins = array_map(function (Join $item) {
+        $joins     = array_map(function (Join $item) {
             $alias = $item->alias ? 'AS ' . $item->alias : '';
             $on    = $item->on ? ('ON ' . implode(' ', $item->on)) : '';
             return ' ' . $item->league . ' ' . $item->table . ' ' . $alias . ' ' . $on;

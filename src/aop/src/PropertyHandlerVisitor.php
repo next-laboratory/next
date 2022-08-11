@@ -79,7 +79,7 @@ class PropertyHandlerVisitor extends NodeVisitorAbstract
                     if (is_null($type)
                         || ($type instanceof ReflectionNamedType && $type->isBuiltin())
                         || $type instanceof ReflectionUnionType
-                        || ($type->getName()) === 'Closure') {
+                        || $type->getName() === 'Closure') {
                         continue;
                     }
                     $allowsNull         = $reflectionParameter->allowsNull() ? '?' : '';
@@ -87,7 +87,7 @@ class PropertyHandlerVisitor extends NodeVisitorAbstract
                 }
             }
             $c = [];
-            if (!$this->metadata->hasConstructor) {
+            if (! $this->metadata->hasConstructor) {
                 $constructor        = new ClassMethod('__construct', [
                     'params' => $params,
                 ]);

@@ -11,37 +11,42 @@ declare(strict_types=1);
 
 namespace Max\Cache;
 
-use ArrayObject;
 use InvalidArgumentException;
-use Max\Config\Contracts\ConfigInterface;
+use Max\Config\Contract\ConfigInterface;
+use Psr\SimpleCache\CacheInterface;
 
 class CacheManager
 {
-    protected array       $config;
+    /**
+     * @var array|mixed
+     */
+    protected array $config;
 
-    protected string      $defaultStore;
+    /**
+     * @var mixed|string
+     */
+    protected string $defaultStore;
 
-    protected ArrayObject $stores;
+    protected array $stores = [];
 
     public function __construct(ConfigInterface $config)
     {
         $config             = $config->get('cache');
         $this->defaultStore = $config['default'];
         $this->config       = $config['stores'];
-        $this->stores       = new ArrayObject();
     }
 
-    public function store(?string $name = null)
+    public function store(?string $name = null): CacheInterface
     {
         $name ??= $this->defaultStore;
-        if (! $this->stores->offsetExists($name)) {
+        if (! isset($this->stores[$name])) {
             if (! isset($this->config[$name])) {
                 throw new InvalidArgumentException('配置不正确');
             }
-            $config  = $this->config[$name];
-            $handler = $config['handler'];
-            $this->stores->offsetSet($name, new ($handler)($config['options']));
+            $config              = $this->config[$name];
+            $driver              = $config['driver'];
+            $this->stores[$name] = new Cache(new ($driver)($config['config']));
         }
-        return $this->stores->offsetGet($name);
+        return $this->stores[$name];
     }
 }

@@ -13,7 +13,7 @@ namespace Max\JWT;
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use Max\Config\Contracts\ConfigInterface;
+use Max\Config\Contract\ConfigInterface;
 use Max\JWT\Contracts\Authenticatable;
 use Psr\Http\Message\ServerRequestInterface;
 

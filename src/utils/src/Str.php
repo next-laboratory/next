@@ -32,15 +32,11 @@ class Str
 
     /**
      * The cache of camel-cased words.
-     *
-     * @var array
      */
     protected static array $camelCache = [];
 
     /**
      * The cache of studly-cased words.
-     *
-     * @var array
      */
     protected static array $studlyCache = [];
 
@@ -76,7 +72,7 @@ class Str
             return $subject;
         }
 
-        $position = strrpos($subject, (string)$search);
+        $position = strrpos($subject, (string) $search);
 
         if ($position === false) {
             return $subject;
@@ -95,7 +91,7 @@ class Str
      */
     public static function ascii($value, $language = 'en')
     {
-        return ASCII::to_ascii((string)$value, $language);
+        return ASCII::to_ascii((string) $value, $language);
     }
 
     /**
@@ -112,7 +108,7 @@ class Str
             return $subject;
         }
 
-        $result = strstr($subject, (string)$search, true);
+        $result = strstr($subject, (string) $search, true);
 
         return $result === false ? $subject : $result;
     }
@@ -187,10 +183,10 @@ class Str
     {
         if ($ignoreCase) {
             $haystack = mb_strtolower($haystack);
-            $needles  = array_map('mb_strtolower', (array)$needles);
+            $needles  = array_map('mb_strtolower', (array) $needles);
         }
 
-        foreach ((array)$needles as $needle) {
+        foreach ((array) $needles as $needle) {
             if ($needle !== '' && str_contains($haystack, $needle)) {
                 return true;
             }
@@ -216,7 +212,7 @@ class Str
         }
 
         foreach ($needles as $needle) {
-            if (!static::contains($haystack, $needle)) {
+            if (! static::contains($haystack, $needle)) {
                 return false;
             }
         }
@@ -234,7 +230,7 @@ class Str
      */
     public static function endsWith($haystack, $needles)
     {
-        foreach ((array)$needles as $needle) {
+        foreach ((array) $needles as $needle) {
             if (
                 $needle !== '' && $needle !== null
                 && str_ends_with($haystack, $needle)
@@ -268,14 +264,14 @@ class Str
     {
         $patterns = Arr::wrap($pattern);
 
-        $value = (string)$value;
+        $value = (string) $value;
 
         if (empty($patterns)) {
             return false;
         }
 
         foreach ($patterns as $pattern) {
-            $pattern = (string)$pattern;
+            $pattern = (string) $pattern;
 
             // If the given value is an exact match we can of course return true right
             // from the beginning. Otherwise, we will translate asterisks and do an
@@ -304,7 +300,7 @@ class Str
      */
     public static function isAscii(string $value): bool
     {
-        return ASCII::is_ascii((string)$value);
+        return ASCII::is_ascii((string) $value);
     }
 
     /**
@@ -378,7 +374,7 @@ class Str
     {
         preg_match('/^\s*+(?:\S++\s*+){1,' . $words . '}/u', $value, $matches);
 
-        if (!isset($matches[0]) || static::length($value) === static::length($matches[0])) {
+        if (! isset($matches[0]) || static::length($value) === static::length($matches[0])) {
             return $value;
         }
 
@@ -396,7 +392,7 @@ class Str
     {
         $converter = new GithubFlavoredMarkdownConverter($options);
 
-        return (string)$converter->convertToHtml($string);
+        return (string) $converter->convertToHtml($string);
     }
 
     /**
@@ -444,7 +440,7 @@ class Str
     {
         preg_match($pattern, $subject, $matches);
 
-        if (!$matches) {
+        if (! $matches) {
             return '';
         }
 
@@ -629,7 +625,7 @@ class Str
      */
     public static function replaceFirst($search, $replace, $subject)
     {
-        $search = (string)$search;
+        $search = (string) $search;
 
         if ($search === '') {
             return $subject;
@@ -744,7 +740,7 @@ class Str
     {
         $parts = explode(' ', $value);
 
-        $parts = count($parts) > 1
+        $parts       = count($parts) > 1
             ? $parts = array_map([static::class, 'title'], $parts)
             : $parts = array_map([static::class, 'title'], static::ucsplit(implode('_', $parts)));
 
@@ -811,7 +807,7 @@ class Str
             return static::$snakeCache[$key][$delimiter];
         }
 
-        if (!ctype_lower($value)) {
+        if (! ctype_lower($value)) {
             $value = preg_replace('/\s+/u', '', ucwords($value));
 
             $value = static::lower(preg_replace('/(.)(?=[A-Z])/u', '$1' . $delimiter, $value));
@@ -830,8 +826,8 @@ class Str
      */
     public static function startsWith($haystack, $needles)
     {
-        foreach ((array)$needles as $needle) {
-            if ((string)$needle !== '' && str_starts_with($haystack, $needle)) {
+        foreach ((array) $needles as $needle) {
+            if ((string) $needle !== '' && str_starts_with($haystack, $needle)) {
                 return true;
             }
         }
@@ -856,7 +852,7 @@ class Str
 
         $words = explode(' ', static::replace(['-', '_'], ' ', $value));
 
-        $studlyWords = array_map(function($word) {
+        $studlyWords = array_map(function ($word) {
             return static::ucfirst($word);
         }, $words);
 
@@ -889,7 +885,7 @@ class Str
      */
     public static function substrCount($haystack, $needle, $offset = 0, $length = null)
     {
-        if (!is_null($length)) {
+        if (! is_null($length)) {
             return substr_count($haystack, $needle, $offset, $length);
         }
         return substr_count($haystack, $needle, $offset);

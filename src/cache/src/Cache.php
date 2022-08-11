@@ -11,146 +11,150 @@ declare(strict_types=1);
 
 namespace Max\Cache;
 
-use ArrayObject;
-use InvalidArgumentException;
-use Max\Config\Contracts\ConfigInterface;
-use Psr\SimpleCache\CacheInterface;
+use Closure;
+use Exception;
+use Max\Cache\Contract\CacheDriverInterface;
+use Max\Cache\Contract\CacheInterface;
 
-/**
- * @mixin CacheInterface
- */
+use function Max\Utils\value;
+
 class Cache implements CacheInterface
 {
     /**
-     * 当前缓存句柄.
+     * @param CacheDriverInterface $driver
      */
-    protected CacheInterface $handler;
-
-    /**
-     * @var mixed|string
-     */
-    protected string $defaultStore;
-
-    protected ArrayObject $stores;
-
-    /**
-     * @var array|mixed
-     */
-    protected array $config = [];
-
-    public function __construct(ConfigInterface $config)
-    {
-        $config             = $config->get('cache');
-        $this->defaultStore = $config['default'];
-        $this->config       = $config['stores'];
-        $this->stores       = new ArrayObject();
+    public function __construct(
+        protected CacheDriverInterface $driver
+    ) {
     }
 
     /**
-     * @return mixed
-     */
-    public function __call(string $name, array $arguments)
-    {
-        return $this->store()->{$name}(...$arguments);
-    }
-
-    /**
-     * @return false|mixed
-     */
-    public function store(?string $name = null)
-    {
-        $name ??= $this->defaultStore;
-        if (! $this->stores->offsetExists($name)) {
-            if (! isset($this->config[$name])) {
-                throw new InvalidArgumentException('配置不正确');
-            }
-            $config  = $this->config[$name];
-            $handler = $config['handler'];
-            $this->stores->offsetSet($name, new ($handler)($config['options']));
-        }
-        return $this->stores->offsetGet($name);
-    }
-
-    /**
-     * @param $key
-     * @param $default
-     *
-     * @return mixed
-     */
-    public function get($key, $default = null)
-    {
-        return $this->__call(__FUNCTION__, func_get_args());
-    }
-
-    /**
-     * @param $key
-     * @param $value
-     * @param $ttl
-     *
-     * @return bool|mixed
-     */
-    public function set($key, $value, $ttl = null)
-    {
-        return $this->__call(__FUNCTION__, func_get_args());
-    }
-
-    /**
-     * @param $key
-     *
-     * @return bool|mixed
-     */
-    public function delete($key)
-    {
-        return $this->__call(__FUNCTION__, func_get_args());
-    }
-
-    /**
-     * @return bool|mixed
-     */
-    public function clear()
-    {
-        return $this->__call(__FUNCTION__, func_get_args());
-    }
-
-    /**
-     * @param $keys
-     * @param $default
-     *
-     * @return iterable|mixed
-     */
-    public function getMultiple($keys, $default = null)
-    {
-        return $this->__call(__FUNCTION__, func_get_args());
-    }
-
-    /**
-     * @param $values
-     * @param $ttl
-     *
-     * @return bool|mixed
-     */
-    public function setMultiple($values, $ttl = null)
-    {
-        return $this->__call(__FUNCTION__, func_get_args());
-    }
-
-    /**
-     * @param $keys
-     *
-     * @return bool|mixed
-     */
-    public function deleteMultiple($keys)
-    {
-        return $this->__call(__FUNCTION__, func_get_args());
-    }
-
-    /**
-     * @param $key
-     *
-     * @return bool|mixed
+     * {@inheritDoc}
      */
     public function has($key)
     {
-        return $this->__call(__FUNCTION__, func_get_args());
+        return $this->driver->has($key);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function get($key, $default = null)
+    {
+        if (! $this->has($key)) {
+            return value($default, $key);
+        }
+        return $this->driver->get($key);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function set($key, $value, $ttl = null)
+    {
+        return $this->driver->set($key, $value, $ttl);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function delete($key)
+    {
+        return $this->driver->delete($key);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function clear()
+    {
+        return $this->driver->clear();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getMultiple($keys, $default = null)
+    {
+        return array_reduce((array) $keys, function ($stack, $key) use ($default) {
+            $stack[$key] = $this->has($key) ? $this->get($key) :
+                (is_array($default) ? ($default[$key] ?? null) : $default);
+            return $stack;
+        }, []);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setMultiple($values, $ttl = null)
+    {
+        try {
+            foreach ((array) $values as $key => $value) {
+                $this->set($key, $value, $ttl);
+            }
+            return true;
+        } catch (Exception) {
+            return false;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function deleteMultiple($keys)
+    {
+        try {
+            foreach ((array) $keys as $key) {
+                $this->delete($key);
+            }
+            return true;
+        } catch (Exception) {
+            return false;
+        }
+    }
+
+    /**
+     * @param string $key
+     * @param Closure $callback
+     * @param int|null $ttl
+     * @return mixed
+     */
+    public function remember(string $key, Closure $callback, ?int $ttl = null): mixed
+    {
+        if (! $this->has($key)) {
+            $this->set($key, $callback(), $ttl);
+        }
+        return $this->get($key);
+    }
+
+    /**
+     * @param string $key
+     * @param int $step
+     * @return int
+     */
+    public function increment(string $key, int $step = 1): int
+    {
+        return $this->driver->increment($key, $step);
+    }
+
+    /**
+     * @param string $key
+     * @param int $step
+     * @return int
+     */
+    public function decrement(string $key, int $step = 1): int
+    {
+        return $this->driver->decrement($key, $step);
+    }
+
+    /**
+     * @param string $key
+     * @return mixed
+     */
+    public function pull(string $key): mixed
+    {
+        $value = $this->get($key);
+        $this->delete($key);
+        return $value;
     }
 }

@@ -19,8 +19,6 @@ class Context
 
     /**
      * @param $key
-     *
-     * @return mixed
      */
     public static function get($key): mixed
     {
@@ -63,8 +61,6 @@ class Context
 
     /**
      * @param $key
-     *
-     * @return bool
      */
     public static function has($key): bool
     {

@@ -37,7 +37,7 @@ namespace App\aspects;
 
 use Closure;
 use Max\Aop\JoinPoint;
-use Max\Aop\Contracts\AspectInterface;
+use Max\Aop\Contract\AspectInterface;
 
 #[\Attribute(\Attribute::TARGET_METHOD)]
 class Round implements AspectInterface
@@ -89,8 +89,9 @@ class Index
 namespace App\aspects;
 
 use Closure;
-use Max\Aop\Annotations\AspectConfig;use Max\Aop\JoinPoint;
-use Max\Aop\Contracts\AspectInterface;
+use Max\Aop\Annotation\AspectConfig;
+use Max\Aop\JoinPoint;
+use Max\Aop\Contract\AspectInterface;
 
 #[\Attribute(\Attribute::TARGET_METHOD)]
 #[AspectConfig('BaconQrCode\Writer', 'writeFile')]

@@ -147,8 +147,8 @@ server
 namespace App\Controllers;
 
 use App\Http\Response;
-use Max\Routing\Annotations\Controller;
-use Max\Routing\Annotations\GetMapping;
+use Max\Routing\Annotation\Controller;
+use Max\Routing\Annotation\GetMapping;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 

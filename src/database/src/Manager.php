@@ -13,7 +13,7 @@ namespace Max\Database;
 
 use ArrayObject;
 use InvalidArgumentException;
-use Max\Config\Contracts\ConfigInterface;
+use Max\Config\Contract\ConfigInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -33,9 +33,6 @@ class Manager
      */
     protected array $config = [];
 
-    /**
-     * @param null|EventDispatcherInterface $eventDispatcher
-     */
     public function __construct(ConfigInterface $config, protected ?EventDispatcherInterface $eventDispatcher = null)
     {
         $config                  = $config->get('database');

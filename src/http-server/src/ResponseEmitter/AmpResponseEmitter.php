@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Max\Http\Server\ResponseEmitter;
 
 use Amp\Http\Server\Response;
-use Max\Http\Server\Contracts\ResponseEmitterInterface;
+use Max\Http\Server\Contract\ResponseEmitterInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class AmpResponseEmitter implements ResponseEmitterInterface

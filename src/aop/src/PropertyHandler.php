@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Aop;
 
-use Max\Aop\Collectors\PropertyAnnotationCollector;
+use Max\Aop\Collector\PropertyAnnotationCollector;
 
 trait PropertyHandler
 {

@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Max\Redis;
 
 use Closure;
-use Max\Redis\Contracts\ConnectorInterface;
+use Max\Redis\Contract\ConnectorInterface;
 
 /**
  * @mixin \Redis

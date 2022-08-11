@@ -19,7 +19,7 @@ use Max\Database\Exceptions\ModelNotFoundException;
 use Max\Database\Manager;
 use Max\Database\Query\Expression;
 use Max\Utils\Arr;
-use Max\Utils\Contracts\Arrayable;
+use Max\Utils\Contract\Arrayable;
 use Max\Utils\Str;
 use Throwable;
 

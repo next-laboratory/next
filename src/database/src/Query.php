@@ -24,10 +24,6 @@ class Query implements QueryInterface
 {
     protected PDO $PDO;
 
-    /**
-     * @param ConnectorInterface            $connector
-     * @param null|EventDispatcherInterface $eventDispatcher
-     */
     public function __construct(
         protected ConnectorInterface $connector,
         protected ?EventDispatcherInterface $eventDispatcher = null

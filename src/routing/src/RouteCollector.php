@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace Max\Routing;
 
-use Max\Http\Message\Contracts\StatusCodeInterface;
-use Max\Routing\Exceptions\MethodNotAllowedException;
-use Max\Routing\Exceptions\RouteNotFoundException;
+use Max\Http\Message\Contract\StatusCodeInterface;
+use Max\Routing\Exception\MethodNotAllowedException;
+use Max\Routing\Exception\RouteNotFoundException;
 use Psr\Http\Message\ServerRequestInterface;
 
 use function array_key_exists;
@@ -23,6 +23,8 @@ class RouteCollector
 {
     /**
      * 未分组的全部路由.
+     *
+     * @var array<string, Route[]>
      */
     protected array $routes = [];
 
@@ -39,6 +41,8 @@ class RouteCollector
 
     /**
      * 全部.
+     *
+     * @return array<string, Route[]>
      */
     public function all(): array
     {
@@ -61,7 +65,7 @@ class RouteCollector
     /**
      * 使用请求方法和请求路径解析路由.
      */
-    public function resolve(string $method, string $path)
+    public function resolve(string $method, string $path): Route
     {
         $routes = $this->routes[$method] ?? throw new MethodNotAllowedException('Method not allowed: ' . $method, StatusCodeInterface::STATUS_METHOD_NOT_ALLOWED);
         foreach ($routes as $route) {

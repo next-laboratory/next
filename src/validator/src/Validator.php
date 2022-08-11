@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Max\Validator;
 
 use Max\Validator\Bags\Errors;
+
 use function explode;
 use function is_array;
 

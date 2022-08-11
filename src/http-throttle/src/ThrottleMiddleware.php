@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
 namespace Max\Http\Throttle;
 
 use Max\Di\Context;
@@ -16,9 +25,7 @@ use Psr\SimpleCache\CacheInterface;
 class ThrottleMiddleware implements MiddlewareInterface
 {
     /**
-     * 默认配置参数
-     *
-     * @var array
+     * 默认配置参数.
      */
     public array $config = [
         'prefix'                       => 'throttle_',                    // 缓存键前缀，防止键与其他应用冲突
@@ -40,12 +47,19 @@ class ThrottleMiddleware implements MiddlewareInterface
     ];
 
     protected ThrottleAbstract $handler;
-    protected                  $key          = null;          // 解析后的标识
+
+    protected $key;          // 解析后的标识
+
     protected int              $waitSeconds  = 0;             // 下次合法请求还有多少秒
+
     protected int              $now          = 0;             // 当前时间戳
+
     protected int              $max_requests = 0;             // 规定时间内允许的最大请求次数
+
     protected int              $expire       = 0;             // 规定时间
+
     protected int              $remaining    = 0;             // 规定时间内还能请求的次数
+
     protected string           $driver       = CounterSlider::class;
 
     public function __construct(protected CacheInterface $cache)
@@ -55,7 +69,7 @@ class ThrottleMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (!$this->allowRequest($request)) {
+        if (! $this->allowRequest($request)) {
             // 访问受限
             return $this->buildLimitException($this->waitSeconds, $request);
         }
@@ -63,30 +77,60 @@ class ThrottleMiddleware implements MiddlewareInterface
         if (200 <= $response->getStatusCode() && 300 > $response->getStatusCode() && $this->config['visit_enable_show_rate_limit']) {
             // 将速率限制 headers 添加到响应中
             $response = $response->withHeader('X-Rate-Limit-Limit', $this->max_requests)
-                                 ->withHeader('X-Rate-Limit-Remaining', $this->remaining < 0 ? 0 : $this->remaining)
-                                 ->withHeader('X-Rate-Limit-Reset', $this->now + $this->expire);
+                ->withHeader('X-Rate-Limit-Remaining', $this->remaining < 0 ? 0 : $this->remaining)
+                ->withHeader('X-Rate-Limit-Reset', $this->now + $this->expire);
         }
         return $response;
     }
 
     /**
-     * 请求是否允许
+     * 获取速率限制头.
+     */
+    public function getRateLimitHeaders(): array
+    {
+        return [
+        ];
+    }
+
+    /**
+     * 构建 Response Exception.
+     */
+    public function buildLimitException(int $waitSeconds, ServerRequestInterface $request): ResponseInterface
+    {
+        $visitFail = $this->config['visit_fail_response'] ?? null;
+        if ($visitFail instanceof \Closure) {
+            $response = Container::getInstance()->invokeFunction($visitFail, [$this, $request, $waitSeconds]);
+            if (! $response instanceof ResponseInterface) {
+                throw new \TypeError(sprintf('The closure must return %s instance', Response::class));
+            }
+        } else {
+            $content  = str_replace('__WAIT__', (string) $waitSeconds, $this->config['visit_fail_text']);
+            $response = \App\Http\Response::HTML($content, $this->config['visit_fail_code']);
+        }
+        if ($this->config['visit_enable_show_rate_limit']) {
+            $response->withHeader('Retry-After', $waitSeconds);
+        }
+        return $response;
+    }
+
+    /**
+     * 请求是否允许.
      */
     protected function allowRequest(ServerRequestInterface $request): bool
     {
         // 若请求类型不在限制内
-        if (!in_array($request->getMethod(), $this->config['visit_method'])) {
+        if (! in_array($request->getMethod(), $this->config['visit_method'])) {
             return true;
         }
 
         $key = $this->getCacheKey($request);
-        if (null === $key) {
+        if ($key === null) {
             return true;
         }
         [$max_requests, $duration] = $this->parseRate($this->config['visit_rate']);
 
         $micronow = microtime(true);
-        $now      = (int)$micronow;
+        $now      = (int) $micronow;
 
         $allow = $this->handler->allowRequest($key, $micronow, $max_requests, $duration, $this->cache);
 
@@ -104,7 +148,7 @@ class ThrottleMiddleware implements MiddlewareInterface
     }
 
     /**
-     * 生成缓存的 key
+     * 生成缓存的 key.
      */
     protected function getCacheKey(ServerRequestInterface $request): ?string
     {
@@ -121,7 +165,7 @@ class ThrottleMiddleware implements MiddlewareInterface
 
         if ($key === true) {
             $key = $request->getRealIp();
-        } else if (str_contains($key, '__')) {
+        } elseif (str_contains($key, '__')) {
             $key = str_replace(['__CONTROLLER__', '__ACTION__', '__IP__'], [$request->controller(), $request->action(), $request->getRealIp()], $key);
         }
 
@@ -131,10 +175,10 @@ class ThrottleMiddleware implements MiddlewareInterface
     protected function getRealIp(ServerRequestInterface $request)
     {
         $headers = $request->getHeaders();
-        if (isset($headers['x-forwarded-for'][0]) && !empty($headers['x-forwarded-for'][0])) {
+        if (isset($headers['x-forwarded-for'][0]) && ! empty($headers['x-forwarded-for'][0])) {
             return $headers['x-forwarded-for'][0];
         }
-        if (isset($headers['x-real-ip'][0]) && !empty($headers['x-real-ip'][0])) {
+        if (isset($headers['x-real-ip'][0]) && ! empty($headers['x-real-ip'][0])) {
             return $headers['x-real-ip'][0];
         }
         $serverParams = $request->getServerParams();
@@ -143,52 +187,15 @@ class ThrottleMiddleware implements MiddlewareInterface
     }
 
     /**
-     * 解析频率配置项
-     *
-     * @param string $rate
+     * 解析频率配置项.
      *
      * @return int[]
      */
     protected function parseRate(string $rate): array
     {
-        [$num, $period] = explode("/", $rate);
-        $max_requests = (int)$num;
-        $duration     = static::$duration[$period] ?? (int)$period;
+        [$num, $period] = explode('/', $rate);
+        $max_requests   = (int) $num;
+        $duration       = static::$duration[$period] ?? (int) $period;
         return [$max_requests, $duration];
-    }
-
-    /**
-     * 获取速率限制头
-     *
-     * @return array
-     */
-    public function getRateLimitHeaders(): array
-    {
-        return [
-
-        ];
-    }
-
-    /**
-     * 构建 Response Exception
-     *
-     * @param int $waitSeconds
-     */
-    public function buildLimitException(int $waitSeconds, ServerRequestInterface $request): ResponseInterface
-    {
-        $visitFail = $this->config['visit_fail_response'] ?? null;
-        if ($visitFail instanceof \Closure) {
-            $response = Container::getInstance()->invokeFunction($visitFail, [$this, $request, $waitSeconds]);
-            if (!$response instanceof ResponseInterface) {
-                throw new \TypeError(sprintf('The closure must return %s instance', Response::class));
-            }
-        } else {
-            $content  = str_replace('__WAIT__', (string)$waitSeconds, $this->config['visit_fail_text']);
-            $response = \App\Http\Response::HTML($content, $this->config['visit_fail_code']);
-        }
-        if ($this->config['visit_enable_show_rate_limit']) {
-            $response->withHeader('Retry-After', $waitSeconds);
-        }
-        return $response;
     }
 }
