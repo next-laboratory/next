@@ -9,10 +9,13 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Database\Exceptions;
+namespace Max\Database\Contract;
 
-use Exception;
+use Max\Database\DatabaseConfig;
 
-class ModelNotFoundException extends Exception
+interface ConnectorInterface
 {
+    public function __construct(DatabaseConfig $config);
+
+    public function get();
 }

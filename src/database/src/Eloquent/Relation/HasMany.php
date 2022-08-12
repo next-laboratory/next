@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Database\Eloquent\Relations;
+namespace Max\Database\Eloquent\Relation;
 
 use Max\Database\Eloquent\Builder;
 use Max\Database\Eloquent\Model;

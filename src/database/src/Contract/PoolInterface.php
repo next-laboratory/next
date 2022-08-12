@@ -9,13 +9,11 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Database\Contracts;
+namespace Max\Database\Contract;
 
-use Max\Database\DatabaseConfig;
-
-interface ConnectorInterface
+interface PoolInterface
 {
-    public function __construct(DatabaseConfig $config);
-
     public function get();
+
+    public function put($poolable);
 }

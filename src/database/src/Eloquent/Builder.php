@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Max\Database\Eloquent;
 
 use Max\Database\Collection;
-use Max\Database\Exceptions\ModelNotFoundException;
+use Max\Database\Exception\ModelNotFoundException;
 use Max\Database\Query\Builder as QueryBuilder;
 use PDO;
 use Throwable;

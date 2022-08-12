@@ -9,10 +9,10 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Database\Connectors;
+namespace Max\Database\Connector;
 
 use ArrayObject;
-use Max\Database\Contracts\ConnectorInterface;
+use Max\Database\Contract\ConnectorInterface;
 use Max\Database\DatabaseConfig;
 use PDO;
 

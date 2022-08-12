@@ -9,8 +9,11 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Database\Exceptions;
+namespace Max\Database\Eloquent\Relation;
 
-class PoolException extends \Exception
+class HasOne implements \JsonSerializable
 {
+    public function jsonSerialize()
+    {
+    }
 }

@@ -9,13 +9,13 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Database\Connectors;
+namespace Max\Database\Connector;
 
 use ArrayObject;
 use Max\Context\Context;
 use Max\Database\Context\Connection;
-use Max\Database\Contracts\ConnectorInterface;
-use Max\Database\Contracts\PoolInterface;
+use Max\Database\Contract\ConnectorInterface;
+use Max\Database\Contract\PoolInterface;
 use Max\Database\DatabaseConfig;
 use PDO;
 use Swoole\Coroutine\Channel;

@@ -15,7 +15,7 @@ use ArrayAccess;
 use JsonSerializable;
 use Max\Database\Collection;
 use Max\Database\Eloquent\Traits\Relations;
-use Max\Database\Exceptions\ModelNotFoundException;
+use Max\Database\Exception\ModelNotFoundException;
 use Max\Database\Manager;
 use Max\Database\Query\Expression;
 use Max\Utils\Arr;

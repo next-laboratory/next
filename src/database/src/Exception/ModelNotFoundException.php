@@ -9,9 +9,10 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Database\Contracts;
+namespace Max\Database\Exception;
 
-interface QueryInterface
+use Exception;
+
+class ModelNotFoundException extends Exception
 {
-    public function statement(string $query, array $bindings = []);
 }

@@ -9,11 +9,14 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Database\Eloquent\Relations;
+namespace Max\Database\Event;
 
-class HasOne implements \JsonSerializable
+class QueryExecuted
 {
-    public function jsonSerialize()
-    {
+    public function __construct(
+        public string $query,
+        public array $bindings,
+        public float $duration
+    ) {
     }
 }

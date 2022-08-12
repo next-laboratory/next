@@ -12,9 +12,9 @@ declare(strict_types=1);
 namespace Max\Database;
 
 use Closure;
-use Max\Database\Contracts\ConnectorInterface;
-use Max\Database\Contracts\QueryInterface;
-use Max\Database\Events\QueryExecuted;
+use Max\Database\Contract\ConnectorInterface;
+use Max\Database\Contract\QueryInterface;
+use Max\Database\Event\QueryExecuted;
 use Max\Database\Query\Builder;
 use PDO;
 use PDOException;

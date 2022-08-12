@@ -9,11 +9,8 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Database\Contracts;
+namespace Max\Database\Exception;
 
-interface PoolInterface
+class QueryException extends \Exception
 {
-    public function get();
-
-    public function put($poolable);
 }
