@@ -16,6 +16,8 @@ use Max\Http\Message\Bag\FileBag;
 use Max\Http\Message\Bag\ParameterBag;
 use Max\Http\Message\Bag\ServerBag;
 use Max\Http\Message\Stream\StringStream;
+use Max\Utils\Arr;
+use Max\Utils\Str;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
@@ -122,7 +124,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * @param \Workerman\Protocols\Http\Request $request
      */
-    public static function createFromWorkermanRequest($request, array $attributes = []): static
+    public static function createFromWorkerManRequest($request, array $attributes = []): static
     {
         $psrRequest                = new static(
             $request->method(), new Uri($request->uri()),
@@ -311,5 +313,91 @@ class ServerRequest extends Request implements ServerRequestInterface
         $new->attributes->remove($name);
 
         return $new;
+    }
+
+    /**
+     * 获取客户端真实IP.
+     */
+    public function getRealIp(): string
+    {
+        $headers = $this->getHeaders();
+        if (isset($headers['x-forwarded-for'][0]) && ! empty($headers['x-forwarded-for'][0])) {
+            return $headers['x-forwarded-for'][0];
+        }
+        if (isset($headers['x-real-ip'][0]) && ! empty($headers['x-real-ip'][0])) {
+            return $headers['x-real-ip'][0];
+        }
+        $serverParams = $this->getServerParams();
+
+        return $serverParams['remote_addr'] ?? '127.0.0.1';
+    }
+
+    /**
+     * 是否是ajax请求
+     */
+    public function isAjax(): bool
+    {
+        return strcasecmp('XMLHttpRequest', $this->getHeaderLine('X-REQUESTED-WITH')) === 0;
+    }
+
+    /**
+     * 判断path是否匹配.
+     */
+    public function is(string $pattern): bool
+    {
+        return Str::is($pattern, trim($this->getUri()->getPath(), '/'));
+    }
+
+    /**
+     * Example: $request->getCookie('session_id').
+     */
+    public function getCookie(string $name)
+    {
+        return $this->getCookieParams()[strtoupper($name)] ?? null;
+    }
+
+    /**
+     * 获取完整url.
+     */
+    public function fullUrl(): string
+    {
+        return $this->getUri()->__toString();
+    }
+
+    /**
+     * 返回url.
+     */
+    public function url(): string
+    {
+        $uri = $this->getUri();
+        $url = $uri->getPath();
+        if (! empty($query = $uri->getQuery())) {
+            $url .= '?' . $query;
+        }
+        return $url;
+    }
+
+    /**
+     * 获取file.
+     */
+    public function file(string $field): ?UploadedFile
+    {
+        return Arr::get($this->getUploadedFiles(), $field);
+    }
+
+    /**
+     * @return UploadedFile[]
+     */
+    public function files(): array
+    {
+        return $this->getUploadedFiles();
+    }
+
+    /**
+     * Example: $request->isMethod('GET').
+     */
+    public function isMethod(string $method): bool
+    {
+        return strcasecmp($this->getMethod(), $method) === 0;
     }
 }
