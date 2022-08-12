@@ -225,13 +225,8 @@ class Container implements ContainerInterface
         foreach ($reflectionFunction->getParameters() as $parameter) {
             $name = $parameter->getName();
             if (array_key_exists($name, $arguments)) {
-                $injectValue = $arguments[$name];
+                $funcArgs[] = &$arguments[$name];
                 unset($arguments[$name]);
-                $type = $parameter->getType();
-                if ($type instanceof ReflectionNamedType && $type->isBuiltin()) {
-                    $injectValue = $this->castParameter($injectValue, $type->getName());
-                }
-                $funcArgs[] = &$injectValue;
             } else {
                 $type = $parameter->getType();
                 if (is_null($type)
@@ -259,22 +254,5 @@ class Container implements ContainerInterface
         }
 
         return $funcArgs;
-    }
-
-    /**
-     * 转换类型.
-     */
-    protected function castParameter(mixed $value, string $type): mixed
-    {
-        return match ($type) {
-            'int'    => (int) $value,
-            'string' => (string) $value,
-            'bool'   => (bool) $value,
-            'array'  => (array) $value,
-            'float'  => (float) $value,
-            'double' => (float) $value,
-            'object' => (object) $value,
-            default  => $value,
-        };
     }
 }
