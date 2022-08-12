@@ -20,9 +20,9 @@ class ConfigProvider
     {
         return [
             'commands' => [
-                'Max\Console\Commands\RouteListCommand',
-                'Max\Console\Commands\ControllerMakeCommand',
-                'Max\Console\Commands\MiddlewareMakeCommand',
+                'Max\Console\Command\RouteListCommand',
+                'Max\Console\Command\ControllerMakeCommand',
+                'Max\Console\Command\MiddlewareMakeCommand',
             ],
         ];
     }

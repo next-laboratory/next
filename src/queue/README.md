@@ -34,14 +34,14 @@ $queue->work('default'); // 默认队列 ， 延时队列需要更改为delay
 <?php
 
 // 普通任务，创建一个实现了JobInterface接口的类
-class Send extends Max\Queue\Jobs\Job {
+class Send extends Max\Queue\Job\Job {
     public function handle(){
         // Mail::send();
     }
 }
 
 // 延时任务，创建一个继承了DelayedJob类的任务
-class DelaySend extends Max\Queue\Jobs\DelayedJob {
+class DelaySend extends Max\Queue\Job\DelayedJob {
     public function handle(){
         // Mail::send();
     }

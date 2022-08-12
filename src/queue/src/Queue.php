@@ -12,10 +12,10 @@ declare(strict_types=1);
 namespace Max\Queue;
 
 use Max\Config\Contract\ConfigInterface;
-use Max\Queue\Contracts\QueueHandlerInterface;
-use Max\Queue\Exceptions\InvalidJobException;
-use Max\Queue\Jobs\DelayedJob;
-use Max\Queue\Jobs\Job;
+use Max\Queue\Contract\QueueHandlerInterface;
+use Max\Queue\Exception\InvalidJobException;
+use Max\Queue\Job\DelayedJob;
+use Max\Queue\Job\Job;
 use Throwable;
 
 use function count;

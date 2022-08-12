@@ -14,7 +14,7 @@ return [
     'sleep'       => 0.4,           // 异常时候等待时长/秒
     'connections' => [
         'redis' => [
-            'driver' => 'Max\Queue\Queues\Redis',
+            'driver' => 'Max\Queue\Queue\Redis',
             'config' => [
                 'host'     => '127.0.0.1',
                 'port'     => 6379,

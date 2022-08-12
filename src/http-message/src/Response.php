@@ -201,14 +201,8 @@ class Response extends Message implements ResponseInterface
      */
     public function isRedirect(string $location = null): bool
     {
-        return in_array($this->statusCode, [
-            201,
-            301,
-            302,
-            303,
-            307,
-            308,
-        ]) && ($location === null || $location == $this->getHeaderLine('Location'));
+        return in_array($this->statusCode, [201, 301, 302, 303, 307, 308])
+            && ($location === null || $location == $this->getHeaderLine('Location'));
     }
 
     /**
@@ -217,5 +211,22 @@ class Response extends Message implements ResponseInterface
     public function isEmpty(): bool
     {
         return in_array($this->statusCode, [204, 304]);
+    }
+
+    /**
+     * Set cookie.
+     */
+    public function withCookie(
+        string $name,
+        string $value,
+        int $expires = 3600,
+        string $path = '/',
+        string $domain = '',
+        bool $secure = false,
+        bool $httponly = false,
+        string $sameSite = ''
+    ): static {
+        $cookie = new Cookie(...func_get_args());
+        return $this->withAddedHeader('Set-Cookie', $cookie->__toString());
     }
 }

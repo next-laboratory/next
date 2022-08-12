@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Max\Database\Context;
 
 use ArrayObject;
-use Max\Database\Connectors\PoolConnector;
+use Max\Database\Connector\PoolConnector;
 use Throwable;
 
 class Connection extends ArrayObject

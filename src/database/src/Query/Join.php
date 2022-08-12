@@ -16,25 +16,14 @@ namespace Max\Database\Query;
  */
 class Join
 {
-    public string $table;
-
-    /**
-     * @var ?string
-     */
-    public ?string $alias = null;
-
-    public string $league;
-
     public array $on = [];
 
-    protected Builder $builder;
-
-    public function __construct(Builder $builder, string $table, ?string $alias = null, string $league = 'INNER JOIN')
-    {
-        $this->builder = $builder;
-        $this->table   = $table;
-        $this->league  = $league;
-        $this->alias   = $alias;
+    public function __construct(
+        protected Builder $builder,
+        public string $table,
+        public ?string $alias = null,
+        public string $league = 'INNER JOIN'
+    ) {
     }
 
     /**
@@ -49,12 +38,13 @@ class Join
     }
 
     /**
-     * @param $first
-     * @param $last
+     * @param        $first
+     * @param        $last
+     * @param string $operator
      *
      * @return Builder
      */
-    public function on($first, $last, string $operator = '=')
+    public function on($first, $last, string $operator = '='): Builder
     {
         $this->on = [$first, $operator, $last];
 

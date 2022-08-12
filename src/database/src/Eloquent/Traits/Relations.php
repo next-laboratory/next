@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Max\Database\Eloquent\Traits;
 
 use Max\Database\Eloquent\Model;
-use Max\Database\Eloquent\Relations\HasMany;
+use Max\Database\Eloquent\Relation\HasMany;
 
 trait Relations
 {

@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Max\Database\Query;
 
 use Max\Database\Collection;
-use Max\Database\Contracts\QueryInterface;
+use Max\Database\Contract\QueryInterface;
 use Max\Utils\Traits\Conditionable;
 use PDO;
 
@@ -62,8 +62,9 @@ class Builder
      */
     protected array $column;
 
-    public function __construct(protected QueryInterface $query)
-    {
+    public function __construct(
+        protected QueryInterface $query
+    ) {
     }
 
     /**
@@ -78,12 +79,7 @@ class Builder
         return $this;
     }
 
-    /**
-     * @param $value
-     *
-     * @return $this
-     */
-    public function where(string $column, $value, string $operator = '='): static
+    public function where(string $column, mixed $value, string $operator = '='): static
     {
         $this->where[] = [$column, $operator, '?'];
         $this->addBindings($value);
@@ -127,7 +123,7 @@ class Builder
      */
     public function whereIn(string $column, array $in): static
     {
-        if (! empty($in)) {
+        if (!empty($in)) {
             $this->addBindings($in);
             $this->where[] = [$column, 'IN', sprintf('(%s)', rtrim(str_repeat('?, ', count($in)), ' ,'))];
         }
@@ -345,7 +341,7 @@ class Builder
 
     public function exists(): bool
     {
-        return (bool) $this->query->statement(
+        return (bool)$this->query->statement(
             sprintf('SELECT EXISTS(%s) AS MAX_EXIST', $this->toSql()),
             $this->bindings
         )->fetchColumn();
@@ -385,7 +381,7 @@ class Builder
             $this->bindings,
         );
 
-        return (int) $this->query->getPdo()->lastInsertId();
+        return (int)$this->query->getPdo()->lastInsertId();
     }
 
     public function insertMany(array $records): mixed
@@ -402,7 +398,7 @@ class Builder
 
     public function insertAll(array $data): array
     {
-        return array_map(fn ($item) => $this->insert($item), $data);
+        return array_map(fn($item) => $this->insert($item), $data);
     }
 
     public function update(array $data): int
@@ -415,7 +411,7 @@ class Builder
         $query = 'SELECT ';
         foreach (static::$clause as $value) {
             $compiler = 'compile' . ucfirst($value);
-            if (! empty($this->{$value})) {
+            if (!empty($this->{$value})) {
                 $query .= $this->{$compiler}($this);
             }
         }
@@ -469,15 +465,15 @@ class Builder
 
     protected function aggregate(string $expression): int
     {
-        return (int) $this->query->statement(
-            $this->toSql((array) ($expression . ' AS AGGREGATE')),
+        return (int)$this->query->statement(
+            $this->toSql((array)($expression . ' AS AGGREGATE')),
             $this->bindings
         )->fetchColumn();
     }
 
     protected function compileJoin(): string
     {
-        $joins     = array_map(function (Join $item) {
+        $joins = array_map(function(Join $item) {
             $alias = $item->alias ? 'AS ' . $item->alias : '';
             $on    = $item->on ? ('ON ' . implode(' ', $item->on)) : '';
             return ' ' . $item->league . ' ' . $item->table . ' ' . $alias . ' ' . $on;
@@ -517,7 +513,7 @@ class Builder
 
     protected function compileOrder(): string
     {
-        $orderBy = array_map(fn ($item) => $item[0] instanceof Expression ? $item[0]->__toString() : implode(' ', $item), $this->order);
+        $orderBy = array_map(fn($item) => $item[0] instanceof Expression ? $item[0]->__toString() : implode(' ', $item), $this->order);
         return ' ORDER BY ' . implode(', ', $orderBy);
     }
 
@@ -528,7 +524,7 @@ class Builder
 
     protected function compileHaving(): string
     {
-        $having = array_map(fn ($item) => implode(' ', $item), $this->having);
+        $having = array_map(fn($item) => implode(' ', $item), $this->having);
 
         return ' HAVING ' . implode(' AND ', $having);
     }
