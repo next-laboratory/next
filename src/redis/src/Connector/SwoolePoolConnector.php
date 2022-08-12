@@ -13,6 +13,7 @@ namespace Max\Redis\Connector;
 
 use Max\Redis\Contract\ConnectorInterface;
 use Max\Redis\RedisProxy;
+use Swoole\Database\RedisConfig;
 use Swoole\Database\RedisPool;
 
 class SwoolePoolConnector implements ConnectorInterface
@@ -30,7 +31,7 @@ class SwoolePoolConnector implements ConnectorInterface
         protected int $database = 0,
         protected int $poolSize = 32,
     ) {
-        $redisConfig = (new \Swoole\Database\RedisConfig())
+        $redisConfig = (new RedisConfig())
             ->withHost($this->host)
             ->withPort($this->port)
             ->withTimeout($this->timeout)

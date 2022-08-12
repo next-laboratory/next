@@ -9,10 +9,10 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Exceptions\Handlers;
+namespace Max\Exception\Handler;
 
 use ErrorException;
-use Max\Exceptions\VarDumperAbort;
+use Max\Exception\VarDumperAbort;
 use Max\Http\Message\Response;
 use Max\Http\Message\Stream\StringStream;
 use Psr\Http\Message\ResponseInterface;

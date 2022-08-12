@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Max\Database;
 
-use ArrayObject;
 use InvalidArgumentException;
 use Max\Config\Contract\ConfigInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -26,18 +25,19 @@ class Manager
      */
     protected string $defaultConnection;
 
-    protected ArrayObject $connections;
+    protected array $connections = [];
 
     /**
      * @var array|mixed
      */
     protected array $config = [];
 
-    public function __construct(ConfigInterface $config, protected ?EventDispatcherInterface $eventDispatcher = null)
-    {
+    public function __construct(
+        ConfigInterface $config,
+        protected ?EventDispatcherInterface $eventDispatcher = null
+    ) {
         $config                  = $config->get('database');
         $this->defaultConnection = $config['default'];
-        $this->connections       = new ArrayObject();
         $this->config            = $config['connections'] ?? [];
     }
 
@@ -49,22 +49,19 @@ class Manager
         return $this->connection($this->defaultConnection)->{$name}(...$arguments);
     }
 
-    /**
-     * @return Query
-     */
-    public function connection(?string $name = null)
+    public function connection(?string $name = null): Query
     {
         $name ??= $this->defaultConnection;
-        if (! $this->connections->offsetExists($name)) {
-            if (! isset($this->config[$name])) {
+        if (!isset($this->connections[$name])) {
+            if (!isset($this->config[$name])) {
                 throw new InvalidArgumentException('没有相关数据库连接');
             }
-            $config          = $this->config[$name];
-            $connector       = $config['connector'];
-            $options         = $config['options'];
-            $options['name'] = $name;
-            $this->connections->offsetSet($name, new $connector(new DatabaseConfig($options)));
+            $config                   = $this->config[$name];
+            $connector                = $config['connector'];
+            $options                  = $config['options'];
+            $options['name']          = $name;
+            $this->connections[$name] = new $connector(new DatabaseConfig($options));
         }
-        return new Query($this->connections->offsetGet($name), $this->eventDispatcher);
+        return new Query($this->connections[$name], $this->eventDispatcher);
     }
 }

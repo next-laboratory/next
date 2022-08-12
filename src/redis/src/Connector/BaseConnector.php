@@ -13,10 +13,13 @@ namespace Max\Redis\Connector;
 
 use Max\Redis\Contract\ConnectorInterface;
 use Max\Redis\RedisProxy;
+use Redis;
+use RedisException;
+use SplPriorityQueue;
 
 class BaseConnector implements ConnectorInterface
 {
-    protected \SplPriorityQueue $queue;
+    protected SplPriorityQueue $queue;
 
     public function __construct(
         protected string $host = '127.0.0.1',
@@ -28,12 +31,15 @@ class BaseConnector implements ConnectorInterface
         protected string $auth = '',
         protected int $database = 0,
     ) {
-        $this->queue = new \SplPriorityQueue();
+        $this->queue = new SplPriorityQueue();
     }
 
+    /**
+     * @throws RedisException
+     */
     public function get()
     {
-        $redis = new \Redis();
+        $redis = new Redis();
         $redis->connect(
             $this->host,
             $this->port,

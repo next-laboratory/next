@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Console\Commands;
+namespace Max\Console\Command;
 
 use Max\Utils\Exception\FileNotFoundException;
 use Max\Utils\Filesystem;

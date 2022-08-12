@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Max\Console;
 
 use Max\Aop\Collector\AbstractCollector;
-use Max\Console\Annotations\Command;
+use Max\Console\Annotation\Command;
 
 class CommandCollector extends AbstractCollector
 {
