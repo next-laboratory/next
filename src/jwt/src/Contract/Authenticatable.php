@@ -13,7 +13,7 @@ namespace Max\JWT\Contract;
 
 interface Authenticatable
 {
-    public function getIdentifier(): mixed;
+    public function getIdentifier();
 
     public function getClaims(): array;
 }

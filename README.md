@@ -32,3 +32,7 @@
 [![Contributor over time](https://contributor-overtime-api.apiseven.com/contributors-svg?chart=contributorOverTime&repo=marxphp/max)](https://contributor-overtime-api.apiseven.com/contributors-svg?chart=contributorOverTime&repo=marxphp/max)
 
 欢迎有兴趣的朋友参与开发
+
+## 致谢
+
+感谢PHP最好用IDE: <a href="https://www.jetbrains.com/?from=marxphp">PHPStorm</a>
