@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Max\View\Engine\Blade;
 
-use Max\View\Engine\Blade;
+use Max\View\Engine\BladeEngine;
 use Max\View\Exception\ViewNotExistException;
 
 use function file_exists;
@@ -30,12 +30,12 @@ class Compiler
 
     protected ?string $parent;
 
-    protected Blade $blade;
+    protected BladeEngine $blade;
 
     /**
      * Compiler constructor.
      */
-    public function __construct(Blade $blade)
+    public function __construct(BladeEngine $blade)
     {
         $this->blade = $blade;
     }

@@ -49,8 +49,8 @@ composer require max/view
 <?php
 
 return [
-    'engine'  => '\Max\View\Engine\Blade',
-    'options' => [
+    'engine'  => '\Max\View\Engine\BladeEngine',
+    'config'  => [
         // 模板目录
         'path'        => __DIR__ . '/../views/',
         // 编译和缓存目录
@@ -72,7 +72,7 @@ $viewFactory = new ViewFactory($config);
 $renderer = $viewFactory->getRenderer();
 
 // 如果你没有使用maxphp, 则需要实例化renderer, 传入对应的驱动
-$renderer = new \Max\View\Renderer(new \Max\View\Engine\Blade($options));
+$renderer = new \Max\View\Renderer(new \Max\View\Engine\BladeEngine($options));
 
 $renderer->assign('key', 'value');
 $renderer->render('index', ['key2' => 'value2']);

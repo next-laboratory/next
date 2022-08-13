@@ -24,8 +24,8 @@ class ViewFactory
     public function __construct(ConfigInterface $config)
     {
         $engine       = $config->get('view.engine');
-        $options      = $config->get('view.options', []);
-        $this->engine = new $engine($options);
+        $config       = $config->get('view.config', []);
+        $this->engine = new $engine($config);
     }
 
     public function getRenderer(): Renderer
