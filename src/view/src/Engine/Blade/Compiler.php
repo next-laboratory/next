@@ -42,9 +42,8 @@ class Compiler
 
     /**
      * 编译.
-     * @param mixed $template
      */
-    public function compile($template): string
+    public function compile(string $template): string
     {
         $compileDir   = $this->blade->getCompileDir();
         $compiledFile = $compileDir . md5($template) . '.php';
