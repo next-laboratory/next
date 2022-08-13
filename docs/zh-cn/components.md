@@ -644,7 +644,7 @@ composer require max/view
 <?php
 
 return [
-    'engine'  => '\Max\View\Engine\Blade',
+    'engine'  => '\Max\View\Engine\BladeEngine',
     'options' => [
         // 模板目录
         'path'        => __DIR__ . '/../views/',

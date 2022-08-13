@@ -18,7 +18,7 @@ use Max\View\Exception\ViewNotExistException;
 
 use function func_get_arg;
 
-class Blade implements ViewEngineInterface
+class BladeEngine implements ViewEngineInterface
 {
     use AutoFillProperties;
 
@@ -39,9 +39,9 @@ class Blade implements ViewEngineInterface
 
     protected string $path;
 
-    public function __construct(array $options)
+    public function __construct(array $config)
     {
-        $this->fillProperties($options);
+        $this->fillProperties($config);
     }
 
     public function setPath(string $path): void
@@ -72,7 +72,7 @@ class Blade implements ViewEngineInterface
     /**
      * @throws ViewNotExistException
      */
-    public function render(string $template, array $arguments = []): void
+    public function render(string $template, array $arguments = [])
     {
         $this->renderView($template, $arguments);
     }
