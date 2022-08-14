@@ -51,19 +51,20 @@ class Kernel
      */
     public function through(ServerRequestInterface $request): ResponseInterface
     {
-        $event = new OnRequest($request);
-        $response = (new RequestHandler($this->container, $this->middlewares))->handle($request);
+        $event           = new OnRequest($request);
+        $response        = (new RequestHandler($this->container, $this->middlewares))->handle($request);
         $event->response = $response;
         $this->eventDispatcher?->dispatch($event);
         return $response;
     }
 
     /**
-     * @param array|string[] $middlewares
+     * 添加中间件.
      */
-    public function setMiddlewares(array $middlewares): void
+    public function use(string|array $middleware): static
     {
-        $this->middlewares = $middlewares;
+        array_push($this->middlewares, ...(array) $middleware);
+        return $this;
     }
 
     /**

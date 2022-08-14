@@ -18,11 +18,11 @@ use Psr\Http\Message\StreamInterface;
 
 class Message implements MessageInterface
 {
-    protected string           $protocolVersion = '1.1';
+    protected string $protocolVersion = '1.1';
 
-    protected HeaderBag        $headers;
+    protected HeaderBag $headers;
 
-    protected ?StreamInterface $body            = null;
+    protected ?StreamInterface $body = null;
 
     /**
      * {@inheritDoc}
@@ -37,9 +37,16 @@ class Message implements MessageInterface
      */
     public function withProtocolVersion($version)
     {
-        if ($this->protocolVersion !== $version) {
-            $this->protocolVersion = $version;
+        if ($this->protocolVersion === $version) {
+            return $this;
         }
+        $new = clone $this;
+        return $new->setProtocolVersion($version);
+    }
+
+    public function setProtocolVersion($version): static
+    {
+        $this->protocolVersion = $version;
         return $this;
     }
 
@@ -85,9 +92,13 @@ class Message implements MessageInterface
     {
         $new          = clone $this;
         $new->headers = clone $this->headers;
-        $new->headers->set($name, $value);
+        return $new->setHeader($name, $value);
+    }
 
-        return $new;
+    public function setHeader($name, $value)
+    {
+        $this->headers->set($name, $value);
+        return $this;
     }
 
     /**
@@ -97,9 +108,13 @@ class Message implements MessageInterface
     {
         $new          = clone $this;
         $new->headers = clone $this->headers;
-        $new->headers->add($name, $value);
+        return $new->setAddedHeader($name, $value);
+    }
 
-        return $new;
+    public function setAddedHeader($name, $value): static
+    {
+        $this->headers->add($name, $value);
+        return $this;
     }
 
     /**
@@ -126,6 +141,12 @@ class Message implements MessageInterface
      * {@inheritDoc}
      */
     public function withBody(StreamInterface $body)
+    {
+        $new = clone $this;
+        return $new->setBody($body);
+    }
+
+    public function setBody(StreamInterface $body): static
     {
         $this->body = $body;
         return $this;

@@ -107,11 +107,16 @@ class Response extends Message implements ResponseInterface
         if ($code === $this->statusCode) {
             return $this;
         }
-        $new               = clone $this;
-        $new->statusCode   = $code;
-        $new->reasonPhrase = $reasonPhrase ?: (self::PHRASES[$code] ?? '');
+        $new = clone $this;
+        return $new->setStatusCode($code, $reasonPhrase);
+    }
 
-        return $new;
+    public function setStatusCode($code, $reasonPhrase = ''): static
+    {
+        $this->statusCode   = $code;
+        $this->reasonPhrase = $reasonPhrase ?: (self::PHRASES[$code] ?? '');
+
+        return $this;
     }
 
     /**
@@ -228,5 +233,19 @@ class Response extends Message implements ResponseInterface
     ): static {
         $cookie = new Cookie(...func_get_args());
         return $this->withAddedHeader('Set-Cookie', $cookie->__toString());
+    }
+
+    public function setCookie(
+        string $name,
+        string $value,
+        int $expires = 3600,
+        string $path = '/',
+        string $domain = '',
+        bool $secure = false,
+        bool $httponly = false,
+        string $sameSite = ''
+    ) {
+        $cookie = new Cookie(...func_get_args());
+        return $this->setAddedHeader('Set-Cookie', $cookie->__toString());
     }
 }
