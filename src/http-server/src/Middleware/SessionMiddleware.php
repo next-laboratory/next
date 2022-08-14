@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Max\Http\Server\Middleware;
 
 use Max\Config\Contract\ConfigInterface;
+use Max\Http\Message\Contract\HeaderInterface;
 use Max\Http\Message\Cookie;
 use Max\Session\Session;
 use Psr\Http\Message\ResponseInterface;
@@ -60,6 +61,6 @@ class SessionMiddleware implements MiddlewareInterface
         $session->close();
         $cookie = new Cookie($this->name, $session->getId(), time() + $this->expires, $this->path, $this->domain, $this->secure, $this->httponly);
 
-        return $response->withAddedHeader('Set-Cookie', $cookie->__toString());
+        return $response->withAddedHeader(HeaderInterface::HEADER_SET_COOKIE, $cookie->__toString());
     }
 }
