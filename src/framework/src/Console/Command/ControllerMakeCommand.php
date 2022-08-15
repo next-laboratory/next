@@ -43,15 +43,15 @@ class ControllerMakeCommand extends Command
         $controller               = $input->getArgument('controller');
         $stubFile                 = $this->stubsPath . ($input->hasOption('rest') ? 'controller_rest.stub' : 'controller.stub');
         [$namespace, $controller] = $this->parse($controller);
-        $controllerPath           = base_path('app/Http/Controllers/' . str_replace('\\', '/', $namespace) . '/');
+        $controllerPath           = base_path('app/Http/Controller/' . str_replace('\\', '/', $namespace) . '/');
         $controllerFile           = $controllerPath . $controller . 'Controller.php';
         if ($filesystem->exists($controllerFile)) {
             $output->writeln('<comment>[WARN]</comment> 控制器已经存在!');
             return 1;
         }
         $filesystem->exists($controllerPath) || $filesystem->makeDirectory($controllerPath, 0777, true);
-        $filesystem->put($controllerFile, str_replace(['{{namespace}}', '{{class}}', '{{path}}'], ['App\\Http\\Controllers' . $namespace, $controller . 'Controller', strtolower($controller)], $filesystem->get($stubFile)));
-        $output->writeln("<info>[INFO]</info> 控制器App\\Http\\Controllers{$namespace}\\{$controller}Controller创建成功！");
+        $filesystem->put($controllerFile, str_replace(['{{namespace}}', '{{class}}', '{{path}}'], ['App\\Http\\Controller' . $namespace, $controller . 'Controller', strtolower($controller)], $filesystem->get($stubFile)));
+        $output->writeln("<info>[INFO]</info> 控制器App\\Http\\Controller{$namespace}\\{$controller}Controller创建成功！");
 
         return 1;
     }
