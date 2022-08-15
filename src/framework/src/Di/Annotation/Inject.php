@@ -22,10 +22,10 @@ use Throwable;
 class Inject implements PropertyAnnotation
 {
     /**
-     * @param null|string $id 注入的类型
+     * @param string $id 注入的类型
      */
     public function __construct(
-        protected ?string $id = null
+        protected string $id = ''
     ) {
     }
 

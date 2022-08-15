@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Http\Server\Middleware;
 
+use Max\Http\Message\Contract\HeaderInterface;
 use Max\Http\Message\Exception\HttpException;
 use Max\Http\Message\Response;
 use Psr\Http\Message\ResponseInterface;
@@ -49,7 +50,7 @@ class ExceptionHandleMiddleware implements MiddlewareInterface
     {
         $message    = $throwable->getMessage();
         $statusCode = $this->getStatusCode($throwable);
-        if (str_contains($request->getHeaderLine('Accept'), 'application/json')
+        if (str_contains($request->getHeaderLine(HeaderInterface::HEADER_ACCEPT), 'application/json')
             || strcasecmp('XMLHttpRequest', $request->getHeaderLine('X-REQUESTED-WITH')) === 0) {
             return new Response($statusCode, [], json_encode([
                 'status'  => false,
