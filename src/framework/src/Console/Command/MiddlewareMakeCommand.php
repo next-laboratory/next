@@ -43,13 +43,13 @@ class MiddlewareMakeCommand extends Command
         $filesystem               = new Filesystem();
         $stubFile                 = $this->stubsPath . 'middleware.stub';
         [$namespace, $middleware] = $this->parse($input->getArgument('middleware'));
-        $middlewarePath           = base_path('app/Http/Middlewares/' . str_replace('\\', '/', $namespace) . '/');
+        $middlewarePath           = base_path('app/Http/Middleware/' . str_replace('\\', '/', $namespace) . '/');
         $filesystem->exists($middlewarePath) || $filesystem->makeDirectory($middlewarePath, 0755, true);
         $suffix         = $input->getOption('suffix') ? 'Middleware' : '';
         $middlewareFile = $middlewarePath . $middleware . $suffix . '.php';
         $filesystem->exists($middlewareFile) && throw new InvalidArgumentException('中间件已经存在！');
-        $filesystem->put($middlewareFile, str_replace(['{{namespace}}', '{{class}}'], ['App\\Http\\Middlewares' . $namespace, $middleware . $suffix], file_get_contents($stubFile)));
-        $output->writeln("<info>[DEBU]</info>中间件App\\Http\\Middlewares{$namespace}\\{$middleware}创建成功！");
+        $filesystem->put($middlewareFile, str_replace(['{{namespace}}', '{{class}}'], ['App\\Http\\Middleware' . $namespace, $middleware . $suffix], file_get_contents($stubFile)));
+        $output->writeln("<info>[DEBU]</info>中间件App\\Http\\Middleware{$namespace}\\{$middleware}创建成功！");
 
         return 1;
     }
