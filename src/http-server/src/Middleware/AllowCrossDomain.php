@@ -39,19 +39,36 @@ class AllowCrossDomain implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         if ($this->shouldCrossOrigin($origin = $request->getHeaderLine(HeaderInterface::HEADER_ORIGIN))) {
-            $headers                                                      = $this->addedHeaders;
-            $headers[HeaderInterface::HEADER_ACCESS_CONTROL_ALLOW_ORIGIN] = $origin;
+            $headers = $this->createCORSHeaders($origin);
             if (strcasecmp($request->getMethod(), RequestMethodInterface::METHOD_OPTIONS) === 0) {
                 return new Response(StatusCodeInterface::STATUS_NO_CONTENT, $headers);
             }
-            $response = $handler->handle($request);
-            foreach ($headers as $name => $header) {
-                $response = $response->withHeader($name, $header);
-            }
-            return $response;
+
+            return $this->addHeadersToResponse($handler->handle($request), $headers);
         }
 
         return $handler->handle($request);
+    }
+
+    /**
+     * 创建响应头部
+     */
+    protected function createCORSHeaders(string $origin): array
+    {
+        $headers                                                      = $this->addedHeaders;
+        $headers[HeaderInterface::HEADER_ACCESS_CONTROL_ALLOW_ORIGIN] = $origin;
+        return $headers;
+    }
+
+    /**
+     * 将头部添加到响应
+     */
+    protected function addHeadersToResponse(ResponseInterface $response, array $headers): ResponseInterface
+    {
+        foreach ($headers as $name => $header) {
+            $response = $response->withHeader($name, $header);
+        }
+        return $response;
     }
 
     /**
