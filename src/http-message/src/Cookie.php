@@ -30,6 +30,51 @@ class Cookie
         }
     }
 
+    /**
+     * 解析Cookie字符串，返回对象
+     */
+    public static function parse(string $str): Cookie
+    {
+        $parts = [
+            'expires'  => 0,
+            'path'     => '/',
+            'domain'   => '',
+            'secure'   => false,
+            'httponly' => false,
+            'samesite' => '',
+        ];
+        foreach (explode(';', $str) as $part) {
+            if (! str_contains($part, '=')) {
+                $key   = $part;
+                $value = true;
+            } else {
+                [$key, $value] = explode('=', trim($part), 2);
+                $value         = trim($value);
+            }
+            switch ($key = trim(strtolower($key))) {
+                case 'max-age':
+                    $parts['expires'] = time() + (int) $value;
+                    break;
+                default:
+                    if (array_key_exists($key, $parts)) {
+                        $parts[$key] = $value;
+                    } else {
+                        $parts['name']  = $key;
+                        $parts['value'] = $value;
+                    }
+            }
+        }
+        return new static(
+            $parts['name'], $parts['value'],
+            (int) $parts['expires'], $parts['path'],
+            $parts['domain'], (bool) $parts['secure'],
+            (bool) $parts['httponly'], $parts['samesite']
+        );
+    }
+
+    /**
+     * 生成对应的Cookie字符串
+     */
     public function __toString(): string
     {
         $str = $this->name . '=';
@@ -102,45 +147,6 @@ class Cookie
     public function getMaxAge(): int
     {
         return $this->expires !== 0 ? $this->expires - time() : 0;
-    }
-
-    public static function parse(string $str): Cookie
-    {
-        $parts = [
-            'expires'  => 0,
-            'path'     => '/',
-            'domain'   => '',
-            'secure'   => false,
-            'httponly' => false,
-            'samesite' => '',
-        ];
-        foreach (explode(';', $str) as $part) {
-            if (! str_contains($part, '=')) {
-                $key   = $part;
-                $value = true;
-            } else {
-                [$key, $value] = explode('=', trim($part), 2);
-                $value         = trim($value);
-            }
-            switch ($key = trim(strtolower($key))) {
-                case 'max-age':
-                    $parts['expires'] = time() + (int) $value;
-                    break;
-                default:
-                    if (array_key_exists($key, $parts)) {
-                        $parts[$key] = $value;
-                    } else {
-                        $parts['name']  = $key;
-                        $parts['value'] = $value;
-                    }
-            }
-        }
-        return new static(
-            $parts['name'], $parts['value'],
-            (int) $parts['expires'], $parts['path'],
-            $parts['domain'], (bool) $parts['secure'],
-            (bool) $parts['httponly'], $parts['samesite']
-        );
     }
 
     public function getName(): string
