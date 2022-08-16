@@ -9,24 +9,23 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Utils;
+namespace Max\Swoole;
 
-use Max\Utils\Exception\ParallelExecutionException;
+use Max\Swoole\Exception\ParallelExecutionException;
 use Swoole\Coroutine;
 use Swoole\Coroutine\Channel;
 use Swoole\Coroutine\WaitGroup;
+use Throwable;
+
+use function sprintf;
 
 class Parallel
 {
     /**
      * @var callable[]
      */
-    private array $callbacks = [];
-
-    /**
-     * @var null|Channel
-     */
-    private $concurrentChannel;
+    private array    $callbacks = [];
+    private ?Channel $concurrentChannel;
 
     /**
      * @param int $concurrent if $concurrent is equal to 0, that means unlimit
@@ -55,10 +54,10 @@ class Parallel
         $wg->add(count($this->callbacks));
         foreach ($this->callbacks as $key => $callback) {
             $this->concurrentChannel && $this->concurrentChannel->push(true);
-            Coroutine::create(function () use ($callback, $key, $wg, &$result, &$throwables) {
+            Coroutine::create(function() use ($callback, $key, $wg, &$result, &$throwables) {
                 try {
                     $result[$key] = call($callback);
-                } catch (\Throwable $throwable) {
+                } catch (Throwable $throwable) {
                     $throwables[$key] = $throwable;
                 } finally {
                     $this->concurrentChannel && $this->concurrentChannel->pop();
@@ -90,13 +89,13 @@ class Parallel
     /**
      * Format throwables into a nice list.
      *
-     * @param \Throwable[] $throwables
+     * @param Throwable[] $throwables
      */
     private function formatThrowables(array $throwables): string
     {
         $output = '';
         foreach ($throwables as $key => $value) {
-            $output .= \sprintf('(%s) %s: %s' . PHP_EOL . '%s' . PHP_EOL, $key, get_class($value), $value->getMessage(), $value->getTraceAsString());
+            $output .= sprintf('(%s) %s: %s' . PHP_EOL . '%s' . PHP_EOL, $key, get_class($value), $value->getMessage(), $value->getTraceAsString());
         }
         return $output;
     }
