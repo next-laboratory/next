@@ -26,21 +26,16 @@ class SessionMiddleware implements MiddlewareInterface
     /**
      * Cookie 过期时间【+9小时，实际1小时后过期，和时区有关】.
      */
-    protected int $expires = 9 * 3600;
-
-    protected string $name = 'MAXPHP_SESSION_ID';
-
-    protected bool $httponly = true;
-
-    protected string $path = '/';
-
-    protected string $domain = '';
-
-    protected bool $secure = true;
-
+    protected int                     $expires  = 9 * 3600;
     /**
-     * @var mixed|SessionHandlerInterface
+     * 会话Cookie名
      */
+    protected string                  $name     = 'MAXPHP_SESSION_ID';
+    protected bool                    $httponly = true;
+    protected string                  $path     = '/';
+    protected string                  $domain   = '';
+    protected bool                    $secure   = true;
+    protected string                  $sameSite = 'lax';
     protected SessionHandlerInterface $handler;
 
     public function __construct(ConfigInterface $config)
@@ -68,7 +63,7 @@ class SessionMiddleware implements MiddlewareInterface
      */
     protected function addCookieToResponse(ResponseInterface $response, string $name, string $value): ResponseInterface
     {
-        $cookie = new Cookie($name, $value, time() + $this->expires, $this->path, $this->domain, $this->secure, $this->httponly);
+        $cookie = new Cookie($name, $value, time() + $this->expires, $this->path, $this->domain, $this->secure, $this->httponly, $this->sameSite);
 
         return $response->withAddedHeader(HeaderInterface::HEADER_SET_COOKIE, $cookie->__toString());
     }
