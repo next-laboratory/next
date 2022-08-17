@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Max\Http\Server\Middleware;
 
 use Max\Http\Message\Contract\HeaderInterface;
+use Max\Http\Message\Contract\StatusCodeInterface;
 use Max\Http\Message\Exception\HttpException;
 use Max\Http\Message\Response;
 use Psr\Http\Message\ResponseInterface;
@@ -69,6 +70,6 @@ class ExceptionHandleMiddleware implements MiddlewareInterface
 
     protected function getStatusCode(Throwable $throwable)
     {
-        return $throwable instanceof HttpException ? $throwable->getCode() : 500;
+        return $throwable instanceof HttpException ? $throwable->getCode() : StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR;
     }
 }
