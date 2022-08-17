@@ -26,15 +26,15 @@ use function Max\Utils\collect;
 class AllowCrossDomain implements MiddlewareInterface
 {
     /** @var array 允许域，全部可以使用`*` */
-    protected array $allowOrigin = ['*'];
+    protected array  $allowOrigin      = ['*'];
 
-    /** @var array 附加的响应头 */
-    protected array $addedHeaders = [
-        HeaderInterface::HEADER_ACCESS_CONTROL_ALLOW_CREDENTIALS => 'true',
-        HeaderInterface::HEADER_ACCESS_CONTROL_MAX_AGE           => 1800,
-        HeaderInterface::HEADER_ACCESS_CONTROL_ALLOW_METHODS     => 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-        HeaderInterface::HEADER_ACCESS_CONTROL_ALLOW_HEADERS     => 'Authorization, Content-Type, If-Match, If-Modified-Since, If-None-Match, If-Unmodified-Since, X-CSRF-TOKEN, X-Requested-With',
-    ];
+    protected array  $allowHeaders     = ['Authorization', 'Content-Type', 'If-Match', 'If-Modified-Since', 'If-None-Match', 'If-Unmodified-Since', 'X-CSRF-TOKEN', 'X-Requested-With'];
+
+    protected array  $allowMethods     = ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'];
+
+    protected string $allowCredentials = 'true';
+
+    protected int    $maxAge           = 1800;
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -51,17 +51,21 @@ class AllowCrossDomain implements MiddlewareInterface
     }
 
     /**
-     * 创建响应头部
+     * 创建响应头部.
      */
     protected function createCORSHeaders(string $origin): array
     {
-        $headers                                                      = $this->addedHeaders;
-        $headers[HeaderInterface::HEADER_ACCESS_CONTROL_ALLOW_ORIGIN] = $origin;
-        return $headers;
+        return [
+            HeaderInterface::HEADER_ACCESS_CONTROL_ALLOW_CREDENTIALS => $this->allowCredentials,
+            HeaderInterface::HEADER_ACCESS_CONTROL_MAX_AGE           => $this->maxAge,
+            HeaderInterface::HEADER_ACCESS_CONTROL_ALLOW_METHODS     => implode(', ', $this->allowMethods),
+            HeaderInterface::HEADER_ACCESS_CONTROL_ALLOW_HEADERS     => implode(', ', $this->allowHeaders),
+            HeaderInterface::HEADER_ACCESS_CONTROL_ALLOW_ORIGIN      => $origin,
+        ];
     }
 
     /**
-     * 将头部添加到响应
+     * 将头部添加到响应.
      */
     protected function addHeadersToResponse(ResponseInterface $response, array $headers): ResponseInterface
     {
@@ -79,7 +83,7 @@ class AllowCrossDomain implements MiddlewareInterface
         if (empty($origin)) {
             return false;
         }
-        return collect($this->allowOrigin)->first(function($allowOrigin) use ($origin) {
+        return collect($this->allowOrigin)->first(function ($allowOrigin) use ($origin) {
             return Str::is($allowOrigin, $origin);
         });
     }

@@ -20,8 +20,37 @@ class FPMResponseEmitter implements ResponseEmitterInterface
 {
     public function emit(ResponseInterface $psrResponse, $sender = null)
     {
-        header(sprintf('HTTP/%s %d %s', $psrResponse->getProtocolVersion(), $psrResponse->getStatusCode(), $psrResponse->getReasonPhrase()), true);
-        foreach ($psrResponse->getHeader(HeaderInterface::HEADER_SET_COOKIE) as $cookie) {
+        if (! headers_sent()) {
+            static::sendHeaders($psrResponse);
+        }
+        static::sendContent($psrResponse);
+
+        if (function_exists('fastcgi_finish_request')) {
+            fastcgi_finish_request();
+        } elseif ('cli' !== PHP_SAPI) {
+            $this->closeOutputBuffers(0, true);
+        }
+    }
+
+    public function closeOutputBuffers($targetLevel, $flush)
+    {
+        $status = ob_get_status(true);
+        $level  = count($status);
+        $flags  = defined('PHP_OUTPUT_HANDLER_REMOVABLE') ? PHP_OUTPUT_HANDLER_REMOVABLE | ($flush ? PHP_OUTPUT_HANDLER_FLUSHABLE : PHP_OUTPUT_HANDLER_CLEANABLE) : -1;
+
+        while ($level-- > $targetLevel && ($s = $status[$level]) && (! isset($s['del']) ? ! isset($s['flags']) || $flags === ($s['flags'] & $flags) : $s['del'])) {
+            if ($flush) {
+                ob_end_flush();
+            } else {
+                ob_end_clean();
+            }
+        }
+    }
+
+    protected static function sendHeaders(ResponseInterface $response)
+    {
+        header(sprintf('HTTP/%s %d %s', $response->getProtocolVersion(), $response->getStatusCode(), $response->getReasonPhrase()), true);
+        foreach ($response->getHeader(HeaderInterface::HEADER_SET_COOKIE) as $cookie) {
             $cookie = Cookie::parse($cookie);
             setcookie(
                 $cookie->getName(),
@@ -33,11 +62,15 @@ class FPMResponseEmitter implements ResponseEmitterInterface
                 $cookie->isHttponly()
             );
         }
-        $psrResponse = $psrResponse->withoutHeader(HeaderInterface::HEADER_SET_COOKIE);
-        foreach ($psrResponse->getHeaders() as $name => $value) {
+        $response = $response->withoutHeader(HeaderInterface::HEADER_SET_COOKIE);
+        foreach ($response->getHeaders() as $name => $value) {
             header($name . ': ' . implode(', ', $value));
         }
-        $body = $psrResponse->getBody();
+    }
+
+    protected static function sendContent(ResponseInterface $response)
+    {
+        $body = $response->getBody();
         echo $body?->getContents();
         $body?->close();
     }

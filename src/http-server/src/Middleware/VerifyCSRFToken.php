@@ -18,6 +18,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+
 use function Max\Utils\collect;
 
 class VerifyCSRFToken implements MiddlewareInterface
@@ -30,7 +31,7 @@ class VerifyCSRFToken implements MiddlewareInterface
     ];
 
     /**
-     * 过期时间
+     * 过期时间.
      */
     protected int $expires = 9 * 3600;
 
@@ -55,7 +56,7 @@ class VerifyCSRFToken implements MiddlewareInterface
 
             $token = $this->parseToken($request);
 
-            if ('' === $token || $token !== $previousToken) {
+            if ($token === '' || $token !== $previousToken) {
                 $this->abort();
             }
         }
@@ -72,7 +73,7 @@ class VerifyCSRFToken implements MiddlewareInterface
     }
 
     /**
-     * 将token添加到cookie中
+     * 将token添加到cookie中.
      *
      * @throws Exception
      */
@@ -82,13 +83,13 @@ class VerifyCSRFToken implements MiddlewareInterface
     }
 
     /**
-     * 生成CSRF Token
+     * 生成CSRF Token.
      *
      * @throws Exception
      */
     protected function newCSRFToken(): string
     {
-        return bin2hex((random_bytes(32)));
+        return bin2hex(random_bytes(32));
     }
 
     /**
@@ -105,7 +106,7 @@ class VerifyCSRFToken implements MiddlewareInterface
     protected function shouldVerify(ServerRequestInterface $request): bool
     {
         if (in_array($request->getMethod(), $this->shouldVerifyMethods)) {
-            return !collect($this->except)->first(function($pattern) use ($request) {
+            return ! collect($this->except)->first(function ($pattern) use ($request) {
                 return $request->is($pattern);
             });
         }
