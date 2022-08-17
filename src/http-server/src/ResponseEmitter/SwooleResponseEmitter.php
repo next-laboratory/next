@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Http\Server\ResponseEmitter;
 
+use Max\Http\Message\Contract\HeaderInterface;
 use Max\Http\Message\Cookie;
 use Max\Http\Message\Stream\FileStream;
 use Max\Http\Server\Contract\ResponseEmitterInterface;
@@ -25,10 +26,20 @@ class SwooleResponseEmitter implements ResponseEmitterInterface
     public function emit(ResponseInterface $psrResponse, $sender = null)
     {
         $sender->status($psrResponse->getStatusCode(), $psrResponse->getReasonPhrase());
-        foreach ($psrResponse->getHeader('Set-Cookie') as $cookie) {
-            $this->sendCookie(Cookie::parse($cookie), $sender);
+        foreach ($psrResponse->getHeader(HeaderInterface::HEADER_SET_COOKIE) as $cookieLine) {
+            $cookie = Cookie::parse($cookieLine);
+            $sender->cookie(
+                $cookie->getName(),
+                $cookie->getValue(),
+                $cookie->getExpires(),
+                $cookie->getPath(),
+                $cookie->getDomain(),
+                $cookie->isSecure(),
+                $cookie->isHttponly(),
+                $cookie->getSameSite()
+            );
         }
-        $psrResponse = $psrResponse->withoutHeader('Set-Cookie');
+        $psrResponse = $psrResponse->withoutHeader(HeaderInterface::HEADER_SET_COOKIE);
         foreach ($psrResponse->getHeaders() as $key => $value) {
             $sender->header($key, implode(', ', $value));
         }
@@ -41,19 +52,5 @@ class SwooleResponseEmitter implements ResponseEmitterInterface
                 $sender->end($body->getContents());
         }
         $body?->close();
-    }
-
-    protected function sendCookie(Cookie $cookie, Response $response): void
-    {
-        $response->cookie(
-            $cookie->getName(),
-            $cookie->getValue(),
-            $cookie->getExpires(),
-            $cookie->getPath(),
-            $cookie->getDomain(),
-            $cookie->isSecure(),
-            $cookie->isHttponly(),
-            $cookie->getSameSite()
-        );
     }
 }

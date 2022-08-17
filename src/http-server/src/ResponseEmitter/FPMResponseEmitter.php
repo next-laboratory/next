@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Http\Server\ResponseEmitter;
 
+use Max\Http\Message\Contract\HeaderInterface;
 use Max\Http\Message\Cookie;
 use Max\Http\Server\Contract\ResponseEmitterInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -20,7 +21,7 @@ class FPMResponseEmitter implements ResponseEmitterInterface
     public function emit(ResponseInterface $psrResponse, $sender = null)
     {
         header(sprintf('HTTP/%s %d %s', $psrResponse->getProtocolVersion(), $psrResponse->getStatusCode(), $psrResponse->getReasonPhrase()), true);
-        foreach ($psrResponse->getHeader('Set-Cookie') as $cookie) {
+        foreach ($psrResponse->getHeader(HeaderInterface::HEADER_SET_COOKIE) as $cookie) {
             $cookie = Cookie::parse($cookie);
             setcookie(
                 $cookie->getName(),
@@ -32,7 +33,7 @@ class FPMResponseEmitter implements ResponseEmitterInterface
                 $cookie->isHttponly()
             );
         }
-        $psrResponse = $psrResponse->withoutHeader('Set-Cookie');
+        $psrResponse = $psrResponse->withoutHeader(HeaderInterface::HEADER_SET_COOKIE);
         foreach ($psrResponse->getHeaders() as $name => $value) {
             header($name . ': ' . implode(', ', $value));
         }

@@ -27,28 +27,23 @@ class SessionMiddleware implements MiddlewareInterface
      * Cookie 过期时间【+9小时，实际1小时后过期，和时区有关】.
      */
     protected int $expires = 9 * 3600;
-
-    protected string $name = 'MAXPHP_SESSION_ID';
-
-    protected bool $httponly = true;
-
-    protected string $path = '/';
-
-    protected string $domain = '';
-
-    protected bool $secure = true;
-
     /**
-     * @var mixed|SessionHandlerInterface
+     * 会话Cookie名
      */
+    protected string                  $name     = 'MAXPHP_SESSION_ID';
+    protected bool                    $httponly = true;
+    protected string                  $path     = '/';
+    protected string                  $domain   = '';
+    protected bool                    $secure   = true;
+    protected string                  $sameSite = Cookie::SAME_SITE_LAX;
     protected SessionHandlerInterface $handler;
 
     public function __construct(ConfigInterface $config)
     {
         $config        = $config->get('session');
         $handler       = $config['handler'];
-        $options       = $config['options'];
-        $this->handler = new $handler($options);
+        $config        = $config['config'];
+        $this->handler = new $handler($config);
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -59,7 +54,16 @@ class SessionMiddleware implements MiddlewareInterface
         $response = $handler->handle($request);
         $session->save();
         $session->close();
-        $cookie = new Cookie($this->name, $session->getId(), time() + $this->expires, $this->path, $this->domain, $this->secure, $this->httponly);
+
+        return $this->addCookieToResponse($response, $this->name, $session->getId());
+    }
+
+    /**
+     * 将cookie添加到响应
+     */
+    protected function addCookieToResponse(ResponseInterface $response, string $name, string $value): ResponseInterface
+    {
+        $cookie = new Cookie($name, $value, time() + $this->expires, $this->path, $this->domain, $this->secure, $this->httponly, $this->sameSite);
 
         return $response->withAddedHeader(HeaderInterface::HEADER_SET_COOKIE, $cookie->__toString());
     }
