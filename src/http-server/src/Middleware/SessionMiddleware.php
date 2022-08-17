@@ -26,7 +26,7 @@ class SessionMiddleware implements MiddlewareInterface
     /**
      * Cookie 过期时间【+9小时，实际1小时后过期，和时区有关】.
      */
-    protected int                     $expires  = 9 * 3600;
+    protected int $expires = 9 * 3600;
     /**
      * 会话Cookie名
      */
@@ -35,15 +35,15 @@ class SessionMiddleware implements MiddlewareInterface
     protected string                  $path     = '/';
     protected string                  $domain   = '';
     protected bool                    $secure   = true;
-    protected string                  $sameSite = 'lax';
+    protected string                  $sameSite = Cookie::SAME_SITE_LAX;
     protected SessionHandlerInterface $handler;
 
     public function __construct(ConfigInterface $config)
     {
         $config        = $config->get('session');
         $handler       = $config['handler'];
-        $options       = $config['options'];
-        $this->handler = new $handler($options);
+        $config        = $config['config'];
+        $this->handler = new $handler($config);
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
