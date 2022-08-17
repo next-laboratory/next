@@ -15,6 +15,10 @@ use InvalidArgumentException;
 
 class Cookie
 {
+    public const SAME_SITE_LAX    = 'lax';
+    public const SAME_SITE_NONE   = 'none';
+    public const SAME_SITE_STRICT = 'strict';
+
     public function __construct(
         protected string $name,
         protected string $value,
