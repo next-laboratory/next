@@ -50,7 +50,7 @@ class VerifyCSRFToken implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         if ($this->shouldVerify($request)) {
-            if (is_null($previousToken = $request->getCookieParams()['X-XSRF-TOKEN'] ?? null)) {
+            if (is_null($previousToken = $request->getCookieParams()['X-CSRF-TOKEN'] ?? null)) {
                 $this->abort();
             }
 
@@ -79,7 +79,7 @@ class VerifyCSRFToken implements MiddlewareInterface
      */
     protected function addCookieToResponse(ResponseInterface $response): ResponseInterface
     {
-        return $response->withCookie('X-XSRF-TOKEN', $this->newCSRFToken(), time() + $this->expires);
+        return $response->withCookie('X-CSRF-TOKEN', $this->newCSRFToken(), time() + $this->expires);
     }
 
     /**
