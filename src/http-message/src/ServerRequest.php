@@ -175,11 +175,11 @@ class ServerRequest extends Request implements ServerRequestInterface
     public static function createFromPsrRequest(ServerRequestInterface $request): static
     {
         $psrRequest                = new static($request->getMethod(), $request->getUri(), $request->getHeaders(), $request->getBody());
-        $psrRequest->serverParams  = new ServerBag($request->getServerParams());
-        $psrRequest->cookieParams  = new CookieBag($request->getCookieParams());
-        $psrRequest->queryParams   = new ParameterBag($request->getQueryParams());
-        $psrRequest->parsedBody    = new ParameterBag($request->getParsedBody());
-        $psrRequest->uploadedFiles = new FileBag($request->getUploadedFiles());
+        $psrRequest->serverParams  = new ServerBag($request->getServerParams() ?: []);
+        $psrRequest->cookieParams  = new CookieBag($request->getCookieParams() ?: []);
+        $psrRequest->queryParams   = new ParameterBag($request->getQueryParams() ?: []);
+        $psrRequest->parsedBody    = new ParameterBag($request->getParsedBody() ?: []);
+        $psrRequest->uploadedFiles = new FileBag($request->getUploadedFiles() ?: []);
 
         return $psrRequest;
     }
