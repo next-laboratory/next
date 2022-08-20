@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
 namespace Max\Swoole;
 
 use Swoole\Coroutine;
@@ -12,11 +21,6 @@ class Context
         return Coroutine::getCid();
     }
 
-    /**
-     * @param int $cid
-     *
-     * @return SwooleContext|null
-     */
     public static function for(int $cid = 0): ?SwooleContext
     {
         return Coroutine::getContext($cid);
