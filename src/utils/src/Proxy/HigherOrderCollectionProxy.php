@@ -11,43 +11,66 @@ declare(strict_types=1);
 
 namespace Max\Utils\Proxy;
 
-use Max\Utils\Collection;
+use Max\Utils\Contract\Enumerable;
 
 /**
- * @mixin Collection
- * Most of the methods in this file come from illuminate/support,
- * thanks Laravel Team provide such a useful class.
+ * @mixin Enumerable
  */
 class HigherOrderCollectionProxy
 {
     /**
+     * The collection being operated on.
+     *
+     * @var Enumerable
+     */
+    protected $collection;
+
+    /**
+     * The method being proxied.
+     *
+     * @var string
+     */
+    protected $method;
+
+    /**
      * Create a new proxy instance.
      *
-     * @param Collection $collection the collection being operated on
-     * @param string     $method     the method being proxied
+     * @param Enumerable $collection
+     * @param string     $method
+     *
+     * @return void
      */
-    public function __construct(
-        protected Collection $collection,
-        protected string $method
-    ) {
+    public function __construct(Enumerable $collection, $method)
+    {
+        $this->method     = $method;
+        $this->collection = $collection;
     }
 
     /**
      * Proxy accessing an attribute onto the collection items.
+     *
+     * @param string $key
+     *
+     * @return mixed
      */
-    public function __get(string $key)
+    public function __get($key)
     {
-        return $this->collection->{$this->method}(function ($value) use ($key) {
+        return $this->collection->{$this->method}(function($value) use ($key) {
             return is_array($value) ? $value[$key] : $value->{$key};
         });
     }
 
     /**
      * Proxy a method call onto the collection items.
+     *
+     * @param string $method
+     * @param array  $parameters
+     *
+     * @return mixed
      */
-    public function __call(string $method, array $parameters)
+    public function __call($method, $parameters)
     {
-        return $this->collection->{$this->method}(function ($value) use ($method, $parameters) {
+        return $this->collection->{$this->method}(function($value) use ($method, $parameters) {
             return $value->{$method}(...$parameters);
         });
     }

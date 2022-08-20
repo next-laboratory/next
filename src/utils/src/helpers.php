@@ -20,7 +20,7 @@ use Max\Utils\Proxy\HigherOrderTapProxy;
 use RuntimeException;
 use Throwable;
 
-/*
+/**
  * Most of the methods in this file come from illuminate
  * thanks Laravel Team provide such a useful class.
  */
@@ -62,7 +62,7 @@ function data_get(mixed $target, array|int|string|null $key, mixed $default = nu
         if ($segment === '*') {
             if ($target instanceof Collection) {
                 $target = $target->all();
-            } elseif (! is_array($target)) {
+            } else if (!is_array($target)) {
                 return value($default);
             }
 
@@ -77,7 +77,7 @@ function data_get(mixed $target, array|int|string|null $key, mixed $default = nu
 
         if (Arr::accessible($target) && Arr::exists($target, $segment)) {
             $target = $target[$segment];
-        } elseif (is_object($target) && isset($target->{$segment})) {
+        } else if (is_object($target) && isset($target->{$segment})) {
             $target = $target->{$segment};
         } else {
             return value($default);
@@ -95,7 +95,7 @@ function data_set(mixed &$target, array|string $key, mixed $value, bool $overwri
     $segments = is_array($key) ? $key : explode('.', $key);
 
     if (($segment = array_shift($segments)) === '*') {
-        if (! Arr::accessible($target)) {
+        if (!Arr::accessible($target)) {
             $target = [];
         }
 
@@ -103,29 +103,29 @@ function data_set(mixed &$target, array|string $key, mixed $value, bool $overwri
             foreach ($target as &$inner) {
                 data_set($inner, $segments, $value, $overwrite);
             }
-        } elseif ($overwrite) {
+        } else if ($overwrite) {
             foreach ($target as &$inner) {
                 $inner = $value;
             }
         }
-    } elseif (Arr::accessible($target)) {
+    } else if (Arr::accessible($target)) {
         if ($segments) {
-            if (! Arr::exists($target, $segment)) {
+            if (!Arr::exists($target, $segment)) {
                 $target[$segment] = [];
             }
 
             data_set($target[$segment], $segments, $value, $overwrite);
-        } elseif ($overwrite || ! Arr::exists($target, $segment)) {
+        } else if ($overwrite || !Arr::exists($target, $segment)) {
             $target[$segment] = $value;
         }
-    } elseif (is_object($target)) {
+    } else if (is_object($target)) {
         if ($segments) {
-            if (! isset($target->{$segment})) {
+            if (!isset($target->{$segment})) {
                 $target->{$segment} = [];
             }
 
             data_set($target->{$segment}, $segments, $value, $overwrite);
-        } elseif ($overwrite || ! isset($target->{$segment})) {
+        } else if ($overwrite || !isset($target->{$segment})) {
             $target->{$segment} = $value;
         }
     } else {
@@ -133,7 +133,7 @@ function data_set(mixed &$target, array|string $key, mixed $value, bool $overwri
 
         if ($segments) {
             data_set($target[$segment], $segments, $value, $overwrite);
-        } elseif ($overwrite) {
+        } else if ($overwrite) {
             $target[$segment] = $value;
         }
     }
@@ -155,6 +155,32 @@ function head(array $array): mixed
 function last(array $array): mixed
 {
     return end($array);
+}
+
+/**
+ * Get a new stringable object from the given string.
+ *
+ * @param string|null $string
+ *
+ * @return Stringable|mixed
+ */
+function str($string = null)
+{
+    if (func_num_args() === 0) {
+        return new class {
+            public function __call($method, $parameters)
+            {
+                return Str::$method(...$parameters);
+            }
+
+            public function __toString()
+            {
+                return '';
+            }
+        };
+    }
+
+    return Str::of($string);
 }
 
 /**
@@ -270,7 +296,7 @@ function e(Htmlable|string|DeferringDisplayableValue|null $value, bool $doubleEn
  */
 function filled(mixed $value): bool
 {
-    return ! blank($value);
+    return !blank($value);
 }
 
 /**
@@ -283,7 +309,7 @@ function object_get(object $object, ?string $key, mixed $default = null): mixed
     }
 
     foreach (explode('.', $key) as $segment) {
-        if (! is_object($object) || ! isset($object->{$segment})) {
+        if (!is_object($object) || !isset($object->{$segment})) {
             return value($default);
         }
 
@@ -301,7 +327,7 @@ function optional(mixed $value = null, callable $callback = null): mixed
     if (is_null($callback)) {
         return new Optional($value);
     }
-    if (! is_null($value)) {
+    if (!is_null($value)) {
         return $callback($value);
     }
 }
@@ -322,7 +348,7 @@ function retry(int $times, callable $callback, int|Closure $sleepMilliseconds = 
     try {
         return $callback($attempts);
     } catch (Exception $e) {
-        if ($times < 1 || ($when && ! $when($e))) {
+        if ($times < 1 || ($when && !$when($e))) {
             throw $e;
         }
 
@@ -359,7 +385,7 @@ function throw_if(mixed $condition, Throwable|string $exception = 'RuntimeExcept
  */
 function throw_unless(mixed $condition, Throwable|string $exception = 'RuntimeException', ...$parameters): mixed
 {
-    throw_if(! $condition, $exception, ...$parameters);
+    throw_if(!$condition, $exception, ...$parameters);
 
     return $condition;
 }

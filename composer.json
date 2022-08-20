@@ -2,7 +2,7 @@
     "name": "max/max",
     "license": "Apache-2.0",
     "description": "一款支持swoole, workerman, FPM环境的框架的组件化的轻量`PHP`框架。",
-    "homepage": "https://github.com/topyao/max",
+    "homepage": "https://github.com/marxphp/max",
     "keywords": [
         "maxphp",
         "flexible",
