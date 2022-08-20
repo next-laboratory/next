@@ -38,11 +38,8 @@ class Join
     }
 
     /**
-     * @param        $first
-     * @param        $last
-     * @param string $operator
-     *
-     * @return Builder
+     * @param $first
+     * @param $last
      */
     public function on($first, $last, string $operator = '='): Builder
     {

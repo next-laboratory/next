@@ -19,16 +19,11 @@ use JsonSerializable;
 class ResourceCollection implements JsonSerializable
 {
     /**
-     * @var
-     */
-    protected $collection;
-
-    /**
      * @param $collection
      */
-    public function __construct($collection)
-    {
-        $this->collection = $collection;
+    public function __construct(
+        protected $collection
+    ) {
     }
 
     /**

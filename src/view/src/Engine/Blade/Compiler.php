@@ -30,14 +30,12 @@ class Compiler
 
     protected ?string $parent;
 
-    protected BladeEngine $blade;
-
     /**
      * Compiler constructor.
      */
-    public function __construct(BladeEngine $blade)
-    {
-        $this->blade = $blade;
+    public function __construct(
+        protected BladeEngine $blade
+    ) {
     }
 
     /**

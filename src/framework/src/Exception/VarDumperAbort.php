@@ -15,7 +15,8 @@ use Exception;
 
 class VarDumperAbort extends Exception
 {
-    public function __construct(public mixed $vars)
-    {
+    public function __construct(
+        public mixed $vars
+    ) {
     }
 }

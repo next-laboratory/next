@@ -16,8 +16,9 @@ use Max\Http\Message\UploadedFile;
 
 class FileBag
 {
-    public function __construct(protected array $uploadedFiles = [])
-    {
+    public function __construct(
+        protected array $uploadedFiles = []
+    ) {
     }
 
     public static function createFromGlobal(): static

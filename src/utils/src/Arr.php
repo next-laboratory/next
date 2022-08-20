@@ -22,10 +22,8 @@ class Arr
 {
     /**
      * Determine whether the given value is array accessible.
-     *
-     * @param mixed $value
      */
-    public static function accessible($value): bool
+    public static function accessible(mixed $value): bool
     {
         return is_array($value) || $value instanceof ArrayAccess;
     }
@@ -242,7 +240,7 @@ class Arr
         if (static::exists($array, $key)) {
             return $array[$key];
         }
-        if (! is_string($key) || strpos($key, '.') === false) {
+        if (! is_string($key) || ! str_contains($key, '.')) {
             return $array[$key] ?? value($default);
         }
         foreach (explode('.', $key) as $segment) {

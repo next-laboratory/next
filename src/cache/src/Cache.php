@@ -20,9 +20,6 @@ use function Max\Utils\value;
 
 class Cache implements CacheInterface
 {
-    /**
-     * @param CacheDriverInterface $driver
-     */
     public function __construct(
         protected CacheDriverInterface $driver
     ) {
@@ -113,12 +110,6 @@ class Cache implements CacheInterface
         }
     }
 
-    /**
-     * @param string $key
-     * @param Closure $callback
-     * @param int|null $ttl
-     * @return mixed
-     */
     public function remember(string $key, Closure $callback, ?int $ttl = null): mixed
     {
         if (! $this->has($key)) {
@@ -127,30 +118,16 @@ class Cache implements CacheInterface
         return $this->get($key);
     }
 
-    /**
-     * @param string $key
-     * @param int $step
-     * @return int
-     */
     public function increment(string $key, int $step = 1): int
     {
         return $this->driver->increment($key, $step);
     }
 
-    /**
-     * @param string $key
-     * @param int $step
-     * @return int
-     */
     public function decrement(string $key, int $step = 1): int
     {
         return $this->driver->decrement($key, $step);
     }
 
-    /**
-     * @param string $key
-     * @return mixed
-     */
     public function pull(string $key): mixed
     {
         $value = $this->get($key);

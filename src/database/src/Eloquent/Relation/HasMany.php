@@ -16,7 +16,11 @@ use Max\Database\Eloquent\Model;
 
 class HasMany
 {
-    public function __construct(Builder $builder, Model $owner, $foreignKey, $localKey)
-    {
+    public function __construct(
+        protected Builder $builder,
+        protected Model $owner,
+        protected $foreignKey,
+        protected $localKey
+    ) {
     }
 }

@@ -24,11 +24,9 @@ use function strtolower;
 
 class Rules
 {
-    protected Validator $validator;
-
-    public function __construct(Validator $validator)
-    {
-        $this->validator = $validator;
+    public function __construct(
+        protected Validator $validator
+    ) {
     }
 
     /**
