@@ -36,8 +36,9 @@ use ReflectionUnionType;
 
 class PropertyHandlerVisitor extends NodeVisitorAbstract
 {
-    public function __construct(protected Metadata $metadata)
-    {
+    public function __construct(
+        protected Metadata $metadata
+    ) {
     }
 
     public function enterNode(Node $node)
