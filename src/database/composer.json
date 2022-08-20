@@ -20,9 +20,9 @@
         "php": "^8.0",
         "ext-pdo": "*",
         "ext-json": "*",
-        "max/utils": "^0.1",
-        "max/config": "^0.1",
-        "max/context": "^0.1"
+        "max/utils": "^0.0.1",
+        "max/config": "^0.0.1",
+        "max/context": "^0.0.1"
     },
     "extra": {
         "max": {
