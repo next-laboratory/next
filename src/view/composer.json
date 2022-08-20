@@ -12,8 +12,8 @@
     ],
     "require": {
         "php": "^8.0",
-        "max/utils": "^0.1",
-        "max/config": "^0.1"
+        "max/utils": "^1.0",
+        "max/config": "^1.0"
     },
     "autoload": {
         "psr-4": {

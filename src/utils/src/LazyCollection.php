@@ -59,11 +59,12 @@ class LazyCollection implements Enumerable
     /**
      * Create a collection with the given range.
      *
-     * @param  int    $from
-     * @param  int    $to
+     * @param int $from
+     * @param int $to
+     *
      * @return static
      */
-    public static function range($from, $to)
+    public static function range(int $from, int $to)
     {
         return new static(function () use ($from, $to) {
             if ($from <= $to) {
@@ -141,10 +142,11 @@ class LazyCollection implements Enumerable
     /**
      * Get the average value of a given key.
      *
-     * @param  null|callable|string $callback
+     * @param callable|string|null $callback
+     *
      * @return mixed
      */
-    public function avg($callback = null)
+    public function avg(callable|string $callback = null)
     {
         return $this->collect()->avg($callback);
     }
@@ -152,10 +154,11 @@ class LazyCollection implements Enumerable
     /**
      * Get the median of a given key.
      *
-     * @param  null|array|string $key
+     * @param array|string|null $key
+     *
      * @return mixed
      */
-    public function median($key = null)
+    public function median(array|string $key = null)
     {
         return $this->collect()->median($key);
     }
@@ -163,10 +166,11 @@ class LazyCollection implements Enumerable
     /**
      * Get the mode of a given key.
      *
-     * @param  null|array|string $key
+     * @param array|string|null $key
+     *
      * @return null|array
      */
-    public function mode($key = null)
+    public function mode(array|string $key = null)
     {
         return $this->collect()->mode($key);
     }
@@ -192,12 +196,13 @@ class LazyCollection implements Enumerable
     /**
      * Determine if an item exists in the enumerable.
      *
-     * @param  mixed $key
-     * @param  mixed $operator
-     * @param  mixed $value
+     * @param mixed      $key
+     * @param mixed|null $operator
+     * @param mixed|null $value
+     *
      * @return bool
      */
-    public function contains($key, $operator = null, $value = null)
+    public function contains(mixed $key, mixed $operator = null, mixed $value = null)
     {
         if (func_num_args() === 1 && $this->useAsCallable($key)) {
             $placeholder = new stdClass();
@@ -234,20 +239,21 @@ class LazyCollection implements Enumerable
     /**
      * Count the number of items in the collection by a field or using a callback.
      *
-     * @param  callable|string $countBy
+     * @param callable|null $callback
+     *
      * @return static
      */
-    public function countBy($countBy = null)
+    public function countBy(callable $callback = null)
     {
-        $countBy = is_null($countBy)
+        $callback = is_null($callback)
             ? $this->identity()
-            : $this->valueRetriever($countBy);
+            : $this->valueRetriever($callback);
 
-        return new static(function () use ($countBy) {
+        return new static(function () use ($callback) {
             $counts = [];
 
             foreach ($this as $key => $value) {
-                $group = $countBy($value, $key);
+                $group = $callback($value, $key);
 
                 if (empty($counts[$group])) {
                     $counts[$group] = 0;
@@ -263,10 +269,11 @@ class LazyCollection implements Enumerable
     /**
      * Get the items that are not present in the given items.
      *
-     * @param  mixed  $items
+     * @param mixed $items
+     *
      * @return static
      */
-    public function diff($items)
+    public function diff(mixed $items)
     {
         return $this->passthru('diff', func_get_args());
     }
@@ -274,10 +281,11 @@ class LazyCollection implements Enumerable
     /**
      * Get the items that are not present in the given items, using the callback.
      *
-     * @param  mixed  $items
+     * @param mixed $items
+     *
      * @return static
      */
-    public function diffUsing($items, callable $callback)
+    public function diffUsing(mixed $items, callable $callback)
     {
         return $this->passthru('diffUsing', func_get_args());
     }
@@ -285,10 +293,11 @@ class LazyCollection implements Enumerable
     /**
      * Get the items whose keys and values are not present in the given items.
      *
-     * @param  mixed  $items
+     * @param mixed $items
+     *
      * @return static
      */
-    public function diffAssoc($items)
+    public function diffAssoc(mixed $items)
     {
         return $this->passthru('diffAssoc', func_get_args());
     }
@@ -296,10 +305,11 @@ class LazyCollection implements Enumerable
     /**
      * Get the items whose keys and values are not present in the given items, using the callback.
      *
-     * @param  mixed  $items
+     * @param mixed $items
+     *
      * @return static
      */
-    public function diffAssocUsing($items, callable $callback)
+    public function diffAssocUsing(mixed $items, callable $callback)
     {
         return $this->passthru('diffAssocUsing', func_get_args());
     }
@@ -307,10 +317,11 @@ class LazyCollection implements Enumerable
     /**
      * Get the items whose keys are not present in the given items.
      *
-     * @param  mixed  $items
+     * @param mixed $items
+     *
      * @return static
      */
-    public function diffKeys($items)
+    public function diffKeys(mixed $items)
     {
         return $this->passthru('diffKeys', func_get_args());
     }
@@ -318,10 +329,11 @@ class LazyCollection implements Enumerable
     /**
      * Get the items whose keys are not present in the given items, using the callback.
      *
-     * @param  mixed  $items
+     * @param mixed $items
+     *
      * @return static
      */
-    public function diffKeysUsing($items, callable $callback)
+    public function diffKeysUsing(mixed $items, callable $callback)
     {
         return $this->passthru('diffKeysUsing', func_get_args());
     }
@@ -329,11 +341,12 @@ class LazyCollection implements Enumerable
     /**
      * Retrieve duplicate items.
      *
-     * @param  null|callable|string $callback
-     * @param  bool                 $strict
+     * @param callable|string|null $callback
+     * @param bool                 $strict
+     *
      * @return static
      */
-    public function duplicates($callback = null, $strict = false)
+    public function duplicates(callable|string $callback = null, bool $strict = false)
     {
         return $this->passthru('duplicates', func_get_args());
     }
@@ -341,10 +354,11 @@ class LazyCollection implements Enumerable
     /**
      * Retrieve duplicate items using strict comparison.
      *
-     * @param  null|callable|string $callback
+     * @param callable|string|null $callback
+     *
      * @return static
      */
-    public function duplicatesStrict($callback = null)
+    public function duplicatesStrict(callable|string $callback = null)
     {
         return $this->passthru('duplicatesStrict', func_get_args());
     }
@@ -352,10 +366,11 @@ class LazyCollection implements Enumerable
     /**
      * Get all items except for those with the specified keys.
      *
-     * @param  mixed  $keys
+     * @param mixed $keys
+     *
      * @return static
      */
-    public function except($keys)
+    public function except(mixed $keys)
     {
         return $this->passthru('except', func_get_args());
     }
@@ -625,11 +640,12 @@ class LazyCollection implements Enumerable
     /**
      * Get the values of a given key.
      *
-     * @param  array|string $value
-     * @param  null|string  $key
+     * @param array|string $value
+     * @param string|null  $key
+     *
      * @return static
      */
-    public function pluck($value, $key = null)
+    public function pluck(array|string $value, string $key = null)
     {
         return new static(function () use ($value, $key) {
             [$value, $key] = $this->explodePluckParameters($value, $key);
@@ -697,10 +713,11 @@ class LazyCollection implements Enumerable
     /**
      * Merge the collection with the given items.
      *
-     * @param  mixed  $items
+     * @param mixed $items
+     *
      * @return static
      */
-    public function merge($items)
+    public function merge(mixed $items)
     {
         return $this->passthru('merge', func_get_args());
     }
@@ -708,10 +725,11 @@ class LazyCollection implements Enumerable
     /**
      * Recursively merge the collection with the given items.
      *
-     * @param  mixed  $items
+     * @param mixed $items
+     *
      * @return static
      */
-    public function mergeRecursive($items)
+    public function mergeRecursive(mixed $items)
     {
         return $this->passthru('mergeRecursive', func_get_args());
     }
@@ -719,10 +737,11 @@ class LazyCollection implements Enumerable
     /**
      * Create a collection by using this collection for keys and another for its values.
      *
-     * @param  mixed  $values
+     * @param mixed $values
+     *
      * @return static
      */
-    public function combine($values)
+    public function combine(mixed $values)
     {
         return new static(function () use ($values) {
             $values = $this->makeIterator($values);
@@ -1168,10 +1187,11 @@ class LazyCollection implements Enumerable
     /**
      * Sort through each item with a callback.
      *
-     * @param  null|callable|int $callback
+     * @param callable|int|null $callback
+     *
      * @return static
      */
-    public function sort($callback = null)
+    public function sort(callable|int $callback = null)
     {
         return $this->passthru('sort', func_get_args());
     }
@@ -1190,12 +1210,13 @@ class LazyCollection implements Enumerable
     /**
      * Sort the collection using the given callback.
      *
-     * @param  callable|string $callback
-     * @param  int             $options
-     * @param  bool            $descending
+     * @param callable|string $callback
+     * @param int             $options
+     * @param bool            $descending
+     *
      * @return static
      */
-    public function sortBy($callback, $options = SORT_REGULAR, $descending = false)
+    public function sortBy(callable|string $callback, int $options = SORT_REGULAR, bool $descending = false)
     {
         return $this->passthru('sortBy', func_get_args());
     }
@@ -1203,11 +1224,12 @@ class LazyCollection implements Enumerable
     /**
      * Sort the collection in descending order using the given callback.
      *
-     * @param  callable|string $callback
-     * @param  int             $options
+     * @param callable|string $callback
+     * @param int             $options
+     *
      * @return static
      */
-    public function sortByDesc($callback, $options = SORT_REGULAR)
+    public function sortByDesc(callable|string $callback, int $options = SORT_REGULAR)
     {
         return $this->passthru('sortByDesc', func_get_args());
     }
@@ -1215,11 +1237,12 @@ class LazyCollection implements Enumerable
     /**
      * Sort the collection keys.
      *
-     * @param  int    $options
-     * @param  bool   $descending
+     * @param int  $options
+     * @param bool $descending
+     *
      * @return static
      */
-    public function sortKeys($options = SORT_REGULAR, $descending = false)
+    public function sortKeys(int $options = SORT_REGULAR, bool $descending = false)
     {
         return $this->passthru('sortKeys', func_get_args());
     }
@@ -1227,10 +1250,11 @@ class LazyCollection implements Enumerable
     /**
      * Sort the collection keys in descending order.
      *
-     * @param  int    $options
+     * @param int $options
+     *
      * @return static
      */
-    public function sortKeysDesc($options = SORT_REGULAR)
+    public function sortKeysDesc(int $options = SORT_REGULAR)
     {
         return $this->passthru('sortKeysDesc', func_get_args());
     }
@@ -1238,10 +1262,11 @@ class LazyCollection implements Enumerable
     /**
      * Take the first or last {$limit} items.
      *
-     * @param  int    $limit
+     * @param int $limit
+     *
      * @return static
      */
-    public function take($limit)
+    public function take(int $limit)
     {
         if ($limit < 0) {
             return $this->passthru('take', func_get_args());
@@ -1267,10 +1292,11 @@ class LazyCollection implements Enumerable
     /**
      * Take items in the collection until the given condition is met.
      *
-     * @param  mixed  $value
+     * @param mixed $value
+     *
      * @return static
      */
-    public function takeUntil($value)
+    public function takeUntil(mixed $value)
     {
         $callback = $this->useAsCallable($value) ? $value : $this->equality($value);
 
@@ -1302,10 +1328,11 @@ class LazyCollection implements Enumerable
     /**
      * Take items in the collection while the given condition is met.
      *
-     * @param  mixed  $value
+     * @param mixed $value
+     *
      * @return static
      */
-    public function takeWhile($value)
+    public function takeWhile(mixed $value)
     {
         $callback = $this->useAsCallable($value) ? $value : $this->equality($value);
 
@@ -1373,11 +1400,12 @@ class LazyCollection implements Enumerable
     /**
      * Pad collection to the specified length with a value.
      *
-     * @param  int    $size
-     * @param  mixed  $value
+     * @param int   $size
+     * @param mixed $value
+     *
      * @return static
      */
-    public function pad($size, $value)
+    public function pad(int $size, mixed $value)
     {
         if ($size < 0) {
             return $this->passthru('pad', func_get_args());
