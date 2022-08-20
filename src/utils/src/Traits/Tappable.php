@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Max\Utils\Traits;
 
+use function Max\Utils\tap;
+
 /**
  * Most of the methods in this file come from illuminate
  * thanks Laravel Team provide such a useful class.
