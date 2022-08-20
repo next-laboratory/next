@@ -86,6 +86,9 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable, Jsonab
         return $this->key;
     }
 
+    /**
+     * @return $this
+     */
     public function fill(array $attributes): static
     {
         foreach ($attributes as $key => $value) {
@@ -207,7 +210,16 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable, Jsonab
         return $model;
     }
 
-    public static function exists(string $key): mixed
+    /**
+     * @return $this
+     */
+    public function replace(array $attributes): static
+    {
+        $this->fill($attributes)->save();
+        return $this;
+    }
+
+    public static function exists(string $key): bool
     {
         return static::getSwooleTable()->exists($key);
     }
