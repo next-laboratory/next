@@ -73,11 +73,11 @@ class ServerRequest extends Request implements ServerRequestInterface
                 $hasPort = true;
                 $uri     = $uri->withPort($hostHeaderParts[1]);
             }
-        } else if (isset($server['server_name'])) {
+        } elseif (isset($server['server_name'])) {
             $uri = $uri->withHost($server['server_name']);
-        } else if (isset($server['server_addr'])) {
+        } elseif (isset($server['server_addr'])) {
             $uri = $uri->withHost($server['server_addr']);
-        } else if (isset($header['host'])) {
+        } elseif (isset($header['host'])) {
             $hasPort = true;
             if (strpos($header['host'], ':')) {
                 [$host, $port] = explode(':', $header['host'], 2);
@@ -91,7 +91,7 @@ class ServerRequest extends Request implements ServerRequestInterface
             $uri = $uri->withHost($host);
         }
 
-        if (!$hasPort && isset($server['server_port'])) {
+        if (! $hasPort && isset($server['server_port'])) {
             $uri = $uri->withPort($server['server_port']);
         }
 
@@ -105,7 +105,7 @@ class ServerRequest extends Request implements ServerRequestInterface
             }
         }
 
-        if (!$hasQuery && isset($server['query_string'])) {
+        if (! $hasQuery && isset($server['query_string'])) {
             $uri = $uri->withQuery($server['query_string']);
         }
 
@@ -115,7 +115,7 @@ class ServerRequest extends Request implements ServerRequestInterface
         $psrRequest->body          = new StringStream($request->getContent());
         $psrRequest->cookieParams  = new CookieBag($request->cookie ?? []);
         $psrRequest->queryParams   = new ParameterBag($request->get ?? []);
-        $psrRequest->uploadedFiles = new FileBag($request->files ?? []); // TODO Convert to UploadedFiles.
+        $psrRequest->uploadedFiles = new FileBag($request->files    ?? []); // TODO Convert to UploadedFiles.
         $psrRequest->attributes    = new ParameterBag($attributes);
 
         return $psrRequest;
@@ -175,11 +175,11 @@ class ServerRequest extends Request implements ServerRequestInterface
     public static function createFromPsrRequest(ServerRequestInterface $request): static
     {
         $psrRequest                = new static($request->getMethod(), $request->getUri(), $request->getHeaders(), $request->getBody());
-        $psrRequest->serverParams  = new ServerBag($request->getServerParams());
-        $psrRequest->cookieParams  = new CookieBag($request->getCookieParams());
-        $psrRequest->queryParams   = new ParameterBag($request->getQueryParams());
-        $psrRequest->parsedBody    = new ParameterBag($request->getParsedBody());
-        $psrRequest->uploadedFiles = new FileBag($request->getUploadedFiles());
+        $psrRequest->serverParams  = new ServerBag($request->getServerParams() ?: []);
+        $psrRequest->cookieParams  = new CookieBag($request->getCookieParams() ?: []);
+        $psrRequest->queryParams   = new ParameterBag($request->getQueryParams() ?: []);
+        $psrRequest->parsedBody    = new ParameterBag($request->getParsedBody() ?: []);
+        $psrRequest->uploadedFiles = new FileBag($request->getUploadedFiles() ?: []);
 
         return $psrRequest;
     }
@@ -273,7 +273,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     public function withParsedBody($data)
     {
         $new             = clone $this;
-        $new->parsedBody = $data instanceof ParameterBag ? $data : new ParameterBag((array)$data);
+        $new->parsedBody = $data instanceof ParameterBag ? $data : new ParameterBag((array) $data);
 
         return $new;
     }
@@ -324,10 +324,10 @@ class ServerRequest extends Request implements ServerRequestInterface
     public function getRealIp(): string
     {
         $headers = $this->getHeaders();
-        if (isset($headers['x-forwarded-for'][0]) && !empty($headers['x-forwarded-for'][0])) {
+        if (isset($headers['x-forwarded-for'][0]) && ! empty($headers['x-forwarded-for'][0])) {
             return $headers['x-forwarded-for'][0];
         }
-        if (isset($headers['x-real-ip'][0]) && !empty($headers['x-real-ip'][0])) {
+        if (isset($headers['x-real-ip'][0]) && ! empty($headers['x-real-ip'][0])) {
             return $headers['x-real-ip'][0];
         }
         $serverParams = $this->getServerParams();
@@ -378,7 +378,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     {
         $uri = $this->getUri();
         $url = $uri->getPath();
-        if (!empty($query = $uri->getQuery())) {
+        if (! empty($query = $uri->getQuery())) {
             $url .= '?' . $query;
         }
         return $url;

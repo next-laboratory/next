@@ -21,7 +21,6 @@ use Max\Utils\Contract\Enumerable;
 use Max\Utils\Exception\ItemNotFoundException;
 use Max\Utils\Exception\MultipleItemsFoundException;
 use Max\Utils\Traits\EnumeratesValues;
-use ReturnTypeWillChange;
 use stdClass;
 use Traversable;
 
@@ -95,10 +94,8 @@ class LazyCollection implements Enumerable
 
     /**
      * Eager load all items into a new lazy collection backed by an array.
-     *
-     * @return static
      */
-    public function eager()
+    public function eager(): static
     {
         return new static($this->all());
     }
@@ -1406,7 +1403,7 @@ class LazyCollection implements Enumerable
      *
      * @return Traversable
      */
-    #[ReturnTypeWillChange]
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return $this->makeIterator($this->source);
@@ -1417,7 +1414,7 @@ class LazyCollection implements Enumerable
      *
      * @return int
      */
-    #[ReturnTypeWillChange]
+    #[\ReturnTypeWillChange]
     public function count()
     {
         if (is_array($this->source)) {

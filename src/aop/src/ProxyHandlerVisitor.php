@@ -28,8 +28,9 @@ use PhpParser\NodeVisitorAbstract;
 
 class ProxyHandlerVisitor extends NodeVisitorAbstract
 {
-    public function __construct(protected Metadata $metadata)
-    {
+    public function __construct(
+        protected Metadata $metadata
+    ) {
     }
 
     public function leaveNode(Node $node)

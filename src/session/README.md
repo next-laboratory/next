@@ -1,7 +1,7 @@
 Session组件，支持File和Redis存储
 
 ```php
-composer require max/session:dev-master
+composer require max/session
 ```
 
 ```php

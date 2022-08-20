@@ -52,8 +52,8 @@ class Manager
     public function connection(?string $name = null): Query
     {
         $name ??= $this->defaultConnection;
-        if (!isset($this->connections[$name])) {
-            if (!isset($this->config[$name])) {
+        if (! isset($this->connections[$name])) {
+            if (! isset($this->config[$name])) {
                 throw new InvalidArgumentException('没有相关数据库连接');
             }
             $config                   = $this->config[$name];

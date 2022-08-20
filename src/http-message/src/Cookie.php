@@ -16,7 +16,9 @@ use InvalidArgumentException;
 class Cookie
 {
     public const SAME_SITE_LAX    = 'lax';
+
     public const SAME_SITE_NONE   = 'none';
+
     public const SAME_SITE_STRICT = 'strict';
 
     public function __construct(
@@ -32,6 +34,38 @@ class Cookie
         if ($this->sameSite && ! in_array(strtolower($sameSite), ['lax', 'none', 'strict'])) {
             throw new InvalidArgumentException('The "sameSite" parameter value is not valid.');
         }
+    }
+
+    /**
+     * 生成对应的Cookie字符串.
+     */
+    public function __toString(): string
+    {
+        $str = $this->name . '=';
+        if ($this->value === '') {
+            $str .= 'deleted; expires=' . gmdate('D, d-M-Y H:i:s T', time() - 31536001) . '; max-age=-31536001';
+        } else {
+            $str .= $this->value;
+            if ($this->expires !== 0) {
+                $str .= '; expires=' . gmdate('D, d-m-Y H:i:s T', $this->expires) . '; max-age=' . $this->getMaxAge();
+            }
+        }
+        if ($this->path) {
+            $str .= '; path=' . $this->path;
+        }
+        if ($this->domain) {
+            $str .= '; domain=' . $this->domain;
+        }
+        if ($this->secure) {
+            $str .= '; secure';
+        }
+        if ($this->httponly) {
+            $str .= '; httponly';
+        }
+        if ($this->sameSite) {
+            $str .= '; samesite=' . $this->sameSite;
+        }
+        return $str;
     }
 
     /**
@@ -74,38 +108,6 @@ class Cookie
             $parts['domain'], (bool) $parts['secure'],
             (bool) $parts['httponly'], $parts['samesite']
         );
-    }
-
-    /**
-     * 生成对应的Cookie字符串
-     */
-    public function __toString(): string
-    {
-        $str = $this->name . '=';
-        if ($this->value === '') {
-            $str .= 'deleted; expires=' . gmdate('D, d-M-Y H:i:s T', time() - 31536001) . '; max-age=-31536001';
-        } else {
-            $str .= $this->value;
-            if ($this->expires !== 0) {
-                $str .= '; expires=' . gmdate('D, d-m-Y H:i:s T', $this->expires) . '; max-age=' . $this->getMaxAge();
-            }
-        }
-        if ($this->path) {
-            $str .= '; path=' . $this->path;
-        }
-        if ($this->domain) {
-            $str .= '; domain=' . $this->domain;
-        }
-        if ($this->secure) {
-            $str .= '; secure';
-        }
-        if ($this->httponly) {
-            $str .= '; httponly';
-        }
-        if ($this->sameSite) {
-            $str .= '; samesite=' . $this->sameSite;
-        }
-        return $str;
     }
 
     public function setName(string $name): void

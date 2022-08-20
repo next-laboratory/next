@@ -15,6 +15,7 @@ namespace Max\Utils\Proxy;
  * Most of the methods in this file come from illuminate
  * thanks Laravel Team provide such a useful class.
  */
+
 use Max\Utils\Contract\Enumerable;
 
 /**
@@ -25,34 +26,22 @@ use Max\Utils\Contract\Enumerable;
 class HigherOrderWhenProxy
 {
     /**
-     * The collection being operated on.
-     *
-     * @var Enumerable
-     */
-    protected $collection;
-
-    /**
-     * The condition for proxying.
-     *
-     * @var bool
-     */
-    protected $condition;
-
-    /**
      * Create a new proxy instance.
      *
-     * @param bool $condition
+     * @param Enumerable $collection the collection being operated on
+     * @param bool       $condition  the condition for proxying
      */
-    public function __construct(Enumerable $collection, $condition)
-    {
-        $this->condition  = $condition;
-        $this->collection = $collection;
+    public function __construct(
+        protected Enumerable $collection,
+        protected bool $condition
+    ) {
     }
 
     /**
      * Proxy accessing an attribute onto the collection.
      *
-     * @param  string $key
+     * @param string $key
+     *
      * @return mixed
      */
     public function __get($key)
@@ -65,8 +54,9 @@ class HigherOrderWhenProxy
     /**
      * Proxy a method call onto the collection.
      *
-     * @param  string $method
-     * @param  array  $parameters
+     * @param string $method
+     * @param array  $parameters
+     *
      * @return mixed
      */
     public function __call($method, $parameters)

@@ -50,20 +50,21 @@ class ThrottleMiddleware implements MiddlewareInterface
 
     protected $key;          // 解析后的标识
 
-    protected int              $waitSeconds  = 0;             // 下次合法请求还有多少秒
+    protected int $waitSeconds = 0;             // 下次合法请求还有多少秒
 
-    protected int              $now          = 0;             // 当前时间戳
+    protected int $now = 0;             // 当前时间戳
 
-    protected int              $max_requests = 0;             // 规定时间内允许的最大请求次数
+    protected int $max_requests = 0;             // 规定时间内允许的最大请求次数
 
-    protected int              $expire       = 0;             // 规定时间
+    protected int $expire = 0;             // 规定时间
 
-    protected int              $remaining    = 0;             // 规定时间内还能请求的次数
+    protected int $remaining = 0;             // 规定时间内还能请求的次数
 
-    protected string           $driver       = CounterSlider::class;
+    protected string $driver = CounterSlider::class;
 
-    public function __construct(protected CacheInterface $cache)
-    {
+    public function __construct(
+        protected CacheInterface $cache
+    ) {
         $this->handler = Context::getContainer()->make($this->driver);
     }
 

@@ -29,29 +29,19 @@ class Stringable implements JsonSerializable
     use Tappable;
 
     /**
-     * The underlying string value.
-     *
-     * @var string
-     */
-    protected $value;
-
-    /**
      * Create a new instance of the class.
      *
-     * @param string $value
+     * @param string $value the underlying string value
      */
-    public function __construct($value = '')
-    {
-        $this->value = (string) $value;
+    public function __construct(
+        protected string $value = ''
+    ) {
     }
 
     /**
      * Proxy dynamic properties onto methods.
-     *
-     * @param  string $key
-     * @return mixed
      */
-    public function __get($key)
+    public function __get(string $key)
     {
         return $this->{$key}();
     }
@@ -63,193 +53,141 @@ class Stringable implements JsonSerializable
      */
     public function __toString()
     {
-        return (string) $this->value;
+        return $this->value;
     }
 
     /**
      * Return the remainder of a string after the first occurrence of a given value.
-     *
-     * @param  string $search
-     * @return static
      */
-    public function after($search)
+    public function after(string $search): static
     {
         return new static(Str::after($this->value, $search));
     }
 
     /**
      * Return the remainder of a string after the last occurrence of a given value.
-     *
-     * @param  string $search
-     * @return static
      */
-    public function afterLast($search)
+    public function afterLast(string $search): static
     {
         return new static(Str::afterLast($this->value, $search));
     }
 
     /**
      * Append the given values to the string.
-     *
-     * @param  array  $values
-     * @return static
      */
-    public function append(...$values)
+    public function append(string ...$values): static
     {
         return new static($this->value . implode('', $values));
     }
 
     /**
      * Transliterate a UTF-8 value to ASCII.
-     *
-     * @param  string $language
-     * @return static
      */
-    public function ascii($language = 'en')
+    public function ascii(string $language = 'en'): static
     {
         return new static(Str::ascii($this->value, $language));
     }
 
     /**
      * Get the trailing name component of the path.
-     *
-     * @param  string $suffix
-     * @return static
      */
-    public function basename($suffix = '')
+    public function basename(string $suffix = ''): static
     {
         return new static(basename($this->value, $suffix));
     }
 
     /**
      * Get the basename of the class path.
-     *
-     * @return static
      */
-    public function classBasename()
+    public function classBasename(): static
     {
         return new static(class_basename($this->value));
     }
 
     /**
      * Get the portion of a string before the first occurrence of a given value.
-     *
-     * @param  string $search
-     * @return static
      */
-    public function before($search)
+    public function before(string $search): static
     {
         return new static(Str::before($this->value, $search));
     }
 
     /**
      * Get the portion of a string before the last occurrence of a given value.
-     *
-     * @param  string $search
-     * @return static
      */
-    public function beforeLast($search)
+    public function beforeLast(string $search): static
     {
         return new static(Str::beforeLast($this->value, $search));
     }
 
     /**
      * Get the portion of a string between two given values.
-     *
-     * @param  string $from
-     * @param  string $to
-     * @return static
      */
-    public function between($from, $to)
+    public function between(string $from, string $to): static
     {
         return new static(Str::between($this->value, $from, $to));
     }
 
     /**
      * Convert a value to camel case.
-     *
-     * @return static
      */
-    public function camel()
+    public function camel(): static
     {
         return new static(Str::camel($this->value));
     }
 
     /**
      * Determine if a given string contains a given substring.
-     *
-     * @param  array|string $needles
-     * @return bool
      */
-    public function contains($needles)
+    public function contains(array|string $needles): bool
     {
         return Str::contains($this->value, $needles);
     }
 
     /**
      * Determine if a given string contains all array values.
-     *
-     * @return bool
      */
-    public function containsAll(array $needles)
+    public function containsAll(array $needles): bool
     {
         return Str::containsAll($this->value, $needles);
     }
 
     /**
      * Get the parent directory's path.
-     *
-     * @param  int    $levels
-     * @return static
      */
-    public function dirname($levels = 1)
+    public function dirname(int $levels = 1): static
     {
         return new static(dirname($this->value, $levels));
     }
 
     /**
      * Determine if a given string ends with a given substring.
-     *
-     * @param  array|string $needles
-     * @return bool
      */
-    public function endsWith($needles)
+    public function endsWith(array|string $needles): bool
     {
         return Str::endsWith($this->value, $needles);
     }
 
     /**
      * Determine if the string is an exact match with the given value.
-     *
-     * @param  string $value
-     * @return bool
      */
-    public function exactly($value)
+    public function exactly(string $value): bool
     {
         return $this->value === $value;
     }
 
     /**
      * Explode the string into an array.
-     *
-     * @param  string     $delimiter
-     * @param  int        $limit
-     * @return Collection
      */
-    public function explode($delimiter, $limit = PHP_INT_MAX)
+    public function explode(string $delimiter, int $limit = PHP_INT_MAX): Collection
     {
         return collect(explode($delimiter, $this->value, $limit));
     }
 
     /**
      * Split a string using a regular expression or by length.
-     *
-     * @param  int|string $pattern
-     * @param  int        $limit
-     * @param  int        $flags
-     * @return Collection
      */
-    public function split($pattern, $limit = -1, $flags = 0)
+    public function split(int|string $pattern, int $limit = -1, int $flags = 0): Collection
     {
         if (filter_var($pattern, FILTER_VALIDATE_INT) !== false) {
             return collect(mb_str_split($this->value, $pattern));
@@ -262,228 +200,168 @@ class Stringable implements JsonSerializable
 
     /**
      * Cap a string with a single instance of a given value.
-     *
-     * @param  string $cap
-     * @return static
      */
-    public function finish($cap)
+    public function finish(string $cap): static
     {
         return new static(Str::finish($this->value, $cap));
     }
 
     /**
      * Determine if a given string matches a given pattern.
-     *
-     * @param  array|string $pattern
-     * @return bool
      */
-    public function is($pattern)
+    public function is(array|string $pattern): bool
     {
         return Str::is($pattern, $this->value);
     }
 
     /**
      * Determine if a given string is 7 bit ASCII.
-     *
-     * @return bool
      */
-    public function isAscii()
+    public function isAscii(): bool
     {
         return Str::isAscii($this->value);
     }
 
     /**
      * Determine if the given string is empty.
-     *
-     * @return bool
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return $this->value === '';
     }
 
     /**
      * Determine if the given string is not empty.
-     *
-     * @return bool
      */
-    public function isNotEmpty()
+    public function isNotEmpty(): bool
     {
         return ! $this->isEmpty();
     }
 
     /**
      * Convert a string to kebab case.
-     *
-     * @return static
      */
-    public function kebab()
+    public function kebab(): static
     {
         return new static(Str::kebab($this->value));
     }
 
     /**
      * Return the length of the given string.
-     *
-     * @param  string $encoding
-     * @return int
      */
-    public function length($encoding = null)
+    public function length(?string $encoding = null): int
     {
         return Str::length($this->value, $encoding);
     }
 
     /**
      * Limit the number of characters in a string.
-     *
-     * @param  int    $limit
-     * @param  string $end
-     * @return static
      */
-    public function limit($limit = 100, $end = '...')
+    public function limit(int $limit = 100, string $end = '...'): static
     {
         return new static(Str::limit($this->value, $limit, $end));
     }
 
     /**
      * Convert the given string to lower-case.
-     *
-     * @return static
      */
-    public function lower()
+    public function lower(): static
     {
         return new static(Str::lower($this->value));
     }
 
     /**
      * Convert GitHub flavored Markdown into HTML.
-     *
-     * @return static
      */
-    public function markdown(array $options = [])
+    public function markdown(array $options = []): static
     {
         return new static(Str::markdown($this->value, $options));
     }
 
     /**
      * Get the string matching the given pattern.
-     *
-     * @param  string $pattern
-     * @return static
      */
-    public function match($pattern)
+    public function match(string $pattern): static
     {
         return new static(Str::match($pattern, $this->value));
     }
 
     /**
      * Get the string matching the given pattern.
-     *
-     * @param  string     $pattern
-     * @return Collection
      */
-    public function matchAll($pattern)
+    public function matchAll(string $pattern): Collection
     {
         return Str::matchAll($pattern, $this->value);
     }
 
     /**
      * Determine if the string matches the given pattern.
-     *
-     * @param  string $pattern
-     * @return bool
      */
-    public function test($pattern)
+    public function test(string $pattern): bool
     {
         return $this->match($pattern)->isNotEmpty();
     }
 
     /**
      * Pad both sides of the string with another.
-     *
-     * @param  int    $length
-     * @param  string $pad
-     * @return static
      */
-    public function padBoth($length, $pad = ' ')
+    public function padBoth(int $length, string $pad = ' '): static
     {
         return new static(Str::padBoth($this->value, $length, $pad));
     }
 
     /**
      * Pad the left side of the string with another.
-     *
-     * @param  int    $length
-     * @param  string $pad
-     * @return static
      */
-    public function padLeft($length, $pad = ' ')
+    public function padLeft(int $length, string $pad = ' '): static
     {
         return new static(Str::padLeft($this->value, $length, $pad));
     }
 
     /**
      * Pad the right side of the string with another.
-     *
-     * @param  int    $length
-     * @param  string $pad
-     * @return static
      */
-    public function padRight($length, $pad = ' ')
+    public function padRight(int $length, string $pad = ' '): static
     {
         return new static(Str::padRight($this->value, $length, $pad));
     }
 
     /**
      * Parse a Class@method style callback into class and method.
-     *
-     * @param  null|string $default
-     * @return array
      */
-    public function parseCallback($default = null)
+    public function parseCallback(?string $default = null): array
     {
         return Str::parseCallback($this->value, $default);
     }
 
     /**
      * Call the given callback and return a new string.
-     *
-     * @return static
      */
-    public function pipe(callable $callback)
+    public function pipe(callable $callback): static
     {
         return new static(call_user_func($callback, $this));
     }
 
     /**
      * Get the plural form of an English word.
-     *
-     * @param  int    $count
-     * @return static
      */
-    public function plural($count = 2)
+    public function plural(int $count = 2): static
     {
         return new static(Str::plural($this->value, $count));
     }
 
     /**
      * Pluralize the last word of an English, studly caps case string.
-     *
-     * @param  int    $count
-     * @return static
      */
-    public function pluralStudly($count = 2)
+    public function pluralStudly(int $count = 2): static
     {
         return new static(Str::pluralStudly($this->value, $count));
     }
 
     /**
      * Prepend the given values to the string.
-     *
-     * @param  array  $values
-     * @return static
      */
-    public function prepend(...$values)
+    public function prepend(string ...$values): static
     {
         return new static(implode('', $values) . $this->value);
     }
@@ -491,21 +369,17 @@ class Stringable implements JsonSerializable
     /**
      * Remove any occurrence of the given string in the subject.
      *
-     * @param  array<string>|string $search
-     * @param  bool                 $caseSensitive
-     * @return static
+     * @param array<string>|string $search
      */
-    public function remove($search, $caseSensitive = true)
+    public function remove(array|string $search, bool $caseSensitive = true): static
     {
         return new static(Str::remove($search, $this->value, $caseSensitive));
     }
 
     /**
      * Repeat the string.
-     *
-     * @return static
      */
-    public function repeat(int $times)
+    public function repeat(int $times): static
     {
         return new static(Str::repeat($this->value, $times));
     }
@@ -513,22 +387,18 @@ class Stringable implements JsonSerializable
     /**
      * Replace the given value in the given string.
      *
-     * @param  string|string[] $search
-     * @param  string|string[] $replace
-     * @return static
+     * @param string|string[] $search
+     * @param string|string[] $replace
      */
-    public function replace($search, $replace)
+    public function replace(array|string $search, array|string $replace): static
     {
         return new static(Str::replace($search, $replace, $this->value));
     }
 
     /**
      * Replace a given value in the string sequentially with an array.
-     *
-     * @param  string $search
-     * @return static
      */
-    public function replaceArray($search, array $replace)
+    public function replaceArray(string $search, array $replace): static
     {
         return new static(Str::replaceArray($search, $replace, $this->value));
     }
@@ -536,8 +406,9 @@ class Stringable implements JsonSerializable
     /**
      * Replace the first occurrence of a given value in the string.
      *
-     * @param  string $search
-     * @param  string $replace
+     * @param string $search
+     * @param string $replace
+     *
      * @return static
      */
     public function replaceFirst($search, $replace)
@@ -548,8 +419,9 @@ class Stringable implements JsonSerializable
     /**
      * Replace the last occurrence of a given value in the string.
      *
-     * @param  string $search
-     * @param  string $replace
+     * @param string $search
+     * @param string $replace
+     *
      * @return static
      */
     public function replaceLast($search, $replace)
@@ -560,9 +432,10 @@ class Stringable implements JsonSerializable
     /**
      * Replace the patterns matching the given regular expression.
      *
-     * @param  string         $pattern
-     * @param  Closure|string $replace
-     * @param  int            $limit
+     * @param string         $pattern
+     * @param Closure|string $replace
+     * @param int            $limit
+     *
      * @return static
      */
     public function replaceMatches($pattern, $replace, $limit = -1)
@@ -577,7 +450,8 @@ class Stringable implements JsonSerializable
     /**
      * Begin a string with a single instance of a given value.
      *
-     * @param  string $prefix
+     * @param string $prefix
+     *
      * @return static
      */
     public function start($prefix)
@@ -618,8 +492,9 @@ class Stringable implements JsonSerializable
     /**
      * Generate a URL friendly "slug" from a given string.
      *
-     * @param  string      $separator
-     * @param  null|string $language
+     * @param string      $separator
+     * @param null|string $language
+     *
      * @return static
      */
     public function slug($separator = '-', $language = 'en')
@@ -630,7 +505,8 @@ class Stringable implements JsonSerializable
     /**
      * Convert a string to snake case.
      *
-     * @param  string $delimiter
+     * @param string $delimiter
+     *
      * @return static
      */
     public function snake($delimiter = '_')
@@ -641,7 +517,8 @@ class Stringable implements JsonSerializable
     /**
      * Determine if a given string starts with a given substring.
      *
-     * @param  array|string $needles
+     * @param array|string $needles
+     *
      * @return bool
      */
     public function startsWith($needles)
@@ -662,8 +539,9 @@ class Stringable implements JsonSerializable
     /**
      * Returns the portion of the string specified by the start and length parameters.
      *
-     * @param  int      $start
-     * @param  null|int $length
+     * @param int      $start
+     * @param null|int $length
+     *
      * @return static
      */
     public function substr($start, $length = null)
@@ -674,9 +552,10 @@ class Stringable implements JsonSerializable
     /**
      * Returns the number of substring occurrences.
      *
-     * @param  string   $needle
-     * @param  null|int $offset
-     * @param  null|int $length
+     * @param string   $needle
+     * @param null|int $offset
+     * @param null|int $length
+     *
      * @return int
      */
     public function substrCount($needle, $offset = null, $length = null)
@@ -687,7 +566,8 @@ class Stringable implements JsonSerializable
     /**
      * Trim the string of the given characters.
      *
-     * @param  string $characters
+     * @param string $characters
+     *
      * @return static
      */
     public function trim($characters = null)
@@ -698,7 +578,8 @@ class Stringable implements JsonSerializable
     /**
      * Left trim the string of the given characters.
      *
-     * @param  string $characters
+     * @param string $characters
+     *
      * @return static
      */
     public function ltrim($characters = null)
@@ -709,7 +590,8 @@ class Stringable implements JsonSerializable
     /**
      * Right trim the string of the given characters.
      *
-     * @param  string $characters
+     * @param string $characters
+     *
      * @return static
      */
     public function rtrim($characters = null)
@@ -730,7 +612,8 @@ class Stringable implements JsonSerializable
     /**
      * Execute the given callback if the string is empty.
      *
-     * @param  callable $callback
+     * @param callable $callback
+     *
      * @return static
      */
     public function whenEmpty($callback)
@@ -747,7 +630,8 @@ class Stringable implements JsonSerializable
     /**
      * Execute the given callback if the string is not empty.
      *
-     * @param  callable $callback
+     * @param callable $callback
+     *
      * @return static
      */
     public function whenNotEmpty($callback)
@@ -764,8 +648,9 @@ class Stringable implements JsonSerializable
     /**
      * Limit the number of words in a string.
      *
-     * @param  int    $words
-     * @param  string $end
+     * @param int    $words
+     * @param string $end
+     *
      * @return static
      */
     public function words($words = 100, $end = '...')
