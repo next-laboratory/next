@@ -16,7 +16,7 @@
 缓存组件基于PSR16开发，已经独立，不再必须使用MaxPHP。你可以使用下面的命令安装开发版本。
 
 ```
-composer require max/cache:dev-master
+composer require max/cache
 ```
 
 # 使用

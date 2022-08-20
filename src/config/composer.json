@@ -19,7 +19,7 @@
     },
     "require": {
         "php": "^8.0",
-        "max/utils": "dev-master"
+        "max/utils": "^0.1"
     },
     "extra": {
         "max": {

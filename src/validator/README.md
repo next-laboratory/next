@@ -16,7 +16,7 @@ MaxPHP验证器组件
 # 安装
 
 ```
-composer require max/validator:dev-master
+composer require max/validator
 ```
 
 # 使用
