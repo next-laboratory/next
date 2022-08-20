@@ -16,7 +16,7 @@
     },
     "require": {
         "php": "^8.0",
-        "max/utils": "^0.0.1",
-        "max/redis": "^0.0.1"
+        "max/utils": "^1.0",
+        "max/redis": "^1.0"
     }
 }
