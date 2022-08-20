@@ -5,7 +5,7 @@
 > 环境要求 PHP >= 8.0
 
 ```shell
-composer require max/aop:dev-master
+composer require max/aop
 ```
 
 # 使用，以下以webman为例
