@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Max\Utils;
 
-use ErrorException;
 use FilesystemIterator;
 use Max\Macro\Macroable;
 use Max\Utils\Exception\FileNotFoundException;
@@ -233,11 +232,7 @@ class Filesystem
         $success = true;
 
         foreach ($paths as $path) {
-            try {
-                if (! @unlink($path)) {
-                    $success = false;
-                }
-            } catch (ErrorException $e) {
+            if (! @unlink($path)) {
                 $success = false;
             }
         }

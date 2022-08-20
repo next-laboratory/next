@@ -88,12 +88,8 @@ class Pluralizer
 
     /**
      * Get the singular form of an English word.
-     *
-     * @param string $value
-     *
-     * @return string
      */
-    public static function singular($value)
+    public static function singular(string $value): string
     {
         $singular = static::inflector()->singularize($value);
 
@@ -116,25 +112,16 @@ class Pluralizer
 
     /**
      * Determine if the given value is uncountable.
-     *
-     * @param string $value
-     *
-     * @return bool
      */
-    protected static function uncountable($value)
+    protected static function uncountable(string $value): bool
     {
         return in_array(strtolower($value), static::$uncountable);
     }
 
     /**
      * Attempt to match the case on two strings.
-     *
-     * @param string $value
-     * @param string $comparison
-     *
-     * @return string
      */
-    protected static function matchCase($value, $comparison)
+    protected static function matchCase(string $value, string $comparison): string
     {
         $functions = ['mb_strtolower', 'mb_strtoupper', 'ucfirst', 'ucwords'];
 

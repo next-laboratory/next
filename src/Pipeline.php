@@ -20,17 +20,15 @@ use Psr\Container\ContainerInterface;
  */
 class Pipeline
 {
-    protected ContainerInterface $container;
+    protected array $pipes = [];
 
-    protected array              $pipes  = [];
+    protected mixed $passable;
 
-    protected mixed              $passable;
+    protected string $method = 'handle';
 
-    protected string             $method = 'handle';
-
-    public function __construct(?ContainerInterface $container = null)
-    {
-        $this->container = $container;
+    public function __construct(
+        protected ?ContainerInterface $container = null
+    ) {
     }
 
     public function send(mixed $passable): static

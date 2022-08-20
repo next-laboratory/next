@@ -18,27 +18,21 @@ namespace Max\Utils\Proxy;
 class HigherOrderTapProxy
 {
     /**
-     * The target being tapped.
-     *
-     * @var mixed
-     */
-    public $target;
-
-    /**
      * Create a new tap proxy instance.
      *
-     * @param mixed $target
+     * @param mixed $target the target being tapped
      */
-    public function __construct($target)
-    {
-        $this->target = $target;
+    public function __construct(
+        protected mixed $target
+    ) {
     }
 
     /**
      * Dynamically pass method calls to the target.
      *
-     * @param  string $method
-     * @param  array  $parameters
+     * @param string $method
+     * @param array  $parameters
+     *
      * @return mixed
      */
     public function __call($method, $parameters)

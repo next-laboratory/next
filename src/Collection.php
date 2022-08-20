@@ -38,10 +38,8 @@ class Collection implements ArrayAccess, Enumerable
 
     /**
      * Create a new collection.
-     *
-     * @param mixed $items
      */
-    public function __construct($items = [])
+    public function __construct(mixed $items = [])
     {
         $this->items = $this->getArrayableItems($items);
     }
@@ -51,10 +49,8 @@ class Collection implements ArrayAccess, Enumerable
      *
      * @param int $from
      * @param int $to
-     *
-     * @return static
      */
-    public static function range($from, $to)
+    public static function range($from, $to): static
     {
         return new static(range($from, $to));
     }
@@ -71,10 +67,8 @@ class Collection implements ArrayAccess, Enumerable
 
     /**
      * Get a lazy collection for the items in this collection.
-     *
-     * @return LazyCollection
      */
-    public function lazy()
+    public function lazy(): LazyCollection
     {
         return new LazyCollection($this->items);
     }
@@ -574,10 +568,8 @@ class Collection implements ArrayAccess, Enumerable
 
     /**
      * Determine if the collection contains a single item.
-     *
-     * @return bool
      */
-    public function containsOneItem()
+    public function containsOneItem(): bool
     {
         return $this->count() === 1;
     }
@@ -1109,7 +1101,7 @@ class Collection implements ArrayAccess, Enumerable
             }
 
             if ($size) {
-                $groups->push(new static(array_slice($this->items, $start, $size)));
+                $groups->push(new static(array_slice($this->items, $start, (int) $size)));
 
                 $start += $size;
             }
@@ -1120,12 +1112,8 @@ class Collection implements ArrayAccess, Enumerable
 
     /**
      * Split a collection into a certain number of groups, and fill the first groups completely.
-     *
-     * @param int $numberOfGroups
-     *
-     * @return static
      */
-    public function splitIn($numberOfGroups)
+    public function splitIn(int $numberOfGroups): static
     {
         return $this->chunk(ceil($this->count() / $numberOfGroups));
     }
@@ -1133,15 +1121,10 @@ class Collection implements ArrayAccess, Enumerable
     /**
      * Get the first item in the collection, but only if exactly one item exists. Otherwise, throw an exception.
      *
-     * @param mixed $key
-     * @param mixed $operator
-     * @param mixed $value
-     *
-     * @throws ItemNotFoundException
      * @throws MultipleItemsFoundException
-     * @return mixed
+     * @throws ItemNotFoundException
      */
-    public function sole($key = null, $operator = null, $value = null)
+    public function sole(mixed $key = null, mixed $operator = null, mixed $value = null): mixed
     {
         $filter = func_num_args() > 1
             ? $this->operatorForWhere(...func_get_args())
@@ -1558,10 +1541,8 @@ class Collection implements ArrayAccess, Enumerable
 
     /**
      * Sort the collection using multiple comparisons.
-     *
-     * @return static
      */
-    protected function sortByMany(array $comparisons = [])
+    protected function sortByMany(array $comparisons = []): static
     {
         $items = $this->items;
 
