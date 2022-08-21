@@ -15,7 +15,6 @@ use Closure;
 use InvalidArgumentException;
 use Max\Http\Message\Contract\RequestMethodInterface;
 
-use function array_merge;
 use function array_unique;
 use function sprintf;
 
@@ -70,6 +69,14 @@ class Router
     }
 
     /**
+     * Method OPTIONS.
+     */
+    public function options(string $uri, string|array|Closure $action): Route
+    {
+        return $this->request($uri, $action, [RequestMethodInterface::METHOD_OPTIONS]);
+    }
+
+    /**
      * Method PUT.
      */
     public function put(string $uri, string|array|Closure $action): Route
@@ -99,6 +106,20 @@ class Router
     public function get(string $uri, string|array|Closure $action): Route
     {
         return $this->request($uri, $action, [RequestMethodInterface::METHOD_GET, RequestMethodInterface::METHOD_HEAD]);
+    }
+
+    /**
+     * Restful路由.
+     */
+    public function rest(string $uri, string $controller): RestRouter
+    {
+        return new RestRouter(
+            $this->routeCollector,
+            $this->prefix . $uri,
+            $this->formatController($controller),
+            $this->middlewares,
+            $this->patterns,
+        );
     }
 
     /**
@@ -136,17 +157,6 @@ class Router
     {
         $new              = clone $this;
         $new->middlewares = array_unique([...$this->middlewares, ...$middlewares]);
-
-        return $new;
-    }
-
-    /**
-     * 变量规则.
-     */
-    public function patterns(array $patterns): Router
-    {
-        $new           = clone $this;
-        $new->patterns = array_merge($this->patterns, $patterns);
 
         return $new;
     }

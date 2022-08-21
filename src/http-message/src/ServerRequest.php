@@ -15,6 +15,7 @@ use Max\Http\Message\Bag\CookieBag;
 use Max\Http\Message\Bag\FileBag;
 use Max\Http\Message\Bag\ParameterBag;
 use Max\Http\Message\Bag\ServerBag;
+use Max\Http\Message\Contract\HeaderInterface;
 use Max\Http\Message\Stream\StringStream;
 use Max\Utils\Arr;
 use Max\Utils\Str;
@@ -115,7 +116,7 @@ class ServerRequest extends Request implements ServerRequestInterface
         $psrRequest->body          = new StringStream($request->getContent());
         $psrRequest->cookieParams  = new CookieBag($request->cookie ?? []);
         $psrRequest->queryParams   = new ParameterBag($request->get ?? []);
-        $psrRequest->uploadedFiles = new FileBag($request->files    ?? []); // TODO Convert to UploadedFiles.
+        $psrRequest->uploadedFiles = new FileBag($request->files ?? []); // TODO Convert to UploadedFiles.
         $psrRequest->attributes    = new ParameterBag($attributes);
 
         return $psrRequest;
@@ -319,28 +320,11 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * 获取客户端真实IP.
-     */
-    public function getRealIp(): string
-    {
-        $headers = $this->getHeaders();
-        if (isset($headers['x-forwarded-for'][0]) && ! empty($headers['x-forwarded-for'][0])) {
-            return $headers['x-forwarded-for'][0];
-        }
-        if (isset($headers['x-real-ip'][0]) && ! empty($headers['x-real-ip'][0])) {
-            return $headers['x-real-ip'][0];
-        }
-        $serverParams = $this->getServerParams();
-
-        return $serverParams['remote_addr'] ?? '127.0.0.1';
-    }
-
-    /**
      * 是否是ajax请求
      */
     public function isAjax(): bool
     {
-        return strcasecmp('XMLHttpRequest', $this->getHeaderLine('X-REQUESTED-WITH')) === 0;
+        return strcasecmp('XMLHttpRequest', $this->getHeaderLine(HeaderInterface::HEADER_X_REQUESTED_WITH)) === 0;
     }
 
     /**

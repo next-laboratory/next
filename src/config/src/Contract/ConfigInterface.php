@@ -13,5 +13,5 @@ namespace Max\Config\Contract;
 
 interface ConfigInterface
 {
-    public function get(string $key, $default = null);
+    public function get(string $key, mixed $default = null);
 }
