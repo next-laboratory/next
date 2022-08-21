@@ -15,7 +15,6 @@ use App\Http\Kernel;
 use Closure;
 use Max\Di\Exception\NotFoundException;
 use Max\Routing\Route;
-use Max\Routing\RouteCollector;
 use Max\Utils\Collection;
 use Psr\Container\ContainerExceptionInterface;
 use ReflectionException;
@@ -61,26 +60,22 @@ class RouteListCommand extends Command
      */
     protected function getRoutes(): Collection
     {
-        make(Kernel::class);
-        $routeCollector = make(RouteCollector::class);
+        $kernel         = make(Kernel::class);
         $routes         = [];
-        foreach ($routeCollector->all() as $registeredRoute) {
+        foreach ($kernel->getAllRoutes() as $registeredRoute) {
             foreach ($registeredRoute as $route) {
                 if (! in_array($route, $routes)) {
                     $routes[] = $route;
                 }
             }
         }
-        return Collection::make($routes)->unique()->sortBy(function ($item) {
-            /* @var Route $item */
-            return $item->getPath();
-        });
+        return Collection::make($routes)->unique();
     }
 
     /**
-     * 格式化action为string
+     * 格式化action为string.
      */
-    protected function formatRouteAction(Route $route) :string
+    protected function formatRouteAction(Route $route): string
     {
         $action = $route->getAction();
         if ($action instanceof Closure) {
