@@ -28,18 +28,16 @@ class Repository implements ConfigInterface
 
     /**
      * 获取[支持点语法].
-     * @param null|mixed $default
      */
-    public function get(string $key, $default = null): mixed
+    public function get(string $key, mixed $default = null): mixed
     {
         return Arr::get($this->items, $key, $default);
     }
 
     /**
-     * 设置[支持点语法].
-     * @param mixed $value
+     * 设置[支持点语法]. Swoole/WorkerMan等环境下不可使用.
      */
-    public function set(string $key, $value): void
+    public function set(string $key, mixed $value): void
     {
         Arr::set($this->items, $key, $value);
     }
