@@ -26,15 +26,15 @@ class RestRouter
         'delete' => [['DELETE'], '/%s/{id}'],
     ];
 
-    protected Route $index;
+    protected Route $indexRoute;
 
-    protected Route $show;
+    protected Route $showRoute;
 
-    protected Route $store;
+    protected Route $storeRoute;
 
-    protected Route $update;
+    protected Route $updateRoute;
 
-    protected Route $delete;
+    protected Route $deleteRoute;
 
     public function __construct(
         protected RouteCollector $routeCollector,
@@ -45,7 +45,8 @@ class RestRouter
     ) {
         foreach (static::$maps as $action => $map) {
             [$methods, $path] = $map;
-            $this->routeCollector->addRoute($this->{$action} = new Route(
+            $property         = $action . 'Route';
+            $this->routeCollector->addRoute($this->{$property} = new Route(
                 $methods,
                 sprintf($path, $uri),
                 [$this->controller, $action],
@@ -55,28 +56,28 @@ class RestRouter
         }
     }
 
-    public function getIndex(): Route
+    public function getIndexRoute(): Route
     {
-        return $this->index;
+        return $this->indexRoute;
     }
 
-    public function getShow(): Route
+    public function getShowRoute(): Route
     {
-        return $this->show;
+        return $this->showRoute;
     }
 
-    public function getStore(): Route
+    public function getStoreRoute(): Route
     {
-        return $this->store;
+        return $this->storeRoute;
     }
 
-    public function getUpdate(): Route
+    public function getUpdateRoute(): Route
     {
-        return $this->update;
+        return $this->updateRoute;
     }
 
-    public function getDelete(): Route
+    public function getDeleteRoute(): Route
     {
-        return $this->delete;
+        return $this->deleteRoute;
     }
 }

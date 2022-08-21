@@ -69,6 +69,14 @@ class Router
     }
 
     /**
+     * Method OPTIONS.
+     */
+    public function options(string $uri, string|array|Closure $action): Route
+    {
+        return $this->request($uri, $action, [RequestMethodInterface::METHOD_OPTIONS]);
+    }
+
+    /**
      * Method PUT.
      */
     public function put(string $uri, string|array|Closure $action): Route
