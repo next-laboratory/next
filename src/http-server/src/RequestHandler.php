@@ -20,19 +20,14 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use ReflectionException;
+use RuntimeException;
 
 class RequestHandler implements RequestHandlerInterface
 {
-    /**
-     * 容器是否有make方法.
-     */
-    private bool $hasMakeMethod;
-
     public function __construct(
         protected ContainerInterface $container,
         protected array $middlewares = []
     ) {
-        $this->hasMakeMethod = method_exists($this->container, 'make');
     }
 
     /**
@@ -42,10 +37,7 @@ class RequestHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         if ($middleware = array_shift($this->middlewares)) {
-            return $this->handleMiddleware(
-                $this->hasMakeMethod ? $this->container->make($middleware) : new $middleware(),
-                $request
-            );
+            return $this->handleMiddleware($this->container->make($middleware), $request);
         }
         return $this->handleRequest($request);
     }
@@ -53,9 +45,9 @@ class RequestHandler implements RequestHandlerInterface
     /**
      * 添加中间件.
      */
-    public function use(string|array $middleware): static
+    public function use(string ...$middleware): static
     {
-        array_push($this->middlewares, ...(array) $middleware);
+        array_push($this->middlewares, ...$middleware);
         return $this;
     }
 
@@ -70,7 +62,7 @@ class RequestHandler implements RequestHandlerInterface
             $parameters['request'] = $request;
             return $this->container->call($route->getAction(), $parameters);
         }
-        throw new RouteNotFoundException('No route in request attributes', 404);
+        throw new RuntimeException('No route found in the request context', 404);
     }
 
     /**

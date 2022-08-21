@@ -61,9 +61,9 @@ class Kernel
     /**
      * 添加中间件.
      */
-    public function use(string|array $middleware): static
+    public function use(string ...$middleware): static
     {
-        array_push($this->middlewares, ...(array) $middleware);
+        array_push($this->middlewares, ...$middleware);
         return $this;
     }
 
