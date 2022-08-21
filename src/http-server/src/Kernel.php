@@ -13,6 +13,7 @@ namespace Max\Http\Server;
 
 use Max\Http\Server\Event\OnRequest;
 use Max\Routing\Exception\RouteNotFoundException;
+use Max\Routing\Route;
 use Max\Routing\RouteCollector;
 use Max\Routing\Router;
 use Psr\Container\ContainerExceptionInterface;
@@ -65,6 +66,14 @@ class Kernel
     {
         array_push($this->middlewares, ...$middleware);
         return $this;
+    }
+
+    /**
+     * @return array<string,Route[]>
+     */
+    public function getAllRoutes(): array
+    {
+        return $this->routeCollector->all();
     }
 
     /**
