@@ -37,17 +37,10 @@ class RouteListCommand extends Command
         $table = new Table(new ConsoleOutput());
         $table->setHeaders(['Methods', 'URI', 'Action', 'Middlewares']);
         foreach ($this->getRoutes() as $route) {
-            /** @var Route $route */
-            $action = $route->getAction();
-            if (is_array($action)) {
-                $action = implode('@', $action);
-            } elseif ($action instanceof Closure) {
-                $action = 'Closure';
-            }
             $table->addRow([
                 implode('|', $route->getMethods()),
                 $route->getPath(),
-                $action,
+                $this->formatRouteAction($route),
                 implode(PHP_EOL, $route->getMiddlewares()),
             ]);
         }
@@ -82,5 +75,20 @@ class RouteListCommand extends Command
             /* @var Route $item */
             return $item->getPath();
         });
+    }
+
+    /**
+     * 格式化action为string
+     */
+    protected function formatRouteAction(Route $route) :string
+    {
+        $action = $route->getAction();
+        if ($action instanceof Closure) {
+            return 'Closure';
+        }
+        if (is_array($action)) {
+            return implode('@', $action);
+        }
+        return $action;
     }
 }
