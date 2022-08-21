@@ -146,7 +146,7 @@ Restful规则会注册多条路由，上面的规则注册的路由如下：
 
 ```php
 $rest = $router->rest('/book', 'BookController');
-$rest->getShow()->middleware('JWTAuthentication');
+$rest->getShowRoute()->middleware('JWTAuthentication');
 ```
 
 #### 路由支持参数，例如：

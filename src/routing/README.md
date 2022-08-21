@@ -12,7 +12,7 @@ $router = new Router(array $options = [], ?Max\Routing\RouteCollector $routeColl
 
 ### 支持GET, POST, PUT, PATCH, DELETE等方法，例如：
 
-```
+```php
 $router->get('/', function() {
     // Do something.
 });
@@ -20,15 +20,15 @@ $router->get('/', function() {
 
 如果需要一个路由注册自定义请求方法，例如：
 
-```
+```php
 $router->request('/', function() {
     // Do something.
-}, ['GET’, 'OPTION']);
+}, ['GET’, 'OPTIONS']);
 ```
 
 如果需要一个路由支持所有请求方法，例如：
 
-```
+```php
 $router->any('/', function() {
     // Do something.
 });
@@ -36,7 +36,7 @@ $router->any('/', function() {
 
 ### 如果需要注册一个Restful路由，例如：
 
-```
+```php
 $router->rest('/book', 'BookController');
 ```
 
@@ -54,7 +54,7 @@ Restful规则会注册多条路由，上面的规则注册的路由如下：
 
 ```php
 $rest = $router->rest('/book', 'BookController');
-$rest->getShow()->middleware('JWTAuthentication');
+$rest->getShowRoute()->middleware('JWTAuthentication');
 ```
 
 ### 路由支持参数，例如：
