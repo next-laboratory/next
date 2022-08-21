@@ -45,7 +45,10 @@ class Router
      */
     public function any(string $path, array|Closure|string $action): Route
     {
-        return $this->request($path, $action, [
+        return $this->request(
+            $path,
+            $action,
+            [
                 RequestMethodInterface::METHOD_GET,
                 RequestMethodInterface::METHOD_HEAD,
                 RequestMethodInterface::METHOD_POST,
@@ -98,13 +101,13 @@ class Router
     }
 
     /**
-     * Restful路由
+     * Restful路由.
      */
     public function rest(string $uri, string $controller): RestRouter
     {
         return new RestRouter(
             $this->routeCollector,
-            $this->prefix . ltrim($uri, '/'),
+            $this->prefix . $uri,
             $this->formatController($controller),
             $this->middlewares,
             $this->patterns,
@@ -124,7 +127,7 @@ class Router
         if ($action instanceof Closure || count($action) === 2) {
             if (is_array($action)) {
                 [$controller, $action] = $action;
-                $action = [$this->formatController($controller), $action];
+                $action                = [$this->formatController($controller), $action];
             }
             return $this->routeCollector->addRoute(new Route($methods, $this->prefix . $path, $action, $this->patterns, $this->middlewares));
         }

@@ -1,11 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
 namespace Max\Routing;
 
 class RestRouter
 {
     /**
-     * Rest路由规则
+     * Rest路由规则.
      *
      * @var array|array[]
      */
@@ -17,25 +26,14 @@ class RestRouter
         'delete' => [['DELETE'], '/%s/{id}'],
     ];
 
-    /**
-     * @var Route
-     */
     protected Route $index;
-    /**
-     * @var Route
-     */
+
     protected Route $show;
-    /**
-     * @var Route
-     */
+
     protected Route $store;
-    /**
-     * @var Route
-     */
+
     protected Route $update;
-    /**
-     * @var Route
-     */
+
     protected Route $delete;
 
     public function __construct(
@@ -57,41 +55,26 @@ class RestRouter
         }
     }
 
-    /**
-     * @return Route
-     */
     public function getIndex(): Route
     {
         return $this->index;
     }
 
-    /**
-     * @return Route
-     */
     public function getShow(): Route
     {
         return $this->show;
     }
 
-    /**
-     * @return Route
-     */
     public function getStore(): Route
     {
         return $this->store;
     }
 
-    /**
-     * @return Route
-     */
     public function getUpdate(): Route
     {
         return $this->update;
     }
 
-    /**
-     * @return Route
-     */
     public function getDelete(): Route
     {
         return $this->delete;
