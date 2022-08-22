@@ -17,7 +17,7 @@
     }
   ],
   "require": {
-    "symfony/console": "^6.0",
+    "symfony/console": "*",
     "symfony/var-dumper": "*",
     "filp/whoops": "*"
   },
