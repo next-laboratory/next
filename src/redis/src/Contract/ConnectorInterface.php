@@ -15,5 +15,5 @@ interface ConnectorInterface
 {
     public function get();
 
-    public function release($redis);
+    public function release($connection);
 }
