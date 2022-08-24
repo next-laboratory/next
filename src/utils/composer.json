@@ -22,7 +22,7 @@
     },
     "require": {
         "php": "^8.0",
-        "max/macro": "dev-master",
+        "max/macro": "^1.0",
         "ramsey/uuid": "^4.2",
         "symfony/mime": "*",
         "voku/portable-ascii": "^1.5",

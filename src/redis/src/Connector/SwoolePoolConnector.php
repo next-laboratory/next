@@ -48,8 +48,8 @@ class SwoolePoolConnector implements ConnectorInterface
         return new RedisProxy($this, $this->pool->get());
     }
 
-    public function release($redis)
+    public function release($connection)
     {
-        $this->pool->put($redis);
+        $this->pool->put($connection);
     }
 }
