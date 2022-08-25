@@ -452,3 +452,33 @@ function data_to_xml(iterable $data): string
 
     return $xml;
 }
+
+function is_valid_ip(string $ip, string $type = ''): bool
+{
+    $flag = match (strtolower($type)) {
+        'ipv4'  => FILTER_FLAG_IPV4,
+        'ipv6'  => FILTER_FLAG_IPV6,
+        default => 0,
+    };
+
+    return boolval(filter_var($ip, FILTER_VALIDATE_IP, $flag));
+}
+
+function ip2bin(string $ip): string
+{
+    if (is_valid_ip($ip, 'ipv6')) {
+        $IPHex = str_split(bin2hex(inet_pton($ip)), 4);
+        foreach ($IPHex as $key => $value) {
+            $IPHex[$key] = intval($value, 16);
+        }
+        $IPBin = vsprintf('%016b%016b%016b%016b%016b%016b%016b%016b', $IPHex);
+    } else {
+        $IPHex = str_split(bin2hex(inet_pton($ip)), 2);
+        foreach ($IPHex as $key => $value) {
+            $IPHex[$key] = intval($value, 16);
+        }
+        $IPBin = vsprintf('%08b%08b%08b%08b', $IPHex);
+    }
+
+    return $IPBin;
+}
