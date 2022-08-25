@@ -15,5 +15,10 @@
     "require": {
         "php": "^8.0",
         "ext-swoole": ">=4.6"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        }
     }
 }

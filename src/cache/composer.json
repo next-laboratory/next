@@ -32,6 +32,9 @@
         "max/redis": "^1.0"
     },
     "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        },
         "max": {
             "config": "Max\\Cache\\ConfigProvider"
         }
