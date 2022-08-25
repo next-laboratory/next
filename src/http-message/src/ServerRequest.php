@@ -110,7 +110,8 @@ class ServerRequest extends Request implements ServerRequestInterface
             $uri = $uri->withQuery($server['query_string']);
         }
 
-        $psrRequest                = new static($request->getMethod(), $uri, $header);
+        $protocol                  = isset($server['server_protocol']) ? str_replace('HTTP/', '', $server['server_protocol']) : '1.1';
+        $psrRequest                = new static($request->getMethod(), $uri, $header, $protocol);
         $psrRequest->serverParams  = new ServerBag($server);
         $psrRequest->parsedBody    = new ParameterBag($request->post ?? []);
         $psrRequest->body          = new StringStream($request->getContent());
