@@ -15,8 +15,9 @@ use Attribute;
 use Max\Aop\Contract\PropertyAnnotation;
 use Max\Aop\Exception\PropertyHandleException;
 use Max\Config\Contract\ConfigInterface;
-use Max\Di\Context;
 use Max\Di\Reflection;
+use Psr\Container\ContainerExceptionInterface;
+use ReflectionException;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Config implements PropertyAnnotation
@@ -34,12 +35,22 @@ class Config implements PropertyAnnotation
     public function handle(object $object, string $property): void
     {
         try {
-            $container          = Context::getContainer();
             $reflectionProperty = Reflection::property($object::class, $property);
-            $reflectionProperty->setAccessible(true);
-            $reflectionProperty->setValue($object, $container->make(ConfigInterface::class)->get($this->key, $this->default));
+            $reflectionProperty->setAccessible(true); // 兼容PHP8.0
+            $reflectionProperty->setValue($object, $this->getConfigValue());
         } catch (\Throwable $throwable) {
             throw new PropertyHandleException('Property assign failed. ' . $throwable->getMessage());
         }
+    }
+
+    /**
+     * 获取配置值
+     *
+     * @throws ContainerExceptionInterface
+     * @throws ReflectionException
+     */
+    protected function getConfigValue()
+    {
+        return make(ConfigInterface::class)->get($this->key, $this->default);
     }
 }

@@ -9,13 +9,14 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Di\Annotation;
+namespace Max\Aop\Annotation;
 
 use Attribute;
 use Max\Aop\Contract\PropertyAnnotation;
 use Max\Aop\Exception\PropertyHandleException;
-use Max\Di\Context;
 use Max\Di\Reflection;
+use Psr\Container\ContainerExceptionInterface;
+use ReflectionException;
 use Throwable;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
@@ -32,14 +33,22 @@ class Inject implements PropertyAnnotation
     public function handle(object $object, string $property): void
     {
         try {
-            $container          = Context::getContainer();
             $reflectionProperty = Reflection::property($object::class, $property);
             if ((! is_null($type = $reflectionProperty->getType()) && $type = $type->getName()) || $type = $this->id) {
-                $reflectionProperty->setAccessible(true);
-                $reflectionProperty->setValue($object, $container->make($type));
+                $reflectionProperty->setAccessible(true); // 兼容PHP8.0
+                $reflectionProperty->setValue($object, $this->getBinding($type));
             }
         } catch (Throwable $throwable) {
             throw new PropertyHandleException('Property assign failed. ' . $throwable->getMessage());
         }
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws ReflectionException
+     */
+    protected function getBinding(string $type): object
+    {
+        return make($type);
     }
 }
