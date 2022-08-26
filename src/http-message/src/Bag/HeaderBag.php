@@ -13,13 +13,10 @@ namespace Max\Http\Message\Bag;
 
 use InvalidArgumentException;
 
-class HeaderBag extends ParameterBag
+class HeaderBag extends ServerBag
 {
     protected array $map = [];
 
-    /**
-     * @param $default
-     */
     public function get(string $key, $default = []): mixed
     {
         if ($this->has($key)) {
@@ -28,9 +25,6 @@ class HeaderBag extends ParameterBag
         return $default;
     }
 
-    /**
-     * @param $value
-     */
     public function set(string $key, $value)
     {
         $uppercaseKey = strtoupper($key);
@@ -70,7 +64,7 @@ class HeaderBag extends ParameterBag
     {
         $uppercaseKey = strtoupper($key);
         if (isset($this->map[$uppercaseKey])) {
-            array_push($this->parameters[$this->map[$uppercaseKey]], ...(array) $value);
+            array_push($this->parameters[$this->map[$uppercaseKey]], ...(array)$value);
         } else {
             $this->map[$uppercaseKey] = $key;
             $this->parameters[$key]   = $this->formatValue($value);
@@ -85,9 +79,9 @@ class HeaderBag extends ParameterBag
     protected function formatValue($value): array
     {
         if (is_scalar($value)) {
-            $value = [(string) $value];
+            $value = [(string)$value];
         }
-        if (! is_array($value)) {
+        if (!is_array($value)) {
             throw new InvalidArgumentException('The given header cannot be set.');
         }
 

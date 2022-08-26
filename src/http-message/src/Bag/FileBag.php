@@ -35,15 +35,6 @@ class FileBag
         return $this->uploadedFiles;
     }
 
-    /**
-     * @param $uploadedFiles
-     * @param $k
-     * @param $name
-     * @param $tmpName
-     * @param $type
-     * @param $size
-     * @param $error
-     */
     protected function convertToUploadedFiles(&$uploadedFiles, $k, $name, $tmpName, $type, $size, $error): void
     {
         if (is_string($name)) {
