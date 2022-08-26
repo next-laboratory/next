@@ -31,7 +31,7 @@ class Cookie
         protected bool $httponly = false,
         protected string $sameSite = '',
     ) {
-        if ($this->sameSite && ! in_array(strtolower($sameSite), ['lax', 'none', 'strict'])) {
+        if ($this->sameSite && ! in_array(strtolower($sameSite), [self::SAME_SITE_LAX, self::SAME_SITE_NONE, self::SAME_SITE_STRICT])) {
             throw new InvalidArgumentException('The "sameSite" parameter value is not valid.');
         }
     }
@@ -145,7 +145,7 @@ class Cookie
         $this->httponly = $httponly;
     }
 
-    public function setSameSite(?string $sameSite): void
+    public function setSameSite(string $sameSite): void
     {
         $this->sameSite = $sameSite;
     }
@@ -190,7 +190,7 @@ class Cookie
         return $this->httponly;
     }
 
-    public function getSameSite(): ?string
+    public function getSameSite(): string
     {
         return $this->sameSite;
     }
