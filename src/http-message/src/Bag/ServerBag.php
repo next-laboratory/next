@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Http\Message\Bag;
 
-class ServerBag extends CaseInsensitiveBag
+class ServerBag extends ParameterBag
 {
     /**
      * Gets the HTTP headers.

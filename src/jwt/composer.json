@@ -15,5 +15,10 @@
     "require": {
         "php": "^8.0",
         "firebase/php-jwt": "^6.1"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        }
     }
 }

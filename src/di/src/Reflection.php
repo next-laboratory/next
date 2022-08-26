@@ -112,7 +112,7 @@ final class Reflection
     {
         if (! isset(self::$propertiesNames[$class])) {
             self::$propertiesNames[$class] = value(
-                fn ($class)        => array_map(
+                fn ($class) => array_map(
                     fn ($property) => $property->getName(),
                     self::properties($class)
                 )
