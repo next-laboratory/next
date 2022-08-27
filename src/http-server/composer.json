@@ -15,10 +15,10 @@
     ],
     "require": {
         "php": "^8.0",
-        "max/http-message": "^1.0",
-        "max/utils": "^1.0",
-        "max/routing": "^1.0",
-        "max/di": "^1.0",
+        "max/http-message": "dev-master",
+        "max/utils": "dev-master",
+        "max/routing": "dev-master",
+        "max/di": "dev-master",
         "psr/http-server-middleware": "^1.0",
         "psr/http-server-handler": "^1.0",
         "psr/event-dispatcher": "^1.0"
