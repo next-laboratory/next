@@ -64,29 +64,13 @@ class User
 
 ## 路由定义
 
-> 在`app/Http/Kernel.php`的`map`方法中注册路由，例如
-
-```php
-protected function map(Router $router) {
-	$router->group(function(Router $router) {
-		$router->get('/', function(ServerRequestInterface $request) {
-			return $request->all();
-		});
-		$router->group(function() {
-		    // 引入文件的方式 
-			include_once 'routes.php';
-		});
-	});
-}
-```
-
-> 也可以使用注解方式
+在`app/Http/Kernel.php`的`map`方法中注册路由，注册方式请参考max/routing组件文档，或者使用注解方式
 
 ```php
 #[Controller(prefix: 'index', middleware: [BasicAuthentication::class])]
 class Index
 {
-    #[GetMapping(path: '/user/{id}.html', domain: '*.1kmb.com')]
+    #[GetMapping(path: '/user/{id}\.html')]
     public function index(\Psr\Http\Message\ServerRequestInterface $request, $id)
     {
         return new \Max\Http\Message\Response(200, [], 'Hello, world!');
@@ -112,7 +96,7 @@ class IntexController {
 
 	#[GetMapping(path: '/{id}')]
 	public functin index(ServerRequestInterface $request, $id) {
-		return ['test'];
+		// Do something.
 	}
 }
 ```

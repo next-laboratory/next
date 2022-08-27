@@ -14,7 +14,6 @@ namespace Max\Redis\Connector;
 use Max\Redis\Contract\ConnectorInterface;
 use Max\Redis\RedisProxy;
 use Redis;
-use RedisException;
 use SplPriorityQueue;
 
 class BaseConnector implements ConnectorInterface
@@ -34,9 +33,6 @@ class BaseConnector implements ConnectorInterface
         $this->queue = new SplPriorityQueue();
     }
 
-    /**
-     * @throws RedisException
-     */
     public function get()
     {
         $redis = new Redis();
@@ -53,7 +49,7 @@ class BaseConnector implements ConnectorInterface
         return new RedisProxy($this, $redis);
     }
 
-    public function release($redis)
+    public function release($connection)
     {
     }
 }

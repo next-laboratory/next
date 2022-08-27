@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace Max\Http\Message\Stream;
 
-use Exception;
 use Psr\Http\Message\StreamInterface;
+use RuntimeException;
 
 use function fclose;
 use function feof;
@@ -34,7 +34,7 @@ class StringStream implements StreamInterface
 
     public function __construct(string $string)
     {
-        $this->stream = fopen('php://memory', 'rw+');
+        $this->stream = fopen('php://temp', 'rw+');
         $this->write($string);
         $this->rewind();
     }
@@ -75,7 +75,6 @@ class StringStream implements StreamInterface
 
     /**
      * {@inheritDoc}
-     * @throws Exception
      */
     public function getSize()
     {
@@ -83,34 +82,36 @@ class StringStream implements StreamInterface
         if (isset($stats['size'])) {
             return $stats['size'];
         }
-        throw new Exception('Cannot stat stream size.');
+        throw new RuntimeException('Cannot stat stream size.');
     }
 
     /**
-     * @return false|int
+     * {@inheritDoc}
      */
-    public function tell()
+    public function tell(): int
     {
         return ftell($this->stream);
     }
 
     /**
-     * @return bool
+     * {@inheritDoc}
      */
-    public function eof()
+    public function eof(): bool
     {
         return feof($this->stream);
     }
 
     /**
-     * @return bool|void
+     * {@inheritDoc}
      */
-    public function isSeekable()
+    public function isSeekable(): bool
     {
-        return $this->getMetadata('seekable');
+        return (bool) $this->getMetadata('seekable');
     }
 
     /**
+     * {@inheritDoc}
+     *
      * @param int $offset
      * @param int $whence
      */
@@ -119,59 +120,59 @@ class StringStream implements StreamInterface
         fseek($this->stream, $offset, $whence);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function rewind()
     {
         rewind($this->stream);
     }
 
     /**
-     * @return bool
+     * {@inheritDoc}
      */
-    public function isWritable()
+    public function isWritable(): bool
     {
         return true;
     }
 
     /**
-     * @param string $string
-     *
-     * @return false|int
+     * {@inheritDoc}
      */
-    public function write($string)
+    public function write($string): int
     {
         return (int) fwrite($this->stream, $string);
     }
 
     /**
-     * @return bool
+     * {@inheritDoc}
      */
-    public function isReadable()
+    public function isReadable(): bool
     {
         return true;
     }
 
     /**
-     * @param int $length
-     *
-     * @return false|string
+     * {@inheritDoc}
      */
-    public function read($length)
+    public function read($length): string
     {
-        return fread($this->stream, $length);
+        if ($content = fread($this->stream, $length)) {
+            return $content;
+        }
+        throw new RuntimeException('Cannot read from stream');
     }
 
     /**
-     * @return false|string
+     * {@inheritDoc}
      */
-    public function getContents()
+    public function getContents(): string
     {
         return $this->__toString();
     }
 
     /**
-     * @param null $key
-     *
-     * @return null|array|mixed|void
+     * {@inheritDoc}
      */
     public function getMetadata($key = null)
     {

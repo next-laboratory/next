@@ -32,5 +32,10 @@
     },
     "suggest": {
         "symfony/var-dumper": "*"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        }
     }
 }

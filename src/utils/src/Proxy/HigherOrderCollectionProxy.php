@@ -35,10 +35,7 @@ class HigherOrderCollectionProxy
     /**
      * Create a new proxy instance.
      *
-     * @param Enumerable $collection
-     * @param string     $method
-     *
-     * @return void
+     * @param string $method
      */
     public function __construct(Enumerable $collection, $method)
     {
@@ -55,7 +52,7 @@ class HigherOrderCollectionProxy
      */
     public function __get($key)
     {
-        return $this->collection->{$this->method}(function($value) use ($key) {
+        return $this->collection->{$this->method}(function ($value) use ($key) {
             return is_array($value) ? $value[$key] : $value->{$key};
         });
     }
@@ -70,7 +67,7 @@ class HigherOrderCollectionProxy
      */
     public function __call($method, $parameters)
     {
-        return $this->collection->{$this->method}(function($value) use ($method, $parameters) {
+        return $this->collection->{$this->method}(function ($value) use ($method, $parameters) {
             return $value->{$method}(...$parameters);
         });
     }

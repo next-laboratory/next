@@ -51,16 +51,7 @@ class FPMResponseEmitter implements ResponseEmitterInterface
     {
         header(sprintf('HTTP/%s %d %s', $response->getProtocolVersion(), $response->getStatusCode(), $response->getReasonPhrase()), true);
         foreach ($response->getHeader(HeaderInterface::HEADER_SET_COOKIE) as $cookie) {
-            $cookie = Cookie::parse($cookie);
-            setcookie(
-                $cookie->getName(),
-                $cookie->getValue(),
-                $cookie->getExpires(),
-                $cookie->getPath(),
-                $cookie->getDomain(),
-                $cookie->isSecure(),
-                $cookie->isHttponly()
-            );
+            header(sprintf('%s: %s', HeaderInterface::HEADER_SET_COOKIE, $cookie), false);
         }
         $response = $response->withoutHeader(HeaderInterface::HEADER_SET_COOKIE);
         foreach ($response->getHeaders() as $name => $value) {

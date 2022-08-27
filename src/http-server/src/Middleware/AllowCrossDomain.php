@@ -25,16 +25,46 @@ use function Max\Utils\collect;
 
 class AllowCrossDomain implements MiddlewareInterface
 {
-    /** @var array 允许域，全部可以使用`*` */
-    protected array  $allowOrigin      = ['*'];
+    /**
+     * @var array 允许域，全部可以使用`*`
+     */
+    protected array $allowOrigin = ['*'];
 
-    protected array  $allowHeaders     = ['Authorization', 'Content-Type', 'If-Match', 'If-Modified-Since', 'If-None-Match', 'If-Unmodified-Since', 'X-CSRF-TOKEN', 'X-Requested-With'];
+    /**
+     * @var array|string[] 允许的头部
+     */
+    protected array $allowHeaders = [
+        HeaderInterface::HEADER_AUTHORIZATION,
+        HeaderInterface::HEADER_CONTENT_TYPE,
+        'If-Match',
+        'If-Modified-Since',
+        'If-None-Match',
+        'If-Unmodified-Since',
+        'X-CSRF-TOKEN',
+        HeaderInterface::HEADER_X_REQUESTED_WITH,
+    ];
 
-    protected array  $allowMethods     = ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'];
+    /**
+     * @var array|string[] 允许的方法
+     */
+    protected array $allowMethods = [
+        RequestMethodInterface::METHOD_GET,
+        RequestMethodInterface::METHOD_POST,
+        RequestMethodInterface::METHOD_PATCH,
+        RequestMethodInterface::METHOD_PUT,
+        RequestMethodInterface::METHOD_DELETE,
+        RequestMethodInterface::METHOD_OPTIONS,
+    ];
 
+    /**
+     * @var string 允许获取凭证
+     */
     protected string $allowCredentials = 'true';
 
-    protected int    $maxAge           = 1800;
+    /**
+     * @var int Cookie存活时间
+     */
+    protected int $maxAge = 1800;
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

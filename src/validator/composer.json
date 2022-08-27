@@ -19,5 +19,10 @@
     "require": {
         "php": "^8.0",
         "ext-mbstring": "*"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        }
     }
 }

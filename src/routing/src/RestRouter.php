@@ -1,11 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
 namespace Max\Routing;
 
 class RestRouter
 {
     /**
-     * Rest路由规则
+     * Rest路由规则.
      *
      * @var array|array[]
      */
@@ -17,26 +26,15 @@ class RestRouter
         'delete' => [['DELETE'], '/%s/{id}'],
     ];
 
-    /**
-     * @var Route
-     */
-    protected Route $index;
-    /**
-     * @var Route
-     */
-    protected Route $show;
-    /**
-     * @var Route
-     */
-    protected Route $store;
-    /**
-     * @var Route
-     */
-    protected Route $update;
-    /**
-     * @var Route
-     */
-    protected Route $delete;
+    protected Route $indexRoute;
+
+    protected Route $showRoute;
+
+    protected Route $storeRoute;
+
+    protected Route $updateRoute;
+
+    protected Route $deleteRoute;
 
     public function __construct(
         protected RouteCollector $routeCollector,
@@ -47,7 +45,8 @@ class RestRouter
     ) {
         foreach (static::$maps as $action => $map) {
             [$methods, $path] = $map;
-            $this->routeCollector->addRoute($this->{$action} = new Route(
+            $property         = $action . 'Route';
+            $this->routeCollector->addRoute($this->{$property} = new Route(
                 $methods,
                 sprintf($path, $uri),
                 [$this->controller, $action],
@@ -57,43 +56,28 @@ class RestRouter
         }
     }
 
-    /**
-     * @return Route
-     */
-    public function getIndex(): Route
+    public function getIndexRoute(): Route
     {
-        return $this->index;
+        return $this->indexRoute;
     }
 
-    /**
-     * @return Route
-     */
-    public function getShow(): Route
+    public function getShowRoute(): Route
     {
-        return $this->show;
+        return $this->showRoute;
     }
 
-    /**
-     * @return Route
-     */
-    public function getStore(): Route
+    public function getStoreRoute(): Route
     {
-        return $this->store;
+        return $this->storeRoute;
     }
 
-    /**
-     * @return Route
-     */
-    public function getUpdate(): Route
+    public function getUpdateRoute(): Route
     {
-        return $this->update;
+        return $this->updateRoute;
     }
 
-    /**
-     * @return Route
-     */
-    public function getDelete(): Route
+    public function getDeleteRoute(): Route
     {
-        return $this->delete;
+        return $this->deleteRoute;
     }
 }

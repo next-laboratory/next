@@ -20,19 +20,11 @@ class ParameterBag
         $this->replace($parameters);
     }
 
-    /**
-     * @param null $default
-     *
-     * @return mixed
-     */
     public function get(string $key, $default = null)
     {
         return $this->parameters[$key] ?? $default;
     }
 
-    /**
-     * @param $value
-     */
     public function set(string $key, $value)
     {
         $this->parameters[$key] = $value;

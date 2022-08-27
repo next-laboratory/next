@@ -48,7 +48,7 @@ class WhoopsExceptionHandler
         return new Response(StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR, [HeaderInterface::HEADER_CONTENT_TYPE => $contentType], new StringStream($content));
     }
 
-    protected function negotiateHandler(ServerRequestInterface $request)
+    protected function negotiateHandler(ServerRequestInterface $request): array
     {
         $accepts = $request->getHeaderLine(HeaderInterface::HEADER_ACCEPT);
         foreach (self::$preference as $contentType => $handler) {

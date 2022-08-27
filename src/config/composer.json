@@ -22,6 +22,9 @@
         "max/utils": "dev-master"
     },
     "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        },
         "max": {
             "config": "Max\\Config\\ConfigProvider"
         }

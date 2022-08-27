@@ -1,33 +1,36 @@
 {
-  "name": "max/event",
-  "license": "Apache-2.0",
-  "description": "Event based on the PSR-14 specification",
-  "homepage": "https://github.com/marxphp/event.git",
-  "minimum-stability": "dev",
-  "prefer-stable": true,
-  "keywords": [
-    "event",
-    "psr-14"
-  ],
-  "authors": [
-    {
-      "name": "chengyao",
-      "email": "987861463@qq.com",
-      "homepage": "https://www.1kmb.com"
+    "name": "max/event",
+    "license": "Apache-2.0",
+    "description": "Event based on the PSR-14 specification",
+    "homepage": "https://github.com/marxphp/event.git",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "keywords": [
+        "event",
+        "psr-14"
+    ],
+    "authors": [
+        {
+            "name": "chengyao",
+            "email": "987861463@qq.com",
+            "homepage": "https://www.1kmb.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Max\\Event\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.0",
+        "psr/event-dispatcher": "^1.0"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        },
+        "max": {
+            "config": "Max\\Event\\ConfigProvider"
+        }
     }
-  ],
-  "autoload": {
-    "psr-4": {
-      "Max\\Event\\": "src/"
-    }
-  },
-  "require": {
-    "php": "^8.0",
-    "psr/event-dispatcher": "^1.0"
-  },
-  "extra": {
-    "max": {
-      "config": "Max\\Event\\ConfigProvider"
-    }
-  }
 }

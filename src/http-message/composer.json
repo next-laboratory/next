@@ -21,5 +21,10 @@
         "php": "^8.0",
         "psr/http-message": "^1.0",
         "max/utils": "dev-master"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        }
     }
 }

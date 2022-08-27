@@ -21,5 +21,10 @@
         "max/di": "dev-master",
         "nikic/php-parser": "^4.13",
         "symfony/finder": "*"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        }
     }
 }
