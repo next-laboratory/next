@@ -11,15 +11,13 @@ declare(strict_types=1);
 
 namespace Max\Http\Server\Middleware;
 
-use Max\Config\Contract\ConfigInterface;
 use Max\Http\Message\Contract\HeaderInterface;
 use Max\Http\Message\Cookie;
-use Max\Session\Session;
+use Max\Session\Manager;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use SessionHandlerInterface;
 
 /**
  * 部分属性注释来自MDN: https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Cookies.
@@ -78,22 +76,14 @@ class SessionMiddleware implements MiddlewareInterface
      */
     protected string $sameSite = Cookie::SAME_SITE_LAX;
 
-    /**
-     * @var mixed|SessionHandlerInterface
-     */
-    protected SessionHandlerInterface $handler;
-
-    public function __construct(ConfigInterface $config)
-    {
-        $config        = $config->get('session');
-        $handler       = $config['handler'];
-        $config        = $config['config'];
-        $this->handler = new $handler($config);
+    public function __construct(
+        protected Manager $manager
+    ) {
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $session = new Session($this->handler);
+        $session = $this->manager->create();
         $session->start($request->getCookieParams()[strtoupper($this->name)] ?? null);
         $request  = $request->withAttribute('Max\Session\Session', $session);
         $response = $handler->handle($request);
