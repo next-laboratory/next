@@ -51,7 +51,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * {@inheritDoc}
      */
-    public function getServerParams()
+    public function getServerParams(): array
     {
         return $this->serverParams->all();
     }
@@ -59,7 +59,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * {@inheritDoc}
      */
-    public function withServerParams(array $serverParams)
+    public function withServerParams(array $serverParams): ServerRequestInterface
     {
         $new               = clone $this;
         $new->serverParams = new ServerBag($serverParams);
@@ -69,7 +69,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getCookieParams()
+    public function getCookieParams(): array
     {
         return $this->cookieParams->all();
     }
@@ -77,7 +77,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * {@inheritDoc}
      */
-    public function withCookieParams(array $cookies)
+    public function withCookieParams(array $cookies): ServerRequestInterface
     {
         $new               = clone $this;
         $new->cookieParams = new CookieBag($cookies);
@@ -87,7 +87,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * @return array
      */
-    public function getQueryParams()
+    public function getQueryParams(): array
     {
         return $this->queryParams->all();
     }
@@ -95,7 +95,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * {@inheritDoc}
      */
-    public function withQueryParams(array $query)
+    public function withQueryParams(array $query): ServerRequestInterface
     {
         $new              = clone $this;
         $new->queryParams = $query;
@@ -107,7 +107,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      * {@inheritDoc}
      * @return UploadedFile[]
      */
-    public function getUploadedFiles()
+    public function getUploadedFiles(): array
     {
         return $this->uploadedFiles->all();
     }
@@ -115,7 +115,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * {@inheritDoc}
      */
-    public function withUploadedFiles(array $uploadedFiles)
+    public function withUploadedFiles(array $uploadedFiles): ServerRequestInterface
     {
         $new                = clone $this;
         $new->uploadedFiles = $uploadedFiles;
@@ -126,7 +126,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * {@inheritDoc}
      */
-    public function getParsedBody()
+    public function getParsedBody(): object|array|null
     {
         return $this->parsedBody->all();
     }
@@ -134,10 +134,10 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * {@inheritDoc}
      */
-    public function withParsedBody($data)
+    public function withParsedBody($data): ServerRequestInterface
     {
         $new             = clone $this;
-        $new->parsedBody = $data instanceof ParameterBag ? $data : new ParameterBag((array) $data);
+        $new->parsedBody = $data instanceof ParameterBag ? $data : new ParameterBag((array)$data);
 
         return $new;
     }
@@ -145,7 +145,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * {@inheritDoc}
      */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         return $this->attributes->all();
     }
@@ -161,7 +161,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * {@inheritDoc}
      */
-    public function withAttribute($name, $value)
+    public function withAttribute($name, $value): ServerRequestInterface
     {
         $new             = clone $this;
         $new->attributes = clone $this->attributes;
@@ -173,7 +173,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * {@inheritDoc}
      */
-    public function withoutAttribute($name)
+    public function withoutAttribute($name): ServerRequestInterface
     {
         $new             = clone $this;
         $new->attributes = clone $this->attributes;

@@ -94,7 +94,7 @@ class Response extends Message implements ResponseInterface
     /**
      * {@inheritDoc}
      */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return $this->statusCode;
     }
@@ -102,7 +102,7 @@ class Response extends Message implements ResponseInterface
     /**
      * {@inheritDoc}
      */
-    public function withStatus($code, $reasonPhrase = '')
+    public function withStatus($code, $reasonPhrase = ''): ResponseInterface
     {
         if ($code === $this->statusCode) {
             return $this;
@@ -122,7 +122,7 @@ class Response extends Message implements ResponseInterface
     /**
      * {@inheritDoc}
      */
-    public function getReasonPhrase()
+    public function getReasonPhrase(): string
     {
         return $this->reasonPhrase ?: (self::PHRASES[$this->getStatusCode()] ?? '');
     }
@@ -208,44 +208,5 @@ class Response extends Message implements ResponseInterface
     {
         return in_array($this->statusCode, [201, 301, 302, 303, 307, 308])
             && ($location === null || $location == $this->getHeaderLine('Location'));
-    }
-
-    /**
-     * Is the response empty?
-     */
-    public function isEmpty(): bool
-    {
-        return in_array($this->statusCode, [204, 304]);
-    }
-
-    /**
-     * Set cookie.
-     */
-    public function withCookie(
-        string $name,
-        string $value,
-        int $expires = 3600,
-        string $path = '/',
-        string $domain = '',
-        bool $secure = false,
-        bool $httponly = false,
-        string $sameSite = ''
-    ): static {
-        $cookie = new Cookie(...func_get_args());
-        return $this->withAddedHeader('Set-Cookie', $cookie->__toString());
-    }
-
-    public function setCookie(
-        string $name,
-        string $value,
-        int $expires = 3600,
-        string $path = '/',
-        string $domain = '',
-        bool $secure = false,
-        bool $httponly = false,
-        string $sameSite = ''
-    ) {
-        $cookie = new Cookie(...func_get_args());
-        return $this->setAddedHeader('Set-Cookie', $cookie->__toString());
     }
 }

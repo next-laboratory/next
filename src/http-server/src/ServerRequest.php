@@ -37,11 +37,11 @@ class ServerRequest extends PsrServerRequest
                 $hasPort = true;
                 $uri     = $uri->withPort($hostHeaderParts[1]);
             }
-        } elseif (isset($server['server_name'])) {
+        } else if (isset($server['server_name'])) {
             $uri = $uri->withHost($server['server_name']);
-        } elseif (isset($server['server_addr'])) {
+        } else if (isset($server['server_addr'])) {
             $uri = $uri->withHost($server['server_addr']);
-        } elseif (isset($header['host'])) {
+        } else if (isset($header['host'])) {
             $hasPort = true;
             if (strpos($header['host'], ':')) {
                 [$host, $port] = explode(':', $header['host'], 2);
@@ -55,7 +55,7 @@ class ServerRequest extends PsrServerRequest
             $uri = $uri->withHost($host);
         }
 
-        if (! $hasPort && isset($server['server_port'])) {
+        if (!$hasPort && isset($server['server_port'])) {
             $uri = $uri->withPort($server['server_port']);
         }
 
@@ -69,7 +69,7 @@ class ServerRequest extends PsrServerRequest
             }
         }
 
-        if (! $hasQuery && isset($server['query_string'])) {
+        if (!$hasQuery && isset($server['query_string'])) {
             $uri = $uri->withQuery($server['query_string']);
         }
 
@@ -149,9 +149,8 @@ class ServerRequest extends PsrServerRequest
         return $psrRequest;
     }
 
-
     /**
-     * 是否是ajax请求
+     * Check whether it is an Ajax request.
      */
     public function isAjax(): bool
     {
@@ -159,7 +158,7 @@ class ServerRequest extends PsrServerRequest
     }
 
     /**
-     * 判断path是否匹配.
+     * Check whether the request path matches the given pattern.
      */
     public function is(string $pattern): bool
     {
@@ -178,56 +177,16 @@ class ServerRequest extends PsrServerRequest
         return $this->getCookieParams()[strtoupper($name)] ?? null;
     }
 
-    public function header(string $name): string
+    /**
+     * Get a server variable.
+     */
+    public function getServer(string $name): ?string
     {
-        return $this->getHeaderLine($name);
-    }
-
-    public function server(string $name): ?string
-    {
-        return $this->getServerParams()[strtoupper($name)] ?? null;
-    }
-
-    public function post(null|array|string $key = null, mixed $default = null): mixed
-    {
-        return $this->input($key, $default, $this->getParsedBody());
-    }
-
-    public function raw(): string
-    {
-        return $this->getBody()->getContents();
-    }
-
-    public function input(null|array|string $key = null, mixed $default = null, ?array $from = null): mixed
-    {
-        $from ??= $this->all();
-        if (is_null($key)) {
-            return $from ?? [];
-        }
-        if (is_array($key)) {
-            $return = [];
-            foreach ($key as $value) {
-                $return[$value] = $this->isEmpty($from, $value) ? ($default[$value] ?? null) : $from[$value];
-            }
-
-            return $return;
-        }
-        return $this->isEmpty($from, $key) ? $default : $from[$key];
-    }
-
-    public function all(): array
-    {
-        return $this->getQueryParams() + $this->getParsedBody();
-    }
-
-
-    public function query(null|array|string $key = null, mixed $default = null): mixed
-    {
-        return $this->input($key, $default, $this->getQueryParams());
+        return $this->serverParams->get($name);
     }
 
     /**
-     * 获取完整url.
+     * Get the full request url.
      */
     public function fullUrl(): string
     {
@@ -235,20 +194,21 @@ class ServerRequest extends PsrServerRequest
     }
 
     /**
-     * 返回url.
+     * Get the request url.
+     * Example: /users?id=1
      */
     public function url(): string
     {
         $uri = $this->getUri();
         $url = $uri->getPath();
-        if (! empty($query = $uri->getQuery())) {
+        if (!empty($query = $uri->getQuery())) {
             $url .= '?' . $query;
         }
         return $url;
     }
 
     /**
-     * 获取file.
+     * Get an uploaded file.
      */
     public function file(string $field): ?UploadedFile
     {
@@ -256,6 +216,7 @@ class ServerRequest extends PsrServerRequest
     }
 
     /**
+     * Check whether the requested method is the same as the entered one.
      * Example: $request->isMethod('GET').
      */
     public function isMethod(string $method): bool

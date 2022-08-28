@@ -90,7 +90,7 @@ class Uri implements UriInterface
             $this->getHost(),
             $this->getPortString(),
             $this->getPath(),
-            ($this->query    === '') ? '' : ('?' . $this->query),
+            ($this->query === '') ? '' : ('?' . $this->query),
             ($this->fragment === '') ? '' : ('#' . $this->fragment),
         );
     }
@@ -103,7 +103,7 @@ class Uri implements UriInterface
     /**
      * @return string
      */
-    public function getScheme()
+    public function getScheme(): string
     {
         return $this->scheme;
     }
@@ -111,15 +111,12 @@ class Uri implements UriInterface
     /**
      * @return string
      */
-    public function getAuthority()
+    public function getAuthority(): string
     {
         return $this->authority;
     }
 
-    /**
-     * @return string|void
-     */
-    public function getUserInfo()
+    public function getUserInfo(): string
     {
         return $this->userinfo;
     }
@@ -127,15 +124,15 @@ class Uri implements UriInterface
     /**
      * @return string
      */
-    public function getHost()
+    public function getHost(): string
     {
         return $this->host;
     }
 
     /**
-     * @return int|string
+     * @return int|string|null
      */
-    public function getPort()
+    public function getPort(): int|string|null
     {
         return $this->port;
     }
@@ -143,7 +140,7 @@ class Uri implements UriInterface
     /**
      * @return string
      */
-    public function getPath()
+    public function getPath(): string
     {
         return $this->path;
     }
@@ -151,7 +148,7 @@ class Uri implements UriInterface
     /**
      * @return string
      */
-    public function getQuery()
+    public function getQuery(): string
     {
         return $this->query;
     }
@@ -159,7 +156,7 @@ class Uri implements UriInterface
     /**
      * @return string
      */
-    public function getFragment()
+    public function getFragment(): string
     {
         return $this->fragment;
     }
@@ -167,7 +164,7 @@ class Uri implements UriInterface
     /**
      * {@inheritDoc}
      */
-    public function withScheme($scheme)
+    public function withScheme($scheme): UriInterface
     {
         if ($scheme === $this->scheme) {
             return $this;
@@ -181,7 +178,7 @@ class Uri implements UriInterface
     /**
      * {@inheritDoc}
      */
-    public function withUserInfo($user, $password = null)
+    public function withUserInfo($user, $password = null): UriInterface
     {
         $new           = clone $this;
         $new->userinfo = sprintf('%s%s', $user, $password ? (':' . $password) : '');
@@ -191,7 +188,7 @@ class Uri implements UriInterface
     /**
      * {@inheritDoc}
      */
-    public function withHost($host)
+    public function withHost($host): UriInterface
     {
         if ($host === $this->host) {
             return $this;
@@ -204,7 +201,7 @@ class Uri implements UriInterface
     /**
      * {@inheritDoc}
      */
-    public function withPort($port)
+    public function withPort($port): UriInterface
     {
         if ($port === $this->port) {
             return $this;
@@ -217,7 +214,7 @@ class Uri implements UriInterface
     /**
      * {@inheritDoc}
      */
-    public function withPath($path)
+    public function withPath($path): UriInterface
     {
         if ($path === $this->path) {
             return $this;
@@ -230,7 +227,7 @@ class Uri implements UriInterface
     /**
      * {@inheritDoc}
      */
-    public function withQuery($query)
+    public function withQuery($query):UriInterface
     {
         if ($query === $this->query) {
             return $this;
@@ -243,7 +240,7 @@ class Uri implements UriInterface
     /**
      * {@inheritDoc}
      */
-    public function withFragment($fragment)
+    public function withFragment($fragment):UriInterface
     {
         if ($fragment === $this->fragment) {
             return $this;
@@ -253,10 +250,7 @@ class Uri implements UriInterface
         return $new;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    protected function getPortString()
+    protected function getPortString(): string
     {
         if (($this->scheme === 'http' && $this->port === 80)
             || ($this->scheme === 'https' && $this->port === 443)) {

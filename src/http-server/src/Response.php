@@ -3,6 +3,7 @@
 namespace Max\Http\Server;
 
 use Max\Http\Message\Contract\HeaderInterface;
+use Max\Http\Message\Cookie;
 use Max\Http\Message\Response as PsrResponse;
 use Max\Utils\Contract\Arrayable;
 use Psr\Http\Message\ResponseInterface;
@@ -78,5 +79,44 @@ class Response extends PsrResponse
     public static function redirect(string $url, int $status = 302): ResponseInterface
     {
         return new static($status, ['Location' => $url]);
+    }
+
+    /**
+     * Is the response empty?
+     */
+    public function isEmpty(): bool
+    {
+        return in_array($this->statusCode, [204, 304]);
+    }
+
+    /**
+     * Set cookie.
+     */
+    public function withCookie(
+        string $name,
+        string $value,
+        int $expires = 3600,
+        string $path = '/',
+        string $domain = '',
+        bool $secure = false,
+        bool $httponly = false,
+        string $sameSite = ''
+    ): static {
+        $cookie = new Cookie(...func_get_args());
+        return $this->withAddedHeader('Set-Cookie', $cookie->__toString());
+    }
+
+    public function setCookie(
+        string $name,
+        string $value,
+        int $expires = 3600,
+        string $path = '/',
+        string $domain = '',
+        bool $secure = false,
+        bool $httponly = false,
+        string $sameSite = ''
+    ) {
+        $cookie = new Cookie(...func_get_args());
+        return $this->setAddedHeader('Set-Cookie', $cookie->__toString());
     }
 }

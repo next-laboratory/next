@@ -27,7 +27,7 @@ class Message implements MessageInterface
     /**
      * {@inheritDoc}
      */
-    public function getProtocolVersion()
+    public function getProtocolVersion(): string
     {
         return $this->protocolVersion;
     }
@@ -35,7 +35,7 @@ class Message implements MessageInterface
     /**
      * {@inheritDoc}
      */
-    public function withProtocolVersion($version)
+    public function withProtocolVersion($version): MessageInterface
     {
         if ($this->protocolVersion === $version) {
             return $this;
@@ -53,7 +53,7 @@ class Message implements MessageInterface
     /**
      * {@inheritDoc}
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->headers->all();
     }
@@ -61,9 +61,9 @@ class Message implements MessageInterface
     /**
      * {@inheritDoc}
      */
-    public function hasHeader($name)
+    public function hasHeader($name): ?bool
     {
-        return $this->headers?->has($name);
+        return $this->headers->has($name);
     }
 
     /**
@@ -71,13 +71,13 @@ class Message implements MessageInterface
      */
     public function getHeader($name)
     {
-        return $this->headers?->get($name);
+        return $this->headers->get($name);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getHeaderLine($name)
+    public function getHeaderLine($name): string
     {
         if ($this->hasHeader($name)) {
             return implode(', ', $this->getHeader($name));
@@ -88,14 +88,14 @@ class Message implements MessageInterface
     /**
      * {@inheritDoc}
      */
-    public function withHeader($name, $value)
+    public function withHeader($name, $value): MessageInterface
     {
         $new          = clone $this;
         $new->headers = clone $this->headers;
         return $new->setHeader($name, $value);
     }
 
-    public function setHeader($name, $value)
+    public function setHeader($name, $value): MessageInterface
     {
         $this->headers->set($name, $value);
         return $this;
@@ -104,14 +104,14 @@ class Message implements MessageInterface
     /**
      * {@inheritDoc}
      */
-    public function withAddedHeader($name, $value)
+    public function withAddedHeader($name, $value): MessageInterface
     {
         $new          = clone $this;
         $new->headers = clone $this->headers;
         return $new->setAddedHeader($name, $value);
     }
 
-    public function setAddedHeader($name, $value): static
+    public function setAddedHeader($name, $value): MessageInterface
     {
         $this->headers->add($name, $value);
         return $this;
@@ -120,7 +120,7 @@ class Message implements MessageInterface
     /**
      * {@inheritDoc}
      */
-    public function withoutHeader($name)
+    public function withoutHeader($name): MessageInterface
     {
         $new          = clone $this;
         $new->headers = clone $this->headers;
@@ -132,7 +132,7 @@ class Message implements MessageInterface
     /**
      * {@inheritDoc}
      */
-    public function getBody()
+    public function getBody(): ?StreamInterface
     {
         return $this->body;
     }
@@ -140,13 +140,13 @@ class Message implements MessageInterface
     /**
      * {@inheritDoc}
      */
-    public function withBody(StreamInterface $body)
+    public function withBody(StreamInterface $body): MessageInterface
     {
         $new = clone $this;
         return $new->setBody($body);
     }
 
-    public function setBody(StreamInterface $body): static
+    public function setBody(StreamInterface $body): MessageInterface
     {
         $this->body = $body;
         return $this;
@@ -154,6 +154,6 @@ class Message implements MessageInterface
 
     protected function formatBody(string|StreamInterface|null $body)
     {
-        $this->body = $body instanceof StreamInterface ? $body : new StringStream((string) $body);
+        $this->body = $body instanceof StreamInterface ? $body : new StringStream((string)$body);
     }
 }
