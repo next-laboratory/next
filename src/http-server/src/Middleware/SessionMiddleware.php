@@ -14,6 +14,7 @@ namespace Max\Http\Server\Middleware;
 use Max\Http\Message\Contract\HeaderInterface;
 use Max\Http\Message\Cookie;
 use Max\Session\Manager;
+use Max\Session\Session;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -90,15 +91,16 @@ class SessionMiddleware implements MiddlewareInterface
         $session->save();
         $session->close();
 
-        return $this->addCookieToResponse($response, $this->name, $session->getId());
+        return $this->addCookieToResponse($response, $session);
     }
 
     /**
      * 将cookie添加到响应.
      */
-    protected function addCookieToResponse(ResponseInterface $response, string $name, string $value): ResponseInterface
+    protected function addCookieToResponse(ResponseInterface $response, Session $session): ResponseInterface
     {
-        $cookie = new Cookie($name, $value, time() + $this->expires, $this->path, $this->domain, $this->secure, $this->httponly, $this->sameSite);
+        $expires = $session->isDestroyed() ? -1: time() + $this->expires;
+        $cookie  = new Cookie($this->name, $session->getId(), $expires, $this->path, $this->domain, $this->secure, $this->httponly, $this->sameSite);
 
         return $response->withAddedHeader(HeaderInterface::HEADER_SET_COOKIE, $cookie->__toString());
     }

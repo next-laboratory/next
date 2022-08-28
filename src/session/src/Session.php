@@ -31,10 +31,8 @@ class Session
      */
     protected array $data = [];
 
-    /**
-     * Check whether the session is started.
-     */
-    protected bool $started = false;
+    protected bool $started   = false;
+    protected bool $destroyed = false;
 
     public function __construct(
         protected SessionHandlerInterface $sessionHandler
@@ -136,8 +134,9 @@ class Session
     public function destroy(): void
     {
         $this->sessionHandler->destroy($this->id);
-        $this->data = [];
-        $this->id   = '';
+        $this->data      = [];
+        $this->id        = '';
+        $this->destroyed = true;
     }
 
     /**
@@ -165,6 +164,14 @@ class Session
     public function isStarted(): bool
     {
         return $this->started;
+    }
+
+    /**
+     * Check whether the session is destroyed.
+     */
+    public function isDestroyed(): bool
+    {
+        return $this->destroyed;
     }
 
     /**
