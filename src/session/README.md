@@ -5,7 +5,7 @@ composer require max/session
 ```
 
 ```php
-$sessionManager = \Max\Di\Context::getContainer()->make(\Max\Session\SessionManager::class);
+$sessionManager = \Max\Di\Context::getContainer()->make(\Max\Session\Manager::class);
 
 $session = $sessionManager->create();
 
