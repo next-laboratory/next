@@ -11,11 +11,9 @@ declare(strict_types=1);
 
 namespace Max\Database\Contract;
 
-use Max\Database\DatabaseConfig;
-
 interface ConnectorInterface
 {
-    public function __construct(DatabaseConfig $config);
-
     public function get();
+
+    public function release($connection);
 }

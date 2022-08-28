@@ -14,11 +14,13 @@ namespace Max\Database;
 use Max\Utils\Traits\AutoFillProperties;
 use PDO;
 
-class DatabaseConfig
+class DBConfig
 {
     use AutoFillProperties;
 
     public const OPTION_NAME = 'name';
+
+    public const OPTION_CONNECTOR = 'connector';
 
     public const OPTION_DRIVER = 'driver';
 
@@ -79,6 +81,8 @@ class DatabaseConfig
     protected ?string $unixSocket = null;
 
     protected bool $autofill = false;
+
+    protected string $connector = '';
 
     protected string $dsn = '';
 
@@ -148,6 +152,11 @@ class DatabaseConfig
             return $this->dsn;
         }
         return sprintf('%s:host=%s;dbname=%s;', $this->driver, $this->host, $this->database);
+    }
+
+    public function getConnector(): string
+    {
+        return $this->connector;
     }
 
     public function getOptions(): array

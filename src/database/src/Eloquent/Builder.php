@@ -67,7 +67,7 @@ class Builder extends QueryBuilder
      */
     public function find($id, array $columns = ['*'], ?string $identifier = null): ?Model
     {
-        return $this->where($identifier ?? $this->model->getKey(), $id)->first($columns);
+        return $this->where($identifier ?? $this->model->getPrimaryKey(), $id)->first($columns);
     }
 
     /**
@@ -77,6 +77,6 @@ class Builder extends QueryBuilder
      */
     public function findOrFail($id, array $columns = ['*'], string $identifier = 'id'): Model
     {
-        return $this->where($this->model->getKey(), $id)->firstOrFail($columns);
+        return $this->where($this->model->getPrimaryKey(), $id)->firstOrFail($columns);
     }
 }

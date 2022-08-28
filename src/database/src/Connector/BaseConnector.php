@@ -11,19 +11,15 @@ declare(strict_types=1);
 
 namespace Max\Database\Connector;
 
-use ArrayObject;
 use Max\Database\Contract\ConnectorInterface;
-use Max\Database\DatabaseConfig;
+use Max\Database\DBConfig;
 use PDO;
 
 class BaseConnector implements ConnectorInterface
 {
-    protected ArrayObject $pool;
-
     public function __construct(
-        protected DatabaseConfig $config
+        protected DBConfig $config
     ) {
-        $this->pool = new ArrayObject();
     }
 
     /**
@@ -31,24 +27,15 @@ class BaseConnector implements ConnectorInterface
      */
     public function get()
     {
-        $name = $this->config->getName();
-        if (! $this->pool->offsetExists($name)) {
-            $this->pool->offsetSet($name, $this->create());
-        }
-        return $this->pool->offsetGet($name);
-    }
-
-    protected function create()
-    {
-        $PDO = new PDO(
+        return new PDO(
             $this->config->getDsn(),
             $this->config->getUser(),
             $this->config->getPassword(),
             $this->config->getOptions()
         );
-        if ($PDO->query('SELECT 1')) {
-            return $PDO;
-        }
-        $this->pool->offsetUnset($this->config->getName());
+    }
+
+    public function release($connection)
+    {
     }
 }
