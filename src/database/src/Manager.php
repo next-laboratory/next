@@ -11,57 +11,60 @@ declare(strict_types=1);
 
 namespace Max\Database;
 
-use InvalidArgumentException;
-use Max\Config\Contract\ConfigInterface;
+use Closure;
+use Exception;
+use Max\Database\Contract\ConnectorInterface;
+use Max\Database\Eloquent\Model;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use RuntimeException;
 
-/**
- * @mixin Query
- */
 class Manager
 {
-    /**
-     * @var mixed|string
-     */
-    protected string $defaultConnection;
+    protected string $default     = 'mysql';
 
-    protected array $connections = [];
+    protected array  $connections = [];
 
-    /**
-     * @var array|mixed
-     */
-    protected array $config = [];
+    protected array  $config      = [];
 
     public function __construct(
-        ConfigInterface $config,
         protected ?EventDispatcherInterface $eventDispatcher = null
     ) {
-        $config                  = $config->get('database');
-        $this->defaultConnection = $config['default'];
-        $this->config            = $config['connections'] ?? [];
+        Model::setManager($this);
+    }
+
+    public function setDefault(string $name): void
+    {
+        $this->default = $name;
+    }
+
+    public function addConnection(string $name, DBConfig $config): void
+    {
+        $connector = new ($config->getConnector())($config);
+        if (! $connector instanceof ConnectorInterface) {
+            throw new RuntimeException();
+        }
+        $this->connections[$name] = $connector;
+    }
+
+    public function query(string $name = ''): Query
+    {
+        $name = $name ?: $this->default;
+        if (! isset($this->connections[$name])) {
+            throw new RuntimeException('没有相关数据库连接');
+        }
+
+        return new Query($this->connections[$name], $this->eventDispatcher);
     }
 
     /**
-     * @return mixed
+     * @throws Exception
      */
-    public function __call(string $name, array $arguments)
+    public function extend(string $name, Closure $resolver): void
     {
-        return $this->connection($this->defaultConnection)->{$name}(...$arguments);
-    }
-
-    public function connection(?string $name = null): Query
-    {
-        $name ??= $this->defaultConnection;
-        if (! isset($this->connections[$name])) {
-            if (! isset($this->config[$name])) {
-                throw new InvalidArgumentException('没有相关数据库连接');
-            }
-            $config                   = $this->config[$name];
-            $connector                = $config['connector'];
-            $options                  = $config['options'];
-            $options['name']          = $name;
-            $this->connections[$name] = new $connector(new DatabaseConfig($options));
+        $connector = ($resolver)($this);
+        if (! $connector instanceof ConnectorInterface) {
+            throw new Exception('The resolver should return an instance of ConnectorInterface');
         }
-        return new Query($this->connections[$name], $this->eventDispatcher);
+        $this->connections[$name] = $connector;
     }
 }

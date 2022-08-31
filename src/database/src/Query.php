@@ -18,27 +18,32 @@ use Max\Database\Event\QueryExecuted;
 use Max\Database\Query\Builder;
 use PDO;
 use PDOException;
+use PDOStatement;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Swoole\Database\PDOProxy;
 
 class Query implements QueryInterface
 {
-    protected PDO $PDO;
+    /**
+     * @var PDO|PDOProxy
+     */
+    protected mixed $connection;
 
     public function __construct(
         protected ConnectorInterface $connector,
         protected ?EventDispatcherInterface $eventDispatcher = null
     ) {
-        $this->PDO = $this->connector->get();
+        $this->connection = $this->connector->get();
     }
 
     /**
-     * @return false|\PDOStatement
+     * @return false|PDOStatement
      */
     public function statement(string $query, array $bindings = [])
     {
         try {
-            $startTime    = microtime(true);
-            $PDOStatement = $this->PDO->prepare($query);
+            $executedAt   = microtime(true);
+            $PDOStatement = $this->connection->prepare($query);
             foreach ($bindings as $key => $value) {
                 $PDOStatement->bindValue(
                     is_string($key) ? $key : $key + 1,
@@ -48,7 +53,7 @@ class Query implements QueryInterface
             }
             $PDOStatement->execute();
             $this->eventDispatcher?->dispatch(
-                new QueryExecuted($query, $bindings, microtime(true) - $startTime)
+                new QueryExecuted($query, $bindings, $executedAt)
             );
             return $PDOStatement;
         } catch (PDOException $PDOException) {
@@ -62,7 +67,7 @@ class Query implements QueryInterface
 
     public function getPDO(): PDO
     {
-        return $this->PDO;
+        return $this->connection;
     }
 
     /**
@@ -112,7 +117,7 @@ class Query implements QueryInterface
      */
     public function begin()
     {
-        return $this->PDO->beginTransaction();
+        return $this->connection->beginTransaction();
     }
 
     /**
@@ -120,7 +125,7 @@ class Query implements QueryInterface
      */
     public function commit()
     {
-        return $this->PDO->commit();
+        return $this->connection->commit();
     }
 
     /**
@@ -128,7 +133,7 @@ class Query implements QueryInterface
      */
     public function rollBack()
     {
-        return $this->PDO->rollBack();
+        return $this->connection->rollBack();
     }
 
     /**

@@ -22,7 +22,7 @@ use Symfony\Component\VarDumper\VarDumper;
  * Most of the methods in this file come from illuminate
  * thanks Laravel Team provide such a useful class.
  */
-class Stringable implements JsonSerializable
+class Stringable implements JsonSerializable, \Stringable
 {
     use Conditionable;
     use Macroable;

@@ -37,7 +37,7 @@ class Request extends Message implements RequestInterface
     /**
      * {@inheritDoc}
      */
-    public function getRequestTarget()
+    public function getRequestTarget(): string
     {
         if ($this->requestTarget === '/') {
             return $this->uri->getPath() . $this->uri->getQuery();
@@ -48,7 +48,7 @@ class Request extends Message implements RequestInterface
     /**
      * {@inheritDoc}
      */
-    public function withRequestTarget($requestTarget)
+    public function withRequestTarget($requestTarget): RequestInterface
     {
         if ($requestTarget === $this->requestTarget) {
             return $this;
@@ -62,7 +62,7 @@ class Request extends Message implements RequestInterface
     /**
      * {@inheritDoc}
      */
-    public function getMethod()
+    public function getMethod(): string
     {
         return $this->method;
     }
@@ -70,7 +70,7 @@ class Request extends Message implements RequestInterface
     /**
      * {@inheritDoc}
      */
-    public function withMethod($method)
+    public function withMethod($method): RequestInterface
     {
         if ($method === $this->method) {
             return $this;
@@ -84,7 +84,7 @@ class Request extends Message implements RequestInterface
     /**
      * {@inheritDoc}
      */
-    public function getUri()
+    public function getUri(): UriInterface
     {
         return $this->uri;
     }
@@ -92,7 +92,7 @@ class Request extends Message implements RequestInterface
     /**
      * {@inheritDoc}
      */
-    public function withUri(UriInterface $uri, $preserveHost = false)
+    public function withUri(UriInterface $uri, $preserveHost = false): RequestInterface
     {
         if ($uri === $this->uri) {
             return $this;

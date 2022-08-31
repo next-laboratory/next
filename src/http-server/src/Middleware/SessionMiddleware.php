@@ -11,15 +11,14 @@ declare(strict_types=1);
 
 namespace Max\Http\Server\Middleware;
 
-use Max\Config\Contract\ConfigInterface;
 use Max\Http\Message\Contract\HeaderInterface;
 use Max\Http\Message\Cookie;
+use Max\Session\Manager;
 use Max\Session\Session;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use SessionHandlerInterface;
 
 /**
  * 部分属性注释来自MDN: https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Cookies.
@@ -78,37 +77,30 @@ class SessionMiddleware implements MiddlewareInterface
      */
     protected string $sameSite = Cookie::SAME_SITE_LAX;
 
-    /**
-     * @var mixed|SessionHandlerInterface
-     */
-    protected SessionHandlerInterface $handler;
-
-    public function __construct(ConfigInterface $config)
-    {
-        $config        = $config->get('session');
-        $handler       = $config['handler'];
-        $config        = $config['config'];
-        $this->handler = new $handler($config);
+    public function __construct(
+        protected Manager $manager
+    ) {
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $session = new Session($this->handler);
+        $session = $this->manager->create();
         $session->start($request->getCookieParams()[strtoupper($this->name)] ?? null);
         $request  = $request->withAttribute('Max\Session\Session', $session);
         $response = $handler->handle($request);
         $session->save();
         $session->close();
 
-        return $this->addCookieToResponse($response, $this->name, $session->getId());
+        return $this->addCookieToResponse($response, $session);
     }
 
     /**
      * 将cookie添加到响应.
      */
-    protected function addCookieToResponse(ResponseInterface $response, string $name, string $value): ResponseInterface
+    protected function addCookieToResponse(ResponseInterface $response, Session $session): ResponseInterface
     {
-        $cookie = new Cookie($name, $value, time() + $this->expires, $this->path, $this->domain, $this->secure, $this->httponly, $this->sameSite);
+        $expires = $session->isDestroyed() ? -1: time() + $this->expires;
+        $cookie  = new Cookie($this->name, $session->getId(), $expires, $this->path, $this->domain, $this->secure, $this->httponly, $this->sameSite);
 
         return $response->withAddedHeader(HeaderInterface::HEADER_SET_COOKIE, $cookie->__toString());
     }

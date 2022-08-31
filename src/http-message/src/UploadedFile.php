@@ -47,16 +47,15 @@ class UploadedFile implements UploadedFileInterface
     /**
      * {@inheritDoc}
      */
-    public function getStream()
+    public function getStream(): ?StreamInterface
     {
         return $this->stream;
     }
 
     /**
      * {@inheritDoc}
-     * @return SplFileInfo
      */
-    public function moveTo($targetPath)
+    public function moveTo($targetPath): SplFileInfo
     {
         if (($code = $this->getError()) > 0) {
             throw new RuntimeException(static::ERROR_MESSAGES[$code], $code);
@@ -72,7 +71,7 @@ class UploadedFile implements UploadedFileInterface
     /**
      * {@inheritDoc}
      */
-    public function getSize()
+    public function getSize(): ?int
     {
         return $this->size;
     }
@@ -80,7 +79,7 @@ class UploadedFile implements UploadedFileInterface
     /**
      * {@inheritDoc}
      */
-    public function getError()
+    public function getError(): int
     {
         return $this->error;
     }
@@ -88,7 +87,7 @@ class UploadedFile implements UploadedFileInterface
     /**
      * {@inheritDoc}
      */
-    public function getClientFilename()
+    public function getClientFilename(): ?string
     {
         return $this->clientFilename;
     }
@@ -96,7 +95,7 @@ class UploadedFile implements UploadedFileInterface
     /**
      * {@inheritDoc}
      */
-    public function getClientMediaType()
+    public function getClientMediaType(): ?string
     {
         return $this->clientMediaType;
     }

@@ -14,49 +14,37 @@ namespace Max\Database\Eloquent;
 use ArrayAccess;
 use JsonSerializable;
 use Max\Database\Collection;
-use Max\Database\Eloquent\Traits\Relations;
 use Max\Database\Exception\ModelNotFoundException;
 use Max\Database\Manager;
-use Max\Database\Query\Expression;
 use Max\Utils\Arr;
 use Max\Utils\Contract\Arrayable;
 use Max\Utils\Str;
+use RuntimeException;
 use Throwable;
 
-/**
- * @method static Builder where(string $column, $value, string $operator = '=')
- * @method static Builder whereNull(string $column)
- * @method static Builder order(Expression|string $column, string $sort = 'ASC')
- * @method static Builder limit(int $limit)
- */
+use function Max\Utils\class_basename;
+
 abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
 {
-    use Relations;
+    protected static string  $table;
 
-    protected string $table;
+    protected static string  $connection = '';
 
-    /**
-     * @var ?string
-     */
-    protected ?string $connection = null;
+    protected static string  $primaryKey = 'id';
 
-    protected string $createdAt = 'created_at';
+    protected static array   $cast       = [];
 
-    protected string $updatedAt = 'updated_at';
+    protected static array   $fillable   = [];
 
-    protected string $key = 'id';
+    protected static Manager $manager;
 
-    protected array $cast = [];
+    protected array          $original   = [];
 
-    protected array $fillable = [];
+    protected array          $attributes = [];
 
-    protected array $original = [];
+    protected array          $hidden     = [];
 
-    protected array $hidden = [];
-
-    protected array $appends = [];
-
-    protected array $attributes = [];
+    protected array          $appends    = [];
 
     public function __construct(array $attributes = [])
     {
@@ -73,16 +61,7 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
      */
     public function __get($key)
     {
-        if ($this->hasAttribute($key)) {
-            return $this->getAttribute($key);
-        }
-        if (method_exists($this, $key)) {
-            $value = $this->{$key}();
-            $this->setAttribute($key, $value);
-            return $value;
-        }
-
-        return null;
+        return $this->getAttribute($key);
     }
 
     /**
@@ -100,11 +79,6 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
     public static function __callStatic(string $name, array $arguments)
     {
         return static::query()->{$name}(...$arguments);
-    }
-
-    public function getFillable(): array
-    {
-        return $this->fillable;
     }
 
     /**
@@ -137,6 +111,7 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
      * @param $id
      *
      * @throws ModelNotFoundException
+     * @return Model
      */
     public static function findOrFail($id, array $columns = ['*']): static
     {
@@ -167,36 +142,9 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
         }
     }
 
-    public function getKey(): string
-    {
-        return $this->key;
-    }
-
-    public function getTable(): string
-    {
-        return $this->table;
-    }
-
     public static function all(array $columns = ['*']): Collection
     {
         return static::query()->get($columns);
-    }
-
-    public static function query(): Builder
-    {
-        return (new static())->newQuery();
-    }
-
-    public function newQuery(): Builder
-    {
-        try {
-            /** @var Manager $query */
-            $query   = make(Manager::class);
-            $builder = new Builder($query->connection($this->connection));
-            return $builder->from($this->table)->setModel($this);
-        } catch (Throwable $throwable) {
-            throw new \RuntimeException($throwable->getMessage(), $throwable->getCode(), $throwable);
-        }
     }
 
     public function save(): int
@@ -208,7 +156,8 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
             }
             $attributes[$key] = $value;
         }
-        return self::query()->insert($attributes);
+
+        return static::query()->insert($attributes);
     }
 
     public static function create(array $attributes): ?static
@@ -216,6 +165,36 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
         $lastInsertId = (new static($attributes))->save();
 
         return $lastInsertId ? static::find($lastInsertId) : null;
+    }
+
+    public function getPrimaryKey(): string
+    {
+        return static::$primaryKey;
+    }
+
+    public function getTable(): string
+    {
+        return static::$table;
+    }
+
+    public static function query(): Builder
+    {
+        return (new static())->newQuery();
+    }
+
+    public static function setManager(Manager $manager)
+    {
+        static::$manager = $manager;
+    }
+
+    public function newQuery(): Builder
+    {
+        try {
+            $builder = new Builder(static::$manager->query(static::$connection));
+            return $builder->from($this->getTable())->setModel($this);
+        } catch (Throwable $throwable) {
+            throw new RuntimeException($throwable->getMessage(), $throwable->getCode(), $throwable);
+        }
     }
 
     public function getOriginal(): array
@@ -228,7 +207,7 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
      */
     public function getCast($key): mixed
     {
-        return $this->cast[$key];
+        return static::$cast[$key];
     }
 
     /**
@@ -289,57 +268,36 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
         $this->attributes = $attributes;
     }
 
-    /**
-     * @return array
-     */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->toArray();
     }
 
-    /**
-     * @param $offset
-     *
-     * @return bool
-     */
-    #[\ReturnTypeWillChange]
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return $this->hasAttribute($offset);
     }
 
-    /**
-     * @param $offset
-     *
-     * @return null|mixed
-     */
-    #[\ReturnTypeWillChange]
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->getAttribute($offset);
     }
 
-    /**
-     * @param $offset
-     * @param $value
-     */
-    #[\ReturnTypeWillChange]
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
-        $this->original[$offset] = $value;
         $this->setAttribute($offset, $value);
     }
 
-    /**
-     * @param $offset
-     */
-    #[\ReturnTypeWillChange]
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         if ($this->hasAttribute($offset)) {
             unset($this->original[$offset], $this->attributes[$offset]);
         }
+    }
+
+    public function getFillable(): array
+    {
+        return static::$fillable;
     }
 
     protected function fillableFromArray(array $attributes): array
@@ -368,8 +326,9 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
         return match ($cast) {
             'boolean', 'bool' => (bool) $value,
             'integer', 'int' => (int) $value,
-            'string' => (string) $value,
-            'double', 'float' => (float) $value,
+            'string'    => (string) $value,
+            'double'    => (float) $value,
+            'float'     => (float) $value,
             'json'      => $isWrite ? json_encode($value, JSON_UNESCAPED_UNICODE) : json_decode($value, true),
             'serialize' => $isWrite ? serialize($value) : unserialize($value),
             default     => $value,
