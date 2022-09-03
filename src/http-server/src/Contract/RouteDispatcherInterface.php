@@ -14,7 +14,7 @@ namespace Max\Http\Server\Contract;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-interface RouteResolverInterface
+interface RouteDispatcherInterface
 {
-    public function resolve(ServerRequestInterface $request): ResponseInterface;
+    public function dispatch(ServerRequestInterface $request): ResponseInterface;
 }

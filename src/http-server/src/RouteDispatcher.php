@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Http\Server;
 
-use Max\Http\Server\Contract\RouteResolverInterface;
+use Max\Http\Server\Contract\RouteDispatcherInterface;
 use Max\Routing\Route;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -19,13 +19,13 @@ use Psr\Http\Message\ServerRequestInterface;
 use ReflectionException;
 use RuntimeException;
 
-class RouteResolver implements RouteResolverInterface
+class RouteDispatcher implements RouteDispatcherInterface
 {
     /**
      * @throws ContainerExceptionInterface
      * @throws ReflectionException
      */
-    public function resolve(ServerRequestInterface $request): ResponseInterface
+    public function dispatch(ServerRequestInterface $request): ResponseInterface
     {
         if ($route = $request->getAttribute(Route::class)) {
             $parameters            = $route->getParameters();

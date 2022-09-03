@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Http\Server;
 
-use Max\Http\Server\Contract\RouteResolverInterface;
+use Max\Http\Server\Contract\RouteDispatcherInterface;
 use Max\Http\Server\Event\OnRequest;
 use Max\Routing\Exception\RouteNotFoundException;
 use Max\Routing\Route;
@@ -39,7 +39,7 @@ class Kernel
     final public function __construct(
         protected ContainerInterface $container,
         protected RouteCollector $routeCollector,
-        protected RouteResolverInterface $routeResolver,
+        protected RouteDispatcherInterface $routeDispatcher,
         protected ?EventDispatcherInterface $eventDispatcher = null,
     ) {
         $this->map(new Router(routeCollector: $routeCollector));
@@ -52,7 +52,7 @@ class Kernel
     public function through(ServerRequestInterface $request): ResponseInterface
     {
         $event           = new OnRequest($request);
-        $response        = (new RequestHandler($this->container, $this->routeResolver, $this->middlewares))->handle($request);
+        $response        = (new RequestHandler($this->container, $this->routeDispatcher, $this->middlewares))->handle($request);
         $event->response = $response;
         $this->eventDispatcher?->dispatch($event);
         return $response;

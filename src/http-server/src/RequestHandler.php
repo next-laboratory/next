@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Max\Http\Server;
 
 use InvalidArgumentException;
-use Max\Http\Server\Contract\RouteResolverInterface;
+use Max\Http\Server\Contract\RouteDispatcherInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -25,7 +25,7 @@ class RequestHandler implements RequestHandlerInterface
 {
     public function __construct(
         protected ContainerInterface $container,
-        protected RouteResolverInterface $routeResolver,
+        protected RouteDispatcherInterface $routeDispatcher,
         protected array $middlewares = [],
     ) {
     }
@@ -43,7 +43,7 @@ class RequestHandler implements RequestHandlerInterface
             }
             throw new InvalidArgumentException(sprintf('The middleware %s should implement Psr\Http\Server\MiddlewareInterface', $middlewareClass));
         }
-        return $this->routeResolver->resolve($request);
+        return $this->routeDispatcher->dispatch($request);
     }
 
     /**
