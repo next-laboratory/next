@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
 namespace Max\Http\Server;
 
 use Max\Http\Message\Bag\CookieBag;
@@ -37,11 +46,11 @@ class ServerRequest extends PsrServerRequest
                 $hasPort = true;
                 $uri     = $uri->withPort($hostHeaderParts[1]);
             }
-        } else if (isset($server['server_name'])) {
+        } elseif (isset($server['server_name'])) {
             $uri = $uri->withHost($server['server_name']);
-        } else if (isset($server['server_addr'])) {
+        } elseif (isset($server['server_addr'])) {
             $uri = $uri->withHost($server['server_addr']);
-        } else if (isset($header['host'])) {
+        } elseif (isset($header['host'])) {
             $hasPort = true;
             if (strpos($header['host'], ':')) {
                 [$host, $port] = explode(':', $header['host'], 2);
@@ -55,7 +64,7 @@ class ServerRequest extends PsrServerRequest
             $uri = $uri->withHost($host);
         }
 
-        if (!$hasPort && isset($server['server_port'])) {
+        if (! $hasPort && isset($server['server_port'])) {
             $uri = $uri->withPort($server['server_port']);
         }
 
@@ -69,7 +78,7 @@ class ServerRequest extends PsrServerRequest
             }
         }
 
-        if (!$hasQuery && isset($server['query_string'])) {
+        if (! $hasQuery && isset($server['query_string'])) {
             $uri = $uri->withQuery($server['query_string']);
         }
 
@@ -195,13 +204,13 @@ class ServerRequest extends PsrServerRequest
 
     /**
      * Get the request url.
-     * Example: /users?id=1
+     * Example: /users?id=1.
      */
     public function url(): string
     {
         $uri = $this->getUri();
         $url = $uri->getPath();
-        if (!empty($query = $uri->getQuery())) {
+        if (! empty($query = $uri->getQuery())) {
             $url .= '?' . $query;
         }
         return $url;

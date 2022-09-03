@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Max\Http\Server\ResponseEmitter;
 
 use Max\Http\Message\Contract\HeaderInterface;
-use Max\Http\Message\Cookie;
 use Max\Http\Server\Contract\ResponseEmitterInterface;
 use Psr\Http\Message\ResponseInterface;
 

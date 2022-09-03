@@ -99,7 +99,7 @@ class SessionMiddleware implements MiddlewareInterface
      */
     protected function addCookieToResponse(ResponseInterface $response, Session $session): ResponseInterface
     {
-        $expires = $session->isDestroyed() ? -1: time() + $this->expires;
+        $expires = $session->isDestroyed() ? -1 : time() + $this->expires;
         $cookie  = new Cookie($this->name, $session->getId(), $expires, $this->path, $this->domain, $this->secure, $this->httponly, $this->sameSite);
 
         return $response->withAddedHeader(HeaderInterface::HEADER_SET_COOKIE, $cookie->__toString());

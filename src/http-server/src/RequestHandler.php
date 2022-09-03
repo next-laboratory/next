@@ -11,8 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Http\Server;
 
-use Max\Routing\Exception\RouteNotFoundException;
-use Max\Routing\Route;
+use Max\Http\Server\Contract\RouteResolverInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -20,13 +19,13 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use ReflectionException;
-use RuntimeException;
 
 class RequestHandler implements RequestHandlerInterface
 {
     public function __construct(
         protected ContainerInterface $container,
-        protected array $middlewares = []
+        protected RouteResolverInterface $routeResolver,
+        protected array $middlewares = [],
     ) {
     }
 
@@ -39,7 +38,7 @@ class RequestHandler implements RequestHandlerInterface
         if ($middleware = array_shift($this->middlewares)) {
             return $this->handleMiddleware($this->container->make($middleware), $request);
         }
-        return $this->handleRequest($request);
+        return $this->routeResolver->resolve($request);
     }
 
     /**
@@ -49,20 +48,6 @@ class RequestHandler implements RequestHandlerInterface
     {
         array_push($this->middlewares, ...$middleware);
         return $this;
-    }
-
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws ReflectionException|RouteNotFoundException
-     */
-    protected function handleRequest(ServerRequestInterface $request): ResponseInterface
-    {
-        if ($route = $request->getAttribute(Route::class)) {
-            $parameters            = $route->getParameters();
-            $parameters['request'] = $request;
-            return $this->container->call($route->getAction(), $parameters);
-        }
-        throw new RuntimeException('No route found in the request context', 404);
     }
 
     /**

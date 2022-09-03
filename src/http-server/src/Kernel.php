@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Http\Server;
 
+use Max\Http\Server\Contract\RouteResolverInterface;
 use Max\Http\Server\Event\OnRequest;
 use Max\Routing\Exception\RouteNotFoundException;
 use Max\Routing\Route;
@@ -28,10 +29,7 @@ class Kernel
     /**
      * 全局中间件.
      */
-    protected array $middlewares = [
-        'Max\Http\Server\Middleware\ExceptionHandleMiddleware',
-        'Max\Http\Server\Middleware\RoutingMiddleware',
-    ];
+    protected array $middlewares = [];
 
     /**
      * @param RouteCollector            $routeCollector  路由收集器
@@ -39,8 +37,9 @@ class Kernel
      * @param ?EventDispatcherInterface $eventDispatcher 事件调度器
      */
     final public function __construct(
-        protected RouteCollector $routeCollector,
         protected ContainerInterface $container,
+        protected RouteCollector $routeCollector,
+        protected RouteResolverInterface $routeResolver,
         protected ?EventDispatcherInterface $eventDispatcher = null,
     ) {
         $this->map(new Router(routeCollector: $routeCollector));
@@ -53,7 +52,7 @@ class Kernel
     public function through(ServerRequestInterface $request): ResponseInterface
     {
         $event           = new OnRequest($request);
-        $response        = (new RequestHandler($this->container, $this->middlewares))->handle($request);
+        $response        = (new RequestHandler($this->container, $this->routeResolver, $this->middlewares))->handle($request);
         $event->response = $response;
         $this->eventDispatcher?->dispatch($event);
         return $response;
