@@ -12,9 +12,9 @@ declare(strict_types=1);
 namespace Max\Aop;
 
 use Attribute;
+use Exception;
 use Max\Aop\Collector\AspectCollector;
 use Max\Aop\Collector\PropertyAnnotationCollector;
-use Max\Aop\Exception\ProcessException;
 use Max\Di\Reflection;
 use Max\Utils\Composer;
 use Max\Utils\Filesystem;
@@ -42,6 +42,7 @@ final class Scanner
 
     /**
      * @throws ReflectionException
+     * @throws Exception
      */
     public static function init(ScannerConfig $config): void
     {
@@ -51,11 +52,11 @@ final class Scanner
             self::$filesystem->isDirectory(self::$runtimeDir) || self::$filesystem->makeDirectory(self::$runtimeDir, 0755, true);
             self::$astManager = new AstManager();
             self::$classMap   = self::findClasses($config->getPaths());
-            self::$proxyMap   = $proxyMap   = self::$runtimeDir . 'proxy.php';
-            if (! $config->isCache() || ! self::$filesystem->exists($proxyMap)) {
+            self::$proxyMap   = $proxyMap = self::$runtimeDir . 'proxy.php';
+            if (!$config->isCache() || !self::$filesystem->exists($proxyMap)) {
                 self::$filesystem->exists($proxyMap) && self::$filesystem->delete($proxyMap);
                 if (($pid = pcntl_fork()) == -1) {
-                    throw new ProcessException('Process fork failed.');
+                    throw new Exception('Process fork failed.');
                 }
                 pcntl_wait($pid);
             }
