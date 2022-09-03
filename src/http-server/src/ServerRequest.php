@@ -24,7 +24,7 @@ class ServerRequest extends PsrServerRequest
      *
      * @return static
      */
-    public static function createFromSwooleRequest($request, array $attributes = []): \Max\Http\Message\ServerRequest
+    public static function createFromSwooleRequest($request, array $attributes = []): ServerRequestInterface
     {
         $server  = $request->server;
         $header  = $request->header;
@@ -89,7 +89,7 @@ class ServerRequest extends PsrServerRequest
     /**
      * @param \Workerman\Protocols\Http\Request $request
      */
-    public static function createFromWorkerManRequest($request, array $attributes = []): static
+    public static function createFromWorkerManRequest($request, array $attributes = []): ServerRequestInterface
     {
         $psrRequest                = new static(
             $request->method(), new Uri($request->uri()),
@@ -104,7 +104,7 @@ class ServerRequest extends PsrServerRequest
         return $psrRequest;
     }
 
-    public static function createFromGlobals(): static
+    public static function createFromGlobals(): ServerRequestInterface
     {
         $psrRequest                = new static(
             $_SERVER['REQUEST_METHOD'],
@@ -124,7 +124,7 @@ class ServerRequest extends PsrServerRequest
     /**
      * @param \Amp\Http\Server\Request $request
      */
-    public static function createFromAmp($request): static
+    public static function createFromAmp($request): ServerRequestInterface
     {
         $uri                      = $request->getUri();
         $psrRequest               = new static($request->getMethod(), $uri, $request->getHeaders(), null);
@@ -137,7 +137,7 @@ class ServerRequest extends PsrServerRequest
         return $psrRequest;
     }
 
-    public static function createFromPsrRequest(ServerRequestInterface $request): static
+    public static function createFromPsrRequest(ServerRequestInterface $request): ServerRequestInterface
     {
         $psrRequest                = new static($request->getMethod(), $request->getUri(), $request->getHeaders(), $request->getBody());
         $psrRequest->serverParams  = new ServerBag($request->getServerParams() ?: []);
