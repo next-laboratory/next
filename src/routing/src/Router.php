@@ -45,19 +45,15 @@ class Router
      */
     public function any(string $path, array|Closure|string $action): Route
     {
-        return $this->request(
-            $path,
-            $action,
-            [
-                RequestMethodInterface::METHOD_GET,
-                RequestMethodInterface::METHOD_HEAD,
-                RequestMethodInterface::METHOD_POST,
-                RequestMethodInterface::METHOD_OPTIONS,
-                RequestMethodInterface::METHOD_PUT,
-                RequestMethodInterface::METHOD_PATCH,
-                RequestMethodInterface::METHOD_DELETE,
-            ]
-        );
+        return $this->request($path, $action, [
+            RequestMethodInterface::METHOD_GET,
+            RequestMethodInterface::METHOD_HEAD,
+            RequestMethodInterface::METHOD_POST,
+            RequestMethodInterface::METHOD_OPTIONS,
+            RequestMethodInterface::METHOD_PUT,
+            RequestMethodInterface::METHOD_PATCH,
+            RequestMethodInterface::METHOD_DELETE,
+        ]);
     }
 
     /**
