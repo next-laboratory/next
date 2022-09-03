@@ -44,7 +44,6 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
 
     protected array $attributes = [];
 
-
     protected array $appends = [];
 
     public function __construct(array $attributes = [])
