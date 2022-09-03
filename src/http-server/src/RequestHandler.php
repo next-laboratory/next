@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Http\Server;
 
+use InvalidArgumentException;
 use Max\Http\Server\Contract\RouteResolverInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -35,8 +36,12 @@ class RequestHandler implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        if ($middleware = array_shift($this->middlewares)) {
-            return $this->handleMiddleware($this->container->make($middleware), $request);
+        if ($middlewareClass = array_shift($this->middlewares)) {
+            $middleware = $this->container->make($middlewareClass);
+            if ($middleware instanceof MiddlewareInterface) {
+                return $middleware->process($request, $this);
+            }
+            throw new InvalidArgumentException(sprintf('The middleware %s should implement Psr\Http\Server\MiddlewareInterface', $middlewareClass));
         }
         return $this->routeResolver->resolve($request);
     }
@@ -48,13 +53,5 @@ class RequestHandler implements RequestHandlerInterface
     {
         array_push($this->middlewares, ...$middleware);
         return $this;
-    }
-
-    /**
-     * 处理中间件.
-     */
-    protected function handleMiddleware(MiddlewareInterface $middleware, ServerRequestInterface $request): ResponseInterface
-    {
-        return $middleware->process($request, $this);
     }
 }
