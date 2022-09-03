@@ -21,6 +21,7 @@ use PDOException;
 use PDOStatement;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Swoole\Database\PDOProxy;
+use Throwable;
 
 class Query implements QueryInterface
 {
@@ -45,23 +46,13 @@ class Query implements QueryInterface
             $executedAt   = microtime(true);
             $PDOStatement = $this->connection->prepare($query);
             foreach ($bindings as $key => $value) {
-                $PDOStatement->bindValue(
-                    is_string($key) ? $key : $key + 1,
-                    $value,
-                    is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR
-                );
+                $PDOStatement->bindValue(is_string($key) ? $key : $key + 1, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
             }
             $PDOStatement->execute();
-            $this->eventDispatcher?->dispatch(
-                new QueryExecuted($query, $bindings, $executedAt)
-            );
+            $this->eventDispatcher?->dispatch(new QueryExecuted($query, $bindings, $executedAt));
             return $PDOStatement;
         } catch (PDOException $PDOException) {
-            throw new PDOException(
-                $PDOException->getMessage() . sprintf(' (SQL: %s)', $query),
-                (int) $PDOException->getCode(),
-                $PDOException->getPrevious()
-            );
+            throw new PDOException($PDOException->getMessage() . sprintf(' (SQL: %s)', $query), (int)$PDOException->getCode(), $PDOException->getPrevious());
         }
     }
 
@@ -70,28 +61,17 @@ class Query implements QueryInterface
         return $this->connection;
     }
 
-    /**
-     * @param ...$args
-     */
     public function select(string $query, array $bindings = [], int $mode = PDO::FETCH_ASSOC, ...$args): bool|array
     {
         return $this->statement($query, $bindings)->fetchAll($mode, ...$args);
     }
 
-    /**
-     * @param ...$args
-     *
-     * @return mixed
-     */
-    public function selectOne(string $query, array $bindings = [], int $mode = PDO::FETCH_ASSOC, ...$args)
+    public function selectOne(string $query, array $bindings = [], int $mode = PDO::FETCH_ASSOC, ...$args): mixed
     {
         return $this->statement($query, $bindings)->fetch($mode, ...$args);
     }
 
-    /**
-     * @return Builder
-     */
-    public function table(string $table, ?string $alias = null)
+    public function table(string $table, ?string $alias = null): Builder
     {
         return (new Builder($this))->from($table, $alias);
     }
@@ -112,42 +92,32 @@ class Query implements QueryInterface
         return $this->getPDO()->lastInsertId($id);
     }
 
-    /**
-     * @return bool
-     */
-    public function begin()
+    public function begin(): bool
     {
         return $this->connection->beginTransaction();
     }
 
-    /**
-     * @return bool
-     */
-    public function commit()
+    public function commit(): bool
     {
         return $this->connection->commit();
     }
 
-    /**
-     * @return bool
-     */
-    public function rollBack()
+    public function rollBack(): bool
     {
         return $this->connection->rollBack();
     }
 
     /**
-     * @throws \Throwable
-     * @return mixed
+     * @throws Throwable
      */
-    public function transaction(Closure $transaction)
+    public function transaction(Closure $transaction): mixed
     {
         $this->begin();
         try {
             $result = ($transaction)($this);
             $this->commit();
             return $result;
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             $this->rollBack();
             throw $throwable;
         }

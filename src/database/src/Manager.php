@@ -20,40 +20,32 @@ use RuntimeException;
 
 class Manager
 {
-    protected string $default     = 'mysql';
+    protected string $default = 'mysql';
 
-    protected array  $connections = [];
+    protected array $connectors = [];
 
-    protected array  $config      = [];
+    protected array $config = [];
 
-    public function __construct(
-        protected ?EventDispatcherInterface $eventDispatcher = null
-    ) {
-        Model::setManager($this);
-    }
+    protected static ?EventDispatcherInterface $eventDispatcher = null;
 
     public function setDefault(string $name): void
     {
         $this->default = $name;
     }
 
-    public function addConnection(string $name, DBConfig $config): void
+    public function addConnector(string $name, ConnectorInterface $connector): void
     {
-        $connector = new ($config->getConnector())($config);
-        if (! $connector instanceof ConnectorInterface) {
-            throw new RuntimeException();
-        }
-        $this->connections[$name] = $connector;
+        $this->connectors[$name] = $connector;
     }
 
     public function query(string $name = ''): Query
     {
         $name = $name ?: $this->default;
-        if (! isset($this->connections[$name])) {
+        if (!isset($this->connectors[$name])) {
             throw new RuntimeException('没有相关数据库连接');
         }
 
-        return new Query($this->connections[$name], $this->eventDispatcher);
+        return new Query($this->connectors[$name], static::$eventDispatcher);
     }
 
     /**
@@ -62,9 +54,19 @@ class Manager
     public function extend(string $name, Closure $resolver): void
     {
         $connector = ($resolver)($this);
-        if (! $connector instanceof ConnectorInterface) {
+        if (!$connector instanceof ConnectorInterface) {
             throw new Exception('The resolver should return an instance of ConnectorInterface');
         }
-        $this->connections[$name] = $connector;
+        $this->addConnector($name, $connector);
+    }
+
+    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher): void
+    {
+        static::$eventDispatcher = $eventDispatcher;
+    }
+
+    public function bootEloquent(): void
+    {
+        Model::setManager($this);
     }
 }
