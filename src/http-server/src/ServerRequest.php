@@ -46,11 +46,11 @@ class ServerRequest extends PsrServerRequest
                 $hasPort = true;
                 $uri     = $uri->withPort($hostHeaderParts[1]);
             }
-        } elseif (isset($server['server_name'])) {
+        } else if (isset($server['server_name'])) {
             $uri = $uri->withHost($server['server_name']);
-        } elseif (isset($server['server_addr'])) {
+        } else if (isset($server['server_addr'])) {
             $uri = $uri->withHost($server['server_addr']);
-        } elseif (isset($header['host'])) {
+        } else if (isset($header['host'])) {
             $hasPort = true;
             if (strpos($header['host'], ':')) {
                 [$host, $port] = explode(':', $header['host'], 2);
@@ -64,7 +64,7 @@ class ServerRequest extends PsrServerRequest
             $uri = $uri->withHost($host);
         }
 
-        if (! $hasPort && isset($server['server_port'])) {
+        if (!$hasPort && isset($server['server_port'])) {
             $uri = $uri->withPort($server['server_port']);
         }
 
@@ -78,7 +78,7 @@ class ServerRequest extends PsrServerRequest
             }
         }
 
-        if (! $hasQuery && isset($server['query_string'])) {
+        if (!$hasQuery && isset($server['query_string'])) {
             $uri = $uri->withQuery($server['query_string']);
         }
 
@@ -159,6 +159,55 @@ class ServerRequest extends PsrServerRequest
     }
 
     /**
+     * 从queryParams中获取输入参数
+     */
+    public function query(?string $key = null, mixed $default = null): mixed
+    {
+        return $this->input($key, $default, $this->getQueryParams());
+    }
+
+    /**
+     * 从parsedBody中获取输入参数
+     */
+    public function post(?string $key = null, mixed $default = null): mixed
+    {
+        return $this->input($key, $default, $this->getParsedBody());
+    }
+
+    /**
+     * 获取输入参数，包括queryParams和parsedBody
+     */
+    public function input(?string $key = null, mixed $default = null, ?array $input = null): mixed
+    {
+        $input ??= $this->all();
+        return is_null($key) ? $input : ($input[$key] ?? $default);
+    }
+
+    /**
+     * 全部输入参数
+     */
+    public function all(): array
+    {
+        return $this->getQueryParams() + $this->getParsedBody();
+    }
+
+    /**
+     * 验证输入参数是否有对应的键
+     */
+    public function exists(string $key): bool
+    {
+        return array_key_exists($key, $this->all());
+    }
+
+    /**
+     * 验证输入参数是否不为空
+     */
+    public function has(string $key): bool
+    {
+        return !empty($this->input($key));
+    }
+
+    /**
      * Check whether it is an Ajax request.
      */
     public function isAjax(): bool
@@ -210,7 +259,7 @@ class ServerRequest extends PsrServerRequest
     {
         $uri = $this->getUri();
         $url = $uri->getPath();
-        if (! empty($query = $uri->getQuery())) {
+        if (!empty($query = $uri->getQuery())) {
             $url .= '?' . $query;
         }
         return $url;

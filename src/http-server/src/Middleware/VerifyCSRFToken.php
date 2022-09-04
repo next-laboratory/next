@@ -26,9 +26,7 @@ class VerifyCSRFToken implements MiddlewareInterface
     /**
      * 排除，不校验CSRF Token.
      */
-    protected array $except = [
-        '/',
-    ];
+    protected array $except = ['/'];
 
     /**
      * 过期时间.
