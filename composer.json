@@ -20,8 +20,6 @@
             "Max\\": "src/framework/src",
             "Max\\Http\\Server\\": "src/http-server/src",
             "Max\\Http\\Message\\": "src/http-message/src",
-            "Max\\Queue\\": "src/queue/src",
-            "Max\\JWT\\": "src/jwt/src",
             "Max\\Routing\\": "src/routing/src",
             "Max\\Session\\": "src/session/src",
             "Max\\Utils\\": "src/utils/src",
@@ -73,7 +71,7 @@
         "phpstan/phpstan": "^1.7"
     },
     "scripts": {
-        "test": "co-phpunit --prepend test/bootstrap.php -c phpunit.xml --colors=always",
+        "test": "phpunit --prepend test/bootstrap.php -c phpunit.xml --colors=always",
         "cs-fix": "php-cs-fixer fix $1",
         "analyse": "phpstan analyse --memory-limit 300M -l 0 -c phpstan.neon ./src"
     }
