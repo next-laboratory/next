@@ -18,10 +18,6 @@ class DBConfig
 {
     use AutoFillProperties;
 
-    public const OPTION_NAME = 'name';
-
-    public const OPTION_CONNECTOR = 'connector';
-
     public const OPTION_DRIVER = 'driver';
 
     public const OPTION_HOST = 'host';
@@ -152,11 +148,6 @@ class DBConfig
             return $this->dsn;
         }
         return sprintf('%s:host=%s;dbname=%s;', $this->driver, $this->host, $this->database);
-    }
-
-    public function getConnector(): string
-    {
-        return $this->connector;
     }
 
     public function getOptions(): array

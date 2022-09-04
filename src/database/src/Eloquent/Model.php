@@ -26,29 +26,29 @@ use function Max\Utils\class_basename;
 
 abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
 {
-    protected static string  $table;
+    protected static string $table;
 
-    protected static string  $connection = '';
+    protected static string $connection = '';
 
-    protected static string  $primaryKey = 'id';
+    protected static string $primaryKey = 'id';
 
-    protected static array   $cast       = [];
+    protected static array $cast = [];
 
-    protected static array   $fillable   = [];
+    protected static array $fillable = [];
+
+    protected static array $hidden = [];
 
     protected static Manager $manager;
 
-    protected array          $original   = [];
+    protected array $original = [];
 
-    protected array          $attributes = [];
+    protected array $attributes = [];
 
-    protected array          $hidden     = [];
-
-    protected array          $appends    = [];
+    protected array $appends = [];
 
     public function __construct(array $attributes = [])
     {
-        if (! empty($attributes)) {
+        if (!empty($attributes)) {
             $this->fill($attributes);
         }
         $this->table ??= Str::camel(class_basename(static::class));
@@ -110,8 +110,8 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
     /**
      * @param $id
      *
-     * @throws ModelNotFoundException
      * @return Model
+     * @throws ModelNotFoundException
      */
     public static function findOrFail($id, array $columns = ['*']): static
     {
@@ -233,12 +233,9 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
 
     public function getHidden(): array
     {
-        return $this->hidden;
+        return static::$hidden;
     }
 
-    /**
-     * @param $key
-     */
     public function hasAttribute($key): bool
     {
         return isset($this->attributes[$key]);
@@ -262,7 +259,7 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
         if ($attributes instanceof Arrayable) {
             $attributes = $attributes->toArray();
         }
-        if (! is_array($attributes)) {
+        if (!is_array($attributes)) {
             throw new \InvalidArgumentException('Cannot assign none array attributes to entity.');
         }
         $this->attributes = $attributes;
@@ -324,14 +321,14 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
     protected function cast($value, $cast, bool $isWrite = false): mixed
     {
         return match ($cast) {
-            'boolean', 'bool' => (bool) $value,
-            'integer', 'int' => (int) $value,
-            'string'    => (string) $value,
-            'double'    => (float) $value,
-            'float'     => (float) $value,
-            'json'      => $isWrite ? json_encode($value, JSON_UNESCAPED_UNICODE) : json_decode($value, true),
+            'boolean', 'bool' => (bool)$value,
+            'integer', 'int' => (int)$value,
+            'string' => (string)$value,
+            'double' => (float)$value,
+            'float' => (float)$value,
+            'json' => $isWrite ? json_encode($value, JSON_UNESCAPED_UNICODE) : json_decode($value, true),
             'serialize' => $isWrite ? serialize($value) : unserialize($value),
-            default     => $value,
+            default => $value,
         };
     }
 }

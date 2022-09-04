@@ -1,14 +1,12 @@
-多环境兼容的 Http Server
+符合Psr7规范的兼容多容器的 Http Server
 
-# 设计思想
-
-> 全部符合psr规范
+# 设计思路
 
 request -> kernel -> response
 
 # 使用
 
-需要新建类继承`\Max\Http\Server\Kernel`类
+新建类继承`\Max\Http\Server\Kernel`类
 
 ```php
 class HttpKernel extends Kernel 
