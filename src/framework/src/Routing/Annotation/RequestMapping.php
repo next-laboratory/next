@@ -20,21 +20,21 @@ class RequestMapping implements MappingInterface
     /**
      * 默认方法.
      *
-     * @var array|string[]
+     * @var array<int, string>
      */
     public array $methods = ['GET', 'POST', 'HEAD'];
 
     /**
-     * @param string         $path        路径
-     * @param array|string[] $methods     方法
-     * @param array          $middlewares 中间件
+     * @param string             $path        路径
+     * @param array<int, string> $methods     方法
+     * @param array              $middlewares 中间件
      */
     public function __construct(
         public string $path = '/',
         array $methods = [],
         public array $middlewares = [],
     ) {
-        if (! empty($methods)) {
+        if (!empty($methods)) {
             $this->methods = $methods;
         }
     }

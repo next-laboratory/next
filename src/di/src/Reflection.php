@@ -72,11 +72,10 @@ final class Reflection
     }
 
     /**
-     * @param  null|mixed           $filter
      * @throws ReflectionException
      * @return ReflectionProperty[]
      */
-    public static function properties(string $class, $filter = null): array
+    public static function properties(string $class, ?int $filter = null): array
     {
         return self::class($class)->getProperties($filter);
     }

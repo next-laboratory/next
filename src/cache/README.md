@@ -40,4 +40,3 @@ $cache->set('stat', 12, 10);
 var_dump($cache->get('stat'));
 
 ```
-> 官网：https://www.1kmb.com
