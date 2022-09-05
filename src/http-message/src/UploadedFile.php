@@ -69,12 +69,18 @@ class UploadedFile extends SplFileInfo implements UploadedFileInterface
      */
     public function moveTo($targetPath): SplFileInfo
     {
-        if (($code = $this->getError()) > 0) {
-            throw new RuntimeException(static::ERROR_MESSAGES[$code], $code);
+        if (($error = $this->getError()) > 0) {
+            throw new RuntimeException(static::ERROR_MESSAGES[$error], $error);
         }
         $path = pathinfo($targetPath, PATHINFO_DIRNAME);
         !is_dir($path) && mkdir($path, 0755, true);
-        if (move_uploaded_file($this->tmpFilename, $targetPath)) {
+        if (is_uploaded_file($this->tmpFilename)) {
+            $moved = move_uploaded_file($this->tmpFilename, $targetPath);
+        } else {
+            // 兼容WorkerMan
+            $moved = rename($this->tmpFilename, $targetPath);
+        }
+        if ($moved) {
             $this->moved = true;
             return new SplFileInfo($targetPath);
         }
