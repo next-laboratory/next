@@ -79,8 +79,7 @@ class Index
 ```
 
 上面的代码定义了一个 Index 控制器，并使用 Controller 注解设置了路由的前缀为 index, 该控制器中全部方法的中间件为`BasicAuthentication::class`， 并且使用`GetMapping`
-注解定义了一个路由，`path`为`/user/{id}.html`， 那么实际请求的地址可以为`/index/user/1.html`，注意在该路由中还注册了对应的域名`*.1kmb.com` 表示该方法仅能被该泛域名访问到,
-支持的注解如下，分别对应了不同的请求方法，其中RequestMapping对应的请求方法默认为`GET`，`POST`，`HEAD`，可使用`method`参数来自定义
+注解定义了一个路由，`path`为`/user/{id}.html`， 那么实际请求的地址可以为`/index/user/1.html`, 支持的注解如下，分别对应了不同的请求方法，其中RequestMapping对应的请求方法默认为`GET`，`POST`，`HEAD`，可使用`method`参数来自定义
 
 - GetMapping
 - PostMapping

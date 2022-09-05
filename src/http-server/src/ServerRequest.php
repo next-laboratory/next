@@ -18,11 +18,11 @@ use Max\Http\Message\Bag\ServerBag;
 use Max\Http\Message\Contract\HeaderInterface;
 use Max\Http\Message\ServerRequest as PsrServerRequest;
 use Max\Http\Message\Stream\StringStream;
-use Max\Http\Message\UploadedFile;
 use Max\Http\Message\Uri;
 use Max\Utils\Arr;
 use Max\Utils\Str;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UploadedFileInterface;
 
 class ServerRequest extends PsrServerRequest
 {
@@ -46,11 +46,11 @@ class ServerRequest extends PsrServerRequest
                 $hasPort = true;
                 $uri     = $uri->withPort($hostHeaderParts[1]);
             }
-        } elseif (isset($server['server_name'])) {
+        } else if (isset($server['server_name'])) {
             $uri = $uri->withHost($server['server_name']);
-        } elseif (isset($server['server_addr'])) {
+        } else if (isset($server['server_addr'])) {
             $uri = $uri->withHost($server['server_addr']);
-        } elseif (isset($header['host'])) {
+        } else if (isset($header['host'])) {
             $hasPort = true;
             if (strpos($header['host'], ':')) {
                 [$host, $port] = explode(':', $header['host'], 2);
@@ -64,7 +64,7 @@ class ServerRequest extends PsrServerRequest
             $uri = $uri->withHost($host);
         }
 
-        if (! $hasPort && isset($server['server_port'])) {
+        if (!$hasPort && isset($server['server_port'])) {
             $uri = $uri->withPort($server['server_port']);
         }
 
@@ -78,7 +78,7 @@ class ServerRequest extends PsrServerRequest
             }
         }
 
-        if (! $hasQuery && isset($server['query_string'])) {
+        if (!$hasQuery && isset($server['query_string'])) {
             $uri = $uri->withQuery($server['query_string']);
         }
 
@@ -89,11 +89,12 @@ class ServerRequest extends PsrServerRequest
         $psrRequest->body          = new StringStream($request->getContent());
         $psrRequest->cookieParams  = new CookieBag($request->cookie ?? []);
         $psrRequest->queryParams   = new ParameterBag($request->get ?? []);
-        $psrRequest->uploadedFiles = new FileBag($request->files ?? []); // TODO Convert to UploadedFiles.
+        $psrRequest->uploadedFiles = FileBag::loadFromFiles($request->files ?? []);
         $psrRequest->attributes    = new ParameterBag($attributes);
 
         return $psrRequest;
     }
+
 
     /**
      * @param \Workerman\Protocols\Http\Request $request
@@ -107,7 +108,7 @@ class ServerRequest extends PsrServerRequest
         $psrRequest->queryParams   = new ParameterBag($request->get() ?: []);
         $psrRequest->parsedBody    = new ParameterBag($request->post() ?: []);
         $psrRequest->cookieParams  = new CookieBag($request->cookie());
-        $psrRequest->uploadedFiles = new FileBag($request->file());
+        $psrRequest->uploadedFiles = FileBag::loadFromFiles($request->file() ?? []);
         $psrRequest->attributes    = new ParameterBag($attributes);
 
         return $psrRequest;
@@ -125,7 +126,7 @@ class ServerRequest extends PsrServerRequest
         $psrRequest->cookieParams  = new CookieBag($_COOKIE);
         $psrRequest->queryParams   = new ParameterBag($_GET);
         $psrRequest->parsedBody    = new ParameterBag($_POST);
-        $psrRequest->uploadedFiles = FileBag::createFromGlobal();
+        $psrRequest->uploadedFiles = FileBag::loadFromFiles($_FILES);
 
         return $psrRequest;
     }
@@ -156,6 +157,55 @@ class ServerRequest extends PsrServerRequest
         $psrRequest->uploadedFiles = new FileBag($request->getUploadedFiles() ?: []);
 
         return $psrRequest;
+    }
+
+    /**
+     * 从queryParams中获取输入参数
+     */
+    public function query(?string $key = null, mixed $default = null): mixed
+    {
+        return $this->input($key, $default, $this->getQueryParams());
+    }
+
+    /**
+     * 从parsedBody中获取输入参数
+     */
+    public function post(?string $key = null, mixed $default = null): mixed
+    {
+        return $this->input($key, $default, $this->getParsedBody());
+    }
+
+    /**
+     * 获取输入参数，包括queryParams和parsedBody
+     */
+    public function input(?string $key = null, mixed $default = null, ?array $input = null): mixed
+    {
+        $input ??= $this->all();
+        return is_null($key) ? $input : ($input[$key] ?? $default);
+    }
+
+    /**
+     * 全部输入参数
+     */
+    public function all(): array
+    {
+        return $this->getQueryParams() + $this->getParsedBody();
+    }
+
+    /**
+     * 验证输入参数是否有对应的键
+     */
+    public function exists(string $key): bool
+    {
+        return array_key_exists($key, $this->all());
+    }
+
+    /**
+     * 验证输入参数是否不为空
+     */
+    public function has(string $key): bool
+    {
+        return !empty($this->input($key));
     }
 
     /**
@@ -210,7 +260,7 @@ class ServerRequest extends PsrServerRequest
     {
         $uri = $this->getUri();
         $url = $uri->getPath();
-        if (! empty($query = $uri->getQuery())) {
+        if (!empty($query = $uri->getQuery())) {
             $url .= '?' . $query;
         }
         return $url;
@@ -218,8 +268,10 @@ class ServerRequest extends PsrServerRequest
 
     /**
      * Get an uploaded file.
+     *
+     * @return array<mixed, UploadedFileInterface>|null|UploadedFileInterface
      */
-    public function file(string $field): ?UploadedFile
+    public function file(string $field): array|null|UploadedFileInterface
     {
         return Arr::get($this->getUploadedFiles(), $field);
     }

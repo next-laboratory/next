@@ -80,6 +80,9 @@ class Repository implements ConfigInterface
         is_array($files) ? $this->loadMany($files) : $this->loadOne($files);
     }
 
+    /**
+     * 加载多个配置
+     */
     public function loadMany(array $files): void
     {
         foreach ($files as $file) {

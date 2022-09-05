@@ -37,7 +37,7 @@
 PHP >= 8.0
 ```
 
-> 如果你没有使用过composer 可以先了解一下这块的知识 -> [学习笔记](https://www.1kmb.com/note/128.html)
+> 如果你没有使用过composer 可以先了解一下这块的知识
 
 ## 使用Composer安装
 
@@ -184,5 +184,3 @@ $router->middleware(TestMiddleware::class)->group(function(Router $router) {
 [![Contributor over time](https://contributor-overtime-api.apiseven.com/contributors-svg?chart=contributorOverTime&repo=topyao/max,topyao/max-routing,topyao/max-session,topyao/max-view,topyao/max-di,topyao/max-cache,topyao/max-simple,topyao/max-http-message,topyao/max-http-server,topyao/max-event,topyao/max-config,topyao/max-aop,topyao/max-database,topyao/max-log,topyao/max-redis,topyao/max-validator)](https://contributor-overtime-api.apiseven.com/contributors-svg?chart=contributorOverTime&repo=topyao/max,topyao/max-routing,topyao/max-session,topyao/max-view,topyao/max-di,topyao/max-cache,topyao/max-simple,topyao/max-http-message,topyao/max-http-server,topyao/max-event,topyao/max-config,topyao/max-aop,topyao/max-database,topyao/max-log,topyao/max-redis,topyao/max-validator)
 
 欢迎有兴趣的朋友参与开发
-
-> 官网：https://www.1kmb.com

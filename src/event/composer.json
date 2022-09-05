@@ -12,8 +12,7 @@
     "authors": [
         {
             "name": "chengyao",
-            "email": "987861463@qq.com",
-            "homepage": "https://www.1kmb.com"
+            "email": "987861463@qq.com"
         }
     ],
     "autoload": {

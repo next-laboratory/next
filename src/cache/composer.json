@@ -12,17 +12,12 @@
         {
             "name": "chengyao",
             "email": "987861463@qq.com",
-            "homepage": "https://www.1kmb.com"
+            "homepage": "https://www.chengyao.xyz"
         }
     ],
     "autoload": {
         "psr-4": {
             "Max\\Cache\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Max\\Cache\\Tests\\": "tests/"
         }
     },
     "require": {
@@ -34,9 +29,6 @@
     "extra": {
         "branch-alias": {
             "dev-master": "1.x-dev"
-        },
-        "max": {
-            "config": "Max\\Cache\\ConfigProvider"
         }
     }
 }

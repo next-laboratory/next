@@ -52,5 +52,3 @@ $validator->errors()->first();
 ```php
 $validator->setThrowable(true);
 ```
-
-> 官网：https://www.1kmb.com
