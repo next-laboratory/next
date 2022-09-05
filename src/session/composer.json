@@ -15,8 +15,8 @@
     },
     "require": {
         "php": "^8.0",
-        "max/utils": "dev-master",
-        "max/redis": "dev-master"
+        "max/utils": "^1.0",
+        "max/redis": "^1.0"
     },
     "extra": {
         "branch-alias": {
