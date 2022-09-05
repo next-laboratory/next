@@ -27,11 +27,11 @@ class FPMResponseEmitter implements ResponseEmitterInterface
         if (function_exists('fastcgi_finish_request')) {
             fastcgi_finish_request();
         } elseif ('cli' !== PHP_SAPI) {
-            $this->closeOutputBuffers(0, true);
+            static::closeOutputBuffers(0, true);
         }
     }
 
-    public function closeOutputBuffers($targetLevel, $flush)
+    protected static function closeOutputBuffers($targetLevel, $flush)
     {
         $status = ob_get_status(true);
         $level  = count($status);
