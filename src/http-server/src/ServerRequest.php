@@ -18,11 +18,11 @@ use Max\Http\Message\Bag\ServerBag;
 use Max\Http\Message\Contract\HeaderInterface;
 use Max\Http\Message\ServerRequest as PsrServerRequest;
 use Max\Http\Message\Stream\StringStream;
-use Max\Http\Message\UploadedFile;
 use Max\Http\Message\Uri;
 use Max\Utils\Arr;
 use Max\Utils\Str;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UploadedFileInterface;
 
 class ServerRequest extends PsrServerRequest
 {
@@ -89,11 +89,12 @@ class ServerRequest extends PsrServerRequest
         $psrRequest->body          = new StringStream($request->getContent());
         $psrRequest->cookieParams  = new CookieBag($request->cookie ?? []);
         $psrRequest->queryParams   = new ParameterBag($request->get ?? []);
-        $psrRequest->uploadedFiles = new FileBag($request->files ?? []); // TODO Convert to UploadedFiles.
+        $psrRequest->uploadedFiles = FileBag::loadFromFiles($request->files ?? []);
         $psrRequest->attributes    = new ParameterBag($attributes);
 
         return $psrRequest;
     }
+
 
     /**
      * @param \Workerman\Protocols\Http\Request $request
@@ -107,7 +108,7 @@ class ServerRequest extends PsrServerRequest
         $psrRequest->queryParams   = new ParameterBag($request->get() ?: []);
         $psrRequest->parsedBody    = new ParameterBag($request->post() ?: []);
         $psrRequest->cookieParams  = new CookieBag($request->cookie());
-        $psrRequest->uploadedFiles = new FileBag($request->file());
+        $psrRequest->uploadedFiles = FileBag::loadFromFiles($request->file() ?? []);
         $psrRequest->attributes    = new ParameterBag($attributes);
 
         return $psrRequest;
@@ -125,7 +126,7 @@ class ServerRequest extends PsrServerRequest
         $psrRequest->cookieParams  = new CookieBag($_COOKIE);
         $psrRequest->queryParams   = new ParameterBag($_GET);
         $psrRequest->parsedBody    = new ParameterBag($_POST);
-        $psrRequest->uploadedFiles = FileBag::createFromGlobal();
+        $psrRequest->uploadedFiles = FileBag::loadFromFiles($_FILES);
 
         return $psrRequest;
     }
@@ -267,8 +268,10 @@ class ServerRequest extends PsrServerRequest
 
     /**
      * Get an uploaded file.
+     *
+     * @return array<mixed, UploadedFileInterface>|null|UploadedFileInterface
      */
-    public function file(string $field): ?UploadedFile
+    public function file(string $field): array|null|UploadedFileInterface
     {
         return Arr::get($this->getUploadedFiles(), $field);
     }

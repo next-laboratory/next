@@ -11,12 +11,17 @@ declare(strict_types=1);
 
 namespace Max\Http\Message;
 
+use Max\Http\Message\Stream\FileStream;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use RuntimeException;
 use SplFileInfo;
 
-class UploadedFile implements UploadedFileInterface
+use const UPLOAD_ERR_OK;
+
+use function mime_content_type;
+
+class UploadedFile extends SplFileInfo implements UploadedFileInterface
 {
     protected const ERROR_MESSAGES = [
         UPLOAD_ERR_OK         => 'File uploaded successfully.',
@@ -28,28 +33,35 @@ class UploadedFile implements UploadedFileInterface
         UPLOAD_ERR_CANT_WRITE => 'File write failed.',
     ];
 
+    protected bool   $moved    = false;
+    protected string $mineType = '';
+
     /**
-     * @param null|StreamInterface $stream          文件流
-     * @param int                  $size            文件大小
-     * @param string               $clientFilename  客户端文件名
-     * @param string               $clientMediaType 客户端媒体类型
-     * @param int                  $error           错误码
+     * @param string    $tmpFilename     缓存文件名
+     * @param int|false $size            文件大小
+     * @param string    $clientFilename  客户端文件名
+     * @param string    $clientMediaType 客户端媒体类型
+     * @param int       $error           错误码
      */
     public function __construct(
-        protected ?StreamInterface $stream = null,
-        protected int $size = 0,
+        protected string $tmpFilename,
+        protected int|false $size = 0,
         protected string $clientFilename = '',
         protected string $clientMediaType = '',
-        protected int $error = \UPLOAD_ERR_OK,
+        protected int $error = UPLOAD_ERR_OK,
     ) {
+        parent::__construct($this->tmpFilename);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getStream(): ?StreamInterface
+    public function getStream(): StreamInterface
     {
-        return $this->stream;
+        if ($this->moved) {
+            throw new RuntimeException('uploaded file is moved');
+        }
+        return new FileStream($this->tmpFilename);
     }
 
     /**
@@ -61,8 +73,9 @@ class UploadedFile implements UploadedFileInterface
             throw new RuntimeException(static::ERROR_MESSAGES[$code], $code);
         }
         $path = pathinfo($targetPath, PATHINFO_DIRNAME);
-        ! is_dir($path) && mkdir($path, 0755, true);
-        if (move_uploaded_file($this->stream->getMetadata('uri'), $targetPath)) {
+        !is_dir($path) && mkdir($path, 0755, true);
+        if (move_uploaded_file($this->tmpFilename, $targetPath)) {
+            $this->moved = true;
             return new SplFileInfo($targetPath);
         }
         throw new RuntimeException('Failed to upload file. Check directory permission.');
@@ -71,7 +84,7 @@ class UploadedFile implements UploadedFileInterface
     /**
      * {@inheritDoc}
      */
-    public function getSize(): ?int
+    public function getSize(): int|false
     {
         return $this->size;
     }
@@ -98,5 +111,16 @@ class UploadedFile implements UploadedFileInterface
     public function getClientMediaType(): ?string
     {
         return $this->clientMediaType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMineType(): string
+    {
+        if (!empty($this->mineType)) {
+            return $this->mineType;
+        }
+        return $this->mineType = (string)mime_content_type($this->tmpFilename);
     }
 }
