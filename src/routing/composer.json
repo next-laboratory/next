@@ -17,10 +17,5 @@
         "psr-4": {
             "Max\\Routing\\": "src/"
         }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.x-dev"
-        }
     }
 }
