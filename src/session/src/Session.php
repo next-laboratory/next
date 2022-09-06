@@ -18,21 +18,14 @@ use SessionHandlerInterface;
 
 use function ctype_alnum;
 use function session_create_id;
+use function unserialize;
 
 class Session
 {
-    /**
-     * session id.
-     */
-    protected string $id = '';
-
-    /**
-     * session data.
-     */
-    protected array $data = [];
-
-    protected bool $started   = false;
-    protected bool $destroyed = false;
+    protected string $id        = '';
+    protected array  $data      = [];
+    protected bool   $started   = false;
+    protected bool   $destroyed = false;
 
     public function __construct(
         protected SessionHandlerInterface $sessionHandler
@@ -42,14 +35,14 @@ class Session
     /**
      * Start a new session.
      */
-    public function start(?string $id = null): void
+    public function start(string $id = ''): void
     {
         if ($this->isStarted()) {
             throw new SessionException('Cannot restart session.');
         }
         $this->id = ($id && $this->isValidId($id)) ? $id : session_create_id();
         if ($data = $this->sessionHandler->read($this->id)) {
-            $this->data = (array) (@\unserialize($data) ?: []);
+            $this->data = (array)(unserialize($data) ?: []);
         }
         $this->started = true;
     }
@@ -152,7 +145,7 @@ class Session
      */
     public function setId(string $id): void
     {
-        if (! $this->isValidId($id)) {
+        if (!$this->isValidId($id)) {
             throw new InvalidArgumentException('The length of the session ID must be 40.');
         }
         $this->id = $id;
