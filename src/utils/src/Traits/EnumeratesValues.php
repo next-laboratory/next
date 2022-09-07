@@ -124,8 +124,8 @@ trait EnumeratesValues
      *
      * @param string $key
      *
-     * @throws \Exception
-     * @return mixed
+     * @return HigherOrderCollectionProxy
+     * @throws Exception
      */
     public function __get($key)
     {
