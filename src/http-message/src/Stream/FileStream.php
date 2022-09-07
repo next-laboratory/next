@@ -23,6 +23,9 @@ use function ftell;
 use function stream_get_contents;
 use function stream_get_meta_data;
 
+/**
+ * @deprecated
+ */
 class FileStream implements StreamInterface
 {
     protected const READ_WRITE_HASH = [
