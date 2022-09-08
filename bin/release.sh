@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 set -e
 
 if (( "$#" != 1 ))
@@ -14,10 +15,10 @@ VERSION=$1
 BASEPATH=$(cd `dirname $0`; cd ../src/; pwd)
 
 # Always prepend with "v"
-if [[ $VERSION != v*  ]]
-then
-    VERSION="v$VERSION"
-fi
+#if [[ $VERSION != v*  ]]
+#then
+#    VERSION="v$VERSION"
+#fi
 
 repos=$(ls $BASEPATH)
 
