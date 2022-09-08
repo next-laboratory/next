@@ -5,10 +5,7 @@
     "autoload": {
         "psr-4": {
             "Max\\": "src/"
-        },
-        "files": [
-            "src/helpers.php"
-        ]
+        }
     },
     "authors": [
         {
@@ -22,9 +19,6 @@
         "filp/whoops": "*"
     },
     "extra": {
-        "branch-alias": {
-            "dev-master": "1.x-dev"
-        },
         "max": {
             "config": "Max\\ConfigProvider"
         }

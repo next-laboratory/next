@@ -9,14 +9,16 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Exception;
+namespace Max\VarDumper;
 
 use Exception;
 
-class VarDumperAbort extends Exception
+class Abort extends Exception
 {
-    public function __construct(
-        public mixed $vars
-    ) {
+    public array $vars;
+
+    public function __construct(array $vars)
+    {
+        $this->vars = $vars;
     }
 }

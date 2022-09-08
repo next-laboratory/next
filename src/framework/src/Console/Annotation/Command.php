@@ -13,6 +13,9 @@ namespace Max\Console\Annotation;
 
 use Attribute;
 
+/**
+ * @deprecated Use IsCommand.
+ */
 #[Attribute(Attribute::TARGET_CLASS)]
 class Command
 {

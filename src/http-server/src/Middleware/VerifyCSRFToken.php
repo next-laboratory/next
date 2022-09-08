@@ -12,7 +12,9 @@ declare(strict_types=1);
 namespace Max\Http\Server\Middleware;
 
 use Exception;
+use Max\Http\Message\Contract\HeaderInterface;
 use Max\Http\Message\Contract\RequestMethodInterface;
+use Max\Http\Message\Cookie;
 use Max\Http\Server\Exception\CSRFException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -77,7 +79,8 @@ class VerifyCSRFToken implements MiddlewareInterface
      */
     protected function addCookieToResponse(ResponseInterface $response): ResponseInterface
     {
-        return $response->withCookie('X-CSRF-TOKEN', $this->newCSRFToken(), time() + $this->expires);
+        $cookie = new Cookie('X-CSRF-TOKEN', $this->newCSRFToken(), time() + $this->expires);
+        return $response->withAddedHeader(HeaderInterface::HEADER_SET_COOKIE, $cookie->__toString());
     }
 
     /**

@@ -13,6 +13,7 @@ namespace Max\Console;
 
 use Max\Aop\Collector\AbstractCollector;
 use Max\Console\Annotation\Command;
+use Max\Console\Annotation\IsCommand;
 
 class CommandCollector extends AbstractCollector
 {
@@ -20,14 +21,14 @@ class CommandCollector extends AbstractCollector
 
     public static function collectClass(string $class, object $attribute): void
     {
-        if ($attribute instanceof Command) {
+        if ($attribute instanceof Command || $attribute instanceof IsCommand) {
             self::add($class);
         }
     }
 
     public static function add(string $class): void
     {
-        if (! in_array($class, self::$container)) {
+        if (!in_array($class, self::$container)) {
             self::$container[] = $class;
         }
     }
