@@ -24,7 +24,8 @@
             "Max\\Session\\": "src/session/src",
             "Max\\Utils\\": "src/utils/src",
             "Max\\Validator\\": "src/validator/src",
-            "Max\\View\\": "src/view/src"
+            "Max\\View\\": "src/view/src",
+            "Max\\VarDumper\\": "src/var-dumper/src"
         },
         "files": [
             "src/di/src/helpers.php",
@@ -53,7 +54,8 @@
         "max/session": "*",
         "max/utils": "*",
         "max/validator": "*",
-        "max/view": "*"
+        "max/view": "*",
+        "max/var-dumper": "*"
     },
     "require": {
         "php": "^8.0",
@@ -64,7 +66,7 @@
         "psr/http-server-middleware": "^1.0",
         "psr/http-server-handler": "^1.0",
         "psr/log": "^1.0",
-        "monolog/monolog": "^2.3"
+        "monolog/monolog": "*"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.8",
