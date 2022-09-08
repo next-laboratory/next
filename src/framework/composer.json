@@ -5,10 +5,7 @@
     "autoload": {
         "psr-4": {
             "Max\\": "src/"
-        },
-        "files": [
-            "src/helpers.php"
-        ]
+        }
     },
     "authors": [
         {
