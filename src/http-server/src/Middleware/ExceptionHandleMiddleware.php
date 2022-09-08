@@ -31,23 +31,23 @@ class ExceptionHandleMiddleware implements MiddlewareInterface
         try {
             return $handler->handle($request);
         } catch (Throwable $throwable) {
-            $this->reportException($throwable, $request);
+            $this->report($throwable, $request);
 
-            return $this->renderException($throwable, $request);
+            return $this->render($throwable, $request);
         }
     }
 
     /**
      * 报告异常.
      */
-    protected function reportException(Throwable $throwable, ServerRequestInterface $request): void
+    protected function report(Throwable $throwable, ServerRequestInterface $request): void
     {
     }
 
     /**
      * 将异常转为ResponseInterface对象
      */
-    protected function renderException(Throwable $throwable, ServerRequestInterface $request): ResponseInterface
+    protected function render(Throwable $throwable, ServerRequestInterface $request): ResponseInterface
     {
         $message    = $throwable->getMessage();
         $statusCode = $this->getStatusCode($throwable);
