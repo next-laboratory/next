@@ -95,14 +95,13 @@ class ServerRequest extends PsrServerRequest
         return $psrRequest;
     }
 
-
     /**
      * @param \Workerman\Protocols\Http\Request $request
      */
     public static function createFromWorkerManRequest($request, array $attributes = []): ServerRequestInterface
     {
         $psrRequest                = new static(
-            $request->method(), new Uri($request->uri()),
+            $request->method(), new Uri($request->host() . '/' . trim($request->uri(), '/')),
             $request->header(), $request->rawBody()
         );
         $psrRequest->queryParams   = new ParameterBag($request->get() ?: []);
