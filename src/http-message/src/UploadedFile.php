@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Http\Message;
 
-use Max\Http\Message\Stream\FileStream;
+use Max\Http\Message\Stream\StandardStream;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use RuntimeException;
@@ -59,9 +59,9 @@ class UploadedFile extends SplFileInfo implements UploadedFileInterface
     public function getStream(): StreamInterface
     {
         if ($this->moved) {
-            throw new RuntimeException('uploaded file is moved');
+            throw new RuntimeException('Uploaded file is moved');
         }
-        return new FileStream($this->tmpFilename);
+        return StandardStream::create(fopen($this->tmpFilename, 'r'));
     }
 
     /**

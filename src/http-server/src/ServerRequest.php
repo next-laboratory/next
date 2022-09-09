@@ -17,7 +17,7 @@ use Max\Http\Message\Bag\ParameterBag;
 use Max\Http\Message\Bag\ServerBag;
 use Max\Http\Message\Contract\HeaderInterface;
 use Max\Http\Message\ServerRequest as PsrServerRequest;
-use Max\Http\Message\Stream\StringStream;
+use Max\Http\Message\Stream\StandardStream;
 use Max\Http\Message\Uri;
 use Max\Utils\Arr;
 use Max\Utils\Str;
@@ -86,7 +86,7 @@ class ServerRequest extends PsrServerRequest
         $psrRequest                = new static($request->getMethod(), $uri, $header, $protocol);
         $psrRequest->serverParams  = new ServerBag($server);
         $psrRequest->parsedBody    = new ParameterBag($request->post ?? []);
-        $psrRequest->body          = new StringStream($request->getContent());
+        $psrRequest->body          = StandardStream::create((string)$request->getContent());
         $psrRequest->cookieParams  = new CookieBag($request->cookie ?? []);
         $psrRequest->queryParams   = new ParameterBag($request->get ?? []);
         $psrRequest->uploadedFiles = FileBag::loadFromFiles($request->files ?? []);
