@@ -138,6 +138,9 @@ class ServerRequest extends PsrServerRequest
         $uri                      = $request->getUri();
         $psrRequest               = new static($request->getMethod(), $uri, $request->getHeaders(), null);
         $psrRequest->cookieParams = new CookieBag();
+        foreach ($request->getCookies() as $requestCookie) {
+            $psrRequest->cookieParams->set($requestCookie->getName(), $requestCookie->getValue());
+        }
         parse_str($uri->getQuery(), $query);
         $psrRequest->queryParams = new ParameterBag($query);
         foreach ($request->getCookies() as $requestCookie) {
