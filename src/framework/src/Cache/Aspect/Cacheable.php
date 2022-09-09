@@ -17,6 +17,7 @@ use Max\Aop\Contract\AspectInterface;
 use Max\Aop\JoinPoint;
 use Max\Cache\CacheManager;
 use Psr\Container\ContainerExceptionInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 use ReflectionException;
 
 #[Attribute(Attribute::TARGET_METHOD)]
@@ -31,7 +32,7 @@ class Cacheable implements AspectInterface
 
     /**
      * @throws ContainerExceptionInterface
-     * @throws ReflectionException
+     * @throws ReflectionException|InvalidArgumentException
      */
     public function process(JoinPoint $joinPoint, Closure $next): mixed
     {

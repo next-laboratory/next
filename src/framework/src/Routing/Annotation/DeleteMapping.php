@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Max\Routing\Annotation;
 
 use Attribute;
+use Max\Http\Message\Contract\RequestMethodInterface;
 
 #[Attribute(Attribute::TARGET_METHOD)]
 class DeleteMapping extends RequestMapping
@@ -19,5 +20,5 @@ class DeleteMapping extends RequestMapping
     /**
      * @var array|string[]
      */
-    public array $methods = ['DELETE'];
+    public array $methods = [RequestMethodInterface::METHOD_DELETE];
 }

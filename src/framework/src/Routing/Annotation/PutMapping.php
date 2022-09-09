@@ -12,9 +12,10 @@ declare(strict_types=1);
 namespace Max\Routing\Annotation;
 
 use Attribute;
+use Max\Http\Message\Contract\RequestMethodInterface;
 
 #[Attribute(Attribute::TARGET_METHOD)]
 class PutMapping extends RequestMapping
 {
-    public array $methods = ['PUT'];
+    public array $methods = [RequestMethodInterface::METHOD_PUT];
 }

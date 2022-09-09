@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Max\Routing\Annotation;
 
 use Attribute;
+use Max\Http\Message\Contract\RequestMethodInterface;
 use Max\Routing\Contract\ControllerInterface;
 
 #[Attribute(Attribute::TARGET_CLASS)]
@@ -26,7 +27,11 @@ class AutoController implements ControllerInterface
     public function __construct(
         public string $prefix = '',
         public array $middlewares = [],
-        public array $methods = ['GET', 'POST', 'HEAD'],
+        public array $methods = [
+            RequestMethodInterface::METHOD_GET,
+            RequestMethodInterface::METHOD_HEAD,
+            RequestMethodInterface::METHOD_POST,
+        ],
         public array $patterns = [],
     ) {
     }

@@ -15,7 +15,6 @@
     ],
     "require": {
         "symfony/console": "*",
-        "symfony/var-dumper": "*",
         "filp/whoops": "*"
     },
     "extra": {
