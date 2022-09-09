@@ -13,14 +13,11 @@ namespace Max\Routing\Annotation;
 
 use Attribute;
 use Max\Http\Message\Contract\RequestMethodInterface;
-use Max\Routing\Contract\MappingInterface;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class RequestMapping implements MappingInterface
+class RequestMapping
 {
     /**
-     * 默认方法.
-     *
      * @var array<int, string>
      */
     public array $methods = [
@@ -32,7 +29,7 @@ class RequestMapping implements MappingInterface
     /**
      * @param string             $path        路径
      * @param array<int, string> $methods     方法
-     * @param array              $middlewares 中间件
+     * @param array<int, string> $middlewares 中间件
      */
     public function __construct(
         public string $path = '/',

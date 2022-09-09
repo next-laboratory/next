@@ -15,7 +15,10 @@ use Attribute;
 use Max\Http\Message\Contract\RequestMethodInterface;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class PutMapping extends RequestMapping
+class PostMapping extends RequestMapping
 {
-    public array $methods = [RequestMethodInterface::METHOD_PUT];
+    /**
+     * @var array<int, string>
+     */
+    public array $methods = [RequestMethodInterface::METHOD_POST];
 }

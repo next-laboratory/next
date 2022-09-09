@@ -18,7 +18,7 @@ use Max\Http\Message\Contract\RequestMethodInterface;
 class GetMapping extends RequestMapping
 {
     /**
-     * @var array|string[]
+     * @var array<int, string>
      */
     public array $methods = [RequestMethodInterface::METHOD_GET, RequestMethodInterface::METHOD_HEAD];
 }

@@ -15,7 +15,10 @@ use Attribute;
 use Max\Http\Message\Contract\RequestMethodInterface;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class PostMapping extends RequestMapping
+class DeleteMapping extends RequestMapping
 {
-    public array $methods = [RequestMethodInterface::METHOD_POST];
+    /**
+     * @var array<int, string>
+     */
+    public array $methods = [RequestMethodInterface::METHOD_DELETE];
 }
