@@ -51,7 +51,7 @@ class RouteCollector extends AbstractCollector
      */
     public static function collectMethod(string $class, string $method, object $attribute): void
     {
-        if (self::$class === $class && !is_null(self::$router) && is_subclass_of($attribute, RequestMapping::class)) {
+        if ($attribute instanceof RequestMapping && self::$class === $class && !is_null(self::$router)) {
             self::$router->request($attribute->path, [$class, $method], $attribute->methods)->middleware(...$attribute->middlewares);
         }
     }
