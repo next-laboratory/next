@@ -34,7 +34,7 @@ class UploadedFile extends SplFileInfo implements UploadedFileInterface
     ];
 
     protected bool   $moved    = false;
-    protected string $mineType = '';
+    protected string $mimeType = '';
 
     /**
      * @param string    $tmpFilename     缓存文件名
@@ -122,11 +122,11 @@ class UploadedFile extends SplFileInfo implements UploadedFileInterface
     /**
      * @return string
      */
-    public function getMineType(): string
+    public function getMimeType(): string
     {
-        if (!empty($this->mineType)) {
-            return $this->mineType;
+        if (!empty($this->mimeType)) {
+            return $this->mimeType;
         }
-        return $this->mineType = (string)mime_content_type($this->tmpFilename);
+        return $this->mimeType = (string)mime_content_type($this->tmpFilename);
     }
 }
