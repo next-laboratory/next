@@ -78,9 +78,16 @@ class PropertyHandlerVisitor extends NodeVisitorAbstract
                 foreach ($reflectionConstructor->getParameters() as $key => $reflectionParameter) {
                     $type = $reflectionParameter->getType();
                     if (is_null($type)
-                        || ($type instanceof ReflectionNamedType && $type->isBuiltin())
-                        || $type instanceof ReflectionUnionType
-                        || $type->getName() === 'Closure') {
+                        || ($type instanceof ReflectionNamedType && ($type->isBuiltin() || $type->getName() === 'Closure'))
+                    ) {
+                        continue;
+                    }
+                    if ($type instanceof ReflectionUnionType) {
+                        $unionType = [];
+                        foreach ($type->getTypes() as $reflectionNamedType) {
+                            $unionType[] = ($reflectionNamedType->isBuiltin() ? '' : '\\') . $reflectionNamedType->getName();
+                        }
+                        $params[$key]->type = new Name(implode('|', $unionType));
                         continue;
                     }
                     $allowsNull         = $reflectionParameter->allowsNull() ? '?' : '';
@@ -88,7 +95,7 @@ class PropertyHandlerVisitor extends NodeVisitorAbstract
                 }
             }
             $c = [];
-            if (! $this->metadata->hasConstructor) {
+            if (!$this->metadata->hasConstructor) {
                 $constructor        = new ClassMethod('__construct', [
                     'params' => $params,
                 ]);
