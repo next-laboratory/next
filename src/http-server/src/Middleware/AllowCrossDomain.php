@@ -113,6 +113,9 @@ class AllowCrossDomain implements MiddlewareInterface
         if (empty($origin)) {
             return false;
         }
+        if (in_array('*', $this->allowOrigin)) {
+            return true;
+        }
         return collect($this->allowOrigin)->first(function ($allowOrigin) use ($origin) {
             return Str::is($allowOrigin, $origin);
         });
