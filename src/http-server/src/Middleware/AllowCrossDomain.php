@@ -40,7 +40,7 @@ class AllowCrossDomain implements MiddlewareInterface
         'If-Modified-Since',
         'If-None-Match',
         'If-Unmodified-Since',
-        'X-CSRF-TOKEN',
+        'X-Csrf-Token',
         HeaderInterface::HEADER_X_REQUESTED_WITH,
     ];
 
@@ -112,9 +112,6 @@ class AllowCrossDomain implements MiddlewareInterface
     {
         if (empty($origin)) {
             return false;
-        }
-        if (in_array('*', $this->allowOrigin)) {
-            return true;
         }
         return collect($this->allowOrigin)->first(function ($allowOrigin) use ($origin) {
             return Str::is($allowOrigin, $origin);
