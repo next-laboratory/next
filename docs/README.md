@@ -42,7 +42,7 @@ PHP >= 8.0
 ## 使用Composer安装
 
 ```
-composer create-project max/simple:dev-master
+composer create-project max/simple
 ```
 
 这行命令会在你命令执行目录安装框架，使用下面的命令启动服务

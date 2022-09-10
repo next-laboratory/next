@@ -44,7 +44,7 @@ return [
 ### 安装
 
 ```shell
-composer require max/di:dev-master
+composer require max/di
 ```
 
 ### 使用
@@ -306,7 +306,7 @@ class UserRegistered implements StoppableEventInterface
 ### 安装
 
 ```shell
-composer require max/aop:dev-master
+composer require max/aop
 ```
 
 ### 使用
@@ -527,7 +527,7 @@ class IndexController
 ### 安装
 
 ```php
-composer require max/session:dev-master
+composer require max/session
 ```
 
 ### 使用
@@ -733,7 +733,7 @@ $renderer->render('index', ['key2' => 'value2']);
 ### 安装
 
 ```shell
-composer require max/cache:dev-master
+composer require max/cache
 ```
 
 ### 使用
