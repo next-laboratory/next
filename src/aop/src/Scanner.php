@@ -53,7 +53,7 @@ final class Scanner
             self::$astManager = new AstManager();
             self::$classMap   = self::findClasses($config->getPaths());
             self::$proxyMap   = $proxyMap = self::$runtimeDir . 'proxy.php';
-            if (!$config->isCache() || !self::$filesystem->exists($proxyMap)) {
+            if (! $config->isCache() || ! self::$filesystem->exists($proxyMap)) {
                 self::$filesystem->exists($proxyMap) && self::$filesystem->delete($proxyMap);
                 if (($pid = pcntl_fork()) == -1) {
                     throw new Exception('Process fork failed.');
@@ -91,7 +91,7 @@ final class Scanner
     {
         if (! self::$filesystem->exists(self::$proxyMap)) {
             $proxyDir = self::$runtimeDir . 'proxy/';
-            self::$filesystem->makeDirectory($proxyDir, 0755, true, true);
+            self::$filesystem->exists($proxyDir) || self::$filesystem->makeDirectory($proxyDir, 0755, true, true);
             self::$filesystem->cleanDirectory($proxyDir);
             self::collect($collectors);
             $collectedClasses = array_unique(array_merge(AspectCollector::getCollectedClasses(), PropertyAnnotationCollector::getCollectedClasses()));
