@@ -14,8 +14,8 @@
         }
     ],
     "require": {
+        "max/http-message": "^1.0",
         "symfony/console": "*",
-        "symfony/var-dumper": "*",
         "filp/whoops": "*"
     },
     "extra": {

@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Max\Http\Message;
 
 use Max\Http\Message\Bag\HeaderBag;
-use Max\Http\Message\Stream\StringStream;
+use Max\Http\Message\Stream\StandardStream;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\StreamInterface;
 
@@ -154,6 +154,6 @@ class Message implements MessageInterface
 
     protected function formatBody(string|StreamInterface|null $body)
     {
-        $this->body = $body instanceof StreamInterface ? $body : new StringStream((string)$body);
+        $this->body = $body ? StandardStream::create($body) : null;
     }
 }

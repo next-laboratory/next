@@ -12,12 +12,13 @@ declare(strict_types=1);
 namespace Max\Routing\Annotation;
 
 use Attribute;
+use Max\Http\Message\Contract\RequestMethodInterface;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class PatchMapping extends RequestMapping
+class PutMapping extends RequestMapping
 {
     /**
-     * @var array|string[]
+     * @var array<int, string>
      */
-    public array $methods = ['PATCH'];
+    public array $methods = [RequestMethodInterface::METHOD_PUT];
 }

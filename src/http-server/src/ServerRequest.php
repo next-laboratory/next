@@ -17,7 +17,7 @@ use Max\Http\Message\Bag\ParameterBag;
 use Max\Http\Message\Bag\ServerBag;
 use Max\Http\Message\Contract\HeaderInterface;
 use Max\Http\Message\ServerRequest as PsrServerRequest;
-use Max\Http\Message\Stream\StringStream;
+use Max\Http\Message\Stream\StandardStream;
 use Max\Http\Message\Uri;
 use Max\Utils\Arr;
 use Max\Utils\Str;
@@ -86,7 +86,7 @@ class ServerRequest extends PsrServerRequest
         $psrRequest                = new static($request->getMethod(), $uri, $header, $protocol);
         $psrRequest->serverParams  = new ServerBag($server);
         $psrRequest->parsedBody    = new ParameterBag($request->post ?? []);
-        $psrRequest->body          = new StringStream($request->getContent());
+        $psrRequest->body          = StandardStream::create((string)$request->getContent());
         $psrRequest->cookieParams  = new CookieBag($request->cookie ?? []);
         $psrRequest->queryParams   = new ParameterBag($request->get ?? []);
         $psrRequest->uploadedFiles = FileBag::loadFromFiles($request->files ?? []);
@@ -95,14 +95,13 @@ class ServerRequest extends PsrServerRequest
         return $psrRequest;
     }
 
-
     /**
      * @param \Workerman\Protocols\Http\Request $request
      */
     public static function createFromWorkerManRequest($request, array $attributes = []): ServerRequestInterface
     {
         $psrRequest                = new static(
-            $request->method(), new Uri($request->uri()),
+            $request->method(), new Uri($request->host() . '/' . trim($request->uri(), '/')),
             $request->header(), $request->rawBody()
         );
         $psrRequest->queryParams   = new ParameterBag($request->get() ?: []);
@@ -139,6 +138,9 @@ class ServerRequest extends PsrServerRequest
         $uri                      = $request->getUri();
         $psrRequest               = new static($request->getMethod(), $uri, $request->getHeaders(), null);
         $psrRequest->cookieParams = new CookieBag();
+        foreach ($request->getCookies() as $requestCookie) {
+            $psrRequest->cookieParams->set($requestCookie->getName(), $requestCookie->getValue());
+        }
         parse_str($uri->getQuery(), $query);
         $psrRequest->queryParams = new ParameterBag($query);
         foreach ($request->getCookies() as $requestCookie) {

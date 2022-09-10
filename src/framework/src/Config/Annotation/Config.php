@@ -23,8 +23,8 @@ use ReflectionException;
 class Config implements PropertyAnnotation
 {
     /**
-     * @param string     $key     键
-     * @param null|mixed $default 默认值
+     * @param string $key     键
+     * @param mixed  $default 默认值
      */
     public function __construct(
         protected string $key,

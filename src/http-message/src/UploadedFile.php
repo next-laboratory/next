@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Http\Message;
 
-use Max\Http\Message\Stream\FileStream;
+use Max\Http\Message\Stream\StandardStream;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use RuntimeException;
@@ -34,7 +34,7 @@ class UploadedFile extends SplFileInfo implements UploadedFileInterface
     ];
 
     protected bool   $moved    = false;
-    protected string $mineType = '';
+    protected string $mimeType = '';
 
     /**
      * @param string    $tmpFilename     缓存文件名
@@ -59,9 +59,9 @@ class UploadedFile extends SplFileInfo implements UploadedFileInterface
     public function getStream(): StreamInterface
     {
         if ($this->moved) {
-            throw new RuntimeException('uploaded file is moved');
+            throw new RuntimeException('Uploaded file is moved');
         }
-        return new FileStream($this->tmpFilename);
+        return StandardStream::create(fopen($this->tmpFilename, 'r'));
     }
 
     /**
@@ -122,11 +122,11 @@ class UploadedFile extends SplFileInfo implements UploadedFileInterface
     /**
      * @return string
      */
-    public function getMineType(): string
+    public function getMimeType(): string
     {
-        if (!empty($this->mineType)) {
-            return $this->mineType;
+        if (!empty($this->mimeType)) {
+            return $this->mimeType;
         }
-        return $this->mineType = (string)mime_content_type($this->tmpFilename);
+        return $this->mimeType = (string)mime_content_type($this->tmpFilename);
     }
 }

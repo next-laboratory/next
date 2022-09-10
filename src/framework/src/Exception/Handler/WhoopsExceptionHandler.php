@@ -14,7 +14,7 @@ namespace Max\Exception\Handler;
 use Max\Http\Message\Contract\HeaderInterface;
 use Max\Http\Message\Contract\StatusCodeInterface;
 use Max\Http\Message\Response;
-use Max\Http\Message\Stream\StringStream;
+use Max\Http\Message\Stream\StandardStream;
 use Max\Utils\Str;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -45,7 +45,7 @@ class WhoopsExceptionHandler
         $whoops->{RunInterface::EXCEPTION_HANDLER}($throwable);
         $content = ob_get_clean();
 
-        return new Response(StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR, [HeaderInterface::HEADER_CONTENT_TYPE => $contentType], new StringStream($content));
+        return new Response(StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR, [HeaderInterface::HEADER_CONTENT_TYPE => $contentType], StandardStream::create((string)$content));
     }
 
     protected function negotiateHandler(ServerRequestInterface $request): array

@@ -34,7 +34,7 @@ class WorkerManResponseEmitter implements ResponseEmitterInterface
         }
         $body = $psrResponse->getBody();
         if ($body instanceof FileStream) {
-            $sender->send($response->withFile($body->getMetadata('uri'), $body->tell(), $body->getLength()));
+            $sender->send($response->withFile($body->getFilename(), $body->getOffset(), $body->getLength()));
         } else {
             /** @var string[] $cookies */
             foreach ($cookies as $cookie) {
@@ -50,7 +50,7 @@ class WorkerManResponseEmitter implements ResponseEmitterInterface
                     $cookie->getSameSite()
                 );
             }
-            $sender->send($response->withBody((string) $body?->getContents()));
+            $sender->send($response->withBody((string)$body?->getContents()));
         }
         $body?->close();
         $sender->close();

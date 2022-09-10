@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace Max\VarDumper;
 
-use Exception;
+use RuntimeException;
 
-class Abort extends Exception
+class Abort extends RuntimeException
 {
     public array $vars;
 

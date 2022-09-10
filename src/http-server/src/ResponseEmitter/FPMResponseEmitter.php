@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Max\Http\Server\ResponseEmitter;
 
 use Max\Http\Message\Contract\HeaderInterface;
+use Max\Http\Message\Stream\FileStream;
 use Max\Http\Server\Contract\ResponseEmitterInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -19,14 +20,14 @@ class FPMResponseEmitter implements ResponseEmitterInterface
 {
     public function emit(ResponseInterface $psrResponse, $sender = null)
     {
-        if (! headers_sent()) {
+        if (!headers_sent()) {
             static::sendHeaders($psrResponse);
         }
         static::sendContent($psrResponse);
 
         if (function_exists('fastcgi_finish_request')) {
             fastcgi_finish_request();
-        } elseif ('cli' !== PHP_SAPI) {
+        } else if ('cli' !== PHP_SAPI) {
             static::closeOutputBuffers(0, true);
         }
     }
@@ -37,7 +38,7 @@ class FPMResponseEmitter implements ResponseEmitterInterface
         $level  = count($status);
         $flags  = defined('PHP_OUTPUT_HANDLER_REMOVABLE') ? PHP_OUTPUT_HANDLER_REMOVABLE | ($flush ? PHP_OUTPUT_HANDLER_FLUSHABLE : PHP_OUTPUT_HANDLER_CLEANABLE) : -1;
 
-        while ($level-- > $targetLevel && ($s = $status[$level]) && (! isset($s['del']) ? ! isset($s['flags']) || $flags === ($s['flags'] & $flags) : $s['del'])) {
+        while ($level-- > $targetLevel && ($s = $status[$level]) && (!isset($s['del']) ? !isset($s['flags']) || $flags === ($s['flags'] & $flags) : $s['del'])) {
             if ($flush) {
                 ob_end_flush();
             } else {
@@ -61,7 +62,7 @@ class FPMResponseEmitter implements ResponseEmitterInterface
     protected static function sendContent(ResponseInterface $response)
     {
         $body = $response->getBody();
-        echo $body?->getContents();
+        echo $body;
         $body?->close();
     }
 }
