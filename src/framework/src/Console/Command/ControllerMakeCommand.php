@@ -34,8 +34,8 @@ class ControllerMakeCommand extends Command
     }
 
     /**
-     * @throws FileNotFoundException
      * @return int
+     * @throws FileNotFoundException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {

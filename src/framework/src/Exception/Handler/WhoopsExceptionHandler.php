@@ -45,7 +45,7 @@ class WhoopsExceptionHandler
         $whoops->{RunInterface::EXCEPTION_HANDLER}($throwable);
         $content = ob_get_clean();
 
-        return new Response(StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR, [HeaderInterface::HEADER_CONTENT_TYPE => $contentType], StandardStream::create((string)$content));
+        return new Response(StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR, [HeaderInterface::HEADER_CONTENT_TYPE => $contentType], StandardStream::create((string) $content));
     }
 
     protected function negotiateHandler(ServerRequestInterface $request): array

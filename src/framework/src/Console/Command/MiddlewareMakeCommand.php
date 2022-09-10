@@ -35,8 +35,8 @@ class MiddlewareMakeCommand extends Command
     }
 
     /**
-     * @throws Exception
      * @return int
+     * @throws Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {

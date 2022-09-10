@@ -13,10 +13,7 @@ namespace Max\Console\Annotation;
 
 use Attribute;
 
-/**
- * @deprecated use IsCommand
- */
 #[Attribute(Attribute::TARGET_CLASS)]
-class Command
+class AsCommand
 {
 }

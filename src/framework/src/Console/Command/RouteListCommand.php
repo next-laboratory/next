@@ -27,9 +27,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 class RouteListCommand extends Command
 {
     /**
+     * @return int
      * @throws ContainerExceptionInterface
      * @throws ReflectionException
-     * @return int
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {

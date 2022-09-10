@@ -32,7 +32,7 @@ class Cacheable implements AspectInterface
 
     /**
      * @throws ContainerExceptionInterface
-     * @throws ReflectionException|InvalidArgumentException
+     * @throws InvalidArgumentException|ReflectionException
      */
     public function process(JoinPoint $joinPoint, Closure $next): mixed
     {
