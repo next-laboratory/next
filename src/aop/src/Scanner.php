@@ -53,7 +53,7 @@ final class Scanner
             self::$astManager = new AstManager();
             self::$classMap   = self::findClasses($config->getPaths());
             self::$proxyMap   = $proxyMap = self::$runtimeDir . 'proxy.php';
-            if (!$config->isCache() || !self::$filesystem->exists($proxyMap)) {
+            if (! $config->isCache() || ! self::$filesystem->exists($proxyMap)) {
                 self::$filesystem->exists($proxyMap) && self::$filesystem->delete($proxyMap);
                 if (($pid = pcntl_fork()) == -1) {
                     throw new Exception('Process fork failed.');
@@ -79,25 +79,6 @@ final class Scanner
         return $classes;
     }
 
-    public static function scanConfig(string $installedJsonDir): array
-    {
-        $installed = json_decode(file_get_contents($installedJsonDir), true);
-        $installed = $installed['packages'] ?? $installed;
-        $config    = [];
-        foreach ($installed as $package) {
-            if (isset($package['extra']['max']['config'])) {
-                $configProvider = $package['extra']['max']['config'];
-                $configProvider = new $configProvider();
-                if (method_exists($configProvider, '__invoke')) {
-                    if (is_array($configItem = $configProvider())) {
-                        $config = array_merge_recursive($config, $configItem);
-                    }
-                }
-            }
-        }
-        return $config;
-    }
-
     public static function addClass(string $class, string $path): void
     {
         self::$classMap[$class] = $path;
@@ -110,7 +91,7 @@ final class Scanner
     {
         if (! self::$filesystem->exists(self::$proxyMap)) {
             $proxyDir = self::$runtimeDir . 'proxy/';
-            self::$filesystem->makeDirectory($proxyDir, 0755, true, true);
+            self::$filesystem->exists($proxyDir) || self::$filesystem->makeDirectory($proxyDir, 0755, true, true);
             self::$filesystem->cleanDirectory($proxyDir);
             self::collect($collectors);
             $collectedClasses = array_unique(array_merge(AspectCollector::getCollectedClasses(), PropertyAnnotationCollector::getCollectedClasses()));

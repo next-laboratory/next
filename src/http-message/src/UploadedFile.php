@@ -129,4 +129,9 @@ class UploadedFile extends SplFileInfo implements UploadedFileInterface
         }
         return $this->mimeType = (string)mime_content_type($this->tmpFilename);
     }
+
+    public function isValid(): bool
+    {
+        return $this->error === UPLOAD_ERR_OK;
+    }
 }

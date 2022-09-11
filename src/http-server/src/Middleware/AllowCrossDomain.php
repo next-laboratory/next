@@ -40,7 +40,7 @@ class AllowCrossDomain implements MiddlewareInterface
         'If-Modified-Since',
         'If-None-Match',
         'If-Unmodified-Since',
-        'X-CSRF-TOKEN',
+        'X-Csrf-Token',
         HeaderInterface::HEADER_X_REQUESTED_WITH,
     ];
 
