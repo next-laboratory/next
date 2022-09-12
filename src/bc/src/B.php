@@ -24,30 +24,45 @@ class B implements Stringable
         $this->value = (string)$value;
     }
 
+    /**
+     * @param B|string|Stringable $value
+     */
     public function add(mixed $value, ?int $scale = null): static
     {
         $scale ??= $this->scale;
         return new static(bcadd($this->value, (string)$value, $scale), $scale);
     }
 
+    /**
+     * @param B|string|Stringable $value
+     */
     public function sub(mixed $value, ?int $scale = null): static
     {
         $scale ??= $this->scale;
         return new static(bcsub($this->value, (string)$value, $scale), $scale);
     }
 
+    /**
+     * @param B|string|Stringable $value
+     */
     public function div(mixed $value, ?int $scale = null): static
     {
         $scale ??= $this->scale;
         return new static(bcdiv($this->value, (string)$value, $scale), $scale);
     }
 
+    /**
+     * @param B|string|Stringable $value
+     */
     public function mod(mixed $value, ?int $scale = null): static
     {
         $scale ??= $this->scale;
         return new static(bcmod($this->value, (string)$value, $scale), $scale);
     }
 
+    /**
+     * @param B|string|Stringable $value
+     */
     public function mul(mixed $value, ?int $scale = null): static
     {
         $scale ??= $this->scale;
@@ -65,6 +80,9 @@ class B implements Stringable
         return new static(bcsqrt($this->value, $scale ?? $this->scale));
     }
 
+    /**
+     * @param B|string|Stringable $value
+     */
     public function comp(mixed $value, ?int $scale = null): int
     {
         return bccomp((string)$value, $this->value, $scale ??= $this->scale);
