@@ -17,7 +17,7 @@ use Psr\EventDispatcher\ListenerProviderInterface;
 class ListenerProvider implements ListenerProviderInterface
 {
     /**
-     * @var array<string, EventListenerInterface> $events
+     * @var array<string, EventListenerInterface[]> $events
      */
     protected array $events = [];
 
