@@ -58,8 +58,8 @@ class Parallel
             Coroutine::create(function () use ($callback, $key, $wg, &$result, &$throwables) {
                 try {
                     $result[$key] = call($callback);
-                } catch (Throwable $throwable) {
-                    $throwables[$key] = $throwable;
+                } catch (Throwable $e) {
+                    $throwables[$key] = $e;
                 } finally {
                     $this->concurrentChannel && $this->concurrentChannel->pop();
                     $wg->done();

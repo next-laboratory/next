@@ -51,8 +51,8 @@ class Query implements QueryInterface
             $PDOStatement->execute();
             $this->eventDispatcher?->dispatch(new QueryExecuted($query, $bindings, $executedAt));
             return $PDOStatement;
-        } catch (PDOException $PDOException) {
-            throw new PDOException($PDOException->getMessage() . sprintf(' (SQL: %s)', $query), (int)$PDOException->getCode(), $PDOException->getPrevious());
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage() . sprintf(' (SQL: %s)', $query), (int)$e->getCode(), $e->getPrevious());
         }
     }
 

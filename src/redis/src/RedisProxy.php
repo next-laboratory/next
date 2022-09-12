@@ -37,9 +37,9 @@ class RedisProxy
     {
         try {
             return $this->redis->{$name}(...$arguments);
-        } catch (RedisException $redisException) {
+        } catch (RedisException $e) {
             $this->redis = null;
-            throw $redisException;
+            throw $e;
         }
     }
 
