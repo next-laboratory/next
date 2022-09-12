@@ -1,0 +1,18 @@
+{
+    "name": "max/bc",
+    "autoload": {
+        "psr-4": {
+            "Max\\Bc\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "chengyao",
+            "email": "987861463@qq.com"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "ext-bcmath": "*"
+    }
+}
