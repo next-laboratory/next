@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Max\VarDumper;
 
-use ErrorException;
 use Symfony\Component\VarDumper\Caster\ReflectionCaster;
 use Symfony\Component\VarDumper\Cloner\VarCloner;
 use Symfony\Component\VarDumper\Dumper\HtmlDumper;
