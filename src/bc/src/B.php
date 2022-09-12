@@ -60,6 +60,11 @@ class B implements Stringable
         return new static(bcpow($this->value, $exponent, $scale), $scale);
     }
 
+    public function sqrt(?int $scale = null): static
+    {
+        return new static(bcsqrt($this->value, $scale ?? $this->scale));
+    }
+
     public function comp(mixed $value, ?int $scale = null): int
     {
         return bccomp((string)$value, $this->value, $scale ??= $this->scale);
