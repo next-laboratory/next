@@ -15,6 +15,7 @@ use Max\Http\Message\Contract\HeaderInterface;
 use Max\Http\Message\Contract\StatusCodeInterface;
 use Max\Http\Message\Exception\HttpException;
 use Max\Http\Message\Response;
+use Max\Http\Server\Contract\Renderable;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -49,6 +50,9 @@ class ExceptionHandleMiddleware implements MiddlewareInterface
      */
     protected function render(Throwable $throwable, ServerRequestInterface $request): ResponseInterface
     {
+        if($throwable instanceof Renderable) {
+            return $throwable->render($request);
+        }
         $message    = $throwable->getMessage();
         $statusCode = $this->getStatusCode($throwable);
         if (str_contains($request->getHeaderLine(HeaderInterface::HEADER_ACCEPT), 'application/json')
