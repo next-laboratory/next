@@ -30,17 +30,21 @@ use function is_string;
 
 class Container implements ContainerInterface
 {
-    /** @var array 类和标识对应关系 */
+    /**
+     * @var array 类和标识对应关系
+     */
     protected array $bindings = [];
 
-    /** @var array 已经解析实例 */
+    /**
+     * @var array 已经解析实例
+     */
     protected array $resolved = [];
 
     /**
      * 将实例化的类存放到数组中.
      *
-     * @param string $id       标识
-     * @param object $concrete 实例
+     * @param string|class-string $id       标识
+     * @param object              $concrete 实例
      */
     public function set(string $id, object $concrete)
     {
@@ -75,8 +79,8 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param string $id    标识，可以是接口
-     * @param string $class 类名
+     * @param string       $id    标识，可以是接口
+     * @param class-string $class 类名
      */
     public function bind(string $id, string $class): void
     {

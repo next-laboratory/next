@@ -17,14 +17,14 @@ use Psr\EventDispatcher\ListenerProviderInterface;
 class ListenerProvider implements ListenerProviderInterface
 {
     /**
-     * @var array<string, EventListenerInterface[]> $events
+     * @var array<class-string, EventListenerInterface[]> $events
      */
     protected array $events = [];
 
     /**
      * 已经注册的监听器.
      *
-     * @var EventListenerInterface[]
+     * @var array<class-string, EventListenerInterface[]>
      */
     protected array $listeners = [];
 
