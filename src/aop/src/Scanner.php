@@ -136,8 +136,8 @@ final class Scanner
                     foreach ($collectors as $collector) {
                         $collector::collectClass($class, $attributeInstance);
                     }
-                } catch (Throwable $throwable) {
-                    echo '[NOTICE] ' . $class . ': ' . $throwable->getMessage() . PHP_EOL;
+                } catch (Throwable $e) {
+                    echo '[NOTICE] ' . $class . ': ' . $e->getMessage() . PHP_EOL;
                 }
             }
             // 收集属性注解
@@ -147,8 +147,8 @@ final class Scanner
                         foreach ($collectors as $collector) {
                             $collector::collectProperty($class, $reflectionProperty->getName(), $attribute->newInstance());
                         }
-                    } catch (Throwable $throwable) {
-                        echo '[NOTICE] ' . $class . ': ' . $throwable->getMessage() . PHP_EOL;
+                    } catch (Throwable $e) {
+                        echo '[NOTICE] ' . $class . ': ' . $e->getMessage() . PHP_EOL;
                     }
                 }
             }
@@ -160,8 +160,8 @@ final class Scanner
                         foreach ($collectors as $collector) {
                             $collector::collectMethod($class, $method, $attribute->newInstance());
                         }
-                    } catch (Throwable $throwable) {
-                        echo '[NOTICE] ' . $class . ': ' . $throwable->getMessage() . PHP_EOL;
+                    } catch (Throwable $e) {
+                        echo '[NOTICE] ' . $class . ': ' . $e->getMessage() . PHP_EOL;
                     }
                 }
                 // 收集该方法的参数的注解
@@ -172,8 +172,8 @@ final class Scanner
                                 $collector::collectorMethodParameter($class, $method, $reflectionParameter->getName(), $attribute->newInstance());
                             }
                         }
-                    } catch (Throwable $throwable) {
-                        echo '[NOTICE] ' . $class . ': ' . $throwable->getMessage() . PHP_EOL;
+                    } catch (Throwable $e) {
+                        echo '[NOTICE] ' . $class . ': ' . $e->getMessage() . PHP_EOL;
                     }
                 }
             }

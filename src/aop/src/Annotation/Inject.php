@@ -38,8 +38,8 @@ class Inject implements PropertyAnnotation
                 $reflectionProperty->setAccessible(true); // 兼容PHP8.0
                 $reflectionProperty->setValue($object, $this->getBinding($type));
             }
-        } catch (Throwable $throwable) {
-            throw new PropertyHandleException('Property assign failed. ' . $throwable->getMessage());
+        } catch (Throwable $e) {
+            throw new PropertyHandleException('Property assign failed. ' . $e->getMessage());
         }
     }
 

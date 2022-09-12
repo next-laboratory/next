@@ -137,8 +137,8 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
     {
         try {
             return static::query()->firstOrFail($columns) ?? throw new ModelNotFoundException('No data was found.');
-        } catch (Throwable $throwable) {
-            throw new ModelNotFoundException($throwable->getMessage(), $throwable->getCode(), $throwable);
+        } catch (Throwable $e) {
+            throw new ModelNotFoundException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -192,8 +192,8 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable
         try {
             $builder = new Builder(static::$manager->query(static::$connection));
             return $builder->from($this->getTable())->setModel($this);
-        } catch (Throwable $throwable) {
-            throw new RuntimeException($throwable->getMessage(), $throwable->getCode(), $throwable);
+        } catch (Throwable $e) {
+            throw new RuntimeException($e->getMessage(), $e->getCode(), $e);
         }
     }
 

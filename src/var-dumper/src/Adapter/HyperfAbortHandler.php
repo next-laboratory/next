@@ -24,19 +24,19 @@ class HyperfAbortHandler extends ExceptionHandler
     use AbortHandler;
 
     /**
-     * @param Abort $throwable
+     * @param Abort $e
      *
      * @throws ErrorException
      */
-    public function handle(Throwable $throwable, ResponseInterface $response)
+    public function handle(Throwable $e, ResponseInterface $response)
     {
         $this->stopPropagation();
 
-        return $response->withBody(new SwooleStream($this->convertToHtml($throwable)));
+        return $response->withBody(new SwooleStream($this->convertToHtml($e)));
     }
 
-    public function isValid(Throwable $throwable): bool
+    public function isValid(Throwable $e): bool
     {
-        return $throwable instanceof Abort;
+        return $e instanceof Abort;
     }
 }

@@ -117,9 +117,9 @@ class Query implements QueryInterface
             $result = ($transaction)($this);
             $this->commit();
             return $result;
-        } catch (Throwable $throwable) {
+        } catch (Throwable $e) {
             $this->rollBack();
-            throw $throwable;
+            throw $e;
         }
     }
 }
