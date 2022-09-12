@@ -20,7 +20,12 @@ $d = $c->sub(3.333);
 $e = $d->div(5.2);
 $f = $e->mul(4.1212, 2);
 // ...
-dump($b->int(), $c->int(), $d->int(), $e->int(), $f->int());
-dump($b->string(), $c->string(), $d->string(), $e->string(), $f->string());
+var_dump($b->int(), $c->int(), $d->int(), $e->int(), $f->int());
+var_dump($b->string(), $c->string(), $d->string(), $e->string(), $f->string());
 ```
 
+或者
+
+```php
+$b = B::new(100.1, 3)->mul(B::new(10, 2)->add(20));
+```

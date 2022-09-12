@@ -24,6 +24,11 @@ class B implements Stringable
         $this->value = (string)$value;
     }
 
+    public static function new(mixed $value, ?int $scale = null): static
+    {
+        return new static($value, $scale);
+    }
+
     /**
      * @param B|string|Stringable $value
      */
