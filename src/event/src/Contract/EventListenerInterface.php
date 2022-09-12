@@ -13,6 +13,9 @@ namespace Max\Event\Contract;
 
 interface EventListenerInterface
 {
+    /**
+     * @return iterable<mixed, string>
+     */
     public function listen(): iterable;
 
     public function process(object $event): void;

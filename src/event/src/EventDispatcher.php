@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Event;
 
-use Max\Event\Contract\EventDispatcherInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\StoppableEventInterface;
 
 class EventDispatcher implements EventDispatcherInterface
@@ -33,10 +33,5 @@ class EventDispatcher implements EventDispatcherInterface
             }
         }
         return $event;
-    }
-
-    public function getListenerProvider(): ListenerProvider
-    {
-        return $this->listenerProvider;
     }
 }

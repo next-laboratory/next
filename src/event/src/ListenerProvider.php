@@ -17,7 +17,7 @@ use Psr\EventDispatcher\ListenerProviderInterface;
 class ListenerProvider implements ListenerProviderInterface
 {
     /**
-     * 事件.
+     * @var array<string, EventListenerInterface> $events
      */
     protected array $events = [];
 
@@ -34,22 +34,12 @@ class ListenerProvider implements ListenerProviderInterface
     public function addListener(EventListenerInterface $eventListener)
     {
         $listener = $eventListener::class;
-        if (! $this->listened($listener)) {
+        if (!$this->listened($listener)) {
             $this->listeners[$listener] = $eventListener;
             foreach ($eventListener->listen() as $event) {
                 $this->events[$event][] = $eventListener;
             }
         }
-    }
-
-    /**
-     * 获取所有监听器.
-     *
-     * @return EventListenerInterface[]
-     */
-    public function getListeners(): array
-    {
-        return $this->listeners;
     }
 
     /**
