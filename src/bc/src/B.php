@@ -90,7 +90,7 @@ class B implements Stringable
      */
     public function comp(mixed $value, ?int $scale = null): int
     {
-        return bccomp((string)$value, $this->value, $scale ??= $this->scale);
+        return bccomp($this->value, (string)$value, $scale ?? $this->scale);
     }
 
     public function gt(mixed $value, ?int $scale = null): bool
