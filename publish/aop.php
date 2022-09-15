@@ -11,9 +11,12 @@ declare(strict_types=1);
 
 return [
     'cache'      => false,
-    'paths'      => [
+    'scanDirs'   => [
         __DIR__ . '/app',
     ],
-    'collectors' => [],
+    'collectors' => [
+        \Max\Aop\Collector\AspectCollector::class,
+        \Max\Aop\Collector\PropertyAnnotationCollector::class,
+    ],
     'runtimeDir' => __DIR__ . '/runtime',
 ];

@@ -17,11 +17,11 @@ class ScannerConfig
 {
     use AutoFillProperties;
 
-    protected bool   $cache      = false;
+    protected bool $cache = false;
 
-    protected array  $paths      = [];
+    protected array $scanDirs = [];
 
-    protected array  $collectors = [];
+    protected array $collectors = [];
 
     protected string $runtimeDir = '';
 
@@ -35,9 +35,9 @@ class ScannerConfig
         return $this->cache;
     }
 
-    public function getPaths(): array
+    public function getScanDirs(): array
     {
-        return $this->paths;
+        return $this->scanDirs;
     }
 
     public function getCollectors(): array

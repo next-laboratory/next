@@ -29,10 +29,7 @@ class AstManager
 
     public function getNodes(string $realpath)
     {
-        if (! isset($this->container[$realpath])) {
-            $this->container[$realpath] = $this->parser->parse(file_get_contents($realpath));
-        }
-        return $this->container[$realpath];
+        return $this->parser->parse(file_get_contents($realpath));
     }
 
     public function getClassesByRealPath(string $realpath): array
