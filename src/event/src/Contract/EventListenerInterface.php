@@ -14,7 +14,7 @@ namespace Max\Event\Contract;
 interface EventListenerInterface
 {
     /**
-     * @return iterable<mixed, string>
+     * @return iterable<mixed, class-string>
      */
     public function listen(): iterable;
 
