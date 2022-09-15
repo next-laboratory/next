@@ -43,7 +43,6 @@ class ExceptionHandleMiddleware implements MiddlewareInterface
             if (!$this->shouldntReport($e)) {
                 $this->report($e, $request);
             }
-
             return $this->render($e, $request);
         }
     }
@@ -98,7 +97,7 @@ class ExceptionHandleMiddleware implements MiddlewareInterface
     /**
      * 运行环境是否是cli
      */
-    protected function runInConsole(): bool
+    protected function runningInConsole(): bool
     {
         return PHP_SAPI === 'cli';
     }

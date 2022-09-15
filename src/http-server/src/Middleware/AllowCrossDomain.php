@@ -31,7 +31,7 @@ class AllowCrossDomain implements MiddlewareInterface
     protected array $allowOrigin = ['*'];
 
     /**
-     * @var array|string[] 允许的头部
+     * @var string[] 允许的头部
      */
     protected array $allowHeaders = [
         HeaderInterface::HEADER_AUTHORIZATION,
