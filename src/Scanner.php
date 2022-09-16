@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Max\Aop;
 
 use Attribute;
-use Composer\Autoload\ClassLoader;
 use Exception;
 use Max\Aop\Collector\AspectCollector;
 use Max\Aop\Collector\PropertyAnnotationCollector;
@@ -28,36 +27,34 @@ use Throwable;
 final class Scanner
 {
     private AstManager  $astManager;
+
     private string      $proxyMap;
+
+    private string      $runtimeDir;
+
     private array       $classMap    = [];
+
     private Filesystem  $filesystem;
+
     private static bool $initialized = false;
 
+    private static self $scanner;
+
     /**
-     * @throws ReflectionException
      * @throws Exception
      */
     private function __construct(
         private array $scanDirs,
         private array $collectors,
-        private string $runtimeDir,
+        string $runtimeDir,
         private bool $cache = false,
     ) {
         $this->filesystem = new Filesystem();
         $this->astManager = new AstManager();
+        $this->runtimeDir = rtrim($runtimeDir, '/') . '/aop/';
         $this->filesystem->isDirectory($this->runtimeDir) || $this->filesystem->makeDirectory($this->runtimeDir, 0755, true);
         $this->classMap = $this->findClasses($this->scanDirs);
-        $this->proxyMap = $proxyMap = $this->runtimeDir . 'proxy.php';
-        if (!$this->cache || !$this->filesystem->exists($proxyMap)) {
-            $this->filesystem->exists($proxyMap) && $this->filesystem->delete($proxyMap);
-            if (($pid = pcntl_fork()) == -1) {
-                throw new Exception('Process fork failed.');
-            }
-            pcntl_wait($pid);
-        }
-        Composer::getClassLoader()->addClassMap($this->getProxyMap($this->collectors));
-        $this->collect($this->collectors);
-        unset($this->filesystem, $this->astManager);
+        $this->proxyMap = $this->runtimeDir . 'proxy.php';
     }
 
     /**
@@ -66,10 +63,22 @@ final class Scanner
      */
     public static function init(ScannerConfig $config): void
     {
-        if (!self::$initialized) {
-            new self($config->getScanDirs(), $config->getCollectors(), $config->getRuntimeDir(), $config->isCache());
+        if (! self::$initialized) {
+            self::$scanner     = new self($config->getScanDirs(), $config->getCollectors(), $config->getRuntimeDir(), $config->isCache());
             self::$initialized = true;
+            self::$scanner->boot();
         }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function instance(): self
+    {
+        if (self::$initialized) {
+            return self::$scanner;
+        }
+        throw new Exception('Scanner is not initialized');
     }
 
     public function findClasses(array $dirs): array
@@ -92,10 +101,28 @@ final class Scanner
 
     /**
      * @throws ReflectionException
+     * @throws Exception
+     */
+    private function boot(): void
+    {
+        if (! $this->cache || ! $this->filesystem->exists($this->proxyMap)) {
+            $this->filesystem->exists($this->proxyMap) && $this->filesystem->delete($this->proxyMap);
+            if (($pid = pcntl_fork()) == -1) {
+                throw new Exception('Process fork failed.');
+            }
+            pcntl_wait($pid);
+        }
+        Composer::getClassLoader()->addClassMap($this->getProxyMap($this->collectors));
+        $this->collect($this->collectors);
+        unset($this->filesystem, $this->astManager);
+    }
+
+    /**
+     * @throws ReflectionException
      */
     private function getProxyMap(array $collectors): array
     {
-        if (!$this->filesystem->exists($this->proxyMap)) {
+        if (! $this->filesystem->exists($this->proxyMap)) {
             $proxyDir = $this->runtimeDir . 'proxy/';
             $this->filesystem->exists($proxyDir) || $this->filesystem->makeDirectory($proxyDir, 0755, true, true);
             $this->filesystem->cleanDirectory($proxyDir);

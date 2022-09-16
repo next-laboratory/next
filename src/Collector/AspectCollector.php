@@ -57,7 +57,7 @@ class AspectCollector extends AbstractCollector
                     self::$container[$attribute->class][$method][] = $annotation;
                 }
             }
-            Scanner::addClass($attribute->class, $reflectionClass->getFileName());
+            Scanner::instance()->addClass($attribute->class, $reflectionClass->getFileName());
         }
     }
 
