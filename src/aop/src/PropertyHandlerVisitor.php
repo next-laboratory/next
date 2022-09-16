@@ -95,7 +95,7 @@ class PropertyHandlerVisitor extends NodeVisitorAbstract
                 }
             }
             $c = [];
-            if (!$this->metadata->hasConstructor) {
+            if (! $this->metadata->hasConstructor) {
                 $constructor        = new ClassMethod('__construct', [
                     'params' => $params,
                 ]);
