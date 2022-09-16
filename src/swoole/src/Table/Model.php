@@ -115,7 +115,7 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable, Jsonab
      */
     public static function findWhere(string $field, $value): Collection
     {
-        if (! in_array($field, static::$fillable)) {
+        if (!in_array($field, static::$fillable)) {
             throw new InvalidArgumentException('字段名不存在');
         }
         $collection = Collection::make();
@@ -138,7 +138,7 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable, Jsonab
         $collection = Collection::make();
         foreach (static::getSwooleTable() as $key => $item) {
             foreach ($fields as $k => $v) {
-                if (! $item[$k] == $v) {
+                if (!$item[$k] == $v) {
                     continue 2;
                 }
             }
@@ -152,7 +152,7 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable, Jsonab
      */
     public static function findWhereIn(string $field, array $in): Collection
     {
-        return static::findWhere($field, function ($k, $v, &$item) use (&$in) {
+        return static::findWhere($field, function($k, $v, &$item) use (&$in) {
             return in_array($v, $in);
         });
     }
@@ -186,8 +186,8 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable, Jsonab
     }
 
     /**
-     * @throws DuplicateKeyException
      * @return static
+     * @throws DuplicateKeyException
      */
     public static function create(string $key, array $attributes = []): Model
     {
@@ -234,45 +234,24 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable, Jsonab
         return static::getSwooleTable()->count();
     }
 
-    /**
-     * @param $offset
-     *
-     * @return bool
-     */
-    #[\ReturnTypeWillChange]
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->attributes[$offset]);
     }
 
-    /**
-     * @param $offset
-     *
-     * @return null|mixed
-     */
-    #[\ReturnTypeWillChange]
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->attributes[$offset] ?? null;
     }
 
-    /**
-     * @param $offset
-     * @param $value
-     */
-    #[\ReturnTypeWillChange]
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (in_array($offset, static::$fillable)) {
             static::$fillable[$offset] = $value;
         }
     }
 
-    /**
-     * @param $offset
-     */
-    #[\ReturnTypeWillChange]
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         if ($this->offsetExists($offset)) {
             unset($this->attributes[$offset]);
@@ -293,24 +272,14 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable, Jsonab
         return $this->attributes;
     }
 
-    /**
-     * @return array
-     */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->toArray();
     }
 
-    /**
-     * @param $options
-     *
-     * @return false|string
-     */
-    #[\ReturnTypeWillChange]
-    public function toJson($options = 256)
+    public function toJson(int $options = 256): string
     {
-        return json_encode($this->toArray(), $options);
+        return (string)json_encode($this->toArray(), $options);
     }
 
     /**

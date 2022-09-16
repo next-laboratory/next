@@ -768,10 +768,6 @@ Cache::decr($key, int $step = 1)
 
 > 自增自减step表示步长，如果缓存不存在，则从0开始增长
 
-## max/context
-
-文档待补全
-
 ## max/database
 
 > 文档更新不及时，可能会有大量出入
