@@ -20,6 +20,7 @@ return [
     //    'handler' => 'Max\Session\Handler\RedisHandler',
     //    'config'  => [
     //        'connector' => 'Max\Redis\Connector\BaseConnector',
+    //        'prefix'  => 'PHP_SESS:',
     //        'host'      => '127.0.0.1',
     //        'port'      => 6379,
     //        'expire'    => 3600,

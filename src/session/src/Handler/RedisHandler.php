@@ -13,6 +13,7 @@ namespace Max\Session\Handler;
 
 use Max\Redis\Redis;
 use Max\Utils\Traits\AutoFillProperties;
+use RedisException;
 use SessionHandlerInterface;
 
 class RedisHandler implements SessionHandlerInterface
@@ -22,6 +23,8 @@ class RedisHandler implements SessionHandlerInterface
     protected Redis $handler;
 
     protected string $connector;
+
+    protected string $prefix = 'PHP_SESS';
 
     /**
      * @var string 主机
@@ -36,7 +39,9 @@ class RedisHandler implements SessionHandlerInterface
     /**
      * @var int 过期时间
      */
-    protected int $expire = 3600;
+    protected int    $expire   = 3600;
+    protected int    $database = 0;
+    protected string $password = '';
 
     public function __construct(array $options = [])
     {
@@ -47,7 +52,6 @@ class RedisHandler implements SessionHandlerInterface
     /**
      * {@inheritDoc}
      */
-    #[\ReturnTypeWillChange]
     public function close(): bool
     {
         return true;
@@ -56,16 +60,18 @@ class RedisHandler implements SessionHandlerInterface
     /**
      * {@inheritDoc}
      */
-    #[\ReturnTypeWillChange]
     public function destroy(string $id): bool
     {
-        return (bool) $this->handler->del($id);
+        try {
+            return (bool)$this->handler->del($id);
+        } catch (RedisException) {
+            return false;
+        }
     }
 
     /**
      * {@inheritDoc}
      */
-    #[\ReturnTypeWillChange]
     public function gc(int $max_lifetime): int|false
     {
         return 1;
@@ -74,7 +80,6 @@ class RedisHandler implements SessionHandlerInterface
     /**
      * {@inheritDoc}
      */
-    #[\ReturnTypeWillChange]
     public function open(string $path, string $name): bool
     {
         return true;
@@ -83,21 +88,32 @@ class RedisHandler implements SessionHandlerInterface
     /**
      * {@inheritDoc}
      */
-    #[\ReturnTypeWillChange]
     public function read(string $id): string|false
     {
-        if ($data = $this->handler->get($id)) {
-            return (string) $data;
+        try {
+            if ($data = $this->handler->get($this->normalizeId($id))) {
+                return (string)$data;
+            }
+            return false;
+        } catch (RedisException) {
+            return false;
         }
-        return false;
     }
 
     /**
      * {@inheritDoc}
      */
-    #[\ReturnTypeWillChange]
     public function write(string $id, string $data): bool
     {
-        return (bool) $this->handler->set($id, $data, $this->expire);
+        try {
+            return (bool)$this->handler->set($this->normalizeId($id), $data, $this->expire);
+        } catch (RedisException) {
+            return false;
+        }
+    }
+
+    protected function normalizeId(string $id): string
+    {
+        return $this->prefix . $id;
     }
 }
