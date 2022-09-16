@@ -6,18 +6,13 @@ class NamespacedItemResolver
 {
     /**
      * A cache of the parsed items.
-     *
-     * @var array
      */
-    protected $parsed = [];
+    protected array $parsed = [];
 
     /**
      * Parse a key into namespace, group, and item.
-     *
-     * @param  string  $key
-     * @return array
      */
-    public function parseKey($key)
+    public function parseKey(string $key): array
     {
         // If we've already parsed the given key, we'll return the cached version we
         // already have, as this will save us some processing. We cache off every
@@ -29,7 +24,7 @@ class NamespacedItemResolver
         // If the key does not contain a double colon, it means the key is not in a
         // namespace, and is just a regular configuration item. Namespaces are a
         // tool for organizing configuration items for things such as modules.
-        if (! str_contains($key, '::')) {
+        if (!str_contains($key, '::')) {
             $segments = explode('.', $key);
 
             $parsed = $this->parseBasicSegments($segments);
@@ -45,11 +40,8 @@ class NamespacedItemResolver
 
     /**
      * Parse an array of basic segments.
-     *
-     * @param  array  $segments
-     * @return array
      */
-    protected function parseBasicSegments(array $segments)
+    protected function parseBasicSegments(array $segments): array
     {
         // The first segment in a basic array will always be the group, so we can go
         // ahead and grab that segment. If there is only one total segment we are
@@ -60,19 +52,16 @@ class NamespacedItemResolver
         // a specific item out of a group and will need to return this item name
         // as well as the group so we know which item to pull from the arrays.
         $item = count($segments) === 1
-                    ? null
-                    : implode('.', array_slice($segments, 1));
+            ? null
+            : implode('.', array_slice($segments, 1));
 
         return [null, $group, $item];
     }
 
     /**
      * Parse an array of namespaced segments.
-     *
-     * @param  string  $key
-     * @return array
      */
-    protected function parseNamespacedSegments($key)
+    protected function parseNamespacedSegments(string $key): array
     {
         [$namespace, $item] = explode('::', $key);
 
@@ -90,22 +79,16 @@ class NamespacedItemResolver
 
     /**
      * Set the parsed value of a key.
-     *
-     * @param  string  $key
-     * @param  array  $parsed
-     * @return void
      */
-    public function setParsedKey($key, $parsed)
+    public function setParsedKey(string $key, array $parsed): void
     {
         $this->parsed[$key] = $parsed;
     }
 
     /**
      * Flush the cache of parsed keys.
-     *
-     * @return void
      */
-    public function flushParsedKeys()
+    public function flushParsedKeys(): void
     {
         $this->parsed = [];
     }

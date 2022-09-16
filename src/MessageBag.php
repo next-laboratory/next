@@ -11,25 +11,17 @@ use Max\Utils\Contract\MessageProvider;
 class MessageBag implements Jsonable, JsonSerializable, MessageBagContract, MessageProvider
 {
     /**
-     * All of the registered messages.
-     *
-     * @var array
+     * All the registered messages.
      */
-    protected $messages = [];
+    protected array $messages = [];
 
     /**
      * Default format for message output.
-     *
-     * @var string
      */
-    protected $format = ':message';
+    protected string $format = ':message';
 
     /**
      * Create a new message bag instance.
-     *
-     * @param array $messages
-     *
-     * @return void
      */
     public function __construct(array $messages = [])
     {
@@ -42,8 +34,6 @@ class MessageBag implements Jsonable, JsonSerializable, MessageBagContract, Mess
 
     /**
      * Get the keys present in the message bag.
-     *
-     * @return array
      */
     public function keys(): array
     {
@@ -99,7 +89,7 @@ class MessageBag implements Jsonable, JsonSerializable, MessageBagContract, Mess
     /**
      * Merge a new array of messages into the message bag.
      *
-     * @param \Illuminate\Contracts\Support\MessageProvider|array $messages
+     * @param MessageProvider|array $messages
      *
      * @return $this
      */
