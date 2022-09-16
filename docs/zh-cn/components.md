@@ -64,13 +64,7 @@ $container->bind(TestInterface::class, Test::class);
 
 之后所有容器接口都可以使用TestInterface::class标识来获取Test::class实例
 
-实例化对象, 不保存改对象, 但是会保存所有该类依赖的对象
-
-```php
-$container->resolve(Test::class);
-```
-
-实例化对象并存储
+实例化Test类
 
 ```php
 $container->make(Test::class);
@@ -158,7 +152,6 @@ $router->get('/book/{id:\d+}', 'BookController@show');
 $router->get('/p/{id}\.html', 'CateController@show');
 ```
 
-
 #### 路由支持分组并且支持分组嵌套，例如：
 
 ```php
@@ -172,7 +165,8 @@ $router->prefix('api')->group(function(\Max\Routing\Router $router) {
     });
 ```
 
-上面的规则定义两条路由规则，第一条请求方式为GET，path为`/api`的路由规则，且中间件包含`Authentication`，第二条相相对于第一条还加了参数类型限制，此时id参数只能是数字
+上面的规则定义两条路由规则，第一条请求方式为GET，path为`/api`的路由规则，且中间件包含`Authentication`
+，第二条相相对于第一条还加了参数类型限制，此时id参数只能是数字
 
 > 分组路由前置方法支持`prefix`, `namespace`, `middleware`, `where` 等
 
@@ -782,7 +776,8 @@ composer require max/database
 
 > 支持mysql，pgsql
 
-目前的`DB`类只对`mysql`支持良好，其他数据库暂时没有测试。如果有需求可以使用`composer`安装第三方的数据库操作类，例如：`medoo`，`thinkorm`
+目前的`DB`类只对`mysql`支持良好，其他数据库暂时没有测试。如果有需求可以使用`composer`安装第三方的数据库操作类，例如：`medoo`
+，`thinkorm`
 
 ```php
 class UserDao {
@@ -992,12 +987,16 @@ $res = $query->transaction(function (Query $query, \PDO $pdo) {
 });
 ```
 
-其中`transaction`接受一个闭包的参数，该回调可以传入两个参数，一个是当前的查询实例，另一个是`PDO`实例，可以看到这里执行了两条`SQL`
-，当执行结果不满足时可以手动抛出`PDOException`异常来回滚事务，否则如果执行过程抛出异常也会自动回滚事务。执行没有错误结束后提交事务。该闭包需要返回执行的结果，返回的执行结果会被`transaction`方法返回。
+其中`transaction`接受一个闭包的参数，该回调可以传入两个参数，一个是当前的查询实例，另一个是`PDO`
+实例，可以看到这里执行了两条`SQL`
+，当执行结果不满足时可以手动抛出`PDOException`
+异常来回滚事务，否则如果执行过程抛出异常也会自动回滚事务。执行没有错误结束后提交事务。该闭包需要返回执行的结果，返回的执行结果会被`transaction`
+方法返回。
 
 #### 模型
 
-> 模型的目录在`app\Models`下，新建模型继承`Max\Database\Eloquent\Model`类即可使用模型提供的方法。模型名为表名，也可以在模型中设置$table属性，此时的表名就是name的值。
+> 模型的目录在`app\Models`下，新建模型继承`Max\Database\Eloquent\Model`
+> 类即可使用模型提供的方法。模型名为表名，也可以在模型中设置$table属性，此时的表名就是name的值。
 
 例如我新建了一个Notes的模型，可以在模型中直接使用
 
