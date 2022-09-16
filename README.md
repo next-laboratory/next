@@ -15,17 +15,22 @@ composer require max/aop
 ```php
 \Max\Di\Scanner::init(new \Max\Aop\ScannerConfig([
     'cache'      => false,
-    'paths'      => [
+    'scanDirs'   => [
         BASE_PATH . '/app',
     ],
-    'collectors' => [],
+    'collectors' => [
+        \Max\Aop\Collector\AspectCollector::class,
+        \Max\Aop\Collector\PropertyAnnotationCollector::class,
+    ],
     'runtimeDir' => BASE_PATH . '/runtime',
 ]));
 ```
 
 * cache 是否缓存，true时下次启动不会重新生成代理类
 * paths 注解扫描路径
-* collectors 用户自定义注解收集器
+* collectors 注解收集器
+    - \Max\Aop\Collector\AspectCollector::class 切面收集器，取消后不能使用切面
+    - \Max\Aop\Collector\PropertyAnnotationCollector::class 属性注解收集器，取消后不支持属性自动注入
 * runtimeDir 运行时，生成的代理类和代理类地图会被缓存到这里
 
 ## 编写切面类，实现AspectInterface接口
@@ -45,9 +50,9 @@ class Round implements AspectInterface
     public function process(JoinPoint $joinPoint, Closure $next): mixed
     {
         echo 'before';
-        $response = $next($joinPoint);
+        $result = $next($joinPoint);
         echo 'after';
-        return $response;
+        return $result;
     }
 }
 
@@ -100,9 +105,9 @@ class Round implements AspectInterface
     public function process(JoinPoint $joinPoint, Closure $next): mixed
     {
         echo 'before';
-        $response = $next($joinPoint);
+        $result = $next($joinPoint);
         echo 'after';
-        return $response;
+        return $result;
     }
 }
 
@@ -118,4 +123,8 @@ php start.php start
 
 打开浏览器打开对应页面
 
-## 控制台输出内容为`before--controller--after`
+## 控制台输出内容为
+
+```
+before--controller--after
+```
