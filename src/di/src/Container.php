@@ -17,6 +17,7 @@ use Max\Di\Exception\ContainerException;
 use Max\Di\Exception\NotFoundException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionFunction;
@@ -38,7 +39,7 @@ class Container implements ContainerInterface
     /**
      * @var array 已经解析实例
      */
-    protected array $resolved = [];
+    protected array $resolvedEntries = [];
 
     /**
      * 将实例化的类存放到数组中.
@@ -48,7 +49,7 @@ class Container implements ContainerInterface
      */
     public function set(string $id, object $concrete)
     {
-        $this->resolved[$this->getBinding($id)] = $concrete;
+        $this->resolvedEntries[$this->getBinding($id)] = $concrete;
     }
 
     /**
@@ -57,17 +58,16 @@ class Container implements ContainerInterface
      * @param class-string $id
      *
      * @return T
-     * @throws ContainerExceptionInterface
-     * @throws ReflectionException
+     * @throws NotFoundExceptionInterface
      */
     public function get(string $id)
     {
         $binding = $this->getBinding($id);
-        if (isset($this->resolved[$binding])) {
-            return $this->resolved[$binding];
+        if (isset($this->resolvedEntries[$binding])) {
+            return $this->resolvedEntries[$binding];
         }
 
-        return $this->make($binding);
+        throw new NotFoundException('No instance found: ' . $id);
     }
 
     /**
@@ -75,7 +75,7 @@ class Container implements ContainerInterface
      */
     public function has(string $id): bool
     {
-        return isset($this->resolved[$this->getBinding($id)]);
+        return isset($this->resolvedEntries[$this->getBinding($id)]);
     }
 
     /**
@@ -122,7 +122,7 @@ class Container implements ContainerInterface
      * @param array           $arguments 构造函数参数列表（关联数组）
      *
      * @return T
-     * @throws ContainerExceptionInterface|NotFoundException|ReflectionException
+     * @throws ContainerExceptionInterface|NotFoundExceptionInterface|ReflectionException
      */
     public function make(string $id, array $arguments = [])
     {
@@ -148,9 +148,9 @@ class Container implements ContainerInterface
     public function remove(string $id): void
     {
         $binding = $this->getBinding($id);
-        unset($this->resolved[$binding]);
-        if ($id !== $binding && isset($this->resolved[$id])) {
-            unset($this->resolved[$id]);
+        unset($this->resolvedEntries[$binding]);
+        if ($id !== $binding && isset($this->resolvedEntries[$id])) {
+            unset($this->resolvedEntries[$id]);
         }
     }
 
@@ -189,8 +189,7 @@ class Container implements ContainerInterface
      * @param Closure|string $function  函数
      * @param array          $arguments 参数列表（关联数组）
      *
-     * @throws NotFoundException|ReflectionException
-     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface|ReflectionException|ContainerExceptionInterface
      */
     public function callFunc(string|Closure $function, array $arguments = [])
     {
