@@ -40,6 +40,7 @@ class SwoolePoolConnector implements ConnectorInterface
             ->withDbIndex($this->database)
             ->withAuth($this->auth);
         $this->pool  = new RedisPool($redisConfig, $this->poolSize);
+        $this->pool->fill();
     }
 
     public function get()
