@@ -13,6 +13,7 @@ namespace Max\Redis;
 
 use Closure;
 use Max\Redis\Contract\ConnectorInterface;
+use Throwable;
 
 /**
  * @mixin \Redis
@@ -24,18 +25,29 @@ class Redis
     ) {
     }
 
+    /**
+     * @throws Throwable
+     */
     public function __call(string $name, array $arguments)
     {
-        return $this->getHandler()->{$name}(...$arguments);
+        return $this->wrap(function($redis) use ($name, $arguments) {
+            return $redis->{$name}(...$arguments);
+        });
     }
 
-    public function getHandler()
-    {
-        return $this->connector->get();
-    }
-
+    /**
+     * @throws Throwable
+     */
     public function wrap(Closure $callable)
     {
-        return $callable($this->getHandler());
+        try {
+            $redis = $this->connector->get();
+            return $callable($redis);
+        } catch (Throwable $e) {
+            $redis = null;
+            throw $e;
+        } finally {
+            $this->connector->release($redis);
+        }
     }
 }
