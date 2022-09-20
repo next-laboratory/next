@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Bc;
 
+use BadMethodCallException;
 use Stringable;
 
 class B implements Stringable
@@ -113,18 +114,60 @@ class B implements Stringable
         return $this->value;
     }
 
-    public function string(): string
+    public function toString(): string
     {
         return $this->__toString();
     }
 
-    public function int(): int
+    public function getValue(): string
+    {
+        return $this->toString();
+    }
+
+    public function toPrecision(int $precision = 0)
+    {
+        throw new BadMethodCallException('Not implemented');
+    }
+
+    public function toInt(): int
     {
         return (int)$this->value;
     }
 
-    public function float(): float
+    public function toFloat(): float
     {
         return (float)$this->value;
+    }
+
+    /**
+     * @deprecated
+     */
+    public function string(): string
+    {
+        return $this->toString();
+    }
+
+    /**
+     * @deprecated
+     */
+    public function int(): int
+    {
+        return $this->toInt();
+    }
+
+    /**
+     * @deprecated
+     */
+    public function float(): float
+    {
+        return $this->toFloat();
+    }
+
+    /**
+     * 转为指数形式
+     */
+    public function toExponential()
+    {
+        throw new BadMethodCallException('Not implemented');
     }
 }
