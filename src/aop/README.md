@@ -1,4 +1,4 @@
-一款简单Aop实现。支持MaxPHP, Swoole，WebMan等框架
+一款简单Aop实现。支持常驻内存型PHP应用。可以方便接入MaxPHP, Swoole，WebMan等框架。
 
 # 安装
 
@@ -13,7 +13,7 @@ composer require max/aop
 ## 修改start.php文件
 
 ```php
-\Max\Di\Scanner::init(new \Max\Aop\ScannerConfig([
+\Max\Aop\Scanner::init(new \Max\Aop\ScannerConfig([
     'cache'      => false,
     'scanDirs'   => [
         BASE_PATH . '/app',
