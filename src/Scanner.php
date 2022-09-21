@@ -26,35 +26,36 @@ use Throwable;
 
 final class Scanner
 {
-    private AstManager  $astManager;
+    private AstManager $astManager;
 
-    private string      $proxyMap;
+    private string $proxyMap;
 
-    private string      $runtimeDir;
+    private array $classMap = [];
 
-    private array       $classMap    = [];
-
-    private Filesystem  $filesystem;
+    private Filesystem $filesystem;
 
     private static bool $initialized = false;
 
     private static self $scanner;
 
-    /**
-     * @throws Exception
-     */
     private function __construct(
         private array $scanDirs,
         private array $collectors,
-        string $runtimeDir,
+        private string $runtimeDir,
         private bool $cache = false,
     ) {
         $this->filesystem = new Filesystem();
         $this->astManager = new AstManager();
-        $this->runtimeDir = rtrim($runtimeDir, '/') . '/aop/';
-        $this->filesystem->isDirectory($this->runtimeDir) || $this->filesystem->makeDirectory($this->runtimeDir, 0755, true);
+        $this->runtimeDir = rtrim($this->runtimeDir, '/') . '/';
+        if (!$this->filesystem->isDirectory($this->runtimeDir)) {
+            $this->filesystem->makeDirectory($this->runtimeDir, 0755, true);
+        }
         $this->classMap = $this->findClasses($this->scanDirs);
         $this->proxyMap = $this->runtimeDir . 'proxy.php';
+    }
+
+    private function __clone(): void
+    {
     }
 
     /**
@@ -63,10 +64,11 @@ final class Scanner
      */
     public static function init(ScannerConfig $config): void
     {
-        if (! self::$initialized) {
+        if (!self::$initialized) {
             self::$scanner     = new self($config->getScanDirs(), $config->getCollectors(), $config->getRuntimeDir(), $config->isCache());
             self::$initialized = true;
             self::$scanner->boot();
+            Reflection::clear();
         }
     }
 
@@ -105,7 +107,7 @@ final class Scanner
      */
     private function boot(): void
     {
-        if (! $this->cache || ! $this->filesystem->exists($this->proxyMap)) {
+        if (!$this->cache || !$this->filesystem->exists($this->proxyMap)) {
             $this->filesystem->exists($this->proxyMap) && $this->filesystem->delete($this->proxyMap);
             if (($pid = pcntl_fork()) == -1) {
                 throw new Exception('Process fork failed.');
@@ -122,7 +124,7 @@ final class Scanner
      */
     private function getProxyMap(array $collectors): array
     {
-        if (! $this->filesystem->exists($this->proxyMap)) {
+        if (!$this->filesystem->exists($this->proxyMap)) {
             $proxyDir = $this->runtimeDir . 'proxy/';
             $this->filesystem->exists($proxyDir) || $this->filesystem->makeDirectory($proxyDir, 0755, true, true);
             $this->filesystem->cleanDirectory($proxyDir);
