@@ -22,7 +22,8 @@ class Redis
 {
     public function __construct(
         protected ConnectorInterface $connector
-    ) {
+    )
+    {
     }
 
     /**
@@ -30,8 +31,35 @@ class Redis
      */
     public function __call(string $name, array $arguments)
     {
-        return $this->wrap(function($redis) use ($name, $arguments) {
+        return $this->wrap(function ($redis) use ($name, $arguments) {
             return $redis->{$name}(...$arguments);
+        });
+    }
+
+    public function multi(Closure $callback, int $mode = \Redis::MULTI)
+    {
+        return $this->wrap(function (\Redis $redis) use ($callback, $mode) {
+            try {
+                $redis = $redis->multi($mode);
+                $result = $callback($redis);
+                $redis->exec();
+                return $result;
+            } catch (Throwable $e) {
+                $redis->discard();
+                throw $e;
+            }
+        });
+    }
+
+    /**
+     * @param string|string[] $key
+     * @throws Throwable
+     */
+    public function watch(string|array $key, Closure $callback)
+    {
+        return $this->wrap(function (\Redis $redis) use ($callback, $key) {
+            $redis->watch($key);
+            return $callback($redis);
         });
     }
 
