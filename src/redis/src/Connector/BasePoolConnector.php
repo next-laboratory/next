@@ -32,7 +32,7 @@ class BasePoolConnector implements ConnectorInterface
         if ($this->isEmpty() && $this->num >= $this->poolSize) {
             throw new RuntimeException('Too many connections');
         }
-        if (!$this->isFull()) {
+        if ($this->num < $this->poolSize) {
             $this->splQueue->push($this->newConnection());
             $this->num++;
         }
@@ -43,9 +43,7 @@ class BasePoolConnector implements ConnectorInterface
     {
         if (is_null($connection)) {
             $this->num--;
-            return;
-        }
-        if (!$this->isFull()) {
+        } else if (!$this->isFull()) {
             $this->splQueue->push($connection);
         }
     }
