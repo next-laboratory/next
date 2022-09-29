@@ -9,19 +9,18 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Database\Query;
+namespace Max\Database;
 
-class Expression
+use Stringable;
+
+class Expression implements Stringable
 {
     public function __construct(
         public string $expression
     ) {
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->expression;
     }

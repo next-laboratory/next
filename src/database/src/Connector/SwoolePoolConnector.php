@@ -12,8 +12,6 @@ declare(strict_types=1);
 namespace Max\Database\Connector;
 
 use Max\Database\Contract\ConnectorInterface;
-use Max\Database\DBConfig;
-use Swoole\Coroutine;
 use Swoole\Database\PDOConfig;
 use Swoole\Database\PDOPool;
 
@@ -22,28 +20,32 @@ class SwoolePoolConnector implements ConnectorInterface
     protected PDOPool $PDOPool;
 
     public function __construct(
-        protected DBConfig $config
+        string $driver = 'mysql',
+        string $host = '127.0.0.1',
+        int $port = 3306,
+        string $database = '',
+        string $user = 'root',
+        string $password = '',
+        array $options = [],
+        ?string $unixSocket = null,
+        int $poolSize = 16,
     ) {
         $PDOConfig     = (new PDOConfig())
-            ->withDriver($this->config->getDriver())
-            ->withHost($this->config->getHost())
-            ->withPort($this->config->getPort())
-            ->withUnixSocket($this->config->getUnixSocket())
-            ->withCharset($this->config->getCharset())
-            ->withDbname($this->config->getDatabase())
-            ->withUsername($this->config->getUser())
-            ->withPassword($this->config->getPassword())
-            ->withOptions($this->config->getOptions());
-        $this->PDOPool = new PDOPool($PDOConfig, $this->config->getPoolSize());
+            ->withDriver($driver)
+            ->withHost($host)
+            ->withUnixSocket($unixSocket)
+            ->withPort($port)
+            ->withDbname($database)
+            ->withUsername($user)
+            ->withPassword($password)
+            ->withOptions($options);
+        $this->PDOPool = new PDOPool($PDOConfig, $poolSize);
+        $this->PDOPool->fill();
     }
 
     public function get()
     {
-        $connection = $this->PDOPool->get();
-        Coroutine::defer(function () use ($connection) {
-            $this->PDOPool->put($connection);
-        });
-        return $connection;
+        return $this->PDOPool->get();
     }
 
     public function release($connection)

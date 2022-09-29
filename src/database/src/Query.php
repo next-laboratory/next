@@ -13,52 +13,31 @@ namespace Max\Database;
 
 use Closure;
 use Max\Database\Contract\ConnectorInterface;
-use Max\Database\Contract\QueryInterface;
 use Max\Database\Event\QueryExecuted;
-use Max\Database\Query\Builder;
 use PDO;
 use PDOException;
 use PDOStatement;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Swoole\Database\PDOProxy;
 use Throwable;
 
-class Query implements QueryInterface
+class Query
 {
     /**
-     * @var PDO|PDOProxy
+     * @var PDO
      */
-    protected mixed $connection;
+    protected $PDO;
 
     public function __construct(
         protected ConnectorInterface $connector,
-        protected ?EventDispatcherInterface $eventDispatcher = null
+        protected ?EventDispatcherInterface $eventDispatcher = null,
     ) {
-        $this->connection = $this->connector->get();
     }
 
-    /**
-     * @return false|PDOStatement
-     */
-    public function statement(string $query, array $bindings = [])
+    public function __destruct()
     {
-        try {
-            $executedAt   = microtime(true);
-            $PDOStatement = $this->connection->prepare($query);
-            foreach ($bindings as $key => $value) {
-                $PDOStatement->bindValue(is_string($key) ? $key : $key + 1, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
-            }
-            $PDOStatement->execute();
-            $this->eventDispatcher?->dispatch(new QueryExecuted($query, $bindings, $executedAt));
-            return $PDOStatement;
-        } catch (PDOException $e) {
-            throw new PDOException($e->getMessage() . sprintf(' (SQL: %s)', $query), (int)$e->getCode(), $e->getPrevious());
+        if (isset($this->PDO)) {
+            $this->connector->release($this->PDO);
         }
-    }
-
-    public function getPDO(): PDO
-    {
-        return $this->connection;
     }
 
     public function select(string $query, array $bindings = [], int $mode = PDO::FETCH_ASSOC, ...$args): bool|array
@@ -69,11 +48,6 @@ class Query implements QueryInterface
     public function selectOne(string $query, array $bindings = [], int $mode = PDO::FETCH_ASSOC, ...$args): mixed
     {
         return $this->statement($query, $bindings)->fetch($mode, ...$args);
-    }
-
-    public function table(string $table, ?string $alias = null): Builder
-    {
-        return (new Builder($this))->from($table, $alias);
     }
 
     public function update(string $query, array $bindings = []): int
@@ -92,34 +66,56 @@ class Query implements QueryInterface
         return $this->getPDO()->lastInsertId($id);
     }
 
-    public function begin(): bool
+    /**
+     * @return false|PDOStatement
+     */
+    public function statement(string $query, array $bindings = [])
     {
-        return $this->connection->beginTransaction();
+        try {
+            $start        = microtime(true);
+            $PDOStatement = $this->getPDO()->prepare($query);
+            foreach ($bindings as $key => $value) {
+                $PDOStatement->bindValue(is_string($key) ? $key : $key + 1, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+            }
+            $PDOStatement->execute();
+            return $PDOStatement;
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage() . sprintf(' (SQL: %s)', $query), (int) $e->getCode(), $e->getPrevious());
+        } finally {
+            $this->eventDispatcher?->dispatch(new QueryExecuted($query, $bindings, microtime(true) - $start));
+        }
     }
 
-    public function commit(): bool
+    public function table(string $table, string $alias = ''): QueryBuilder
     {
-        return $this->connection->commit();
-    }
-
-    public function rollBack(): bool
-    {
-        return $this->connection->rollBack();
+        return (new QueryBuilder($this))->from($table, $alias);
     }
 
     /**
      * @throws Throwable
      */
-    public function transaction(Closure $transaction): mixed
+    public function transaction(Closure $callback)
     {
-        $this->begin();
+        $PDO = $this->getPDO();
+        $PDO->beginTransaction();
         try {
-            $result = ($transaction)($this);
-            $this->commit();
+            $result = $callback($this);
+            $PDO->commit();
             return $result;
         } catch (Throwable $e) {
-            $this->rollBack();
+            $PDO->rollBack();
             throw $e;
         }
+    }
+
+    /**
+     * @return PDO
+     */
+    public function getPDO()
+    {
+        if (! isset($this->PDO)) {
+            $this->PDO = $this->connector->get();
+        }
+        return $this->PDO;
     }
 }

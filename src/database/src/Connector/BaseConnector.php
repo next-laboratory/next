@@ -12,27 +12,37 @@ declare(strict_types=1);
 namespace Max\Database\Connector;
 
 use Max\Database\Contract\ConnectorInterface;
-use Max\Database\DBConfig;
 use PDO;
+
+use function sprintf;
 
 class BaseConnector implements ConnectorInterface
 {
     public function __construct(
-        protected DBConfig $config
+        string $driver = 'mysql',
+        string $host = '127.0.0.1',
+        int $port = 3306,
+        string $database = '',
+        protected string $user = 'root',
+        protected string $password = '',
+        protected array $options = [],
+        string $unixSocket = '',
+        protected string $DSN = '',
     ) {
+        if (empty($this->DSN)) {
+            $this->DSN = sprintf('%s:host=%s;port=%s;', $driver, $host, $port);
+            if (! empty($database)) {
+                $this->DSN .= 'dbname=' . $database . ';';
+            }
+            if (! empty($unixSocket)) {
+                $this->DSN .= 'unix_socket=' . $unixSocket . ';';
+            }
+        }
     }
 
-    /**
-     * @return PDO
-     */
     public function get()
     {
-        return new PDO(
-            $this->config->getDsn(),
-            $this->config->getUser(),
-            $this->config->getPassword(),
-            $this->config->getOptions()
-        );
+        return new PDO($this->DSN, $this->user, $this->password, $this->options);
     }
 
     public function release($connection)

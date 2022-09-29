@@ -9,70 +9,45 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Database\Query;
+namespace Max\Database;
 
-use Max\Database\Collection;
-use Max\Database\Contract\QueryInterface;
 use Max\Utils\Traits\Conditionable;
 use PDO;
 
-class Builder
+class QueryBuilder
 {
     use Conditionable;
 
-    public ?array $where;
+    protected array $where = [];
 
-    public array $select;
+    protected array $bindings = [];
 
-    public array $from;
+    protected array $select;
 
-    public array $order;
+    protected array $from;
 
-    public array $group;
+    protected array $order;
 
-    public array $having;
+    protected array $group;
 
-    public array $join;
+    protected array $having;
 
-    public int $limit;
+    protected array $join;
 
-    public int $offset;
+    protected int $limit;
 
-    public array $bindings = [];
+    protected int $offset;
 
-    /**
-     * @var array|string[]
-     */
-    protected static array $clause = [
-        'aggregate',
-        'select',
-        'from',
-        'join',
-        'where',
-        'group',
-        'having',
-        'order',
-        'limit',
-        'offset',
-        'lock',
-    ];
-
-    /**
-     * @var int[]|string[]
-     */
     protected array $column;
 
+    protected static array $clause = ['aggregate', 'select', 'from', 'join', 'where', 'group', 'having', 'order', 'limit', 'offset', 'lock'];
+
     public function __construct(
-        protected QueryInterface $query
+        protected Query $query,
     ) {
     }
 
-    /**
-     * @param null $alias
-     *
-     * @return $this
-     */
-    public function from(string $table, $alias = null): static
+    public function from(string $table, string $alias = ''): static
     {
         $this->from = func_get_args();
 
@@ -87,9 +62,6 @@ class Builder
         return $this;
     }
 
-    /**
-     * @return $this
-     */
     public function whereNull(string $column): static
     {
         $this->where[] = [$column, 'IS NULL'];
@@ -97,9 +69,6 @@ class Builder
         return $this;
     }
 
-    /**
-     * @return $this
-     */
     public function whereNotNull(string $column): static
     {
         $this->where[] = [$column, 'IS NULL'];
@@ -107,23 +76,14 @@ class Builder
         return $this;
     }
 
-    /**
-     * @param $column
-     * @param $value
-     *
-     * @return $this
-     */
     public function whereLike($column, $value): static
     {
         return $this->where($column, $value, 'LIKE');
     }
 
-    /**
-     * @return $this
-     */
     public function whereIn(string $column, array $in): static
     {
-        if (! empty($in)) {
+        if (!empty($in)) {
             $this->addBindings($in);
             $this->where[] = [$column, 'IN', sprintf('(%s)', rtrim(str_repeat('?, ', count($in)), ' ,'))];
         }
@@ -131,9 +91,6 @@ class Builder
         return $this;
     }
 
-    /**
-     * @return $this
-     */
     public function whereRaw(string $expression, array $bindings = []): static
     {
         $this->where[] = new Expression($expression);
@@ -142,38 +99,21 @@ class Builder
         return $this;
     }
 
-    /**
-     * @param         $table
-     * @param ?string $alias
-     */
-    public function join($table, ?string $alias = null, string $league = 'INNER JOIN'): Join
+    public function join(string $table, ?string $alias = null, string $league = 'INNER JOIN'): Join
     {
         return $this->join[] = new Join($this, $table, $alias, $league);
     }
 
-    /**
-     * @param $table
-     */
-    public function leftJoin($table, ?string $alias = null): Join
+    public function leftJoin(string $table, ?string $alias = null): Join
     {
         return $this->join($table, $alias, 'LEFT OUTER JOIN');
     }
 
-    /**
-     * @param $table
-     */
-    public function rightJoin($table, ?string $alias = null): Join
+    public function rightJoin(string $table, ?string $alias = null): Join
     {
         return $this->join($table, $alias, 'RIGHT OUTER JOIN');
     }
 
-    /**
-     * @param $column
-     * @param $start
-     * @param $end
-     *
-     * @return $this
-     */
     public function whereBetween($column, $start, $end): static
     {
         $this->addBindings([$start, $end]);
@@ -182,14 +122,6 @@ class Builder
         return $this;
     }
 
-    public function getBindings(): array
-    {
-        return $this->bindings;
-    }
-
-    /**
-     * @param $bindings
-     */
     public function setBindings($bindings): void
     {
         if (is_array($bindings)) {
@@ -199,9 +131,6 @@ class Builder
         }
     }
 
-    /**
-     * @return $this
-     */
     public function select(array $columns = ['*']): static
     {
         $this->select = $columns;
@@ -209,52 +138,35 @@ class Builder
         return $this;
     }
 
-    /**
-     * @param $column
-     *
-     * @return $this
-     */
-    public function order($column, string $order = 'ASC'): static
+    public function orderBy(string|Expression $columnOrExpr, string $order = 'ASC'): static
     {
-        $this->order[] = [$column, $order];
+        $this->order[] = $columnOrExpr instanceof Expression ? [$columnOrExpr->expression] : [$columnOrExpr, $order];
 
         return $this;
     }
 
-    /**
-     * @return $this
-     */
+    public function orderByDesc(string|Expression $column): static
+    {
+        return $this->orderBy($column, 'DESC');
+    }
+
     public function latest(string $column = 'id'): static
     {
-        return $this->order($column, 'DESC');
+        return $this->orderByDesc($column);
     }
 
-    /**
-     * @return $this
-     */
     public function oldest(string $column = 'id'): static
     {
-        return $this->order($column);
+        return $this->orderBy($column);
     }
 
-    /**
-     * @param $column
-     *
-     * @return $this
-     */
-    public function group($column): static
+    public function groupBy($column): static
     {
         $this->group[] = $column;
 
         return $this;
     }
 
-    /**
-     * @param $first
-     * @param $last
-     *
-     * @return $this
-     */
     public function having($first, $last, string $operator = '='): static
     {
         $this->having[] = [$first, $operator, $last];
@@ -262,9 +174,6 @@ class Builder
         return $this;
     }
 
-    /**
-     * @return $this
-     */
     public function limit(int $limit): static
     {
         $this->limit = $limit;
@@ -272,9 +181,6 @@ class Builder
         return $this;
     }
 
-    /**
-     * @return $this
-     */
     public function offset(int $offset): static
     {
         $this->offset = $offset;
@@ -282,24 +188,14 @@ class Builder
         return $this;
     }
 
-    public function toSql(array $columns = ['*']): string
+    public function toSql(): string
     {
-        if (empty($this->select)) {
-            $this->select($columns);
-        } else {
-            if (['*'] === $columns) {
-                $this->select();
-            } else {
-                $this->select(array_merge($this->select, $columns));
-            }
-        }
-
         return $this->generateSelectQuery();
     }
 
-    public function get(array $columns = ['*']): Collection
+    public function get(array $columns = ['*']): bool|array
     {
-        return Collection::make($this->query->select($this->toSql($columns), $this->bindings));
+        return $this->query->select($this->select($columns)->toSql(), $this->bindings);
     }
 
     public function count(string|int $column = '*'): int
@@ -307,33 +203,21 @@ class Builder
         return $this->aggregate("COUNT({$column})");
     }
 
-    /**
-     * @param $column
-     */
     public function sum($column): int
     {
         return $this->aggregate("SUM({$column})");
     }
 
-    /**
-     * @param $column
-     */
     public function max($column): int
     {
         return $this->aggregate("MAX({$column})");
     }
 
-    /**
-     * @param $column
-     */
     public function min($column): int
     {
         return $this->aggregate("MIN({$column})");
     }
 
-    /**
-     * @param $column
-     */
     public function avg($column): int
     {
         return $this->aggregate("AVG({$column})");
@@ -341,22 +225,19 @@ class Builder
 
     public function exists(): bool
     {
-        return (bool) $this->query->statement(
-            sprintf('SELECT EXISTS(%s) AS MAX_EXIST', $this->toSql()),
-            $this->bindings
-        )->fetchColumn();
+        $query = sprintf('SELECT EXISTS(%s) AS MAX_EXIST', $this->select([1])->toSql());
+
+        return (bool)$this->query->statement($query, $this->bindings)->fetchColumn();
     }
 
-    public function column(string $column, ?string $key = null): Collection
+    public function column(string $column, ?string $key = null): array
     {
-        return Collection::make(
-            $this->query->statement($this->toSql(array_filter([$column, $key])), $this->bindings)->fetchAll() ?: []
-        )->pluck($column, $key);
+        $query  = $this->select(array_filter([$column, $key]))->toSql();
+        $result = $this->query->select($query, $this->bindings) ?: [];
+
+        return array_column($result, $column, $key);
     }
 
-    /**
-     * @param $id
-     */
     public function find($id, array $columns = ['*'], string $identifier = 'id'): mixed
     {
         return $this->where($identifier, $id)->first($columns);
@@ -364,7 +245,9 @@ class Builder
 
     public function first(array $columns = ['*']): mixed
     {
-        return $this->query->statement($this->limit(1)->toSql($columns), $this->bindings)->fetch(PDO::FETCH_ASSOC);
+        $query = $this->limit(1)->select($columns)->toSql();
+
+        return $this->query->statement($query, $this->bindings)->fetch(PDO::FETCH_ASSOC);
     }
 
     public function delete(): int
@@ -381,7 +264,7 @@ class Builder
             $this->bindings,
         );
 
-        return (int) $this->query->getPdo()->lastInsertId();
+        return (int)$this->query->getPDO()->lastInsertId();
     }
 
     public function insertMany(array $records): mixed
@@ -398,7 +281,7 @@ class Builder
 
     public function insertAll(array $data): array
     {
-        return array_map(fn ($item) => $this->insert($item), $data);
+        return array_map(fn($item) => $this->insert($item), $data);
     }
 
     public function update(array $data): int
@@ -406,19 +289,19 @@ class Builder
         return $this->query->statement($this->generateUpdateQuery($data), $this->bindings)->rowCount();
     }
 
-    public function generateSelectQuery(): string
+    protected function generateSelectQuery(): string
     {
         $query = 'SELECT ';
         foreach (static::$clause as $value) {
             $compiler = 'compile' . ucfirst($value);
-            if (! empty($this->{$value})) {
+            if (!empty($this->{$value})) {
                 $query .= $this->{$compiler}($this);
             }
         }
         return $query;
     }
 
-    public function generateInsertQuery(): string
+    protected function generateInsertQuery(): string
     {
         $columns = implode(', ', $this->column);
         $value   = implode(', ', array_fill(0, count($this->bindings), '?'));
@@ -427,7 +310,7 @@ class Builder
         return sprintf('INSERT INTO %s(%s) VALUES(%s)', $table, $columns, $value);
     }
 
-    public function generateUpdateQuery(array $data): string
+    protected function generateUpdateQuery(array $data): string
     {
         $columns = $values = [];
         foreach ($data as $key => $value) {
@@ -446,14 +329,11 @@ class Builder
         return sprintf('UPDATE %s SET %s%s', $this->from[0], implode(', ', $columns), $where);
     }
 
-    public function generateDeleteQuery(): string
+    protected function generateDeleteQuery(): string
     {
         return sprintf('DELETE FROM %s %s', $this->from[0], $this->compileWhere());
     }
 
-    /**
-     * @param $value
-     */
     protected function addBindings($value): void
     {
         if (is_array($value)) {
@@ -465,15 +345,15 @@ class Builder
 
     protected function aggregate(string $expression): int
     {
-        return (int) $this->query->statement(
-            $this->toSql((array) ($expression . ' AS AGGREGATE')),
+        return (int)$this->query->statement(
+            $this->select((array)($expression . ' AS AGGREGATE'))->toSql(),
             $this->bindings
         )->fetchColumn();
     }
 
     protected function compileJoin(): string
     {
-        $joins     = array_map(function (Join $item) {
+        $joins = array_map(function(Join $item) {
             $alias = $item->alias ? 'AS ' . $item->alias : '';
             $on    = $item->on ? ('ON ' . implode(' ', $item->on)) : '';
             return ' ' . $item->league . ' ' . $item->table . ' ' . $alias . ' ' . $on;
@@ -513,7 +393,7 @@ class Builder
 
     protected function compileOrder(): string
     {
-        $orderBy = array_map(fn ($item) => $item[0] instanceof Expression ? $item[0]->__toString() : implode(' ', $item), $this->order);
+        $orderBy = array_map(fn($item) => $item[0] instanceof Expression ? $item[0]->__toString() : implode(' ', $item), $this->order);
         return ' ORDER BY ' . implode(', ', $orderBy);
     }
 
@@ -524,7 +404,7 @@ class Builder
 
     protected function compileHaving(): string
     {
-        $having = array_map(fn ($item) => implode(' ', $item), $this->having);
+        $having = array_map(fn($item) => implode(' ', $item), $this->having);
 
         return ' HAVING ' . implode(' AND ', $having);
     }

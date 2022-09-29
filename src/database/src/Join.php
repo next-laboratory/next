@@ -9,17 +9,17 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Database\Query;
+namespace Max\Database;
 
 /**
- * @mixin Builder
+ * @mixin QueryBuilder
  */
 class Join
 {
     public array $on = [];
 
     public function __construct(
-        protected Builder $builder,
+        protected QueryBuilder $builder,
         public string $table,
         public ?string $alias = null,
         public string $league = 'INNER JOIN'
@@ -30,18 +30,14 @@ class Join
      * @param $method
      * @param $args
      *
-     * @return Builder
+     * @return QueryBuilder
      */
     public function __call($method, $args)
     {
         return $this->builder->{$method}(...$args);
     }
 
-    /**
-     * @param $first
-     * @param $last
-     */
-    public function on($first, $last, string $operator = '='): Builder
+    public function on($first, $last, string $operator = '='): QueryBuilder
     {
         $this->on = [$first, $operator, $last];
 
