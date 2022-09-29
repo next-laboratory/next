@@ -4,6 +4,7 @@ namespace Max\Redis\Connector;
 
 use Max\Redis\Contract\ConnectorInterface;
 use Redis;
+use RedisException;
 use RuntimeException;
 use SplQueue;
 
@@ -58,6 +59,9 @@ class BasePoolConnector implements ConnectorInterface
         return $this->splQueue->isEmpty();
     }
 
+    /**
+     * @throws RedisException
+     */
     protected function newConnection(): Redis
     {
         $redis = new Redis();
