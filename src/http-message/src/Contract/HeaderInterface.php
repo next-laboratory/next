@@ -27,15 +27,17 @@ interface HeaderInterface
 
     public const HEADER_X_FORWARDED_FOR = 'X-Forwarded-For';
 
-    public const HEADER_X_CSRF_TOKEN    = 'X-Csrf-Token';
+    public const HEADER_X_CSRF_TOKEN = 'X-Csrf-Token';
 
-    public const HEADER_X_XSRF_TOKEN    = 'X-Xsrf-Token';
+    public const HEADER_X_XSRF_TOKEN = 'X-Xsrf-Token';
 
     public const HEADER_CONTENT_TRANSFER_ENCODING = 'Content-Transfer-Encoding';
 
     public const HEADER_CONTENT_DISPOSITION = 'Content-Disposition';
 
     public const HEADER_AUTHORIZATION = 'Authorization';
+
+    public const HEADER_WWW_AUTHENTICATE = 'WWW-Authenticate';
 
     public const HEADER_X_REQUESTED_WITH = 'X-Requested-With';
 

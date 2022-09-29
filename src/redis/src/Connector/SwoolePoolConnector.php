@@ -28,7 +28,7 @@ class SwoolePoolConnector implements ConnectorInterface
         protected float $readTimeout = 0.0,
         protected string $auth = '',
         protected int $database = 0,
-        protected int $poolSize = 32,
+        protected int $poolSize = 16,
     ) {
         $redisConfig = (new RedisConfig())
             ->withHost($this->host)
