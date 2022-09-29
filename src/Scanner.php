@@ -39,19 +39,16 @@ final class Scanner
     private static self $scanner;
 
     private function __construct(
-        private array $scanDirs,
-        private array $collectors,
-        private string $runtimeDir,
-        private bool $cache = false,
+        private ScannerConfig $config
     ) {
         $this->filesystem = new Filesystem();
         $this->astManager = new AstManager();
-        $this->runtimeDir = rtrim($this->runtimeDir, '/') . '/';
-        if (!$this->filesystem->isDirectory($this->runtimeDir)) {
-            $this->filesystem->makeDirectory($this->runtimeDir, 0755, true);
+        $runtimeDir       = $config->getRuntimeDir();
+        if (!$this->filesystem->isDirectory($runtimeDir)) {
+            $this->filesystem->makeDirectory($runtimeDir, 0755, true);
         }
-        $this->classMap = $this->findClasses($this->scanDirs);
-        $this->proxyMap = $this->runtimeDir . 'proxy.php';
+        $this->classMap = $this->findClasses($config->getScanDirs());
+        $this->proxyMap = $runtimeDir . 'proxy.php';
     }
 
     private function __clone(): void
@@ -65,7 +62,7 @@ final class Scanner
     public static function init(ScannerConfig $config): void
     {
         if (!self::$initialized) {
-            self::$scanner     = new self($config->getScanDirs(), $config->getCollectors(), $config->getRuntimeDir(), $config->isCache());
+            self::$scanner     = new self($config);
             self::$initialized = true;
             self::$scanner->boot();
             Reflection::clear();
@@ -107,15 +104,16 @@ final class Scanner
      */
     private function boot(): void
     {
-        if (!$this->cache || !$this->filesystem->exists($this->proxyMap)) {
+        if (!$this->config->isCache() || !$this->filesystem->exists($this->proxyMap)) {
             $this->filesystem->exists($this->proxyMap) && $this->filesystem->delete($this->proxyMap);
             if (($pid = pcntl_fork()) == -1) {
                 throw new Exception('Process fork failed.');
             }
             pcntl_wait($pid);
         }
-        Composer::getClassLoader()->addClassMap($this->getProxyMap($this->collectors));
-        $this->collect($this->collectors);
+        $collectors = $this->config->getCollectors();
+        Composer::getClassLoader()->addClassMap($this->getProxyMap($collectors));
+        $this->collect($collectors);
         unset($this->filesystem, $this->astManager);
     }
 
@@ -125,7 +123,7 @@ final class Scanner
     private function getProxyMap(array $collectors): array
     {
         if (!$this->filesystem->exists($this->proxyMap)) {
-            $proxyDir = $this->runtimeDir . 'proxy/';
+            $proxyDir = $this->config->getRuntimeDir() . 'proxy/';
             $this->filesystem->exists($proxyDir) || $this->filesystem->makeDirectory($proxyDir, 0755, true, true);
             $this->filesystem->cleanDirectory($proxyDir);
             $this->collect($collectors);
@@ -133,7 +131,7 @@ final class Scanner
             $scanMap          = [];
             foreach ($collectedClasses as $class) {
                 $proxyPath = $proxyDir . str_replace('\\', '_', $class) . '_Proxy.php';
-                $this->filesystem->put($proxyPath, $this->generateProxyClass($class, $this->classMap[$class]));
+                $this->filesystem->put($proxyPath, $this->generateProxyClass($collectors, $class, $this->classMap[$class]));
                 $scanMap[$class] = $proxyPath;
             }
             $this->filesystem->put($this->proxyMap, sprintf("<?php \nreturn %s;", var_export($scanMap, true)));
@@ -142,20 +140,17 @@ final class Scanner
         return include $this->proxyMap;
     }
 
-    private function generateProxyClass(string $class, string $path): string
+    private function generateProxyClass(array $collectors, string $class, string $path): string
     {
-        $ast       = $this->astManager->getNodes($path);
         $traverser = new NodeTraverser();
         $metadata  = new Metadata($class);
-        if (in_array(PropertyAnnotationCollector::class, $this->collectors)) {
+        if (in_array(PropertyAnnotationCollector::class, $collectors)) {
             $traverser->addVisitor(new PropertyHandlerVisitor($metadata));
         }
-        if (in_array(AspectCollector::class, $this->collectors)) {
+        if (in_array(AspectCollector::class, $collectors)) {
             $traverser->addVisitor(new ProxyHandlerVisitor($metadata));
         }
-        $modifiedStmts = $traverser->traverse($ast);
-        $prettyPrinter = new Standard();
-        return $prettyPrinter->prettyPrintFile($modifiedStmts);
+        return (new Standard())->prettyPrintFile($traverser->traverse($this->astManager->getNodes($path)));
     }
 
     /**

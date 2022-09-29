@@ -47,6 +47,6 @@ class ScannerConfig
 
     public function getRuntimeDir(): string
     {
-        return rtrim($this->runtimeDir, '/\\');
+        return rtrim($this->runtimeDir, '/\\') . '/';
     }
 }
