@@ -11,90 +11,88 @@ declare(strict_types=1);
 
 namespace Max\Validator;
 
-use Max\Validator\Bags\Errors;
-
+use Max\Validator\Exception\ValidateException;
 use function explode;
 use function is_array;
 
 class Validator
 {
-    protected Rules $rules;
+    use Rules;
 
-    protected array $data = [];
+    protected Error $error;
+    protected bool  $validated = false;
+    protected array $valid     = [];
 
-    protected array $message = [];
+    public function __construct(
+        protected array $data,
+        protected array $rules,
+        protected array $message = [],
+    ) {
+    }
 
-    protected array $valid = [];
-
-    protected Errors $errors;
-
-    protected bool $throwable = false;
-
-    /**
-     * @param  null|mixed        $key
-     * @return null|array|string
-     */
-    public function getData($key = null)
+    protected function getData(string $key = ''): mixed
     {
         return $key ? ($this->data[$key] ?? null) : $this->data;
     }
 
-    /**
-     * @param  mixed       $key
-     * @param  mixed       $default
-     * @return null|string
-     */
-    public function getMessage($key, $default = '验证失败')
+    protected function getMessage(string $key, string $default = '验证失败'): string
     {
         return $this->message[$key] ?? $default;
     }
 
-    public function isThrowable(): bool
+    public function validated(bool $batch = false): array
     {
-        return $this->throwable;
+        $funcName = $batch ? 'batchValidate' : 'validate';
+        return $this->$funcName()->valid();
     }
 
-    /**
-     * @return Validator
-     */
-    public function setThrowable(bool $throwable): static
+    public function validate(): static
     {
-        $this->throwable = $throwable;
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function make(array $data, array $rules, array $message = []): static
-    {
-        $this->rules   = new Rules($this);
-        $this->errors  = new Errors();
-        $this->data    = $data;
-        $this->message = $message;
-
-        foreach ($rules as $key => $rule) {
-            $value = $this->getData($key);
-            if (! is_array($rule)) {
-                $rule = explode('|', $rule);
+        return $this->do(function($ruleName, $key, $value, $ruleParams) {
+            if ($this->{$ruleName}($key, $value, ...$ruleParams)) {
+                $this->valid[$key] = $value;
             }
-            foreach ($rule as $ruleItem) {
-                $ruleItem   = explode(':', $ruleItem, 2);
-                $ruleName   = $ruleItem[0];
-                $ruleParams = empty($ruleItem[1]) ? [] : explode(',', $ruleItem[1]);
-                if ($this->rules->{$ruleName}($key, $value, ...$ruleParams)) {
-                    $this->valid[$key] = $value;
+        });
+    }
+
+    protected function do(callable $callable): static
+    {
+        if (!$this->validated) {
+            $this->error = new Error();
+
+            foreach ($this->rules as $key => $rule) {
+                $value = $this->getData($key);
+                if (!is_array($rule)) {
+                    $rule = explode('|', $rule);
+                }
+                foreach ($rule as $ruleItem) {
+                    $ruleItem   = explode(':', $ruleItem, 2);
+                    $ruleName   = $ruleItem[0];
+                    $ruleParams = empty($ruleItem[1]) ? [] : explode(',', $ruleItem[1]);
+                    call_user_func_array($callable, [$ruleName, $key, $value, $ruleParams]);
                 }
             }
+            $this->validated = true;
         }
 
         return $this;
     }
 
-    public function errors(): Errors
+    public function batchValidate(): static
     {
-        return $this->errors;
+        return $this->do(function($ruleName, $key, $value, $ruleParams) {
+            try {
+                if ($this->{$ruleName}($key, $value, ...$ruleParams)) {
+                    $this->valid[$key] = $value;
+                }
+            } catch (ValidateException) {
+            }
+        });
+    }
+
+    public function errors(): Error
+    {
+        return $this->error;
     }
 
     public function valid(): array
@@ -104,11 +102,11 @@ class Validator
 
     public function fails(): bool
     {
-        return ! $this->errors->isEmpty();
+        return !$this->error->isEmpty();
     }
 
     public function failed(): array
     {
-        return $this->errors->all();
+        return $this->error->all();
     }
 }

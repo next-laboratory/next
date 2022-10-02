@@ -22,24 +22,19 @@ use function mb_strlen;
 use function preg_match;
 use function strtolower;
 
-class Rules
+trait Rules
 {
-    public function __construct(
-        protected Validator $validator
-    ) {
-    }
-
     /**
      * @param $key
      * @param $value
      *
-     * @throws ValidateException
      * @return false
+     * @throws ValidateException
      */
     public function required($key, $value): bool
     {
         if (empty($value)) {
-            return $this->fail($this->validator->getMessage($key . '.' . __FUNCTION__, $key . '字段是必须的'));
+            return $this->fail($this->getMessage($key . '.' . __FUNCTION__, $key . '字段是必须的'));
         }
         return true;
     }
@@ -56,8 +51,8 @@ class Rules
         if (is_null($value)) {
             return false;
         }
-        if (mb_strlen((string) $value, 'utf8') > (int) $max) {
-            return $this->fail($this->validator->getMessage($key . '.' . __FUNCTION__, $key . '的长度最大' . $max));
+        if (mb_strlen((string)$value, 'utf8') > (int)$max) {
+            return $this->fail($this->getMessage($key . '.' . __FUNCTION__, $key . '的长度最大' . $max));
         }
         return true;
     }
@@ -74,8 +69,8 @@ class Rules
         if (is_null($value)) {
             return false;
         }
-        if (mb_strlen((string) $value, 'utf8') < (int) $min) {
-            return $this->fail($this->validator->getMessage($key . '.' . __FUNCTION__, $key . '的长度最小' . $min));
+        if (mb_strlen((string)$value, 'utf8') < (int)$min) {
+            return $this->fail($this->getMessage($key . '.' . __FUNCTION__, $key . '的长度最小' . $min));
         }
 
         return true;
@@ -94,14 +89,14 @@ class Rules
         if (is_null($value)) {
             return false;
         }
-        $min = (int) $min;
-        $max = (int) $max;
+        $min = (int)$min;
+        $max = (int)$max;
         if ($min > $max) {
             [$min, $max] = [$max, $min];
         }
-        $length = mb_strlen((string) $value, 'utf8');
+        $length = mb_strlen((string)$value, 'utf8');
         if ($length <= $min || $length >= $max) {
-            return $this->fail($this->validator->getMessage($key . '.' . __FUNCTION__, $key . '的取值范围为' . $min . '-' . $max));
+            return $this->fail($this->getMessage($key . '.' . __FUNCTION__, $key . '的取值范围为' . $min . '-' . $max));
         }
         return true;
     }
@@ -120,7 +115,7 @@ class Rules
         if (is_bool($value) || in_array(strtolower($value), ['on', 'yes', 'true', '1', 'off', 'no', 'false', '0'])) {
             return true;
         }
-        return $this->fail($this->validator->getMessage($key . '.' . __FUNCTION__, $key . '必须是布尔类型'));
+        return $this->fail($this->getMessage($key . '.' . __FUNCTION__, $key . '必须是布尔类型'));
     }
 
     /**
@@ -138,7 +133,7 @@ class Rules
         if (in_array($value, $in)) {
             return true;
         }
-        return $this->fail($this->validator->getMessage($key . '.' . __FUNCTION__, $key . '必须在' . implode(',', $in) . '范围内'));
+        return $this->fail($this->getMessage($key . '.' . __FUNCTION__, $key . '必须在' . implode(',', $in) . '范围内'));
     }
 
     /**
@@ -156,7 +151,7 @@ class Rules
         if (preg_match($regex, $value, $match) && $match[0] == $value) {
             return true;
         }
-        return $this->fail($this->validator->getMessage($key . '.' . __FUNCTION__, $key . '的正则验证没有通过'));
+        return $this->fail($this->getMessage($key . '.' . __FUNCTION__, $key . '的正则验证没有通过'));
     }
 
     /**
@@ -168,8 +163,8 @@ class Rules
      */
     public function confirm($key, $value, $confirm): bool
     {
-        if ($value != $this->validator->getData($confirm)) {
-            return $this->fail($this->validator->getMessage($key . '.' . __FUNCTION__, $key . '确认字段' . $confirm . '不一致'));
+        if ($value != $this->getData($confirm)) {
+            return $this->fail($this->getMessage($key . '.' . __FUNCTION__, $key . '确认字段' . $confirm . '不一致'));
         }
 
         return true;
@@ -189,7 +184,7 @@ class Rules
         if (is_int($value)) {
             return true;
         }
-        return $this->fail($this->validator->getMessage($key . '.' . __FUNCTION__, $key . '必须由整数字符组成'));
+        return $this->fail($this->getMessage($key . '.' . __FUNCTION__, $key . '必须由整数字符组成'));
     }
 
     /**
@@ -206,7 +201,7 @@ class Rules
         if (is_numeric($value)) {
             return true;
         }
-        return $this->fail($this->validator->getMessage($key . '.' . __FUNCTION__, $key . '必须是整数'));
+        return $this->fail($this->getMessage($key . '.' . __FUNCTION__, $key . '必须是整数'));
     }
 
     /**
@@ -223,7 +218,7 @@ class Rules
         if (is_array($value)) {
             return true;
         }
-        return $this->fail($this->validator->getMessage($key . '.' . __FUNCTION__, $key . '必须是数组'));
+        return $this->fail($this->getMessage($key . '.' . __FUNCTION__, $key . '必须是数组'));
     }
 
     /**
@@ -237,8 +232,8 @@ class Rules
     {
         if ($this->array($key, $value)) {
             foreach ($params as $v) {
-                if (! isset($value[$v])) {
-                    return $this->fail($this->validator->getMessage($key . '.' . __FUNCTION__, '需要的字段' . $v . '不存在'));
+                if (!isset($value[$v])) {
+                    return $this->fail($this->getMessage($key . '.' . __FUNCTION__, '需要的字段' . $v . '不存在'));
                 }
             }
             return true;
@@ -250,8 +245,8 @@ class Rules
      * @param $key
      * @param $value
      *
-     * @throws ValidateException
      * @return false|void
+     * @throws ValidateException
      */
     public function email($key, $value)
     {
@@ -259,7 +254,7 @@ class Rules
             return false;
         }
         if (filter_var($value, FILTER_VALIDATE_EMAIL) === false) {
-            return $this->fail($this->validator->getMessage($key . '.' . __FUNCTION__, $key . '的Email不合法'));
+            return $this->fail($this->getMessage($key . '.' . __FUNCTION__, $key . '的Email不合法'));
         }
     }
 
@@ -268,15 +263,13 @@ class Rules
      *
      * @param $message
      *
-     * @throws ValidateException
      * @return false
+     * @throws ValidateException
      */
     protected function fail($message): bool
     {
-        if ($this->validator->isThrowable()) {
-            throw new ValidateException($message, 603);
-        }
-        $this->validator->errors()->push($message);
+        throw new ValidateException($message, 603);
+        $this->errors()->push($message);
         return false;
     }
 }
