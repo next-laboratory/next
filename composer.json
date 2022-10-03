@@ -3,8 +3,6 @@
     "type": "library",
     "license": "Apache-2.0",
     "homepage": "https://github.com/marxphp/utils",
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "authors": [
         {
             "name": "chengyao",
@@ -22,14 +20,13 @@
     "require": {
         "php": "^8.0",
         "max/macro": "^1.0",
-        "ramsey/uuid": "^4.2",
-        "symfony/mime": "*",
-        "voku/portable-ascii": "^1.5",
-        "league/commonmark": "^2.0",
-        "symfony/finder": "*",
-        "doctrine/inflector": "*"
+        "symfony/finder": "*"
     },
     "suggest": {
-        "symfony/var-dumper": "*"
+        "ramsey/uuid": "*",
+        "symfony/mime": "*",
+        "voku/portable-ascii": "*",
+        "league/commonmark": "*",
+        "doctrine/inflector": "*"
     }
 }
