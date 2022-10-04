@@ -9,16 +9,16 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Routing\Annotation;
+namespace Max\Routing\Attribute;
 
 use Attribute;
 use Max\Http\Message\Contract\RequestMethodInterface;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class PatchMapping extends RequestMapping
+class DeleteMapping extends RequestMapping
 {
     /**
      * @var array<int, string>
      */
-    public array $methods = [RequestMethodInterface::METHOD_PATCH];
+    public array $methods = [RequestMethodInterface::METHOD_DELETE];
 }

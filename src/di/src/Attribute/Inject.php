@@ -9,10 +9,10 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Aop\Annotation;
+namespace Max\Di\Attribute;
 
 use Attribute;
-use Max\Aop\Contract\PropertyAnnotation;
+use Max\Aop\Contract\PropertyAttribute;
 use Max\Aop\Exception\PropertyHandleException;
 use Max\Di\Reflection;
 use Psr\Container\ContainerExceptionInterface;
@@ -20,7 +20,7 @@ use ReflectionException;
 use Throwable;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
-class Inject implements PropertyAnnotation
+class Inject implements PropertyAttribute
 {
     /**
      * @param string $id 注入的类型
@@ -34,7 +34,7 @@ class Inject implements PropertyAnnotation
     {
         try {
             $reflectionProperty = Reflection::property($object::class, $property);
-            if ((! is_null($type = $reflectionProperty->getType()) && $type = $type->getName()) || $type = $this->id) {
+            if ((!is_null($type = $reflectionProperty->getType()) && $type = $type->getName()) || $type = $this->id) {
                 $reflectionProperty->setAccessible(true); // 兼容PHP8.0
                 $reflectionProperty->setValue($object, $this->getBinding($type));
             }

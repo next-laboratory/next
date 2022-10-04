@@ -35,7 +35,7 @@ class Message implements MessageInterface
     /**
      * {@inheritDoc}
      */
-    public function withProtocolVersion($version): MessageInterface
+    public function withProtocolVersion($version)
     {
         if ($this->protocolVersion === $version) {
             return $this;
@@ -88,14 +88,14 @@ class Message implements MessageInterface
     /**
      * {@inheritDoc}
      */
-    public function withHeader($name, $value): MessageInterface
+    public function withHeader($name, $value)
     {
         $new          = clone $this;
         $new->headers = clone $this->headers;
         return $new->setHeader($name, $value);
     }
 
-    public function setHeader($name, $value): MessageInterface
+    public function setHeader($name, $value)
     {
         $this->headers->set($name, $value);
         return $this;
@@ -104,14 +104,14 @@ class Message implements MessageInterface
     /**
      * {@inheritDoc}
      */
-    public function withAddedHeader($name, $value): MessageInterface
+    public function withAddedHeader($name, $value)
     {
         $new          = clone $this;
         $new->headers = clone $this->headers;
         return $new->setAddedHeader($name, $value);
     }
 
-    public function setAddedHeader($name, $value): MessageInterface
+    public function setAddedHeader($name, $value)
     {
         $this->headers->add($name, $value);
         return $this;
@@ -120,7 +120,7 @@ class Message implements MessageInterface
     /**
      * {@inheritDoc}
      */
-    public function withoutHeader($name): MessageInterface
+    public function withoutHeader($name)
     {
         $new          = clone $this;
         $new->headers = clone $this->headers;
@@ -140,13 +140,13 @@ class Message implements MessageInterface
     /**
      * {@inheritDoc}
      */
-    public function withBody(StreamInterface $body): MessageInterface
+    public function withBody(StreamInterface $body)
     {
         $new = clone $this;
         return $new->setBody($body);
     }
 
-    public function setBody(StreamInterface $body): MessageInterface
+    public function setBody(StreamInterface $body)
     {
         $this->body = $body;
         return $this;

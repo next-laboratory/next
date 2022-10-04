@@ -13,10 +13,7 @@ namespace Max\Config;
 
 use Max\Config\Contract\ConfigInterface;
 use Max\Utils\Arr;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-use SplFileInfo;
-
+use Max\Utils\Filesystem;
 use function pathinfo;
 
 class Repository implements ConfigInterface
@@ -47,21 +44,28 @@ class Repository implements ConfigInterface
      */
     public function scan(string|array $dirs): void
     {
-        foreach ((array) $dirs as $dir) {
-            $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
-            /** @var SplFileInfo $file */
-            foreach ($files as $file) {
-                if (! $file->isFile()) {
-                    continue;
-                }
-                $path = $file->getRealPath() ?: $file->getPathname();
-                if (pathinfo($path, PATHINFO_EXTENSION) !== 'php') {
-                    continue;
-                }
-                $this->loadOne($path);
-                gc_mem_caches();
-            }
+        $files = (new Filesystem())->files($dirs, pattern: '*.php');
+        foreach ($files as $file) {
+            $this->loadOne($file->getRealPath());
         }
+        //
+        //
+        //        foreach ((array)$dirs as $dir) {
+        //            $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
+        //            /** @var SplFileInfo $file */
+        //            foreach ($files as $file) {
+        //                if (!$file->isFile()) {
+        //                    continue;
+        //                }
+        //                $path = $file->getRealPath() ?: $file->getPathname();
+        //                if (pathinfo($path, PATHINFO_EXTENSION) !== 'php') {
+        //                    continue;
+        //                }
+        //                $configFiles[] = $path;
+        //                gc_mem_caches();
+        //            }
+        //        }
+        //        $this->load($configFiles);
     }
 
     /**
@@ -72,29 +76,18 @@ class Repository implements ConfigInterface
         return $this->items;
     }
 
+    public function loadOne(string $file)
+    {
+        $this->items[pathinfo($file, PATHINFO_FILENAME)] = include_once $file;
+    }
+
     /**
-     * 加载多个配文件.
+     * 加载配置
      */
     public function load(string|array $files): void
     {
-        is_array($files) ? $this->loadMany($files) : $this->loadOne($files);
-    }
-
-    /**
-     * 加载多个配置
-     */
-    public function loadMany(array $files): void
-    {
-        foreach ($files as $file) {
+        foreach ((array)$files as $file) {
             $this->loadOne($file);
         }
-    }
-
-    /**
-     * 加载一个配置文件.
-     */
-    public function loadOne(string $file): void
-    {
-        $this->items[pathinfo($file, PATHINFO_FILENAME)] = include_once $file;
     }
 }

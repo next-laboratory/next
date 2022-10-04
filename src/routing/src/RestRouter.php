@@ -37,7 +37,7 @@ class RestRouter
     protected Route $deleteRoute;
 
     public function __construct(
-        protected RouteCollector $routeCollector,
+        protected RouteCollection $routeCollection,
         protected string $uri,
         protected string $controller,
         protected array $middlewares = [],
@@ -46,7 +46,7 @@ class RestRouter
         foreach (static::$maps as $action => $map) {
             [$methods, $path] = $map;
             $property         = $action . 'Route';
-            $this->routeCollector->addRoute($this->{$property} = new Route(
+            $this->routeCollection->addRoute($this->{$property} = new Route(
                 $methods,
                 sprintf($path, $uri),
                 [$this->controller, $action],

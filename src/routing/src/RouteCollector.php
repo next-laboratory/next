@@ -11,77 +11,47 @@ declare(strict_types=1);
 
 namespace Max\Routing;
 
-use Max\Http\Message\Contract\StatusCodeInterface;
-use Max\Routing\Exception\MethodNotAllowedException;
-use Max\Routing\Exception\RouteNotFoundException;
-use Psr\Http\Message\ServerRequestInterface;
+use Max\Aop\Collector\AbstractCollector;
+use Max\Di\Context;
+use Max\Di\Exception\NotFoundException;
+use Max\Routing\Attribute\Controller;
+use Max\Routing\Attribute\RequestMapping;
+use Psr\Container\ContainerExceptionInterface;
+use ReflectionException;
 
-use function array_key_exists;
-use function preg_match;
-
-class RouteCollector
+class RouteCollector extends AbstractCollector
 {
     /**
-     * 未分组的全部路由.
-     *
-     * @var array<string, Route[]>
+     * 当前控制器对应的router.
      */
-    protected array $routes = [];
+    protected static ?Router $router = null;
 
     /**
-     * 添加一个路由.
+     * 当前控制器的类名.
      */
-    public function addRoute(Route $route): Route
+    protected static string $class = '';
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws ReflectionException
+     */
+    public static function collectClass(string $class, object $attribute): void
     {
-        foreach ($route->getMethods() as $method) {
-            $this->routes[$method][] = $route;
+        if ($attribute instanceof Controller) {
+            $routeCollector = Context::getContainer()->make(\Max\Routing\RouteCollector::class);
+            $router         = new Router($attribute->prefix, $attribute->patterns, middlewares: $attribute->middlewares, routeCollection: $routeCollector);
+            self::$router   = $router;
+            self::$class    = $class;
         }
-        return $route;
     }
 
     /**
-     * 全部.
-     *
-     * @return array<string, Route[]>
+     * @throws NotFoundException
      */
-    public function all(): array
+    public static function collectMethod(string $class, string $method, object $attribute): void
     {
-        return $this->routes;
-    }
-
-    /**
-     * 使用ServerRequestInterface对象解析路由.
-     *
-     * @throws MethodNotAllowedException
-     * @throws RouteNotFoundException
-     */
-    public function resolveRequest(ServerRequestInterface $request): Route
-    {
-        $path   = '/' . trim($request->getUri()->getPath(), '/');
-        $method = $request->getMethod();
-        return $this->resolve($method, $path);
-    }
-
-    /**
-     * 使用请求方法和请求路径解析路由.
-     */
-    public function resolve(string $method, string $path): Route
-    {
-        $routes = $this->routes[$method] ?? throw new MethodNotAllowedException('Method not allowed: ' . $method, StatusCodeInterface::STATUS_METHOD_NOT_ALLOWED);
-        foreach ($routes as $route) {
-            if (($compiledPath = $route->getCompiledPath()) && preg_match($compiledPath, $path, $match)) {
-                $resolvedRoute = clone $route;
-                if (! empty($match)) {
-                    foreach ($route->getParameters() as $key => $value) {
-                        if (array_key_exists($key, $match)) {
-                            $resolvedRoute->setParameter($key, $match[$key]);
-                        }
-                    }
-                }
-                return $resolvedRoute;
-            }
+        if ($attribute instanceof RequestMapping && self::$class === $class && ! is_null(self::$router)) {
+            self::$router->request($attribute->path, [$class, $method], $attribute->methods)->middleware(...$attribute->middlewares);
         }
-
-        throw new RouteNotFoundException('Not Found', StatusCodeInterface::STATUS_NOT_FOUND);
     }
 }

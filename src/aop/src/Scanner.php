@@ -14,7 +14,7 @@ namespace Max\Aop;
 use Attribute;
 use Exception;
 use Max\Aop\Collector\AspectCollector;
-use Max\Aop\Collector\PropertyAnnotationCollector;
+use Max\Aop\Collector\PropertyAttributeCollector;
 use Max\Di\Reflection;
 use Max\Utils\Composer;
 use Max\Utils\Filesystem;
@@ -127,7 +127,7 @@ final class Scanner
             $this->filesystem->exists($proxyDir) || $this->filesystem->makeDirectory($proxyDir, 0755, true, true);
             $this->filesystem->cleanDirectory($proxyDir);
             $this->collect($collectors);
-            $collectedClasses = array_unique(array_merge(AspectCollector::getCollectedClasses(), PropertyAnnotationCollector::getCollectedClasses()));
+            $collectedClasses = array_unique(array_merge(AspectCollector::getCollectedClasses(), PropertyAttributeCollector::getCollectedClasses()));
             $scanMap          = [];
             foreach ($collectedClasses as $class) {
                 $proxyPath = $proxyDir . str_replace('\\', '_', $class) . '_Proxy.php';
@@ -144,7 +144,7 @@ final class Scanner
     {
         $traverser = new NodeTraverser();
         $metadata  = new Metadata($class);
-        if (in_array(PropertyAnnotationCollector::class, $collectors)) {
+        if (in_array(PropertyAttributeCollector::class, $collectors)) {
             $traverser->addVisitor(new PropertyHandlerVisitor($metadata));
         }
         if (in_array(AspectCollector::class, $collectors)) {

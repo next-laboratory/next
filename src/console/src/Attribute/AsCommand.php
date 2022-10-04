@@ -9,11 +9,11 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Event\Annotation;
+namespace Max\Console\Attribute;
 
 use Attribute;
 
 #[Attribute(Attribute::TARGET_CLASS)]
-class Listen
+class AsCommand
 {
 }

@@ -15,7 +15,7 @@ use Max\Http\Server\Contract\RouteDispatcherInterface;
 use Max\Http\Server\Event\OnRequest;
 use Max\Routing\Exception\RouteNotFoundException;
 use Max\Routing\Route;
-use Max\Routing\RouteCollector;
+use Max\Routing\RouteCollection;
 use Max\Routing\Router;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -32,17 +32,17 @@ class Kernel
     protected array $middlewares = [];
 
     /**
-     * @param RouteCollector            $routeCollector  路由收集器
+     * @param RouteCollection           $routeCollection 路由收集器
      * @param ContainerInterface        $container       容器
      * @param ?EventDispatcherInterface $eventDispatcher 事件调度器
      */
     final public function __construct(
         protected ContainerInterface $container,
-        protected RouteCollector $routeCollector,
+        protected RouteCollection $routeCollection,
         protected RouteDispatcherInterface $routeDispatcher,
         protected ?EventDispatcherInterface $eventDispatcher = null,
     ) {
-        $this->map(new Router(routeCollector: $routeCollector));
+        $this->map(new Router(routeCollection: $this->routeCollection));
     }
 
     /**
@@ -72,7 +72,7 @@ class Kernel
      */
     public function getAllRoutes(): array
     {
-        return $this->routeCollector->all();
+        return $this->routeCollection->all();
     }
 
     /**

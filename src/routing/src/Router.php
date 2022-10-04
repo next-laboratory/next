@@ -31,9 +31,9 @@ class Router
         protected array $patterns = [],
         protected string $namespace = '',
         protected array $middlewares = [],
-        protected ?RouteCollector $routeCollector = null
+        protected ?RouteCollection $routeCollection = null
     ) {
-        $this->routeCollector ??= new RouteCollector();
+        $this->routeCollection ??= new RouteCollection();
     }
 
     /**
@@ -110,7 +110,7 @@ class Router
     public function rest(string $uri, string $controller): RestRouter
     {
         return new RestRouter(
-            $this->routeCollector,
+            $this->routeCollection,
             $this->prefix . $uri,
             $this->formatController($controller),
             $this->middlewares,
@@ -131,9 +131,9 @@ class Router
         if ($action instanceof Closure || count($action) === 2) {
             if (is_array($action)) {
                 [$controller, $action] = $action;
-                $action                = [$this->formatController($controller), $action];
+                $action = [$this->formatController($controller), $action];
             }
-            return $this->routeCollector->addRoute(new Route($methods, $this->prefix . $path, $action, $this->patterns, $this->middlewares));
+            return $this->routeCollection->addRoute(new Route($methods, $this->prefix . $path, $action, $this->patterns, $this->middlewares));
         }
         throw new InvalidArgumentException('Invalid route action: ' . $path);
     }
@@ -193,9 +193,9 @@ class Router
     /**
      * 路由收集器.
      */
-    public function getRouteCollector(): RouteCollector
+    public function getRouteCollection(): RouteCollection
     {
-        return $this->routeCollector;
+        return $this->routeCollection;
     }
 
     /**
