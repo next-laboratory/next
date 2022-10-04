@@ -20,7 +20,7 @@ composer require max/aop
     ],
     'collectors' => [
         \Max\Aop\Collector\AspectCollector::class,
-        \Max\Aop\Collector\PropertyAnnotationCollector::class,
+        \Max\Aop\Collector\PropertyAttributeCollector::class,
     ],
     'runtimeDir' => BASE_PATH . '/runtime',
 ]));
@@ -30,7 +30,7 @@ composer require max/aop
 * paths 注解扫描路径
 * collectors 注解收集器
     - \Max\Aop\Collector\AspectCollector::class 切面收集器，取消后不能使用切面
-    - \Max\Aop\Collector\PropertyAnnotationCollector::class 属性注解收集器，取消后不支持属性自动注入
+    - \Max\Aop\Collector\PropertyAttributeCollector::class 属性注解收集器，取消后不支持属性自动注入
 * runtimeDir 运行时，生成的代理类和代理类地图会被缓存到这里
 
 ## 编写切面类，实现AspectInterface接口

@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace Max\Aop\Collector;
 
-use Max\Aop\Contract\PropertyAnnotation;
+use Max\Aop\Contract\PropertyAttribute;
 
-class PropertyAnnotationCollector extends AbstractCollector
+class PropertyAttributeCollector extends AbstractCollector
 {
     protected static array $container = [];
 
@@ -38,7 +38,7 @@ class PropertyAnnotationCollector extends AbstractCollector
     /**
      * 返回某一个类的某属性的注解.
      *
-     * @return PropertyAnnotation[]
+     * @return PropertyAttribute[]
      */
     public static function getByProperty(string $class, string $property): array
     {
@@ -60,6 +60,6 @@ class PropertyAnnotationCollector extends AbstractCollector
      */
     protected static function isValid(object $attribute): bool
     {
-        return $attribute instanceof PropertyAnnotation;
+        return $attribute instanceof PropertyAttribute;
     }
 }

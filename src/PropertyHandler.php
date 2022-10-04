@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Aop;
 
-use Max\Aop\Collector\PropertyAnnotationCollector;
+use Max\Aop\Collector\PropertyAttributeCollector;
 
 trait PropertyHandler
 {
@@ -20,7 +20,7 @@ trait PropertyHandler
     protected function __handleProperties(): void
     {
         if (! $this->__propertyHandled) {
-            foreach (PropertyAnnotationCollector::getByClass(self::class) as $property => $attributes) {
+            foreach (PropertyAttributeCollector::getByClass(self::class) as $property => $attributes) {
                 foreach ($attributes as $attribute) {
                     $attribute->handle($this, $property);
                 }
