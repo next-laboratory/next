@@ -1,9 +1,9 @@
 {
-    "name": "max/validator",
+    "name": "max/validation",
     "description": "A simple validator.",
     "type": "library",
     "license": "Apache-2.0",
-    "homepage": "https://github.com/marxphp/validator",
+    "homepage": "https://github.com/marxphp/validation",
     "authors": [
         {
             "name": "chengyao",
@@ -12,7 +12,12 @@
     ],
     "autoload": {
         "psr-4": {
-            "Max\\Validator\\": "src/"
+            "Max\\Validation\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Max\\ValidationTests\\": "tests/"
         }
     },
     "require": {

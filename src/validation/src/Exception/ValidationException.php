@@ -9,10 +9,10 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Validator\Exception;
+namespace Max\Validation\Exception;
 
 use Exception;
 
-class ValidateException extends Exception
+class ValidationException extends Exception
 {
 }

@@ -9,9 +9,8 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Validator;
+namespace Max\Validation;
 
-use Max\Validator\Exception\ValidateException;
 use function explode;
 use function is_array;
 
@@ -26,7 +25,8 @@ class Validator
     public function __construct(
         protected array $data,
         protected array $rules,
-        protected array $message = [],
+        protected array $messages = [],
+        protected bool $stopOnFirstFailure = true,
     ) {
     }
 
@@ -37,57 +37,41 @@ class Validator
 
     protected function getMessage(string $key, string $default = '验证失败'): string
     {
-        return $this->message[$key] ?? $default;
+        return $this->messages[$key] ?? $default;
     }
 
-    public function validated(bool $batch = false): array
+    /**
+     * @throws ValidationException
+     */
+    public function validated(): array
     {
-        $funcName = $batch ? 'batchValidate' : 'validate';
-        return $this->$funcName()->valid();
+        return $this->validate()->valid();
     }
 
     public function validate(): static
     {
-        return $this->do(function($ruleName, $key, $value, $ruleParams) {
-            if ($this->{$ruleName}($key, $value, ...$ruleParams)) {
-                $this->valid[$key] = $value;
-            }
-        });
+        return $this->passes();
     }
 
-    protected function do(callable $callable): static
+    public function passes(): static
     {
         if (!$this->validated) {
             $this->error = new Error();
-
             foreach ($this->rules as $key => $rule) {
-                $value = $this->getData($key);
                 if (!is_array($rule)) {
                     $rule = explode('|', $rule);
                 }
+                $value = $this->getData($key);
                 foreach ($rule as $ruleItem) {
-                    $ruleItem   = explode(':', $ruleItem, 2);
-                    $ruleName   = $ruleItem[0];
-                    $ruleParams = empty($ruleItem[1]) ? [] : explode(',', $ruleItem[1]);
-                    call_user_func_array($callable, [$ruleName, $key, $value, $ruleParams]);
+                    [$ruleName, $ruleParams] = RuleParser::parse($ruleItem);
+                    if ($this->{$ruleName}($key, $value, ...$ruleParams)) {
+                        $this->valid[$key] = $value;
+                    }
                 }
             }
             $this->validated = true;
         }
-
         return $this;
-    }
-
-    public function batchValidate(): static
-    {
-        return $this->do(function($ruleName, $key, $value, $ruleParams) {
-            try {
-                if ($this->{$ruleName}($key, $value, ...$ruleParams)) {
-                    $this->valid[$key] = $value;
-                }
-            } catch (ValidateException) {
-            }
-        });
     }
 
     public function errors(): Error

@@ -1,6 +1,6 @@
 <?php
 
-namespace Max\Validator;
+namespace Max\Validation;
 
 class Error
 {
