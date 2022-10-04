@@ -42,7 +42,7 @@ class Filesystem
      */
     public function missing(string $path): bool
     {
-        return ! static::exists($path);
+        return !static::exists($path);
     }
 
     /**
@@ -92,7 +92,7 @@ class Filesystem
             $__path = $path;
             $__data = $data;
 
-            return (static function () use ($__path, $__data) {
+            return (static function() use ($__path, $__data) {
                 extract($__data, EXTR_SKIP);
 
                 return require $__path;
@@ -105,8 +105,8 @@ class Filesystem
     /**
      * Require the given file once.
      *
-     * @throws FileNotFoundException
      * @return mixed
+     * @throws FileNotFoundException
      */
     public function requireOnce(string $path, array $data = [])
     {
@@ -114,7 +114,7 @@ class Filesystem
             $__path = $path;
             $__data = $data;
 
-            return (static function () use ($__path, $__data) {
+            return (static function() use ($__path, $__data) {
                 extract($__data, EXTR_SKIP);
 
                 return require_once $__path;
@@ -131,18 +131,18 @@ class Filesystem
      */
     public function lines(string $path): LazyCollection
     {
-        if (! static::isFile($path)) {
+        if (!static::isFile($path)) {
             throw new FileNotFoundException(
                 "File does not exist at path {$path}."
             );
         }
 
-        return LazyCollection::make(function () use ($path) {
+        return LazyCollection::make(function() use ($path) {
             $file = new SplFileObject($path);
 
             $file->setFlags(SplFileObject::DROP_NEW_LINE);
 
-            while (! $file->eof()) {
+            while (!$file->eof()) {
                 yield $file->fgets();
             }
         });
@@ -232,7 +232,7 @@ class Filesystem
         $success = true;
 
         foreach ($paths as $path) {
-            if (! @unlink($path)) {
+            if (!@unlink($path)) {
                 $success = false;
             }
         }
@@ -261,13 +261,13 @@ class Filesystem
      */
     public function link(string $target, string $link): bool
     {
-        if (! windows_os()) {
+        if (!windows_os()) {
             return symlink($target, $link);
         }
 
         $mode = static::isDirectory($target) ? 'J' : 'H';
 
-        return (bool) exec("mklink /{$mode} " . escapeshellarg($link) . ' ' . escapeshellarg($target));
+        return (bool)exec("mklink /{$mode} " . escapeshellarg($link) . ' ' . escapeshellarg($target));
     }
 
     /**
@@ -277,7 +277,7 @@ class Filesystem
      */
     public function relativeLink(string $target, string $link): void
     {
-        if (! class_exists(SymfonyFilesystem::class)) {
+        if (!class_exists(SymfonyFilesystem::class)) {
             throw new RuntimeException(
                 'To enable support for relative links, please install the symfony/filesystem package.'
             );
@@ -327,7 +327,7 @@ class Filesystem
      */
     public function guessExtension(string $path): ?string
     {
-        if (! class_exists(MimeTypes::class)) {
+        if (!class_exists(MimeTypes::class)) {
             throw new RuntimeException(
                 'To enable support for guessing extensions, please install the symfony/mime package.'
             );
@@ -413,10 +413,10 @@ class Filesystem
      *
      * @return SplFileInfo[]
      */
-    public function files(string $directory, bool $hidden = false): array
+    public function files(string|array $directory, bool $hidden = false, string $pattern = '*'): array
     {
         return iterator_to_array(
-            Finder::create()->files()->ignoreDotFiles(! $hidden)->in($directory)->depth(0)->sortByName(),
+            Finder::create()->files()->ignoreDotFiles(!$hidden)->in($directory)->name($pattern)->depth(0)->sortByName(),
             false
         );
     }
@@ -429,7 +429,7 @@ class Filesystem
     public function allFiles(string $directory, bool $hidden = false): array
     {
         return iterator_to_array(
-            Finder::create()->files()->ignoreDotFiles(! $hidden)->in($directory)->sortByName(),
+            Finder::create()->files()->ignoreDotFiles(!$hidden)->in($directory)->sortByName(),
             false
         );
     }
@@ -453,7 +453,7 @@ class Filesystem
      */
     public function ensureDirectoryExists(string $path, int $mode = 0755, bool $recursive = true): void
     {
-        if (! static::isDirectory($path)) {
+        if (!static::isDirectory($path)) {
             static::makeDirectory($path, $mode, $recursive);
         }
     }
@@ -475,7 +475,7 @@ class Filesystem
      */
     public function moveDirectory(string $from, string $to, bool $overwrite = false): bool
     {
-        if ($overwrite && static::isDirectory($to) && ! static::deleteDirectory($to)) {
+        if ($overwrite && static::isDirectory($to) && !static::deleteDirectory($to)) {
             return false;
         }
 
@@ -487,7 +487,7 @@ class Filesystem
      */
     public function copyDirectory(string $directory, string $destination, ?int $options = null): bool
     {
-        if (! static::isDirectory($directory)) {
+        if (!static::isDirectory($directory)) {
             return false;
         }
 
@@ -509,7 +509,7 @@ class Filesystem
             if ($item->isDir()) {
                 $path = $item->getPathname();
 
-                if (! static::copyDirectory($path, $target, $options)) {
+                if (!static::copyDirectory($path, $target, $options)) {
                     return false;
                 }
             }
@@ -518,7 +518,7 @@ class Filesystem
             // location and keep looping. If for some reason the copy fails we'll bail out
             // and return false, so the developer is aware that the copy process failed.
             else {
-                if (! static::copy($item->getPathname(), $target)) {
+                if (!static::copy($item->getPathname(), $target)) {
                     return false;
                 }
             }
@@ -533,7 +533,7 @@ class Filesystem
      */
     public function deleteDirectory(string $directory, bool $preserve = false): bool
     {
-        if (! static::isDirectory($directory)) {
+        if (!static::isDirectory($directory)) {
             return false;
         }
 
@@ -543,7 +543,7 @@ class Filesystem
             // If the item is a directory, we can just recurse into the function and
             // delete that subdirectory otherwise we'll just delete the file and
             // keep iterating through each file until the directory is cleaned.
-            if ($item->isDir() && ! $item->isLink()) {
+            if ($item->isDir() && !$item->isLink()) {
                 static::deleteDirectory($item->getPathname());
             }
 
@@ -555,7 +555,7 @@ class Filesystem
             }
         }
 
-        if (! $preserve) {
+        if (!$preserve) {
             @rmdir($directory);
         }
 
@@ -569,7 +569,7 @@ class Filesystem
     {
         $allDirectories = static::directories($directory);
 
-        if (! empty($allDirectories)) {
+        if (!empty($allDirectories)) {
             foreach ($allDirectories as $directoryName) {
                 static::deleteDirectory($directoryName);
             }
