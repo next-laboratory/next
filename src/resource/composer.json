@@ -1,0 +1,15 @@
+{
+    "name": "max/resource",
+    "autoload": {
+        "psr-4": {
+            "Max\\Resource\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "ChengYao",
+            "email": "bigyao@139.com"
+        }
+    ],
+    "require": {}
+}
