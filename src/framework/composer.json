@@ -1,8 +1,8 @@
 {
-    "name": "max/console",
+    "name": "max/framework",
     "autoload": {
         "psr-4": {
-            "Max\\Console\\": "src/"
+            "Max\\": "src/"
         }
     },
     "authors": [
