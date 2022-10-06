@@ -11,5 +11,8 @@
             "email": "bigyao@139.com"
         }
     ],
-    "require": {}
+    "require": {
+        "php": "^8.0",
+        "max/utils": "^1.0"
+    }
 }
