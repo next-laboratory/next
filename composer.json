@@ -21,7 +21,7 @@
             "Max\\Routing\\": "src/routing/src",
             "Max\\Session\\": "src/session/src",
             "Max\\Utils\\": "src/utils/src",
-            "Max\\Validator\\": "src/validator/src",
+            "Max\\Validation\\": "src/validation/src",
             "Max\\View\\": "src/view/src",
             "Max\\VarDumper\\": "src/var-dumper/src"
         },

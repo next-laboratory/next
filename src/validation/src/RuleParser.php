@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
 namespace Max\Validation;
 
 class RuleParser
@@ -12,7 +21,7 @@ class RuleParser
         $parameters = [];
         if (str_contains($rule, ':')) {
             [$rule, $parameter] = explode(':', $rule, 2);
-            $parameters = static::parseParameters($rule, $parameter);
+            $parameters         = static::parseParameters($rule, $parameter);
         }
         return [$rule, $parameters];
     }
