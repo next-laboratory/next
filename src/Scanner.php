@@ -126,7 +126,9 @@ final class Scanner
             $proxyDir = $this->config->getRuntimeDir() . 'proxy/';
             $this->filesystem->exists($proxyDir) || $this->filesystem->makeDirectory($proxyDir, 0755, true, true);
             $this->filesystem->cleanDirectory($proxyDir);
+            ob_start();
             $this->collect($collectors);
+            ob_get_clean();
             $collectedClasses = array_unique(array_merge(AspectCollector::getCollectedClasses(), PropertyAttributeCollector::getCollectedClasses()));
             $scanMap          = [];
             foreach ($collectedClasses as $class) {
@@ -162,27 +164,28 @@ final class Scanner
             $reflectionClass = Reflection::class($class);
             // 收集类注解
             foreach ($reflectionClass->getAttributes() as $attribute) {
-                $attributeInstance = $attribute->newInstance();
-                if ($attributeInstance instanceof Attribute) {
-                    continue;
-                }
                 try {
-                    foreach ($collectors as $collector) {
-                        $collector::collectClass($class, $attributeInstance);
+                    $attributeInstance = $attribute->newInstance();
+                    if (!$attributeInstance instanceof Attribute) {
+                        foreach ($collectors as $collector) {
+                            $collector::collectClass($class, $attributeInstance);
+                        }
                     }
                 } catch (Throwable $e) {
-                    echo '[NOTICE] ' . $class . ': ' . $e->getMessage() . PHP_EOL;
+                    printf("\033[33m [INFO] \033[0m%s, %s\n", $class, $e->getMessage());
                 }
             }
             // 收集属性注解
             foreach ($reflectionClass->getProperties() as $reflectionProperty) {
+                $propertyName = $reflectionProperty->getName();
                 foreach ($reflectionProperty->getAttributes() as $attribute) {
                     try {
+                        $attributeInstance = $attribute->newInstance();
                         foreach ($collectors as $collector) {
-                            $collector::collectProperty($class, $reflectionProperty->getName(), $attribute->newInstance());
+                            $collector::collectProperty($class, $propertyName, $attributeInstance);
                         }
                     } catch (Throwable $e) {
-                        echo '[NOTICE] ' . $class . ': ' . $e->getMessage() . PHP_EOL;
+                        printf("\033[33m [INFO] \033[0m%s->%s, %s\n", $class, $propertyName, $e->getMessage());
                     }
                 }
             }
@@ -191,23 +194,26 @@ final class Scanner
                 $method = $reflectionMethod->getName();
                 foreach ($reflectionMethod->getAttributes() as $attribute) {
                     try {
+                        $attributeInstance = $attribute->newInstance();
                         foreach ($collectors as $collector) {
-                            $collector::collectMethod($class, $method, $attribute->newInstance());
+                            $collector::collectMethod($class, $method, $attributeInstance);
                         }
                     } catch (Throwable $e) {
-                        echo '[NOTICE] ' . $class . ': ' . $e->getMessage() . PHP_EOL;
+                        printf("\033[33m [INFO] \033[0m%s, %s\n", $class, $e->getMessage());
                     }
                 }
                 // 收集该方法的参数的注解
                 foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-                    try {
-                        foreach ($reflectionParameter->getAttributes() as $attribute) {
+                    $parameterName = $reflectionParameter->getName();
+                    foreach ($reflectionParameter->getAttributes() as $attribute) {
+                        try {
+                            $attributeInstance = $attribute->newInstance();
                             foreach ($collectors as $collector) {
-                                $collector::collectorMethodParameter($class, $method, $reflectionParameter->getName(), $attribute->newInstance());
+                                $collector::collectorMethodParameter($class, $method, $parameterName, $attributeInstance);
                             }
+                        } catch (Throwable $e) {
+                            printf("\033[33m [INFO] \033[0m%s, %s\n", $class, $e->getMessage());
                         }
-                    } catch (Throwable $e) {
-                        echo '[NOTICE] ' . $class . ': ' . $e->getMessage() . PHP_EOL;
                     }
                 }
             }
