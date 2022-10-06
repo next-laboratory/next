@@ -20,12 +20,12 @@ class RpcServiceCollector extends AbstractCollector
     public static function collectClass(string $class, object $attribute): void
     {
         if ($attribute instanceof RpcService) {
-            $serverName = $attribute->name;
-            if (isset(static::$container[$serverName])) {
-                throw new InvalidArgumentException('服务已经被注册');
+            $service = $attribute->name;
+            if (isset(static::$container[$service])) {
+                throw new InvalidArgumentException('Service \'' . $service . '\' has been registered');
             }
             foreach (Reflection::methods($class, ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
-                static::$container[$serverName][$reflectionMethod->getName()] = [$class, $reflectionMethod->getName()];
+                static::$container[$service][$reflectionMethod->getName()] = [$class, $reflectionMethod->getName()];
             }
         }
     }
