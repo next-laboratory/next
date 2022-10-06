@@ -16,6 +16,7 @@ use GuzzleHttp\Client as GzClient;
 use GuzzleHttp\Exception\GuzzleException;
 use Max\JsonRpc\Message\Request;
 use Max\JsonRpc\Message\Response;
+use Psr\Http\Message\ResponseInterface;
 
 class Client
 {
@@ -33,12 +34,18 @@ class Client
      */
     public function call(Request $request, string $requestMethod = 'GET')
     {
-        if (! $request->hasId()) {
+        if (!$request->hasId()) {
             $request->setId(md5(uniqid()));
         }
-        $psrResponse = $this->client->request($requestMethod, '/', ['json' => $request]);
+        return Response::createFromPsrResponse($this->sendRequest($request, $requestMethod));
+    }
 
-        return Response::createFromPsrResponse($psrResponse);
+    /**
+     * @throws GuzzleException
+     */
+    public function sendRequest(Request $request, string $requestMethod = 'GET'): ResponseInterface
+    {
+        return $this->client->request($requestMethod, '/', ['json' => $request]);
     }
 
     /**
@@ -46,6 +53,6 @@ class Client
      */
     public function notify(Request $request, string $requestMethod = 'GET'): void
     {
-        $this->client->request($requestMethod, '/', ['json' => $request]);
+        $this->sendRequest($request, $requestMethod);
     }
 }
