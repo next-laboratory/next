@@ -58,9 +58,8 @@ class Validator
                     throw new ValidationException('Rule \'' . $ruleName . '\' is not exist');
                 }
                 try {
-                    if ($this->{$ruleName}($key, $value, ...$ruleParams)) {
-                        $this->valid[$key] = $value;
-                    }
+                    $this->{$ruleName}($key, $value, ...$ruleParams);
+                    $this->valid[$key] = $value;
                 } catch (ValidationException $e) {
                     if ($this->stopOnFirstFailure) {
                         throw $e;
