@@ -2,67 +2,38 @@
 
 namespace Max\Redis\Connector;
 
+use Max\Pool\BasePool;
+use Max\Pool\BasePoolItem;
+use Max\Pool\Contract\PoolItemInterface;
 use Max\Redis\Contract\ConnectorInterface;
 use Redis;
 use RedisException;
-use RuntimeException;
-use SplQueue;
 
-class BasePoolConnector implements ConnectorInterface
+class BasePoolConnector extends BasePool implements ConnectorInterface
 {
-    protected SplQueue $splQueue;
-    protected int $num = 0;
-
     public function __construct(
         protected string $host = '127.0.0.1',
-        protected int    $port = 6379,
-        protected float  $timeout = 0.0,
-        protected        $reserved = null,
-        protected int    $retryInterval = 0,
-        protected float  $readTimeout = 0.0,
+        protected int $port = 6379,
+        protected float $timeout = 0.0,
+        protected $reserved = null,
+        protected int $retryInterval = 0,
+        protected float $readTimeout = 0.0,
         protected string $auth = '',
-        protected int    $database = 0,
-        protected int    $poolSize = 16,
-    )
-    {
-        $this->splQueue = new SplQueue();
+        protected int $database = 0,
+        protected int $poolSize = 16,
+    ) {
+        $this->open();
     }
 
-    public function get()
+    public function getPoolCapacity(): int
     {
-        if ($this->isEmpty() && $this->num >= $this->poolSize) {
-            throw new RuntimeException('Too many connections');
-        }
-        if ($this->num < $this->poolSize) {
-            $this->splQueue->push($this->newConnection());
-            $this->num++;
-        }
-        return $this->splQueue->shift();
-    }
-
-    public function release($connection)
-    {
-        if (is_null($connection)) {
-            $this->num--;
-        } else if (!$this->isFull()) {
-            $this->splQueue->push($connection);
-        }
-    }
-
-    protected function isFull(): bool
-    {
-        return $this->splQueue->count() >= $this->poolSize;
-    }
-
-    protected function isEmpty(): bool
-    {
-        return $this->splQueue->isEmpty();
+        return $this->poolSize;
     }
 
     /**
      * @throws RedisException
      */
-    protected function newConnection(): Redis
+    public function newPoolItem()
     {
         $redis = new Redis();
         $redis->pconnect(
