@@ -1,0 +1,15 @@
+{
+    "name": "max/json-rpc",
+    "autoload": {
+        "psr-4": {
+            "Max\\JsonRpc\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "chengyao",
+            "email": "987861463@qq.com"
+        }
+    ],
+    "require": {}
+}
