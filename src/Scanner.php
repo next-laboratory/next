@@ -128,7 +128,7 @@ final class Scanner
             $this->filesystem->cleanDirectory($proxyDir);
             ob_start();
             $this->collect($collectors);
-            ob_get_clean();
+            ob_end_clean();
             $collectedClasses = array_unique(array_merge(AspectCollector::getCollectedClasses(), PropertyAttributeCollector::getCollectedClasses()));
             $scanMap          = [];
             foreach ($collectedClasses as $class) {
