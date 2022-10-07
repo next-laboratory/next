@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of MaxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
 namespace Max\Database\Connector;
 
 use RuntimeException;
@@ -8,7 +17,8 @@ use SplQueue;
 class BasePoolConnector extends BaseConnector
 {
     protected SplQueue $splQueue;
-    protected int      $num = 0;
+
+    protected int $num = 0;
 
     public function __construct(
         string $driver = 'mysql',
@@ -28,12 +38,13 @@ class BasePoolConnector extends BaseConnector
 
     public function get()
     {
-        if ($this->isEmpty() && $this->num >= $this->poolSize) {
+        $isMaximum = $this->num >= $this->poolSize;
+        if ($this->isEmpty() && $isMaximum) {
             throw new RuntimeException('Too many connections');
         }
-        if ($this->num < $this->poolSize) {
+        if (! $isMaximum) {
             $this->splQueue->push($this->newConnection());
-            $this->num++;
+            ++$this->num;
         }
         return $this->splQueue->shift();
     }
@@ -41,8 +52,8 @@ class BasePoolConnector extends BaseConnector
     public function release($connection)
     {
         if (is_null($connection)) {
-            $this->num--;
-        } else if (!$this->isFull()) {
+            --$this->num;
+        } elseif (! $this->isFull()) {
             $this->splQueue->push($connection);
         }
     }

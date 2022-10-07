@@ -31,10 +31,10 @@ class BaseConnector implements ConnectorInterface
     ) {
         if (empty($this->DSN)) {
             $this->DSN = sprintf('%s:host=%s;port=%s;', $driver, $host, $port);
-            if (!empty($database)) {
+            if (! empty($database)) {
                 $this->DSN .= 'dbname=' . $database . ';';
             }
-            if (!empty($unixSocket)) {
+            if (! empty($unixSocket)) {
                 $this->DSN .= 'unix_socket=' . $unixSocket . ';';
             }
         }

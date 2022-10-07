@@ -83,7 +83,7 @@ class QueryBuilder
 
     public function whereIn(string $column, array $in): static
     {
-        if (!empty($in)) {
+        if (! empty($in)) {
             $this->addBindings($in);
             $this->where[] = [$column, 'IN', sprintf('(%s)', rtrim(str_repeat('?, ', count($in)), ' ,'))];
         }
@@ -227,7 +227,7 @@ class QueryBuilder
     {
         $query = sprintf('SELECT EXISTS(%s) AS MAX_EXIST', $this->select([1])->toSql());
 
-        return (bool)$this->query->statement($query, $this->bindings)->fetchColumn();
+        return (bool) $this->query->statement($query, $this->bindings)->fetchColumn();
     }
 
     public function column(string $column, ?string $key = null): array
@@ -264,7 +264,7 @@ class QueryBuilder
             $this->bindings,
         );
 
-        return (int)$this->query->getPDO()->lastInsertId();
+        return (int) $this->query->getPDO()->lastInsertId();
     }
 
     public function insertMany(array $records): mixed
@@ -281,7 +281,7 @@ class QueryBuilder
 
     public function insertAll(array $data): array
     {
-        return array_map(fn($item) => $this->insert($item), $data);
+        return array_map(fn ($item) => $this->insert($item), $data);
     }
 
     public function update(array $data): int
@@ -294,7 +294,7 @@ class QueryBuilder
         $query = 'SELECT ';
         foreach (static::$clause as $value) {
             $compiler = 'compile' . ucfirst($value);
-            if (!empty($this->{$value})) {
+            if (! empty($this->{$value})) {
                 $query .= $this->{$compiler}($this);
             }
         }
@@ -345,15 +345,15 @@ class QueryBuilder
 
     protected function aggregate(string $expression): int
     {
-        return (int)$this->query->statement(
-            $this->select((array)($expression . ' AS AGGREGATE'))->toSql(),
+        return (int) $this->query->statement(
+            $this->select((array) ($expression . ' AS AGGREGATE'))->toSql(),
             $this->bindings
         )->fetchColumn();
     }
 
     protected function compileJoin(): string
     {
-        $joins = array_map(function(Join $item) {
+        $joins = array_map(function (Join $item) {
             $alias = $item->alias ? 'AS ' . $item->alias : '';
             $on    = $item->on ? ('ON ' . implode(' ', $item->on)) : '';
             return ' ' . $item->league . ' ' . $item->table . ' ' . $alias . ' ' . $on;
@@ -393,7 +393,7 @@ class QueryBuilder
 
     protected function compileOrder(): string
     {
-        $orderBy = array_map(fn($item) => $item[0] instanceof Expression ? $item[0]->__toString() : implode(' ', $item), $this->order);
+        $orderBy = array_map(fn ($item) => $item[0] instanceof Expression ? $item[0]->__toString() : implode(' ', $item), $this->order);
         return ' ORDER BY ' . implode(', ', $orderBy);
     }
 
@@ -404,7 +404,7 @@ class QueryBuilder
 
     protected function compileHaving(): string
     {
-        $having = array_map(fn($item) => implode(' ', $item), $this->having);
+        $having = array_map(fn ($item) => implode(' ', $item), $this->having);
 
         return ' HAVING ' . implode(' AND ', $having);
     }
