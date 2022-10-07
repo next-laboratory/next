@@ -10,6 +10,7 @@
     ],
     "autoload": {
         "psr-4": {
+            "Max\\": "src/framework/src",
             "Max\\Aop\\": "src/aop/src",
             "Max\\Cache\\": "src/cache/src",
             "Max\\Config\\": "src/config/src",
@@ -46,6 +47,7 @@
         }
     ],
     "replace": {
+        "max/framework": "*",
         "max/aop": "*",
         "max/cache": "*",
         "max/config": "*",
