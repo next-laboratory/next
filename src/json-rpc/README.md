@@ -49,19 +49,40 @@ class CalculateService
 
 ### 添加请求处理代码
 
-> 如下为swoole环境下的代码，将代码放进onRequest事件回调中，后期会精简这部分的代码
+#### 处理Http请求
 
 ```php
-$psrRequest  = ServerRequest::createFromSwooleRequest($request);
-$psrResponse = \Max\JsonRpc\Server::handle($psrRequest);
-(new SwooleResponseEmitter())->emit($psrResponse, $response);
+<?php
+
+namespace App\Http\Controller;
+
+use Max\Di\Attribute\Inject;
+use Max\JsonRpc\Server;
+use Max\Routing\Attribute\Controller;
+use Max\Routing\Attribute\GetMapping;
+use Psr\Http\Message\ServerRequestInterface;
+
+#[Controller(prefix: 'jsonrpc')]
+class JsonRpcController
+{
+    #[Inject]
+    protected Server $server;
+
+    #[GetMapping(path: '/')]
+    public function handle(ServerRequestInterface $request)
+    {
+        return $this->server->serveHttp($request);
+    }
+}
 ```
 
-启动服务
+如上新建了一个控制器，路由地址为/jsonrpc，启动服务
+
+> 服务端必须使用swoole/workerman等常驻内存的环境
 
 ### 测试请求
 
-> GET 127.0.0.1:8989
+> GET 127.0.0.1:8989/jsonrpc
 ```json
 {
     "jsonrpc": "2.0",
