@@ -11,5 +11,8 @@
             "email": "987861463@qq.com"
         }
     ],
-    "require": {}
+    "require": {
+        "php": "^8.0",
+        "max/http-message": "^1.0"
+    }
 }
