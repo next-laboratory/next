@@ -20,8 +20,7 @@
         "max/routing": "^1.0",
         "max/di": "^1.0",
         "psr/http-server-middleware": "^1.0",
-        "psr/http-server-handler": "^1.0",
-        "psr/event-dispatcher": "^1.0"
+        "psr/http-server-handler": "^1.0"
     },
     "extra": {
         "max": {

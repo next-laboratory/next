@@ -38,10 +38,10 @@ class RouteCollector extends AbstractCollector
     public static function collectClass(string $class, object $attribute): void
     {
         if ($attribute instanceof Controller) {
-            $routeCollector = Context::getContainer()->make(\Max\Routing\RouteCollector::class);
-            $router         = new Router($attribute->prefix, $attribute->patterns, middlewares: $attribute->middlewares, routeCollection: $routeCollector);
-            self::$router   = $router;
-            self::$class    = $class;
+            $routeCollection = Context::getContainer()->make(\Max\Routing\RouteCollection::class);
+            $router          = new Router($attribute->prefix, $attribute->patterns, middlewares: $attribute->middlewares, routeCollection: $routeCollection);
+            self::$router    = $router;
+            self::$class     = $class;
         }
     }
 
@@ -50,7 +50,7 @@ class RouteCollector extends AbstractCollector
      */
     public static function collectMethod(string $class, string $method, object $attribute): void
     {
-        if ($attribute instanceof RequestMapping && self::$class === $class && ! is_null(self::$router)) {
+        if ($attribute instanceof RequestMapping && self::$class === $class && !is_null(self::$router)) {
             self::$router->request($attribute->path, [$class, $method], $attribute->methods)->middleware(...$attribute->middlewares);
         }
     }

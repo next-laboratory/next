@@ -12,14 +12,11 @@ declare(strict_types=1);
 namespace Max\Http\Server;
 
 use Max\Http\Server\Contract\RouteDispatcherInterface;
-use Max\Http\Server\Event\OnRequest;
-use Max\Routing\Exception\RouteNotFoundException;
 use Max\Routing\Route;
 use Max\Routing\RouteCollection;
 use Max\Routing\Router;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use ReflectionException;
@@ -32,36 +29,31 @@ class Kernel
     protected array $middlewares = [];
 
     /**
-     * @param RouteCollection           $routeCollection 路由收集器
-     * @param ContainerInterface        $container       容器
-     * @param ?EventDispatcherInterface $eventDispatcher 事件调度器
+     * @param ContainerInterface       $container       容器
+     * @param RouteCollection          $routeCollection 路由收集器
+     * @param RouteDispatcherInterface $routeDispatcher
      */
     final public function __construct(
         protected ContainerInterface $container,
         protected RouteCollection $routeCollection,
         protected RouteDispatcherInterface $routeDispatcher,
-        protected ?EventDispatcherInterface $eventDispatcher = null,
     ) {
         $this->map(new Router(routeCollection: $this->routeCollection));
     }
 
     /**
      * @throws ContainerExceptionInterface
-     * @throws ReflectionException|RouteNotFoundException
+     * @throws ReflectionException
      */
-    public function through(ServerRequestInterface $request): ResponseInterface
+    final public function through(ServerRequestInterface $request): ResponseInterface
     {
-        $event           = new OnRequest($request);
-        $response        = (new RequestHandler($this->container, $this->routeDispatcher, $this->middlewares))->handle($request);
-        $event->response = $response;
-        $this->eventDispatcher?->dispatch($event);
-        return $response;
+        return (new RequestHandler($this->container, $this->routeDispatcher, $this->middlewares))->handle($request);
     }
 
     /**
      * 添加中间件.
      */
-    public function use(string ...$middleware): static
+    final public function use(string ...$middleware): static
     {
         array_push($this->middlewares, ...$middleware);
         return $this;
@@ -70,7 +62,7 @@ class Kernel
     /**
      * @return array<string,Route[]>
      */
-    public function getAllRoutes(): array
+    final public function getAllRoutes(): array
     {
         return $this->routeCollection->all();
     }
