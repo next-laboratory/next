@@ -26,7 +26,7 @@ class Server
     {
         try {
             $rpcRequest = Request::createFromPsrRequest($request);
-            if (is_null($service = RpcServiceCollector::getService($rpcRequest->getMethod()))) {
+            if (is_null($service = ServiceCollector::getService($rpcRequest->getMethod()))) {
                 throw new InvalidArgumentException('Method Not found', -32601);
             }
             try {
