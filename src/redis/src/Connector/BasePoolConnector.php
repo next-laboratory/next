@@ -3,8 +3,6 @@
 namespace Max\Redis\Connector;
 
 use Max\Pool\BasePool;
-use Max\Pool\BasePoolItem;
-use Max\Pool\Contract\PoolItemInterface;
 use Max\Redis\Contract\ConnectorInterface;
 use Redis;
 use RedisException;

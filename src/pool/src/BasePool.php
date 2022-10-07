@@ -30,17 +30,17 @@ abstract class BasePool implements PoolInterface
             throw new RuntimeException('Too many connections');
         }
         if (!$isMaximum) {
-            $this->splQueue->push($this->newPoolItem());
+            $this->splQueue->enqueue($this->newPoolItem());
             $this->currentSize++;
         }
-        return $this->splQueue->shift();
+        return $this->splQueue->dequeue();
     }
 
     public function release($poolItem)
     {
         $this->isOpen();
         if ($this->splQueue->count() < $this->getPoolCapacity()) {
-            $this->splQueue->push($poolItem);
+            $this->splQueue->enqueue($poolItem);
         }
     }
 

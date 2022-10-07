@@ -11,15 +11,13 @@ declare(strict_types=1);
 
 namespace Max\Database\Connector;
 
-use RuntimeException;
+use Max\Database\Contract\ConnectorInterface;
+use Max\Pool\BasePool;
+use PDO;
 use SplQueue;
 
-class BasePoolConnector extends BaseConnector
+class BasePoolConnector extends BasePool implements ConnectorInterface
 {
-    protected SplQueue $splQueue;
-
-    protected int $num = 0;
-
     public function __construct(
         string $driver = 'mysql',
         string $host = '127.0.0.1',
@@ -29,42 +27,29 @@ class BasePoolConnector extends BaseConnector
         protected string $password = '',
         protected array $options = [],
         protected string $unixSocket = '',
-        string $DSN = '',
+        protected string $DSN = '',
         protected int $poolSize = 16,
     ) {
-        parent::__construct($driver, $host, $port, $database, $this->user, $this->password, $this->options, $this->unixSocket, $DSN);
+        if (empty($this->DSN)) {
+            $this->DSN = sprintf('%s:host=%s;port=%s;', $driver, $host, $port);
+            if (!empty($database)) {
+                $this->DSN .= 'dbname=' . $database . ';';
+            }
+            if (!empty($unixSocket)) {
+                $this->DSN .= 'unix_socket=' . $unixSocket . ';';
+            }
+        }
         $this->splQueue = new SplQueue();
+        $this->open();
     }
 
-    public function get()
+    public function getPoolCapacity(): int
     {
-        $isMaximum = $this->num >= $this->poolSize;
-        if ($this->isEmpty() && $isMaximum) {
-            throw new RuntimeException('Too many connections');
-        }
-        if (! $isMaximum) {
-            $this->splQueue->push($this->newConnection());
-            ++$this->num;
-        }
-        return $this->splQueue->shift();
+        return $this->poolSize;
     }
 
-    public function release($connection)
+    public function newPoolItem()
     {
-        if (is_null($connection)) {
-            --$this->num;
-        } elseif (! $this->isFull()) {
-            $this->splQueue->push($connection);
-        }
-    }
-
-    protected function isFull(): bool
-    {
-        return $this->splQueue->count() >= $this->poolSize;
-    }
-
-    protected function isEmpty(): bool
-    {
-        return $this->splQueue->isEmpty();
+        return new PDO($this->DSN, $this->user, $this->password, $this->options);
     }
 }
