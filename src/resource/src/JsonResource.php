@@ -15,26 +15,11 @@ use JsonSerializable;
 use Max\Utils\Collection;
 use Max\Utils\Contract\Arrayable;
 
-abstract class JsonResource implements JsonSerializable, Arrayable, \ArrayAccess, \Stringable
+abstract class JsonResource implements JsonSerializable, Arrayable
 {
     public function __construct(
         protected $resource
     ) {
-    }
-
-    public function __get(string $name)
-    {
-        return $this->offsetGet($name);
-    }
-
-    public function __set(string $name, $value): void
-    {
-        $this->resource->offsetSet($name, $value);
-    }
-
-    public function __toString(): string
-    {
-        return json_encode($this->toArray(), JSON_UNESCAPED_UNICODE);
     }
 
     public static function collect($resources): ResourceCollection
@@ -45,25 +30,5 @@ abstract class JsonResource implements JsonSerializable, Arrayable, \ArrayAccess
     public function jsonSerialize()
     {
         return $this->toArray();
-    }
-
-    public function offsetExists(mixed $offset)
-    {
-        return isset($this->resource[$offset]);
-    }
-
-    public function offsetGet(mixed $offset)
-    {
-        return $this->resource[$offset] ?? null;
-    }
-
-    public function offsetSet(mixed $offset, mixed $value)
-    {
-        $this->resource[$offset] = $value;
-    }
-
-    public function offsetUnset(mixed $offset)
-    {
-        unset($this->resource[$offset]);
     }
 }
