@@ -1,23 +1,18 @@
 {
-    "name": "max/watcher",
-    "license": "Apache-2.0",
-    "autoload": {
-        "psr-4": {
-            "Max\\Watcher\\": "src/"
-        }
-    },
-    "authors": [
-        {
-            "name": "chengyao",
-            "email": "987861463@qq.com"
-        }
-    ],
-    "require": {
-        "../../../max-simple/vendor/symfony/finder": "^6.0"
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.x-dev"
-        }
+  "name": "max/watcher",
+  "license": "Apache-2.0",
+  "autoload": {
+    "psr-4": {
+      "Max\\Watcher\\": "src/"
     }
+  },
+  "authors": [
+    {
+      "name": "chengyao",
+      "email": "987861463@qq.com"
+    }
+  ],
+  "require": {
+    "max/utils": "^1.0"
+  }
 }
