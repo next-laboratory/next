@@ -26,7 +26,6 @@ class ServiceCollector extends AbstractCollector
     {
         if ($attribute instanceof RpcService) {
             $service = $attribute->name;
-            dump($service);
             make(Server::class)->register($service, $class);
         }
     }

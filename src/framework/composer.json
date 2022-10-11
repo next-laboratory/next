@@ -7,14 +7,14 @@
     },
     "authors": [
         {
-            "name": "ChengYao",
-            "email": "bigyao@139.com"
+            "name": "chengyao",
+            "email": "987861463@qq.com"
         }
     ],
     "require": {},
     "extra": {
         "max": {
-            "config": "Max\\Console\\ConfigProvider"
+            "config": "Max\\ConfigProvider"
         }
     }
 }

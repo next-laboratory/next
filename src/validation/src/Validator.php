@@ -13,6 +13,7 @@ namespace Max\Validation;
 
 use InvalidArgumentException;
 
+use Max\Utils\Arr;
 use function explode;
 
 class Validator
@@ -48,13 +49,13 @@ class Validator
     {
         $this->error = new Error();
         foreach ($this->rules as $key => $rules) {
-            if (! is_string($rules)) {
+            if (!is_string($rules)) {
                 throw new InvalidArgumentException('The rule must be a string like \'required|length:1,2\'');
             }
             $value = $this->getData($key);
             foreach (explode('|', $rules) as $rule) {
                 [$ruleName, $ruleParams] = RuleParser::parse($rule);
-                if (! method_exists($this, $ruleName)) {
+                if (!method_exists($this, $ruleName)) {
                     throw new ValidationException('Rule \'' . $ruleName . '\' is not exist');
                 }
                 try {
@@ -83,7 +84,7 @@ class Validator
 
     public function fails(): bool
     {
-        return ! $this->error->isEmpty();
+        return !$this->error->isEmpty();
     }
 
     public function failed(): array
@@ -91,9 +92,9 @@ class Validator
         return $this->error->all();
     }
 
-    protected function getData(string $key = ''): mixed
+    protected function getData(string $key): mixed
     {
-        return $key ? ($this->data[$key] ?? null) : $this->data;
+        return Arr::get($this->data, $key);
     }
 
     protected function getMessage(string $key, string $default = '验证失败'): string

@@ -46,7 +46,7 @@ class RestRouter
         foreach (static::$maps as $action => $map) {
             [$methods, $path] = $map;
             $property         = $action . 'Route';
-            $this->routeCollection->addRoute($this->{$property} = new Route(
+            $this->routeCollection->add($this->{$property} = new Route(
                 $methods,
                 sprintf($path, $uri),
                 [$this->controller, $action],

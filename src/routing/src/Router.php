@@ -126,7 +126,7 @@ class Router
                 [$controller, $action] = $action;
                 $action = [$this->formatController($controller), $action];
             }
-            return $this->routeCollection->addRoute(new Route($methods, $this->prefix . $path, $action, $this->patterns, $this->middlewares));
+            return $this->routeCollection->add(new Route($methods, $this->prefix . $path, $action, $this->patterns, $this->middlewares));
         }
         throw new InvalidArgumentException('Invalid route action: ' . $path);
     }

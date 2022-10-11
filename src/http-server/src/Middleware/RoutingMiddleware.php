@@ -14,7 +14,7 @@ namespace Max\Http\Server\Middleware;
 use Max\Routing\Exception\MethodNotAllowedException;
 use Max\Routing\Exception\RouteNotFoundException;
 use Max\Routing\Route;
-use Max\Routing\RouteCollection;
+use Max\Routing\UrlMatcher;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -23,7 +23,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 class RoutingMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        protected RouteCollection $routeCollection
+        protected UrlMatcher $urlMatcher,
     ) {
     }
 
@@ -33,7 +33,7 @@ class RoutingMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $route   = $this->routeCollection->resolveRequest($request);
+        $route   = $this->urlMatcher->matchRequest($request);
         $request = $request->withAttribute(Route::class, $route);
 
         return $handler->use(...$route->getMiddlewares())->handle($request);

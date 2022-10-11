@@ -53,10 +53,10 @@ class Server
             return $psrResponse;
         } catch (Throwable $e) {
             $psrResponse = new PsrResponse();
-            if (isset($rpcRequest) && $rpcRequest->hasId()) {
+            if (!isset($rpcRequest) || ($rpcRequest->hasId())) {
                 $rpcResponse = new RpcResponse(
                     null,
-                    $rpcRequest->getId(),
+                    isset($rpcRequest) ? $rpcRequest->getId() : null,
                     new Error($e->getCode(), $e->getMessage(), [
                         'file'  => $e->getFile(),
                         'line'  => $e->getLine(),

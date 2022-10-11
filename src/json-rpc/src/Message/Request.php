@@ -26,13 +26,10 @@ class Request implements JsonSerializable
     ) {
     }
 
-    /**
-     * @throws \Exception
-     */
     public static function createFromPsrRequest(ServerRequestInterface $request): static
     {
         if (!str_contains($request->getHeaderLine(HeaderInterface::HEADER_CONTENT_TYPE), 'application/json')) {
-            throw new \Exception('Invalid Request', -32600);
+            throw new InvalidArgumentException('Invalid Request', -32600);
         }
         $body  = $request->getBody()->getContents();
         $parts = json_decode($body, true);

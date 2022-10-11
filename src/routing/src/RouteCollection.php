@@ -11,15 +11,13 @@ declare(strict_types=1);
 
 namespace Max\Routing;
 
+use ArrayIterator;
+use Countable;
+use IteratorAggregate;
 use Max\Http\Message\Contract\StatusCodeInterface;
 use Max\Routing\Exception\MethodNotAllowedException;
-use Max\Routing\Exception\RouteNotFoundException;
-use Psr\Http\Message\ServerRequestInterface;
 
-use function array_key_exists;
-use function preg_match;
-
-class RouteCollection
+class RouteCollection implements IteratorAggregate, Countable
 {
     /**
      * 未分组的全部路由.
@@ -31,7 +29,7 @@ class RouteCollection
     /**
      * 添加一个路由.
      */
-    public function addRoute(Route $route): Route
+    public function add(Route $route): Route
     {
         foreach ($route->getMethods() as $method) {
             $this->routes[$method][] = $route;
@@ -50,38 +48,24 @@ class RouteCollection
     }
 
     /**
-     * 使用ServerRequestInterface对象解析路由.
-     *
-     * @throws MethodNotAllowedException
-     * @throws RouteNotFoundException
+     * @return Route[]
      */
-    public function resolveRequest(ServerRequestInterface $request): Route
+    public function list(string $method): array
     {
-        $path   = '/' . trim($request->getUri()->getPath(), '/');
-        $method = $request->getMethod();
-        return $this->resolve($method, $path);
+        return $this->routes[$method]
+            ?? throw new MethodNotAllowedException('Method not allowed: ' . $method, StatusCodeInterface::STATUS_METHOD_NOT_ALLOWED);
+    }
+
+    public function count(): int
+    {
+        return \count($this->routes);
     }
 
     /**
-     * 使用请求方法和请求路径解析路由.
+     * @return ArrayIterator<string, Route>
      */
-    public function resolve(string $method, string $path): Route
+    public function getIterator(): ArrayIterator
     {
-        $routes = $this->routes[$method] ?? throw new MethodNotAllowedException('Method not allowed: ' . $method, StatusCodeInterface::STATUS_METHOD_NOT_ALLOWED);
-        foreach ($routes as $route) {
-            if (($compiledPath = $route->getCompiledPath()) && preg_match($compiledPath, $path, $match)) {
-                $resolvedRoute = clone $route;
-                if (!empty($match)) {
-                    foreach ($route->getParameters() as $key => $value) {
-                        if (array_key_exists($key, $match)) {
-                            $resolvedRoute->setParameter($key, $match[$key]);
-                        }
-                    }
-                }
-                return $resolvedRoute;
-            }
-        }
-
-        throw new RouteNotFoundException('Not Found', StatusCodeInterface::STATUS_NOT_FOUND);
+        return new ArrayIterator($this->routes);
     }
 }
