@@ -62,23 +62,30 @@ class ExceptionHandleMiddleware implements MiddlewareInterface
         if ($e instanceof Renderable) {
             return $e->render($request);
         }
+
         $message    = $e->getMessage();
         $statusCode = $this->getStatusCode($e);
         if (str_contains($request->getHeaderLine(HeaderInterface::HEADER_ACCEPT), 'application/json')
             || strcasecmp('XMLHttpRequest', $request->getHeaderLine('X-REQUESTED-WITH')) === 0) {
-            return new Response($statusCode, [], json_encode([
+
+            $body = json_encode([
                 'status'  => false,
                 'code'    => $statusCode,
                 'data'    => $e->getTrace(),
                 'message' => $message,
-            ], JSON_UNESCAPED_UNICODE));
+            ], JSON_UNESCAPED_UNICODE);
+
+            return new Response($statusCode, [HeaderInterface::HEADER_CONTENT_TYPE => 'application/json; charset=utf-8'], $body);
         }
-        return new Response($statusCode, [], sprintf(
-            '<html lang="zh"><head><title>%s</title></head><body><pre style="font-size: 1.5em; white-space: break-spaces"><p><b>%s</b></p><b>Stack Trace</b><br>%s</pre></body></html>',
+
+        $body = sprintf(
+            '<html lang="zh"><head><title>%s</title></head><body><pre style="white-space: break-spaces"><p><b style="color: red">%s</b></p><b>Stack Trace</b><br>%s</pre></body></html>',
             $message,
             $message,
             $e->getTraceAsString(),
-        ));
+        );
+
+        return new Response($statusCode, [HeaderInterface::HEADER_CONTENT_TYPE => 'text/html; charset=utf-8'], $body);
     }
 
     protected function getStatusCode(Throwable $e)
