@@ -17,12 +17,13 @@ class Watcher
 {
     public function __construct(
         protected DriverInterface $driver,
-    ) {
+    )
+    {
     }
 
     public function run(): void
     {
-        echo 'Watching changed files.' . PHP_EOL;
+        echo 'Watching filesystem.' . PHP_EOL;
 
         $this->driver->watch();
     }

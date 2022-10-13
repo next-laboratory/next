@@ -1,20 +1,22 @@
 {
-    "name": "max/framework",
-    "autoload": {
-        "psr-4": {
-            "Max\\": "src/"
-        }
-    },
-    "authors": [
-        {
-            "name": "chengyao",
-            "email": "987861463@qq.com"
-        }
-    ],
-    "require": {},
-    "extra": {
-        "max": {
-            "config": "Max\\ConfigProvider"
-        }
+  "name": "max/framework",
+  "autoload": {
+    "psr-4": {
+      "Max\\": "src/"
     }
+  },
+  "authors": [
+    {
+      "name": "chengyao",
+      "email": "987861463@qq.com"
+    }
+  ],
+  "require": {
+    "php": "^8.0"
+  },
+  "extra": {
+    "max": {
+      "config": "Max\\ConfigProvider"
+    }
+  }
 }
