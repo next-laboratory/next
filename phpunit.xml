@@ -31,23 +31,23 @@
     </coverage>
     <testsuites>
         <testsuite name="Tests">
-            <directory suffix="Test.php">./src/aop/src</directory>
-            <directory suffix="Test.php">./src/cache/src</directory>
-            <directory suffix="Test.php">./src/config/src</directory>
-            <directory suffix="Test.php">./src/database/src</directory>
-            <directory suffix="Test.php">./src/di/src</directory>
-            <directory suffix="Test.php">./src/event/src</directory>
-            <directory suffix="Test.php">./src/framework/src</directory>
-            <directory suffix="Test.php">./src/http-message/src</directory>
-            <directory suffix="Test.php">./src/http-server/src</directory>
-            <directory suffix="Test.php">./src/macro/src</directory>
-            <directory suffix="Test.php">./src/redis/src</directory>
-            <directory suffix="Test.php">./src/routing/src</directory>
-            <directory suffix="Test.php">./src/session/src</directory>
-            <directory suffix="Test.php">./src/swoole/src</directory>
-            <directory suffix="Test.php">./src/utils/src</directory>
-            <directory suffix="Test.php">./src/validation/src</directory>
-            <directory suffix="Test.php">./src/view/src</directory>
+            <directory suffix="Test.php">./src/aop</directory>
+            <directory suffix="Test.php">./src/cache</directory>
+            <directory suffix="Test.php">./src/config</directory>
+            <directory suffix="Test.php">./src/database</directory>
+            <directory suffix="Test.php">./src/di</directory>
+            <directory suffix="Test.php">./src/event</directory>
+            <directory suffix="Test.php">./src/framework</directory>
+            <directory suffix="Test.php">./src/http-message</directory>
+            <directory suffix="Test.php">./src/http-server</directory>
+            <directory suffix="Test.php">./src/macro</directory>
+            <directory suffix="Test.php">./src/redis</directory>
+            <directory suffix="Test.php">./src/routing</directory>
+            <directory suffix="Test.php">./src/session</directory>
+            <directory suffix="Test.php">./src/swoole</directory>
+            <directory suffix="Test.php">./src/utils</directory>
+            <directory suffix="Test.php">./src/validation</directory>
+            <directory suffix="Test.php">./src/view</directory>
         </testsuite>
     </testsuites>
 </phpunit>
