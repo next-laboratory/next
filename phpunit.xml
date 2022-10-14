@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit backupGlobals="false"
          backupStaticAttributes="false"
-         bootstrap="./bootstrap.php"
+         bootstrap="./tests/bootstrap.php"
          colors="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
@@ -13,7 +13,6 @@
             <directory suffix=".php">./src/aop/src</directory>
             <directory suffix=".php">./src/cache/src</directory>
             <directory suffix=".php">./src/config/src</directory>
-            <directory suffix=".php">./src/context/src</directory>
             <directory suffix=".php">./src/database/src</directory>
             <directory suffix=".php">./src/di/src</directory>
             <directory suffix=".php">./src/event/src</directory>
@@ -26,7 +25,7 @@
             <directory suffix=".php">./src/session/src</directory>
             <directory suffix=".php">./src/swoole/src</directory>
             <directory suffix=".php">./src/utils/src</directory>
-            <directory suffix=".php">./src/validator/src</directory>
+            <directory suffix=".php">./src/validation/src</directory>
             <directory suffix=".php">./src/view/src</directory>
         </include>
     </coverage>
@@ -35,7 +34,6 @@
             <directory suffix="Test.php">./src/aop/src</directory>
             <directory suffix="Test.php">./src/cache/src</directory>
             <directory suffix="Test.php">./src/config/src</directory>
-            <directory suffix="Test.php">./src/context/src</directory>
             <directory suffix="Test.php">./src/database/src</directory>
             <directory suffix="Test.php">./src/di/src</directory>
             <directory suffix="Test.php">./src/event/src</directory>
@@ -48,7 +46,7 @@
             <directory suffix="Test.php">./src/session/src</directory>
             <directory suffix="Test.php">./src/swoole/src</directory>
             <directory suffix="Test.php">./src/utils/src</directory>
-            <directory suffix="Test.php">./src/validator/src</directory>
+            <directory suffix="Test.php">./src/validation/src</directory>
             <directory suffix="Test.php">./src/view/src</directory>
         </testsuite>
     </testsuites>
