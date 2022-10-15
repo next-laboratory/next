@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Max\Redis\Connector;
 
 use Max\Redis\Contract\ConnectorInterface;
-use Max\Redis\RedisProxy;
 use Redis;
 
 class BaseConnector implements ConnectorInterface
@@ -29,6 +28,9 @@ class BaseConnector implements ConnectorInterface
     ) {
     }
 
+    /**
+     * @throws \RedisException
+     */
     public function get()
     {
         $redis = new Redis();
@@ -42,7 +44,7 @@ class BaseConnector implements ConnectorInterface
         );
         $redis->select($this->database);
         $this->auth && $redis->auth($this->auth);
-        return new RedisProxy($this, $redis);
+        return $redis;
     }
 
     public function release($connection)

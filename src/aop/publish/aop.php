@@ -16,7 +16,7 @@ return [
     ],
     'collectors' => [
         \Max\Aop\Collector\AspectCollector::class,
-        \Max\Aop\Collector\PropertyAnnotationCollector::class,
+        \Max\Aop\Collector\PropertyAttributeCollector::class,
     ],
-    'runtimeDir' => __DIR__ . '/runtime',
+    'runtimeDir' => __DIR__ . '/runtime/aop',
 ];

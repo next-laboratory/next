@@ -34,7 +34,7 @@ final class Reflection
      */
     public static function class(string $class): ReflectionClass
     {
-        if (! isset(self::$reflectionClasses[$class])) {
+        if (!isset(self::$reflectionClasses[$class])) {
             self::$reflectionClasses[$class] = new ReflectionClass($class);
         }
         return self::$reflectionClasses[$class];
@@ -45,15 +45,15 @@ final class Reflection
      */
     public static function method(string $class, string $method): ReflectionMethod
     {
-        if (! isset(self::$reflectionMethods[$class][$method])) {
+        if (!isset(self::$reflectionMethods[$class][$method])) {
             self::$reflectionMethods[$class][$method] = self::class($class)->getMethod($method);
         }
         return self::$reflectionMethods[$class][$method];
     }
 
     /**
-     * @throws ReflectionException
      * @return ReflectionMethod[]
+     * @throws ReflectionException
      */
     public static function methods(string $class, ?int $filter = null): array
     {
@@ -65,15 +65,15 @@ final class Reflection
      */
     public static function property(string $class, string $property): ReflectionProperty
     {
-        if (! isset(self::$reflectionProperties[$class][$property])) {
+        if (!isset(self::$reflectionProperties[$class][$property])) {
             self::$reflectionProperties[$class][$property] = self::class($class)->getProperty($property);
         }
         return self::$reflectionProperties[$class][$property];
     }
 
     /**
-     * @throws ReflectionException
      * @return ReflectionProperty[]
+     * @throws ReflectionException
      */
     public static function properties(string $class, ?int $filter = null): array
     {
@@ -86,9 +86,9 @@ final class Reflection
     public static function methodParameterNames(string $class, string $method): array
     {
         $key = $class . '@' . $method;
-        if (! isset(self::$methodParameterNames[$key])) {
+        if (!isset(self::$methodParameterNames[$key])) {
             self::$methodParameterNames[$key] = array_map(
-                fn (ReflectionParameter $reflectionParameter) => $reflectionParameter->getName(),
+                fn(ReflectionParameter $reflectionParameter) => $reflectionParameter->getName(),
                 self::methodParameters($class, $method)
             );
         }
@@ -96,8 +96,8 @@ final class Reflection
     }
 
     /**
-     * @throws ReflectionException
      * @return ReflectionParameter[]
+     * @throws ReflectionException
      */
     public static function methodParameters(string $class, string $method): array
     {
@@ -109,10 +109,10 @@ final class Reflection
      */
     public static function propertyNames(string $class)
     {
-        if (! isset(self::$propertiesNames[$class])) {
+        if (!isset(self::$propertiesNames[$class])) {
             self::$propertiesNames[$class] = value(
-                fn ($class) => array_map(
-                    fn ($property) => $property->getName(),
+                fn($class) => array_map(
+                    fn($property) => $property->getName(),
                     self::properties($class)
                 )
             );
@@ -128,5 +128,14 @@ final class Reflection
         return method_exists($property, 'getDefaultValue')
             ? $property->getDefaultValue()
             : $property->getDeclaringClass()->getDefaultProperties()[$property->getName()] ?? null;
+    }
+
+    public static function clear(): void
+    {
+        self::$propertiesNames      = [];
+        self::$reflectionProperties = [];
+        self::$reflectionMethods    = [];
+        self::$methodParameterNames = [];
+        self::$reflectionClasses    = [];
     }
 }

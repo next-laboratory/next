@@ -20,10 +20,5 @@
         "ext-pdo": "*",
         "ext-json": "*",
         "max/utils": "^1.0"
-    },
-    "extra": {
-        "max": {
-            "config": "Max\\Database\\ConfigProvider"
-        }
     }
 }

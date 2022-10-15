@@ -1,0 +1,27 @@
+{
+    "name": "max/validation",
+    "description": "A simple validator.",
+    "type": "library",
+    "license": "Apache-2.0",
+    "homepage": "https://github.com/marxphp/validation",
+    "authors": [
+        {
+            "name": "chengyao",
+            "email": "987861463@qq.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Max\\Validation\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Max\\Validation\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": "^8.0",
+        "ext-mbstring": "*"
+    }
+}

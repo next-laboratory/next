@@ -25,6 +25,9 @@ use ReflectionFunctionAbstract;
 use ReflectionNamedType;
 use ReflectionUnionType;
 
+use function array_key_exists;
+use function array_push;
+use function array_values;
 use function is_null;
 use function is_object;
 use function is_string;
@@ -55,7 +58,7 @@ class Container implements ContainerInterface
     /**
      * @template T
      *
-     * @param class-string $id
+     * @param class-string<T> $id
      *
      * @return T
      * @throws NotFoundExceptionInterface
@@ -63,11 +66,8 @@ class Container implements ContainerInterface
     public function get(string $id)
     {
         $binding = $this->getBinding($id);
-        if (isset($this->resolvedEntries[$binding])) {
-            return $this->resolvedEntries[$binding];
-        }
 
-        throw new NotFoundException('No instance found: ' . $id);
+        return $this->resolvedEntries[$binding] ?? throw new NotFoundException('No instance found: ' . $id);
     }
 
     /**
@@ -79,8 +79,10 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param string       $id    标识，可以是接口
-     * @param class-string $class 类名
+     * @template T
+     *
+     * @param string          $id    标识，可以是接口
+     * @param class-string<T> $class 类名
      */
     public function bind(string $id, string $class): void
     {
@@ -126,7 +128,7 @@ class Container implements ContainerInterface
      */
     public function make(string $id, array $arguments = [])
     {
-        if ($this->has($id) === false) {
+        if (!$this->has($id)) {
             $id              = $this->getBinding($id);
             $reflectionClass = Reflection::class($id);
             if ($reflectionClass->isInterface()) {
@@ -169,7 +171,7 @@ class Container implements ContainerInterface
         }
         [$objectOrClass, $method] = $callable;
         $isObject         = is_object($objectOrClass);
-        $reflectionMethod = Reflection::method($isObject ? get_class($objectOrClass) : $this->getBinding($objectOrClass), $method);
+        $reflectionMethod = Reflection::method($isObject ? $objectOrClass::class : $this->getBinding($objectOrClass), $method);
         if ($reflectionMethod->isAbstract() === false) {
             if (!$reflectionMethod->isPublic()) {
                 $reflectionMethod->setAccessible(true);
@@ -209,7 +211,7 @@ class Container implements ContainerInterface
     public function getConstructorArgs(ReflectionClass $reflectionClass, array $arguments = []): array
     {
         if (is_null($constructor = $reflectionClass->getConstructor())) {
-            return $arguments;
+            return array_values($arguments);
         }
         if ($reflectionClass->isInstantiable()) {
             return $this->getFuncArgs($constructor, $arguments);

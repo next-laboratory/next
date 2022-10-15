@@ -16,7 +16,7 @@ class QueryExecuted
     public function __construct(
         public string $query,
         public array $bindings,
-        public float $executedAt
+        public float $time,
     ) {
     }
 }

@@ -23,5 +23,10 @@
     "require": {
         "php": "^8.0",
         "psr/event-dispatcher": "^1.0"
+    },
+    "extra": {
+        "max": {
+            "config": "Max\\Event\\ConfigProvider"
+        }
     }
 }

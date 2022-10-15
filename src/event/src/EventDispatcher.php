@@ -12,12 +12,13 @@ declare(strict_types=1);
 namespace Max\Event;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\EventDispatcher\ListenerProviderInterface;
 use Psr\EventDispatcher\StoppableEventInterface;
 
 class EventDispatcher implements EventDispatcherInterface
 {
     public function __construct(
-        protected ListenerProvider $listenerProvider
+        protected ListenerProviderInterface $listenerProvider
     ) {
     }
 

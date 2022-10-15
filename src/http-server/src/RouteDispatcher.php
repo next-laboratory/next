@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Http\Server;
 
+use Max\Di\Context;
 use Max\Http\Server\Contract\RouteDispatcherInterface;
 use Max\Routing\Route;
 use Psr\Container\ContainerExceptionInterface;
@@ -27,10 +28,11 @@ class RouteDispatcher implements RouteDispatcherInterface
      */
     public function dispatch(ServerRequestInterface $request): ResponseInterface
     {
+        /** @var Route $route */
         if ($route = $request->getAttribute(Route::class)) {
             $parameters            = $route->getParameters();
             $parameters['request'] = $request;
-            return call($route->getAction(), $parameters);
+            return Context::getContainer()->call($route->getAction(), $parameters);
         }
         throw new RuntimeException('No route found in the request context', 404);
     }

@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Aop\Collector;
 
-use Max\Aop\Annotation\AspectConfig;
+use Max\Aop\Attribute\AspectConfig;
 use Max\Aop\Contract\AspectInterface;
 use Max\Aop\Scanner;
 use Max\Di\Reflection;

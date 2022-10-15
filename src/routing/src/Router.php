@@ -13,13 +13,14 @@ namespace Max\Routing;
 
 use Closure;
 use InvalidArgumentException;
-use Max\Http\Message\Contract\RequestMethodInterface;
 
 use function array_unique;
 use function sprintf;
 
 class Router
 {
+    protected const ALL_METHODS = ['GET', 'HEAD', 'POST', 'OPTIONS', 'PUT', 'PATCH', 'DELETE'];
+
     /**
      * @param string $prefix      url前缀
      * @param array  $patterns    参数规则
@@ -31,9 +32,9 @@ class Router
         protected array $patterns = [],
         protected string $namespace = '',
         protected array $middlewares = [],
-        protected ?RouteCollector $routeCollector = null
+        protected ?RouteCollection $routeCollection = null
     ) {
-        $this->routeCollector ??= new RouteCollector();
+        $this->routeCollection ??= new RouteCollection();
     }
 
     /**
@@ -45,15 +46,7 @@ class Router
      */
     public function any(string $path, array|Closure|string $action): Route
     {
-        return $this->request($path, $action, [
-            RequestMethodInterface::METHOD_GET,
-            RequestMethodInterface::METHOD_HEAD,
-            RequestMethodInterface::METHOD_POST,
-            RequestMethodInterface::METHOD_OPTIONS,
-            RequestMethodInterface::METHOD_PUT,
-            RequestMethodInterface::METHOD_PATCH,
-            RequestMethodInterface::METHOD_DELETE,
-        ]);
+        return $this->request($path, $action, self::ALL_METHODS);
     }
 
     /**
@@ -61,7 +54,7 @@ class Router
      */
     public function patch(string $uri, string|array|Closure $action): Route
     {
-        return $this->request($uri, $action, [RequestMethodInterface::METHOD_PATCH]);
+        return $this->request($uri, $action, ['PATCH']);
     }
 
     /**
@@ -69,7 +62,7 @@ class Router
      */
     public function options(string $uri, string|array|Closure $action): Route
     {
-        return $this->request($uri, $action, [RequestMethodInterface::METHOD_OPTIONS]);
+        return $this->request($uri, $action, ['OPTIONS']);
     }
 
     /**
@@ -77,7 +70,7 @@ class Router
      */
     public function put(string $uri, string|array|Closure $action): Route
     {
-        return $this->request($uri, $action, [RequestMethodInterface::METHOD_PUT]);
+        return $this->request($uri, $action, ['PUT']);
     }
 
     /**
@@ -85,7 +78,7 @@ class Router
      */
     public function delete(string $uri, string|array|Closure $action): Route
     {
-        return $this->request($uri, $action, [RequestMethodInterface::METHOD_DELETE]);
+        return $this->request($uri, $action, ['DELETE']);
     }
 
     /**
@@ -93,7 +86,7 @@ class Router
      */
     public function post(string $uri, string|array|Closure $action): Route
     {
-        return $this->request($uri, $action, [RequestMethodInterface::METHOD_POST]);
+        return $this->request($uri, $action, ['POST']);
     }
 
     /**
@@ -101,7 +94,7 @@ class Router
      */
     public function get(string $uri, string|array|Closure $action): Route
     {
-        return $this->request($uri, $action, [RequestMethodInterface::METHOD_GET, RequestMethodInterface::METHOD_HEAD]);
+        return $this->request($uri, $action, ['GET', 'HEAD']);
     }
 
     /**
@@ -110,7 +103,7 @@ class Router
     public function rest(string $uri, string $controller): RestRouter
     {
         return new RestRouter(
-            $this->routeCollector,
+            $this->routeCollection,
             $this->prefix . $uri,
             $this->formatController($controller),
             $this->middlewares,
@@ -131,9 +124,9 @@ class Router
         if ($action instanceof Closure || count($action) === 2) {
             if (is_array($action)) {
                 [$controller, $action] = $action;
-                $action                = [$this->formatController($controller), $action];
+                $action = [$this->formatController($controller), $action];
             }
-            return $this->routeCollector->addRoute(new Route($methods, $this->prefix . $path, $action, $this->patterns, $this->middlewares));
+            return $this->routeCollection->add(new Route($methods, $this->prefix . $path, $action, $this->patterns, $this->middlewares));
         }
         throw new InvalidArgumentException('Invalid route action: ' . $path);
     }
@@ -193,9 +186,9 @@ class Router
     /**
      * 路由收集器.
      */
-    public function getRouteCollector(): RouteCollector
+    public function getRouteCollection(): RouteCollection
     {
-        return $this->routeCollector;
+        return $this->routeCollection;
     }
 
     /**

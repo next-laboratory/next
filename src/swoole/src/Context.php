@@ -12,15 +12,13 @@ declare(strict_types=1);
 namespace Max\Swoole;
 
 use Swoole\Coroutine;
+use Swoole\Coroutine\Context as SwooleContext;
 
 class Context
 {
     protected static array $container = [];
 
-    /**
-     * @param $key
-     */
-    public static function get($key): mixed
+    public static function get(string $key): mixed
     {
         if (($cid = self::getCid()) < 0) {
             return self::$container[$key] ?? null;
@@ -28,11 +26,7 @@ class Context
         return self::for($cid)[$key] ?? null;
     }
 
-    /**
-     * @param $key
-     * @param $item
-     */
-    public static function put($key, $item): void
+    public static function put(string $key, mixed $item): void
     {
         if (($cid = self::getCid()) > 0) {
             self::for($cid)[$key] = $item;
@@ -41,13 +35,10 @@ class Context
         }
     }
 
-    /**
-     * @param $key
-     */
-    public static function delete($key = null): void
+    public static function delete(string $key = ''): void
     {
         if (($cid = self::getCid()) > 0) {
-            if (! is_null($key)) {
+            if (!empty($key)) {
                 unset(self::for($cid)[$key]);
             }
         } else {
@@ -59,10 +50,7 @@ class Context
         }
     }
 
-    /**
-     * @param $key
-     */
-    public static function has($key): bool
+    public static function has(string $key): bool
     {
         if (($cid = self::getCid()) > 0) {
             return isset(self::for($cid)[$key]);
@@ -70,16 +58,21 @@ class Context
         return isset(self::$container[$key]);
     }
 
-    public static function for(?int $cid = null): mixed
+    public static function for(?int $cid = null): ?SwooleContext
     {
         return Coroutine::getContext($cid);
     }
 
-    protected static function getCid(): mixed
+    protected static function getCid(): int
     {
         if (class_exists('Swoole\Coroutine')) {
             return Coroutine::getCid();
         }
         return -1;
+    }
+
+    public static function inCoroutine(): bool
+    {
+        return self::getCid() >= 0;
     }
 }

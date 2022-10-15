@@ -78,8 +78,10 @@ class Index
 }
 ```
 
-上面的代码定义了一个 Index 控制器，并使用 Controller 注解设置了路由的前缀为 index, 该控制器中全部方法的中间件为`BasicAuthentication::class`， 并且使用`GetMapping`
-注解定义了一个路由，`path`为`/user/{id}.html`， 那么实际请求的地址可以为`/index/user/1.html`, 支持的注解如下，分别对应了不同的请求方法，其中RequestMapping对应的请求方法默认为`GET`，`POST`，`HEAD`，可使用`method`参数来自定义
+上面的代码定义了一个 Index 控制器，并使用 Controller 注解设置了路由的前缀为 index,
+该控制器中全部方法的中间件为`BasicAuthentication::class`， 并且使用`GetMapping`
+注解定义了一个路由，`path`为`/user/{id}.html`， 那么实际请求的地址可以为`/index/user/1.html`,
+支持的注解如下，分别对应了不同的请求方法，其中RequestMapping对应的请求方法默认为`GET`，`POST`，`HEAD`，可使用`method`参数来自定义
 
 - GetMapping
 - PostMapping
@@ -100,7 +102,8 @@ class IntexController {
 }
 ```
 
-控制器是单例对象，和路由对应的方法支持依赖注入，并且参数名为`request`的参数会被注入当前请求类，该类不是单例，对于每个请求都是独立的。路由参数会被按照参数名注入，其他有类型提示的参数也会被注入
+控制器是单例对象，和路由对应的方法支持依赖注入，并且参数名为`request`
+的参数会被注入当前请求类，该类不是单例，对于每个请求都是独立的。路由参数会被按照参数名注入，其他有类型提示的参数也会被注入
 
 # 请求
 
@@ -252,7 +255,8 @@ class Index {
 }
 ```
 
-上面的注解定义了两个中间件，控制器Index中的方法都注册了`TestMiddleware`中间件，`index`方法不仅包含`TestMiddleware`, 还包含`Test2Middleware`中间件。
+上面的注解定义了两个中间件，控制器Index中的方法都注册了`TestMiddleware`中间件，`index`方法不仅包含`TestMiddleware`,
+还包含`Test2Middleware`中间件。
 
 # Session
 
@@ -373,31 +377,9 @@ $validator->setThrowable(true);
 
 # 错误处理
 
-框架继承了filp/whoops，可以很方便地查看异常情况，使用前需要添加异常处理类`Max\Framework\Exceptions\Handlers\WhoopsExceptionHandler` 到`App/Http/Middlewares/ExceptionHandleMiddleware` 中间件中
+异常处理可以根据自己需求集成，例如filp/whoops，nunomaduro/collision，spatie/ignition
 
-如果没有安装，需要执行下面的命令安装
-
-```shell
-composer require filp/whoops
-```
-
-# 打印变量
-
-打印变量使用了symfony/var-dumper组件，但是为了兼容多种环境，建议使用`d`函数代替`dump`,`dd` 函数。使用前需要添加异常处理类`Max\Framework\Exceptions\Handlers\VarDumperAbortHandler` 到`App/Http/Middlewares/ExceptionHandleMiddleware` 中间件中
-
-```php
-d(mixed ...$vars)
-```
-
-如果你没有安装`symfony/var-dumper`，需要先安装
-
-```shell
-composer require symfony/var-dumper
-```
-
-你可以传入多个变量，如果使用swoole/workerman，需要重启服务
-
-> 特别注意：异常处理使用中间件的方式，中间件未处理的异常需要用户手动处理，所以在中间件外执行的代码不能使用d函数打印变量
+> 特别注意：异常处理使用中间件的方式，中间件未处理的异常需要用户手动处理
 
 # swagger文档
 

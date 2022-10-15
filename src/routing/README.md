@@ -3,7 +3,7 @@
 ## 初始化
 
 ```php
-$router = new Router(array $options = [], ?Max\Routing\RouteCollector $routeCollector);
+$router = new Router(array $options = [], ?Max\Routing\RouteCollection $routeCollection);
 ```
 
 如果传递给Router类的路由收集器是null，则内部会自动实例化
@@ -100,14 +100,14 @@ $router->group(function(\Max\Routing\Router $router) {
 解析路由使用路由收集器来完成，如果你没有使用外部，则可以使用Router对象提供的方法获取
 
 ```php
-$routeCollector = $router->getRouteCollector();
+$routeCollection = $router->getRouteCollection();
 ```
 
 解析方法有两个
 
 ```php
-$route = $routeCollector->resolve('GET', '/'); // 传递请求方式和path
-$route = $routeCollector->resolveRequest($request); // 传递一个Psr\Http\Message\ServerRequestInterface对象进行解析
+$route = $routeCollection->resolve('GET', '/'); // 传递请求方式和path
+$route = $routeCollection->resolveRequest($request); // 传递一个Psr\Http\Message\ServerRequestInterface对象进行解析
 ```
 
 解析完成后会返回一个匹配到的路由的克隆对象，该对象中保存的对应变量，如果没有匹配到，则会抛出相应异常
