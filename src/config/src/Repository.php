@@ -33,7 +33,7 @@ class Repository implements ConfigInterface
     }
 
     /**
-     * 设置[支持点语法]. Swoole/WorkerMan等环境下不可使用.
+     * 设置[支持点语法]. swoole/workerman等环境下不可使用.
      */
     public function set(string $key, mixed $value): void
     {
@@ -79,7 +79,7 @@ class Repository implements ConfigInterface
 
     public function loadOne(string $file)
     {
-        $this->items[pathinfo($file, PATHINFO_FILENAME)] = include_once $file;
+        $this->items[pathinfo($file, PATHINFO_FILENAME)] = include $file;
     }
 
     /**

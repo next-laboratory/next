@@ -39,20 +39,20 @@ class RepositoryTest extends TestCase
 
     public function testLoadOne()
     {
-        $this->repository->loadOne('./examples/app.php');
+        $this->repository->loadOne(__DIR__ . '/examples/app.php');
         $this->assertArrayHasKey('app', $this->repository->all());
     }
 
     public function testLoad()
     {
-        $this->repository->load(['./examples/app.php', './examples/db.php']);
+        $this->repository->load([__DIR__ . '/examples/app.php', __DIR__ . '/examples/db.php']);
         $this->assertArrayHasKey('app', $this->repository->all());
         $this->assertArrayHasKey('db', $this->repository->all());
     }
 
     public function testGet()
     {
-        $this->repository->loadOne('./examples/app.php');
+        $this->repository->loadOne(__DIR__ . '/examples/app.php');
         $this->assertEquals($this->repository->get('app.id'), 123);
         $this->assertNull($this->repository->get('app.none'));
     }
