@@ -140,30 +140,6 @@ class B implements Stringable
     }
 
     /**
-     * @deprecated
-     */
-    public function string(): string
-    {
-        return $this->toString();
-    }
-
-    /**
-     * @deprecated
-     */
-    public function int(): int
-    {
-        return $this->toInt();
-    }
-
-    /**
-     * @deprecated
-     */
-    public function float(): float
-    {
-        return $this->toFloat();
-    }
-
-    /**
      * 转为指数形式
      */
     public function toExponential()

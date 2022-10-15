@@ -12,6 +12,7 @@
     "psr-4": {
       "Max\\": "src/framework/src",
       "Max\\Aop\\": "src/aop/src",
+      "Max\\Bc\\": "src/bc/src",
       "Max\\Cache\\": "src/cache/src",
       "Max\\Config\\": "src/config/src",
       "Max\\Database\\": "src/database/src",
@@ -50,6 +51,7 @@
   "replace": {
     "max/framework": "*",
     "max/aop": "*",
+    "max/bc": "*",
     "max/cache": "*",
     "max/config": "*",
     "max/database": "*",
@@ -76,7 +78,8 @@
     "psr/http-message": "^1.0",
     "psr/http-server-middleware": "^1.0",
     "psr/http-server-handler": "^1.0",
-    "psr/log": "^1.0"
+    "psr/log": "^1.0",
+    "max/bc": "^1.1"
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^3.11",
