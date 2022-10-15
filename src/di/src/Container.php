@@ -58,7 +58,7 @@ class Container implements ContainerInterface
     /**
      * @template T
      *
-     * @param class-string $id
+     * @param class-string<T> $id
      *
      * @return T
      * @throws NotFoundExceptionInterface
@@ -79,8 +79,10 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param string       $id    标识，可以是接口
-     * @param class-string $class 类名
+     * @template T
+     *
+     * @param string          $id    标识，可以是接口
+     * @param class-string<T> $class 类名
      */
     public function bind(string $id, string $class): void
     {

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * This file is part of MaxPHP.
+ * This file is part of MarxPHP.
  *
  * @link     https://github.com/marxphp
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
@@ -14,6 +14,7 @@ namespace Max\Config;
 use Max\Config\Contract\ConfigInterface;
 use Max\Utils\Arr;
 use Max\Utils\Filesystem;
+
 use function pathinfo;
 
 class Repository implements ConfigInterface
@@ -82,11 +83,11 @@ class Repository implements ConfigInterface
     }
 
     /**
-     * 加载配置
+     * 加载配置.
      */
     public function load(string|array $files): void
     {
-        foreach ((array)$files as $file) {
+        foreach ((array) $files as $file) {
             $this->loadOne($file);
         }
     }

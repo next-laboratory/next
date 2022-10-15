@@ -19,6 +19,7 @@
       "Max\\Event\\": "src/event/src",
       "Max\\JsonRpc\\": "src/json-rpc/src",
       "Max\\Pool\\": "src/pool/src",
+      "Max\\Macro\\": "src/macro/src",
       "Max\\Http\\Message\\": "src/http-message/src",
       "Max\\Http\\Server\\": "src/http-server/src",
       "Max\\Resource\\": "src/resource/src",
@@ -61,6 +62,7 @@
     "max/resource": "*",
     "max/routing": "*",
     "max/session": "*",
+    "max/macro": "*",
     "max/utils": "*",
     "max/validation": "*",
     "max/view": "*",
@@ -85,6 +87,6 @@
   "scripts": {
     "test": "phpunit --prepend tests/bootstrap.php -c phpunit.xml --colors=always",
     "cs-fix": "php-cs-fixer fix $1",
-    "analyse": "phpstan analyse --memory-limit 300M -l 0 -c phpstan.neon ./src"
+    "analyse": "phpstan analyse --memory-limit 300M -l 0 -c phpstan.neon $1"
   }
 }

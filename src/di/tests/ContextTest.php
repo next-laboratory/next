@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Di\Tests;
 
+use Max\Di\Container;
 use Max\Di\Context;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -21,9 +22,15 @@ use Psr\Container\ContainerInterface;
  */
 class ContextTest extends TestCase
 {
+    public function __construct(?string $name = null, array $data = [], $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
+        Context::getContainer();
+    }
+
     public function testHasContainer()
     {
-        $this->assertFalse(Context::hasContainer());
+        $this->assertTrue(Context::hasContainer());
     }
 
     public function testGetContainer()
