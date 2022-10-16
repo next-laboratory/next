@@ -17,8 +17,8 @@
     "require": {
         "php": "^8.0",
         "ext-pcntl": "*",
-        "max/utils": "^1.0",
-        "max/di": "^1.0",
+        "max/utils": "~1.2.0",
+        "max/di": "~1.2.0",
         "nikic/php-parser": "^4.13",
         "symfony/finder": "*"
     }

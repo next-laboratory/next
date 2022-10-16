@@ -13,6 +13,6 @@
     ],
     "require": {
         "php": "^8.0",
-        "max/utils": "^1.0"
+        "max/utils": "~1.2.0"
     }
 }

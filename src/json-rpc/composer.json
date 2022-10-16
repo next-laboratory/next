@@ -13,7 +13,7 @@
     ],
     "require": {
         "php": "^8.0",
-        "max/http-message": "^1.0",
-        "max/di": "^1.0"
+        "max/http-message": "~1.2.0",
+        "max/di": "~1.2.0"
     }
 }
