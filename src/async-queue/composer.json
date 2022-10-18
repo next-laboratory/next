@@ -1,7 +1,5 @@
 {
-    "name": "max/routing",
-    "description": "A lightweight and fast routing component.",
-    "homepage": "https://github.com/marxphp/routing",
+    "name": "max/async-queue",
     "license": "Apache-2.0",
     "authors": [
         {
@@ -11,11 +9,11 @@
     ],
     "require": {
         "php": "^8.0",
-        "max/http-message": "^1.0"
+        "ext-redis": "*"
     },
     "autoload": {
         "psr-4": {
-            "Max\\Routing\\": "src/"
+            "Max\\AsyncQueue\\": "src/"
         }
     }
 }

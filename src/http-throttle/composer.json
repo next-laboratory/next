@@ -1,8 +1,8 @@
 {
-    "name": "max/resource",
+    "name": "max/http-throttle",
     "autoload": {
         "psr-4": {
-            "Max\\Resource\\": "src/"
+            "Max\\Http\\Throttle\\": "src/"
         }
     },
     "authors": [
@@ -13,6 +13,11 @@
     ],
     "require": {
         "php": "^8.0",
-        "max/utils": "^1.0"
+        "psr/http-message": "^1.0"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        }
     }
 }
