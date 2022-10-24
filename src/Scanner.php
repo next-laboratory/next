@@ -126,9 +126,7 @@ final class Scanner
             $proxyDir = $this->config->getRuntimeDir() . 'proxy/';
             $this->filesystem->exists($proxyDir) || $this->filesystem->makeDirectory($proxyDir, 0755, true, true);
             $this->filesystem->cleanDirectory($proxyDir);
-            ob_start();
             $this->collect($collectors);
-            ob_end_clean();
             $collectedClasses = array_unique(array_merge(AspectCollector::getCollectedClasses(), PropertyAttributeCollector::getCollectedClasses()));
             $scanMap          = [];
             foreach ($collectedClasses as $class) {
