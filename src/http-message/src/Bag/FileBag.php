@@ -15,6 +15,9 @@ use InvalidArgumentException;
 use Max\Http\Message\UploadedFile;
 use Psr\Http\Message\UploadedFileInterface;
 
+/**
+ * 文件上传解析代码来自hyperf，感谢
+ */
 class FileBag
 {
     public function __construct(
@@ -22,30 +25,10 @@ class FileBag
     ) {
     }
 
-//    public static function loadFromGlobal(): static
-//    {
-//        $bag = new static();
-//        foreach ($_FILES as $key => $file) {
-//            $bag->convertToUploadedFiles($bag->uploadedFiles, $key, $file['name'], $file['tmp_name'], $file['type'], $file['size'], $file['error']);
-//        }
-//        return $bag;
-//    }
-
     public function all(): array
     {
         return $this->uploadedFiles;
     }
-
-//    protected function convertToUploadedFiles(&$uploadedFiles, $k, $name, $tmpName, $type, $size, $error): void
-//    {
-//        if (is_string($name)) {
-//            $uploadedFiles[$k] = new UploadedFile($tmpName, $size, $name, $type, $error);
-//        } else {
-//            foreach ($name as $key => $value) {
-//                $this->convertToUploadedFiles($uploadedFiles[$k], $key, $value, $tmpName[$key], $type[$key], $size[$key], $error[$key]);
-//            }
-//        }
-//    }
 
     public static function loadFromFiles(array $files): static
     {
