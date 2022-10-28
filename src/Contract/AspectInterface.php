@@ -16,5 +16,5 @@ use Max\Aop\JoinPoint;
 
 interface AspectInterface
 {
-    public function process(JoinPoint $joinPoint, Closure $next): mixed;
+    public function process(JoinPoint $joinPoint, Closure $next);
 }
