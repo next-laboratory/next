@@ -40,7 +40,8 @@ final class Scanner
 
     private function __construct(
         private ScannerConfig $config
-    ) {
+    )
+    {
         $this->filesystem = new Filesystem();
         $this->astManager = new AstManager();
         $runtimeDir       = $config->getRuntimeDir();
@@ -170,7 +171,7 @@ final class Scanner
                         }
                     }
                 } catch (Throwable $e) {
-                    printf("\033[33m [INFO] \033[0m%s, %s\n", $class, $e->getMessage());
+                    printf("\033[33m [INFO] \033[0m%s: %s\n", $class, $e->getMessage());
                 }
             }
             // 收集属性注解
@@ -183,7 +184,7 @@ final class Scanner
                             $collector::collectProperty($class, $propertyName, $attributeInstance);
                         }
                     } catch (Throwable $e) {
-                        printf("\033[33m [INFO] \033[0m%s->%s, %s\n", $class, $propertyName, $e->getMessage());
+                        printf("\033[33m [INFO] \033[0m%s->%s: %s\n", $class, $propertyName, $e->getMessage());
                     }
                 }
             }
@@ -197,7 +198,7 @@ final class Scanner
                             $collector::collectMethod($class, $method, $attributeInstance);
                         }
                     } catch (Throwable $e) {
-                        printf("\033[33m [INFO] \033[0m%s, %s\n", $class, $e->getMessage());
+                        printf("\033[33m [INFO] \033[0m%s: %s\n", $class, $e->getMessage());
                     }
                 }
                 // 收集该方法的参数的注解
@@ -210,7 +211,7 @@ final class Scanner
                                 $collector::collectorMethodParameter($class, $method, $parameterName, $attributeInstance);
                             }
                         } catch (Throwable $e) {
-                            printf("\033[33m [INFO] \033[0m%s, %s\n", $class, $e->getMessage());
+                            printf("\033[33m [INFO] \033[0m%s: %s\n", $class, $e->getMessage());
                         }
                     }
                 }
