@@ -17,10 +17,7 @@ class CookieBag extends ParameterBag
 
     public function replace(array $parameters = [])
     {
-        $this->parameters = $parameters;
-        foreach ($parameters as $key => $parameter) {
-            $this->map[strtoupper($key)] = $key;
-        }
+        $this->parameters = array_change_key_case($parameters, CASE_UPPER);
     }
 
     public function get(string $key, $default = null): mixed
