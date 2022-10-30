@@ -5,7 +5,6 @@ namespace Max\Console;
 use Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Symfony\Component\Console\Application;
-use function App\config;
 
 class Kernel
 {
