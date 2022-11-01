@@ -68,7 +68,7 @@ class ProxyHandlerVisitor extends NodeVisitorAbstract
                     $node->stmts = [new Expression($methodCall)];
                 } else {
                     if ($node->returnsByRef()) {
-                        $valueRef = new Variable('__proxyValueRef_' . Str::random());
+                        $valueRef = new Variable('__returnValueRef_' . Str::random());
                         $node->stmts = [new Expression(new Assign($valueRef, $methodCall)), new Return_($valueRef)];
                     } else {
                         $node->stmts = [new Return_($methodCall)];
