@@ -23,8 +23,13 @@ class Watcher
 
     public function run(): void
     {
-        echo 'Watching filesystem.' . PHP_EOL;
+        $this->writeLine('Watching filesystem');
 
         $this->driver->watch();
+    }
+
+    public function writeLine(string $message): void
+    {
+        printf("\033[33m [INFO] \033[0m %s\n", $message);
     }
 }

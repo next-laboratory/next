@@ -39,12 +39,13 @@ class ServerRequest extends Request implements ServerRequestInterface
     protected ParameterBag $parsedBody;
 
     public function __construct(
-        string $method,
-        UriInterface|string $uri,
-        array $headers = [],
+        string                      $method,
+        UriInterface|string         $uri,
+        array                       $headers = [],
         StreamInterface|string|null $body = null,
-        string $protocolVersion = '1.1'
-    ) {
+        string                      $protocolVersion = '1.1'
+    )
+    {
         parent::__construct($method, $uri, $headers, $body, $protocolVersion);
         $this->attributes    = new ParameterBag();
         $this->queryParams   = new ParameterBag();
@@ -136,6 +137,7 @@ class ServerRequest extends Request implements ServerRequestInterface
         $psrRequest->cookieParams  = new CookieBag($request->cookie());
         $psrRequest->uploadedFiles = FileBag::loadFromFiles($request->file() ?? []);
         $psrRequest->attributes    = new ParameterBag($attributes);
+        $psrRequest->serverParams  = new ServerBag($_SERVER);
 
         return $psrRequest;
     }

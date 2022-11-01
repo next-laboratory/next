@@ -45,7 +45,7 @@ class Kernel
      * @throws ContainerExceptionInterface
      * @throws ReflectionException
      */
-    final public function through(ServerRequestInterface $request): ResponseInterface
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         return (new RequestHandler($this->container, $this->routeDispatcher, $this->middlewares))->handle($request);
     }

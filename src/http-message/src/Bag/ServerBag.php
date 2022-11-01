@@ -13,6 +13,11 @@ namespace Max\Http\Message\Bag;
 
 class ServerBag extends ParameterBag
 {
+    public function replace(array $parameters = [])
+    {
+        $this->parameters = array_change_key_case($parameters, CASE_UPPER);
+    }
+
     /**
      * Gets the HTTP headers.
      */

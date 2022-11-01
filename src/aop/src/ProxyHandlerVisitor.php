@@ -12,10 +12,13 @@ declare(strict_types=1);
 namespace Max\Aop;
 
 use Max\Aop\Collector\AspectCollector;
+use Max\Utils\Str;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\MagicConst\Function_;
@@ -64,7 +67,12 @@ class ProxyHandlerVisitor extends NodeVisitorAbstract
                 if ($returnType instanceof Identifier && $returnType->name === 'void') {
                     $node->stmts = [new Expression($methodCall)];
                 } else {
-                    $node->stmts = [new Return_($methodCall)];
+                    if ($node->returnsByRef()) {
+                        $valueRef = new Variable('__proxyValueRef_' . Str::random());
+                        $node->stmts = [new Expression(new Assign($valueRef, $methodCall)), new Return_($valueRef)];
+                    } else {
+                        $node->stmts = [new Return_($methodCall)];
+                    }
                 }
             }
         }

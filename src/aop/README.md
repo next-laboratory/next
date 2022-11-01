@@ -66,7 +66,7 @@ class Round implements AspectInterface
 namespace app\controller;
 
 use App\aspects\Round;
-use Max\Di\Annotations\Inject;
+use Max\Di\Attribute\Inject;
 use support\Request;
 
 class Index
@@ -94,7 +94,7 @@ class Index
 namespace App\aspects;
 
 use Closure;
-use Max\Aop\Annotation\AspectConfig;
+use Max\Aop\Attribute\AspectConfig;
 use Max\Aop\JoinPoint;
 use Max\Aop\Contract\AspectInterface;
 

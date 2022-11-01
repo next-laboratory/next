@@ -42,7 +42,7 @@ class ControllerMakeCommand extends Command
     {
         $filesystem               = new Filesystem();
         $controller               = $input->getArgument('controller');
-        $stubFile                 = $this->stubsPath . ($input->hasOption('rest') ? 'controller_rest.stub' : 'controller.stub');
+        $stubFile                 = $this->stubsPath . ($input->getOption('rest') ? 'controller_rest.stub' : 'controller.stub');
         [$namespace, $controller] = $this->parse($controller);
         $controllerPath           = base_path('app/Http/Controller/' . str_replace('\\', '/', $namespace) . '/');
         $controllerFile           = $controllerPath . $controller . 'Controller.php';

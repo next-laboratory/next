@@ -629,7 +629,7 @@ $kernel = new \Max\Http\Server\Kernel($router->getRouteCollector(), \Max\Di\Cont
 $request = \Max\Http\Message\ServerRequest::createFromGlobals();
 
 // 返回PsrResponse
-$response = $kernel->through($request);
+$response = $kernel->handle($request);
 
 // 发送响应
 (new \Max\Http\Server\ResponseEmitter\FPMResponseEmitter())->emit($response);
@@ -647,7 +647,7 @@ $response = $kernel->through($request);
     $loader = require_once '../vendor/autoload.php';
     /** @var Kernel $kernel */
     $kernel   = Context::getContainer()->make(Kernel::class);
-    $response = $kernel->through(ServerRequest::createFromGlobals());
+    $response = $kernel->handle(ServerRequest::createFromGlobals());
     (new FPMResponseEmitter())->emit($response);
 })();
 ```
