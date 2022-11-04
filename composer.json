@@ -82,7 +82,6 @@
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^3.11",
-    "paulxu-cn/event-ide-helper": "^0.1.0",
     "phpunit/phpunit": "^9.5",
     "phpstan/phpstan": "^1.7"
   },
