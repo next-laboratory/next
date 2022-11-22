@@ -13,7 +13,6 @@ namespace Max\JsonRpc\Message;
 
 use InvalidArgumentException;
 use JsonSerializable;
-use Max\Http\Message\Contract\HeaderInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class Request implements JsonSerializable
@@ -28,7 +27,7 @@ class Request implements JsonSerializable
 
     public static function createFromPsrRequest(ServerRequestInterface $request): static
     {
-        if (!str_contains($request->getHeaderLine(HeaderInterface::HEADER_CONTENT_TYPE), 'application/json')) {
+        if (!str_contains($request->getHeaderLine('Content-Type'), 'application/json')) {
             throw new InvalidArgumentException('Invalid Request', -32600);
         }
         $body  = $request->getBody()->getContents();

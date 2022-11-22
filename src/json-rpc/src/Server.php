@@ -14,7 +14,6 @@ namespace Max\JsonRpc;
 use BadMethodCallException;
 use InvalidArgumentException;
 use Max\Di\Reflection;
-use Max\Http\Message\Contract\HeaderInterface;
 use Max\Http\Message\Response as PsrResponse;
 use Max\Http\Message\Stream\StandardStream;
 use Max\JsonRpc\Message\Error;
@@ -46,7 +45,7 @@ class Server
                     'id'      => $rpcRequest->getId(),
                     'result'  => $result,
                 ]);
-                $psrResponse = $psrResponse->withHeader(HeaderInterface::HEADER_CONTENT_TYPE, 'application/json; charset=utf-8')
+                $psrResponse = $psrResponse->withHeader('Content-Type', 'application/json; charset=utf-8')
                                            ->withBody(StandardStream::create($content));
             }
 
@@ -63,7 +62,7 @@ class Server
                         'trace' => $e->getTrace(),
                     ])
                 );
-                $psrResponse = $psrResponse->withHeader(HeaderInterface::HEADER_CONTENT_TYPE, 'application/json; charset=utf-8')
+                $psrResponse = $psrResponse->withHeader('Content-Type', 'application/json; charset=utf-8')
                                            ->withBody(StandardStream::create(json_encode($rpcResponse, JSON_UNESCAPED_UNICODE)));;
             }
             return $psrResponse;
