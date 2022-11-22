@@ -12,15 +12,12 @@ declare(strict_types=1);
 namespace Max\Http\Server\Middleware;
 
 use Exception;
-use Max\Http\Message\Contract\HeaderInterface;
-use Max\Http\Message\Contract\RequestMethodInterface;
 use Max\Http\Message\Cookie;
 use Max\Http\Server\Exception\CSRFException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-
 use function Max\Utils\collect;
 
 class VerifyCSRFToken implements MiddlewareInterface
@@ -38,11 +35,7 @@ class VerifyCSRFToken implements MiddlewareInterface
     /**
      * 需要被验证的请求方法.
      */
-    protected array $shouldVerifyMethods = [
-        RequestMethodInterface::METHOD_POST,
-        RequestMethodInterface::METHOD_PUT,
-        RequestMethodInterface::METHOD_PATCH,
-    ];
+    protected array $shouldVerifyMethods = ['POST', 'PUT', 'PATCH'];
 
     /**
      * @throws CSRFException|Exception
@@ -50,7 +43,7 @@ class VerifyCSRFToken implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         if ($this->shouldVerify($request)) {
-            if (is_null($previousToken = $request->getCookieParams()[HeaderInterface::HEADER_X_CSRF_TOKEN] ?? null)) {
+            if (is_null($previousToken = $request->getCookieParams()['X-Csrf-Token'] ?? null)) {
                 $this->abort();
             }
 
@@ -69,8 +62,8 @@ class VerifyCSRFToken implements MiddlewareInterface
      */
     protected function parseToken(ServerRequestInterface $request): string
     {
-        return $request->getHeaderLine(HeaderInterface::HEADER_X_CSRF_TOKEN)
-            ?: $request->getHeaderLine(HeaderInterface::HEADER_X_XSRF_TOKEN)
+        return $request->getHeaderLine('X-Csrf-Token')
+            ?: $request->getHeaderLine('X-Xsrf-Token')
                 ?: ($request->getParsedBody()['__token'] ?? '');
     }
 
@@ -81,8 +74,8 @@ class VerifyCSRFToken implements MiddlewareInterface
      */
     protected function addCookieToResponse(ResponseInterface $response): ResponseInterface
     {
-        $cookie = new Cookie(HeaderInterface::HEADER_X_CSRF_TOKEN, $this->newCSRFToken(), time() + $this->expires);
-        return $response->withAddedHeader(HeaderInterface::HEADER_SET_COOKIE, $cookie->__toString());
+        $cookie = new Cookie('X-Csrf-Token', $this->newCSRFToken(), time() + $this->expires);
+        return $response->withAddedHeader('Set-Cookie', $cookie->__toString());
     }
 
     /**
@@ -109,7 +102,7 @@ class VerifyCSRFToken implements MiddlewareInterface
     protected function shouldVerify(ServerRequestInterface $request): bool
     {
         if (in_array($request->getMethod(), $this->shouldVerifyMethods)) {
-            return ! collect($this->except)->first(function ($pattern) use ($request) {
+            return !collect($this->except)->first(function ($pattern) use ($request) {
                 return $request->is($pattern);
             });
         }

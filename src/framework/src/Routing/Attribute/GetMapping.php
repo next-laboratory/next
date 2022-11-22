@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Max\Routing\Attribute;
 
 use Attribute;
-use Max\Http\Message\Contract\RequestMethodInterface;
 
 #[Attribute(Attribute::TARGET_METHOD)]
 class GetMapping extends RequestMapping
@@ -20,5 +19,5 @@ class GetMapping extends RequestMapping
     /**
      * @var array<int, string>
      */
-    public array $methods = [RequestMethodInterface::METHOD_GET, RequestMethodInterface::METHOD_HEAD];
+    public array $methods = ['GET', 'HEAD'];
 }

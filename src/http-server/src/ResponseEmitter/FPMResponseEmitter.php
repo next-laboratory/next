@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Max\Http\Server\ResponseEmitter;
 
-use Max\Http\Message\Contract\HeaderInterface;
 use Max\Http\Server\Contract\ResponseEmitterInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -49,10 +48,10 @@ class FPMResponseEmitter implements ResponseEmitterInterface
     protected static function sendHeaders(ResponseInterface $response)
     {
         header(sprintf('HTTP/%s %d %s', $response->getProtocolVersion(), $response->getStatusCode(), $response->getReasonPhrase()), true);
-        foreach ($response->getHeader(HeaderInterface::HEADER_SET_COOKIE) as $cookie) {
-            header(sprintf('%s: %s', HeaderInterface::HEADER_SET_COOKIE, $cookie), false);
+        foreach ($response->getHeader('Set-Cookie') as $cookie) {
+            header(sprintf('%s: %s', 'Set-Cookie', $cookie), false);
         }
-        $response = $response->withoutHeader(HeaderInterface::HEADER_SET_COOKIE);
+        $response = $response->withoutHeader('Set-Cookie');
         foreach ($response->getHeaders() as $name => $value) {
             header($name . ': ' . implode(', ', $value));
         }

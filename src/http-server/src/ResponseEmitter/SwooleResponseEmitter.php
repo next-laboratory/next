@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Max\Http\Server\ResponseEmitter;
 
-use Max\Http\Message\Contract\HeaderInterface;
 use Max\Http\Message\Cookie;
 use Max\Http\Message\Stream\FileStream;
 use Max\Http\Server\Contract\ResponseEmitterInterface;
@@ -26,7 +25,7 @@ class SwooleResponseEmitter implements ResponseEmitterInterface
     public function emit(ResponseInterface $psrResponse, $sender = null)
     {
         $sender->status($psrResponse->getStatusCode(), $psrResponse->getReasonPhrase());
-        foreach ($psrResponse->getHeader(HeaderInterface::HEADER_SET_COOKIE) as $cookieLine) {
+        foreach ($psrResponse->getHeader('Set-Cookie') as $cookieLine) {
             $cookie = Cookie::parse($cookieLine);
             $sender->cookie(
                 $cookie->getName(),
@@ -39,7 +38,7 @@ class SwooleResponseEmitter implements ResponseEmitterInterface
                 $cookie->getSameSite()
             );
         }
-        $psrResponse = $psrResponse->withoutHeader(HeaderInterface::HEADER_SET_COOKIE);
+        $psrResponse = $psrResponse->withoutHeader('Set-Cookie');
         foreach ($psrResponse->getHeaders() as $key => $value) {
             $sender->header($key, implode(', ', $value));
         }

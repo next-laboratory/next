@@ -15,7 +15,6 @@ use Max\Http\Message\Bag\CookieBag;
 use Max\Http\Message\Bag\FileBag;
 use Max\Http\Message\Bag\ParameterBag;
 use Max\Http\Message\Bag\ServerBag;
-use Max\Http\Message\Contract\HeaderInterface;
 use Max\Http\Message\Stream\StandardStream;
 use Max\Utils\Arr;
 use Max\Utils\Str;
@@ -378,7 +377,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function isAjax(): bool
     {
-        return strcasecmp('XMLHttpRequest', $this->getHeaderLine(HeaderInterface::HEADER_X_REQUESTED_WITH)) === 0;
+        return strcasecmp('XMLHttpRequest', $this->getHeaderLine('X-Requested-With')) === 0;
     }
 
     /**

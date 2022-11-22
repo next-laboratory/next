@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Max\Http\Server\ResponseEmitter;
 
-use Max\Http\Message\Contract\HeaderInterface;
 use Max\Http\Message\Cookie;
 use Max\Http\Message\Stream\FileStream;
 use Max\Http\Server\Contract\ResponseEmitterInterface;
@@ -27,8 +26,8 @@ class WorkerManResponseEmitter implements ResponseEmitterInterface
     public function emit(ResponseInterface $psrResponse, $sender = null)
     {
         $response    = new Response($psrResponse->getStatusCode());
-        $cookies     = $psrResponse->getHeader(HeaderInterface::HEADER_SET_COOKIE);
-        $psrResponse = $psrResponse->withoutHeader(HeaderInterface::HEADER_SET_COOKIE);
+        $cookies     = $psrResponse->getHeader('Set-Cookie');
+        $psrResponse = $psrResponse->withoutHeader('Set-Cookie');
         foreach ($psrResponse->getHeaders() as $name => $values) {
             $response->header($name, implode(', ', $values));
         }

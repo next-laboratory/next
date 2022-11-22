@@ -34,7 +34,7 @@ class VendorPublish
 //            }
 //        }
 
-        $path .= '/runtime/app/';
+        $path .= '/runtime/framework/';
         file_exists($path) || mkdir($path, 0755, true);
         file_put_contents($path . 'config.php', sprintf("<?php\n\nreturn %s;", var_export($config, true)));
     }

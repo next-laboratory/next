@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Max\Routing\Attribute;
 
 use Attribute;
-use Max\Http\Message\Contract\RequestMethodInterface;
 
 #[Attribute(Attribute::TARGET_METHOD)]
 class PostMapping extends RequestMapping
@@ -20,5 +19,5 @@ class PostMapping extends RequestMapping
     /**
      * @var array<int, string>
      */
-    public array $methods = [RequestMethodInterface::METHOD_POST];
+    public array $methods = ['POST'];
 }

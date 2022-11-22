@@ -11,11 +11,9 @@ declare(strict_types=1);
 
 namespace Max\Http\Server\Middleware;
 
-use Max\Http\Message\Contract\HeaderInterface;
 use Max\Http\Message\Contract\StatusCodeInterface;
 use Max\Http\Message\Exception\HttpException;
 use Max\Http\Message\Response;
-use Max\Http\Server\Contract\Renderable;
 use Max\Utils\Arr;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -59,13 +57,9 @@ class ExceptionHandleMiddleware implements MiddlewareInterface
      */
     protected function render(Throwable $e, ServerRequestInterface $request): ResponseInterface
     {
-        if ($e instanceof Renderable) {
-            return $e->render($request);
-        }
-
         $message    = $e->getMessage();
         $statusCode = $this->getStatusCode($e);
-        if (str_contains($request->getHeaderLine(HeaderInterface::HEADER_ACCEPT), 'application/json')
+        if (str_contains($request->getHeaderLine('Accept'), 'json')
             || strcasecmp('XMLHttpRequest', $request->getHeaderLine('X-REQUESTED-WITH')) === 0) {
 
             $body = json_encode([
@@ -75,7 +69,7 @@ class ExceptionHandleMiddleware implements MiddlewareInterface
                 'message' => $message,
             ], JSON_UNESCAPED_UNICODE);
 
-            return new Response($statusCode, [HeaderInterface::HEADER_CONTENT_TYPE => 'application/json; charset=utf-8'], $body);
+            return new Response($statusCode, ['Content-Type' => 'application/json; charset=utf-8'], $body);
         }
 
         $body = sprintf(
@@ -85,7 +79,7 @@ class ExceptionHandleMiddleware implements MiddlewareInterface
             $e->getTraceAsString(),
         );
 
-        return new Response($statusCode, [HeaderInterface::HEADER_CONTENT_TYPE => 'text/html; charset=utf-8'], $body);
+        return new Response($statusCode, ['Content-Type' => 'text/html; charset=utf-8'], $body);
     }
 
     protected function getStatusCode(Throwable $e)

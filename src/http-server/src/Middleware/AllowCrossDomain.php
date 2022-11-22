@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace Max\Http\Server\Middleware;
 
-use Max\Http\Message\Contract\HeaderInterface;
-use Max\Http\Message\Contract\RequestMethodInterface;
 use Max\Http\Message\Contract\StatusCodeInterface;
 use Max\Http\Message\Response;
 use Max\Utils\Str;
@@ -20,7 +18,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-
 use function Max\Utils\collect;
 
 class AllowCrossDomain implements MiddlewareInterface
@@ -34,27 +31,20 @@ class AllowCrossDomain implements MiddlewareInterface
      * @var string[] 允许的头部
      */
     protected array $allowHeaders = [
-        HeaderInterface::HEADER_AUTHORIZATION,
-        HeaderInterface::HEADER_CONTENT_TYPE,
+        'Authorization',
+        'Content-Type',
         'If-Match',
         'If-Modified-Since',
         'If-None-Match',
         'If-Unmodified-Since',
         'X-Csrf-Token',
-        HeaderInterface::HEADER_X_REQUESTED_WITH,
+        'X-Requested-With',
     ];
 
     /**
      * @var array|string[] 允许的方法
      */
-    protected array $allowMethods = [
-        RequestMethodInterface::METHOD_GET,
-        RequestMethodInterface::METHOD_POST,
-        RequestMethodInterface::METHOD_PATCH,
-        RequestMethodInterface::METHOD_PUT,
-        RequestMethodInterface::METHOD_DELETE,
-        RequestMethodInterface::METHOD_OPTIONS,
-    ];
+    protected array $allowMethods = ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'];
 
     /**
      * @var string 允许获取凭证
@@ -68,9 +58,9 @@ class AllowCrossDomain implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if ($this->shouldCrossOrigin($origin = $request->getHeaderLine(HeaderInterface::HEADER_ORIGIN))) {
+        if ($this->shouldCrossOrigin($origin = $request->getHeaderLine('Origin'))) {
             $headers = $this->createCORSHeaders($origin);
-            if (strcasecmp($request->getMethod(), RequestMethodInterface::METHOD_OPTIONS) === 0) {
+            if (strcasecmp($request->getMethod(), 'OPTIONS') === 0) {
                 return new Response(StatusCodeInterface::STATUS_NO_CONTENT, $headers);
             }
 
@@ -86,11 +76,11 @@ class AllowCrossDomain implements MiddlewareInterface
     protected function createCORSHeaders(string $origin): array
     {
         return [
-            HeaderInterface::HEADER_ACCESS_CONTROL_ALLOW_CREDENTIALS => $this->allowCredentials,
-            HeaderInterface::HEADER_ACCESS_CONTROL_MAX_AGE           => $this->maxAge,
-            HeaderInterface::HEADER_ACCESS_CONTROL_ALLOW_METHODS     => implode(', ', $this->allowMethods),
-            HeaderInterface::HEADER_ACCESS_CONTROL_ALLOW_HEADERS     => implode(', ', $this->allowHeaders),
-            HeaderInterface::HEADER_ACCESS_CONTROL_ALLOW_ORIGIN      => $origin,
+            'Access-Control-Allow-Credentials' => $this->allowCredentials,
+            'Access-Control-Max-Age'           => $this->maxAge,
+            'Access-Control-Allow-Methods'     => implode(', ', $this->allowMethods),
+            'Access-Control-Allow-Headers'     => implode(', ', $this->allowHeaders),
+            'Access-Control-Allow-Origin'      => $origin,
         ];
     }
 

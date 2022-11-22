@@ -436,23 +436,6 @@ function with(mixed $value, callable $callback = null): mixed
     return is_null($callback) ? $value : $callback($value);
 }
 
-/**
- * 转为xml.
- */
-function data_to_xml(iterable $data): string
-{
-    $xml = '';
-    foreach ($data as $key => $val) {
-        is_numeric($key) && $key = "item id=\"{$key}\"";
-        $xml .= "<{$key}>";
-        $xml .= (is_array($val) || is_object($val)) ? data_to_xml($val) : $val;
-        [$key] = explode(' ', $key);
-        $xml .= "</{$key}>";
-    }
-
-    return $xml;
-}
-
 function is_valid_ip(string $ip, string $type = ''): bool
 {
     $flag = match (strtolower($type)) {

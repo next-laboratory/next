@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Max\Routing\Attribute;
 
 use Attribute;
-use Max\Http\Message\Contract\RequestMethodInterface;
 
 #[Attribute(Attribute::TARGET_METHOD)]
 class RequestMapping
@@ -20,11 +19,7 @@ class RequestMapping
     /**
      * @var array<int, string>
      */
-    public array $methods = [
-        RequestMethodInterface::METHOD_GET,
-        RequestMethodInterface::METHOD_HEAD,
-        RequestMethodInterface::METHOD_POST
-    ];
+    public array $methods = ['GET', 'HEAD', 'POST'];
 
     /**
      * @param string             $path        路径
@@ -33,9 +28,10 @@ class RequestMapping
      */
     public function __construct(
         public string $path = '/',
-        array $methods = [],
-        public array $middlewares = [],
-    ) {
+        array         $methods = [],
+        public array  $middlewares = [],
+    )
+    {
         if (!empty($methods)) {
             $this->methods = $methods;
         }
