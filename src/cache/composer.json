@@ -22,8 +22,8 @@
     },
     "require": {
         "php": "^8.0",
-        "max/utils": "^1.0",
+        "max/utils": "dev-master",
         "psr/simple-cache": "^1.0",
-        "max/redis": "^1.0"
+        "max/redis": "dev-master"
     }
 }

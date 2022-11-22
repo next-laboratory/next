@@ -19,6 +19,6 @@
         "php": "^8.0",
         "ext-pdo": "*",
         "ext-json": "*",
-        "max/utils": "^1.0"
+        "max/utils": "dev-master"
     }
 }

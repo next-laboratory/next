@@ -19,7 +19,7 @@
     },
     "require": {
         "php": "^8.0",
-        "max/macro": "^1.0",
+        "max/macro": "dev-master",
         "symfony/finder": "*"
     },
     "suggest": {
