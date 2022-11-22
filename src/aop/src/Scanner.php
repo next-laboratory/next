@@ -146,7 +146,9 @@ final class Scanner
         $traverser = new NodeTraverser();
         $metadata  = new Metadata($class);
         if (in_array(PropertyAttributeCollector::class, $collectors)) {
-            $traverser->addVisitor(new PropertyHandlerVisitor($metadata));
+            if (PropertyAttributeCollector::getByClass($class)) {
+                $traverser->addVisitor(new PropertyHandlerVisitor($metadata));
+            }
         }
         if (in_array(AspectCollector::class, $collectors)) {
             $traverser->addVisitor(new ProxyHandlerVisitor($metadata));
