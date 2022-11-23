@@ -42,7 +42,7 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable, Jsonab
     public function __construct(int|string $key, array $attributes = [])
     {
         $this->key = $key;
-        if (! empty($attributes)) {
+        if (!empty($attributes)) {
             $this->fill($attributes);
         }
     }
@@ -68,7 +68,7 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable, Jsonab
                 switch (static::$casts[$name]) {
                     case 'integer':
                     case 'int':
-                        $value = (int) $value;
+                        $value = (int)$value;
                         break;
                 }
             }
@@ -99,7 +99,7 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable, Jsonab
 
     public function increment(string $column, int $step = 1): int
     {
-        $current         = (int) $this->{$column} + $step;
+        $current         = (int)$this->{$column} + $step;
         $this->{$column} = $current;
         $this->save();
         return $current;
@@ -110,9 +110,6 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable, Jsonab
         return $this->increment($column, -$step);
     }
 
-    /**
-     * @param $value
-     */
     public static function findWhere(string $field, $value): Collection
     {
         if (!in_array($field, static::$fillable)) {
@@ -152,7 +149,7 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable, Jsonab
      */
     public static function findWhereIn(string $field, array $in): Collection
     {
-        return static::findWhere($field, function($k, $v, &$item) use (&$in) {
+        return static::findWhere($field, function ($k, $v, &$item) use (&$in) {
             return in_array($v, $in);
         });
     }
@@ -241,14 +238,12 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable, Jsonab
 
     public function offsetGet($offset): mixed
     {
-        return $this->attributes[$offset] ?? null;
+        return $this->__get($offset);
     }
 
     public function offsetSet($offset, $value): void
     {
-        if (in_array($offset, static::$fillable)) {
-            static::$fillable[$offset] = $value;
-        }
+        $this->__set($offset, $value);
     }
 
     public function offsetUnset($offset): void
