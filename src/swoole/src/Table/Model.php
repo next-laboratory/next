@@ -193,7 +193,8 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable, Jsonab
         }
         $model = new static($key, $attributes);
         $model->save();
-        return $model;
+
+        return static::find($key);
     }
 
     /**
