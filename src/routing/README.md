@@ -34,29 +34,6 @@ $router->any('/', function() {
 });
 ```
 
-### 如果需要注册一个Restful路由，例如：
-
-```php
-$router->rest('/book', 'BookController');
-```
-
-Restful规则会注册多条路由，上面的规则注册的路由如下：
-
-| Methods | Uri | Action |
-| --- | --- | --- |
-| GET/HEAD | /book | BookController@index |
-| GET/HEAD | /book/{id} | BookController@show |
-| POST | /book | BookController@store |
-| PUT/PATCH | /book/{id} | BookController@update |
-| DELETE | /book/{id} | BookController@delete |
-
-值得注意的是rest方法返回的是一个RestRouter对象，通过该对象，你可以获取到某一个action对应的路由规则，并且注册其他参数，例如：
-
-```php
-$rest = $router->rest('/book', 'BookController');
-$rest->getShowRoute()->middleware('JWTAuthentication');
-```
-
 ### 路由支持参数，例如：
 
 ```php

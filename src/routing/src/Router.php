@@ -98,20 +98,6 @@ class Router
     }
 
     /**
-     * Restful路由.
-     */
-    public function rest(string $uri, string $controller): RestRouter
-    {
-        return new RestRouter(
-            $this->routeCollection,
-            $this->prefix . $uri,
-            $this->formatController($controller),
-            $this->middlewares,
-            $this->patterns,
-        );
-    }
-
-    /**
      * Allow multi request methods.
      */
     public function request(string $path, array|Closure|string $action, array $methods = ['GET', 'HEAD', 'POST']): Route
