@@ -24,16 +24,29 @@ use Swoole\Table;
 
 abstract class Model implements ArrayAccess, Arrayable, JsonSerializable, Jsonable
 {
-    /** @var string 表名 */
+    /**
+     * @var string 表名
+     */
     protected static string $table;
 
-    /** @var int|string 主键 */
+    /**
+     * @var int|string 主键
+     */
     protected string|int $key;
 
+    /**
+     * @var array 可以被填充的属性
+     */
     protected static array $fillable = [];
 
+    /**
+     * @var array 类型转换，支持json，int, integer, bool, boolean
+     */
     protected static array $casts = [];
 
+    /**
+     * @var array 属性
+     */
     protected array $attributes = [];
 
     /**
@@ -64,16 +77,28 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable, Jsonab
     public function __set($name, $value)
     {
         if (in_array($name, static::$fillable)) {
-            if (isset(static::$casts[$name])) {
-                switch (static::$casts[$name]) {
-                    case 'integer':
-                    case 'int':
-                        $value = (int)$value;
-                        break;
-                }
+            switch ($this->getCastType($name)) {
+                case 'int':
+                case 'integer':
+                    $value = (int)$value;
+                    break;
+                case 'bool':
+                case 'boolean':
+                    $value = (bool)$value;
+                    break;
+                case 'json':
+                    if (is_string($value)) {
+                        $value = json_decode($value, true);
+                    }
+                    break;
             }
             $this->attributes[$name] = $value;
         }
+    }
+
+    protected function getCastType($name): ?string
+    {
+        return static::$casts[$name] ?? null;
     }
 
     public function __toString(): string
@@ -91,9 +116,10 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable, Jsonab
      */
     public function fill(array $attributes): static
     {
-        foreach ($attributes as $key => $value) {
-            $this->__set($key, $value);
+        foreach ($attributes as $name => $attribute) {
+            $this->__set($name, $attribute);
         }
+
         return $this;
     }
 
@@ -171,7 +197,15 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable, Jsonab
 
     public function save(): bool
     {
-        return static::getSwooleTable()->set($this->key, $this->attributes);
+        $attributes = $this->attributes;
+        foreach ($attributes as $name => &$value) {
+            if ($castType = $this->getCastType($name)) {
+                if ($castType == 'json') {
+                    $value = json_encode($value);
+                }
+            }
+        }
+        return static::getSwooleTable()->set($this->key, $attributes);
     }
 
     /**
@@ -234,7 +268,7 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable, Jsonab
 
     public function offsetExists($offset): bool
     {
-        return isset($this->attributes[$offset]);
+        return array_key_exists($offset, $this->attributes);
     }
 
     public function offsetGet($offset): mixed
