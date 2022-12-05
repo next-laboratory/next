@@ -31,13 +31,12 @@ class Query
         protected ConnectorInterface $connector,
         protected ?EventDispatcherInterface $eventDispatcher = null,
     ) {
+        $this->PDO = $this->connector->get();
     }
 
     public function __destruct()
     {
-        if (isset($this->PDO)) {
-            $this->connector->release($this->PDO);
-        }
+        $this->connector->release($this->PDO);
     }
 
     public function select(string $query, array $bindings = [], int $mode = PDO::FETCH_ASSOC, ...$args): bool|array
@@ -80,7 +79,7 @@ class Query
             $PDOStatement->execute();
             return $PDOStatement;
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage() . sprintf(' (SQL: %s)', $query), (int) $e->getCode(), $e->getPrevious());
+            throw new PDOException($e->getMessage() . sprintf(' (SQL: %s)', $query), (int)$e->getCode(), $e->getPrevious());
         } finally {
             $this->eventDispatcher?->dispatch(new QueryExecuted($query, $bindings, microtime(true) - $start));
         }
@@ -113,9 +112,6 @@ class Query
      */
     public function getPDO()
     {
-        if (! isset($this->PDO)) {
-            $this->PDO = $this->connector->get();
-        }
         return $this->PDO;
     }
 }
