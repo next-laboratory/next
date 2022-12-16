@@ -29,6 +29,7 @@
       "Max\\Utils\\": "src/utils/src",
       "Max\\Validation\\": "src/validation/src",
       "Max\\View\\": "src/view/src",
+      "Max\\Swoole\\": "src/swoole/src",
       "Max\\VarDumper\\": "src/var-dumper/src"
     },
     "files": [
@@ -64,6 +65,7 @@
     "max/resource": "*",
     "max/routing": "*",
     "max/session": "*",
+    "max/swoole": "*",
     "max/macro": "*",
     "max/utils": "*",
     "max/validation": "*",
