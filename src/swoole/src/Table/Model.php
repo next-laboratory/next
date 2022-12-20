@@ -161,7 +161,7 @@ abstract class Model implements ArrayAccess, Arrayable, JsonSerializable, Jsonab
         $collection = Collection::make();
         foreach (static::getSwooleTable() as $key => $item) {
             foreach ($fields as $k => $v) {
-                if (!$item[$k] == $v) {
+                if ($item[$k] != $v) {
                     continue 2;
                 }
             }
