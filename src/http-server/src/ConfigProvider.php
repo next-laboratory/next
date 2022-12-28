@@ -9,6 +9,7 @@ class ConfigProvider
         return [
             'bindings' => [
                 'Max\Http\Server\Contract\RouteDispatcherInterface' => 'Max\Http\Server\RouteDispatcher',
+                'Max\Http\Server\Contract\HttpKernelInterface'      => 'Max\Http\Server\Kernel',
             ]
         ];
     }

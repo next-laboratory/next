@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Http\Server;
 
+use Max\Http\Server\Contract\HttpKernelInterface;
 use Max\Http\Server\Contract\RouteDispatcherInterface;
 use Max\Routing\Route;
 use Max\Routing\RouteCollection;
@@ -21,7 +22,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use ReflectionException;
 
-class Kernel
+class Kernel implements HttpKernelInterface
 {
     /**
      * 全局中间件.

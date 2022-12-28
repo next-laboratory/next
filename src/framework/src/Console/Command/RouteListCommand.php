@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace Max\Console\Command;
 
-use App\Http\Kernel;
 use Closure;
 use Max\Di\Exception\NotFoundException;
+use Max\Http\Server\Contract\HttpKernelInterface;
 use Max\Routing\Route;
 use Max\Utils\Collection;
 use Psr\Container\ContainerExceptionInterface;
@@ -50,7 +50,7 @@ class RouteListCommand extends Command
     protected function configure()
     {
         $this->setName('route:list')
-            ->setDescription('List all routes');
+             ->setDescription('List all routes');
     }
 
     /**
@@ -60,11 +60,11 @@ class RouteListCommand extends Command
      */
     protected function getRoutes(): Collection
     {
-        $kernel         = make(Kernel::class);
-        $routes         = [];
+        $kernel = make(HttpKernelInterface::class);
+        $routes = [];
         foreach ($kernel->getAllRoutes() as $registeredRoute) {
             foreach ($registeredRoute as $route) {
-                if (! in_array($route, $routes)) {
+                if (!in_array($route, $routes)) {
                     $routes[] = $route;
                 }
             }
