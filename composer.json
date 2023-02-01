@@ -1,32 +1,30 @@
 {
-    "name": "max/utils",
-    "type": "library",
-    "license": "Apache-2.0",
-    "homepage": "https://github.com/marxphp/utils",
-    "authors": [
-        {
-            "name": "chengyao",
-            "email": "987861463@qq.com"
-        }
-    ],
-    "autoload": {
-        "files": [
-            "src/helpers.php"
-        ],
-        "psr-4": {
-            "Max\\Utils\\": "src/"
-        }
-    },
-    "require": {
-        "php": "^8.0",
-        "max/macro": "dev-master",
-        "symfony/finder": "*"
-    },
-    "suggest": {
-        "ramsey/uuid": "*",
-        "symfony/mime": "*",
-        "voku/portable-ascii": "*",
-        "league/commonmark": "*",
-        "doctrine/inflector": "*"
+  "name": "max/utils",
+  "type": "library",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/marxphp/utils",
+  "authors": [
+    {
+      "name": "chengyao",
+      "email": "987861463@qq.com"
     }
+  ],
+  "autoload": {
+    "files": [
+      "src/helpers.php"
+    ],
+    "psr-4": {
+      "Max\\Utils\\": "src/"
+    }
+  },
+  "require": {
+    "php": "^8.0",
+    "max/macro": "dev-master",
+    "symfony/finder": "*",
+    "ramsey/uuid": "*",
+    "symfony/mime": "*",
+    "voku/portable-ascii": "*",
+    "league/commonmark": "*",
+    "doctrine/inflector": "*"
+  }
 }
