@@ -20,16 +20,18 @@ class SwoolePoolConnector implements ConnectorInterface
     protected PDOPool $PDOPool;
 
     public function __construct(
-        string $driver = 'mysql',
-        string $host = '127.0.0.1',
-        int $port = 3306,
-        string $database = '',
-        string $user = 'root',
-        string $password = '',
-        array $options = [],
+        string  $driver = 'mysql',
+        string  $host = '127.0.0.1',
+        int     $port = 3306,
+        string  $database = '',
+        string  $user = 'root',
+        string  $password = '',
+        array   $options = [],
         ?string $unixSocket = null,
-        int $poolSize = 16,
-    ) {
+        int     $poolSize = 16,
+        bool    $autoFill = false,
+    )
+    {
         $PDOConfig     = (new PDOConfig())
             ->withDriver($driver)
             ->withHost($host)
@@ -40,7 +42,7 @@ class SwoolePoolConnector implements ConnectorInterface
             ->withPassword($password)
             ->withOptions($options);
         $this->PDOPool = new PDOPool($PDOConfig, $poolSize);
-        $this->PDOPool->fill();
+        $autoFill && $this->PDOPool->fill();
     }
 
     public function get()

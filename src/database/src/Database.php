@@ -16,11 +16,11 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Database
 {
-    protected ?EventDispatcherInterface $eventDispatcher = null;
-
     public function __construct(
-        protected ConnectorInterface $connector
-    ) {
+        protected ConnectorInterface        $connector,
+        protected ?EventDispatcherInterface $eventDispatcher = null,
+    )
+    {
     }
 
     public function query(): Query
