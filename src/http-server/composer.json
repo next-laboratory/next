@@ -1,30 +1,25 @@
 {
-    "name": "max/http-server",
-    "license": "Apache-2.0",
-    "homepage": "https://github.com/marxphp/http-server",
-    "autoload": {
-        "psr-4": {
-            "Max\\Http\\Server\\": "src/"
-        }
-    },
-    "authors": [
-        {
-            "name": "chengyao",
-            "email": "987861463@qq.com"
-        }
-    ],
-    "require": {
-        "php": "^8.0",
-        "max/http-message": "dev-master",
-        "max/utils": "dev-master",
-        "max/routing": "dev-master",
-        "max/di": "dev-master",
-        "psr/http-server-middleware": "^1.0",
-        "psr/http-server-handler": "^1.0"
-    },
-    "extra": {
-        "max": {
-            "config": "Max\\Http\\Server\\ConfigProvider"
-        }
+  "name": "max/http-server",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/marxphp/http-server",
+  "autoload": {
+    "psr-4": {
+      "Max\\Http\\Server\\": "src/"
     }
+  },
+  "authors": [
+    {
+      "name": "chengyao",
+      "email": "987861463@qq.com"
+    }
+  ],
+  "require": {
+    "php": "^8.0",
+    "max/http-message": "dev-master",
+    "max/utils": "dev-master",
+    "max/routing": "dev-master",
+    "max/di": "dev-master",
+    "psr/http-server-middleware": "^1.0",
+    "psr/http-server-handler": "^1.0"
+  }
 }

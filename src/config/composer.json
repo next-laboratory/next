@@ -1,29 +1,24 @@
 {
-    "name": "max/config",
-    "license": "Apache-2.0",
-    "authors": [
-        {
-            "name": "chengyao",
-            "email": "987861463@qq.com"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "Max\\Config\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Max\\Config\\Tests\\": "tests/"
-        }
-    },
-    "require": {
-        "php": "^8.0",
-        "max/utils": "dev-master"
-    },
-    "extra": {
-        "max": {
-            "config": "Max\\Config\\ConfigProvider"
-        }
+  "name": "max/config",
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "chengyao",
+      "email": "987861463@qq.com"
     }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Max\\Config\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Max\\Config\\Tests\\": "tests/"
+    }
+  },
+  "require": {
+    "php": "^8.0",
+    "max/utils": "dev-master"
+  }
 }
