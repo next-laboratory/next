@@ -2,30 +2,26 @@
 
 namespace Max\Console;
 
-use Exception;
-use Psr\Container\ContainerExceptionInterface;
 use Symfony\Component\Console\Application;
 
-class Kernel
+class Kernel extends Application
 {
-    /**
-     * 注册命令.
-     *
-     * @var array<int, string> $commands
-     */
-    protected array $commands = [];
+    public function __construct(
+        string $name = 'UNKNOWN',
+        string $version = 'UNKNOWN'
+    )
+    {
+        parent::__construct($name, $version);
+        foreach ($this->commands() as $command) {
+            $this->add(make($command));
+        }
+    }
 
     /**
-     * @throws Exception
-     * @throws ContainerExceptionInterface
+     * 注册命令
      */
-    public function run(): void
+    protected function commands(): array
     {
-        $application = new Application('MaxPHP', 'dev');
-        $commands    = array_merge($this->commands, CommandCollector::all(), config('config.commands', []));
-        foreach ($commands as $command) {
-            $application->add(make($command));
-        }
-        $application->run();
+        return [];
     }
 }

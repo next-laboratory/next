@@ -33,7 +33,7 @@ class ExceptionHandleMiddleware implements MiddlewareInterface
     /**
      * @throws Throwable
      */
-    final public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {
             return $handler->handle($request);
