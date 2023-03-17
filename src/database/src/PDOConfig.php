@@ -1,22 +1,10 @@
 <?php
 
-declare(strict_types=1);
+namespace Max\Database;
 
-/**
- * This file is part of MaxPHP.
- *
- * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
- */
+use Max\Database\Contract\ConfigInterface;
 
-namespace Max\Database\Connector;
-
-use Max\Database\Contract\ConnectorInterface;
-use Max\Pool\BasePool;
-use PDO;
-use SplQueue;
-
-class BasePoolConnector extends BasePool implements ConnectorInterface
+class PDOConfig implements ConfigInterface
 {
     public function __construct(
         string           $driver = 'mysql',
@@ -26,9 +14,8 @@ class BasePoolConnector extends BasePool implements ConnectorInterface
         protected string $user = 'root',
         protected string $password = '',
         protected array  $options = [],
-        protected string $unixSocket = '',
+        string           $unixSocket = '',
         protected string $DSN = '',
-        protected int    $poolSize = 16,
     )
     {
         if (empty($this->DSN)) {
@@ -40,17 +27,34 @@ class BasePoolConnector extends BasePool implements ConnectorInterface
                 $this->DSN .= 'unix_socket=' . $unixSocket . ';';
             }
         }
-        $this->splQueue = new SplQueue();
-        $this->open();
     }
 
-    public function getPoolCapacity(): int
+    public function getDSN(): string
     {
-        return $this->poolSize;
+        return $this->DSN;
     }
 
-    public function newPoolItem()
+    /**
+     * @return string
+     */
+    public function getUser(): string
     {
-        return new PDO($this->DSN, $this->user, $this->password, $this->options);
+        return $this->user;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptions(): array
+    {
+        return $this->options;
     }
 }

@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Max\Database;
 
 use Closure;
-use Max\Database\Contract\ConnectorInterface;
 use Max\Database\Event\QueryExecuted;
 use PDO;
 use PDOException;
@@ -22,21 +21,11 @@ use Throwable;
 
 class Query
 {
-    /**
-     * @var PDO
-     */
-    protected $PDO;
-
     public function __construct(
-        protected ConnectorInterface $connector,
+        protected                           $PDO,
         protected ?EventDispatcherInterface $eventDispatcher = null,
-    ) {
-        $this->PDO = $this->connector->get();
-    }
-
-    public function __destruct()
+    )
     {
-        $this->connector->release($this->PDO);
     }
 
     public function select(string $query, array $bindings = [], int $mode = PDO::FETCH_ASSOC, ...$args): bool|array
