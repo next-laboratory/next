@@ -1,8 +1,15 @@
+# ！！！ 不能生产使用，仅作为研究用途
+
 一款简单Aop实现。支持常驻内存型PHP应用。可以方便接入MaxPHP, Swoole，WebMan等框架。
 
-# 安装
+# 环境要求
 
-> 环境要求 PHP >= 8.0
+```
+linux OS
+php >=8.0 with ext-pcntl
+```
+
+# 安装
 
 ```shell
 composer require max/aop
