@@ -71,7 +71,7 @@ final class StandardStream implements StreamInterface
     /** @var null|array|mixed|void */
     private $uri;
 
-    private ?int $size;
+    private ?int $size = null;
 
     private function __construct()
     {
