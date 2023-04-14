@@ -2,6 +2,13 @@
 
 declare(strict_types=1);
 
+/**
+ * This file is part of MarxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
 namespace Max\Pipeline;
 
 use RuntimeException;
@@ -18,7 +25,7 @@ class Context
     /**
      * @var callable
      */
-    protected $endPoint = null;
+    protected $endPoint;
 
     public function use(callable ...$pipes): static
     {
@@ -62,10 +69,5 @@ class Context
     public function getValue(string $key): mixed
     {
         return $this->values[$key] ?? null;
-    }
-
-    public function getValues(): array
-    {
-        return $this->values;
     }
 }
