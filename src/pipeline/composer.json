@@ -1,0 +1,15 @@
+{
+    "name": "max/pipeline",
+    "autoload": {
+        "psr-4": {
+            "Max\\Pipeline\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "chengyao",
+            "email": "bigyao@139.com"
+        }
+    ],
+    "require": {}
+}
