@@ -15,44 +15,47 @@ use RuntimeException;
 
 class Context
 {
-    protected array $values;
+    protected array $values = [];
 
     /**
      * @var array<callable>
      */
-    protected array $pipes = [];
+    protected array $handlers = [];
+
+    protected int $handlerIndex = 0;
+
+    protected bool $end = false;
 
     /**
      * @var callable
      */
-    protected $endPoint;
+    protected $final;
 
-    public function use(callable ...$pipes): static
+    public function use(callable ...$handlers): static
     {
-        array_push($this->pipes, ...$pipes);
+        array_push($this->handlers, ...$handlers);
 
         return $this;
     }
 
-    public function final(callable $endPoint): static
+    public function final(callable $final): static
     {
-        $this->endPoint = $endPoint;
+        $this->final = $final;
 
         return $this;
     }
 
     final public function next(): void
     {
-        if (count($this->pipes) === 0) {
-            if (is_null($this->endPoint)) {
+        if (count($this->handlers) === $this->handlerIndex) {
+            if (is_null($this->final)) {
                 throw new RuntimeException('the final method is null or has been executed');
             }
-            $endPoint       = $this->endPoint;
-            $this->endPoint = null;
-            $endPoint($this);
+            $this->end = true;
+            ($this->final)($this);
         } else {
-            $pipe = array_shift($this->pipes);
-            $pipe($this);
+            $handler = $this->handlers[$this->handlerIndex++];
+            $handler($this);
         }
     }
 
