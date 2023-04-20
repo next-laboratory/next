@@ -22,10 +22,6 @@ class Context
      */
     protected array $handlers = [];
 
-    protected int $handlerIndex = 0;
-
-    protected bool $end = false;
-
     /**
      * @var callable
      */
@@ -38,25 +34,13 @@ class Context
         return $this;
     }
 
-    public function final(callable $final): static
-    {
-        $this->final = $final;
-
-        return $this;
-    }
-
     final public function next(): void
     {
-        if (count($this->handlers) === $this->handlerIndex) {
-            if (is_null($this->final)) {
-                throw new RuntimeException('the final method is null or has been executed');
-            }
-            $this->end = true;
-            ($this->final)($this);
-        } else {
-            $handler = $this->handlers[$this->handlerIndex++];
-            $handler($this);
+        if (count($this->handlers) === 0) {
+            throw new RuntimeException('There is no handler that can be executed');
         }
+        $handler = array_shift($this->handlers);
+        $handler($this);
     }
 
     public function setValue(string $key, mixed $value): void
