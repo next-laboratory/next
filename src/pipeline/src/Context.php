@@ -13,7 +13,7 @@ namespace Max\Pipeline;
 
 use RuntimeException;
 
-class Context
+abstract class Context
 {
     protected array $values = [];
 
@@ -22,17 +22,20 @@ class Context
      */
     protected array $handlers = [];
 
-    /**
-     * @var callable
-     */
-    protected $final;
-
     public function use(callable ...$handlers): static
     {
-        array_push($this->handlers, ...$handlers);
+        if (!empty($handlers)) {
+            array_push($this->handlers, ...$handlers);
+        }
 
         return $this;
     }
+
+    abstract public function getRequestMethod(): string;
+
+    abstract public function getPath(): string;
+
+    abstract public function setParameters(array $parameters);
 
     final public function next(): void
     {

@@ -17,7 +17,7 @@ use Symfony\Component\VarDumper\Dumper\HtmlDumper;
 
 trait AbortHandler
 {
-    public function convertToHtml(Abort $abort): string
+    public static function convertToHtml(Abort $abort): string
     {
         ob_start();
         $cloner = new VarCloner();
@@ -25,6 +25,6 @@ trait AbortHandler
         foreach ($abort->vars as $var) {
             (new HtmlDumper())->dump($cloner->cloneVar($var));
         }
-        return (string) ob_get_clean();
+        return (string)ob_get_clean();
     }
 }

@@ -52,7 +52,7 @@ class ExceptionHandler extends Handler
     public function render(Request $request, Throwable $exception): Response
     {
         if ($exception instanceof Abort) {
-            return \response($this->convertToHtml($exception));
+            return \response(self::convertToHtml($exception));
         }
         return parent::render($request, $exception);
     }
