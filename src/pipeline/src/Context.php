@@ -45,6 +45,11 @@ abstract class Context
         array_shift($this->handlers)($this);
     }
 
+    public function abort(string $message = '', int $code = 0)
+    {
+        throw new Abort($message, $code);
+    }
+
     public function setValue(string $key, mixed $value): void
     {
         $this->values[$key] = $value;
