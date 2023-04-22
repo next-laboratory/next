@@ -25,7 +25,7 @@ abstract class Context
     public function use(callable ...$handlers): static
     {
         if (!empty($handlers)) {
-            array_push($this->handlers, ...$handlers);
+            $this->handlers = [...$this->handlers, ...$handlers];
         }
 
         return $this;
@@ -42,8 +42,7 @@ abstract class Context
         if (count($this->handlers) === 0) {
             throw new RuntimeException('There is no handler that can be executed');
         }
-        $handler = array_shift($this->handlers);
-        $handler($this);
+        array_shift($this->handlers)($this);
     }
 
     public function setValue(string $key, mixed $value): void

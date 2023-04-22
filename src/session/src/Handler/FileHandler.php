@@ -15,11 +15,9 @@ use Closure;
 use Exception;
 use FilesystemIterator;
 use Generator;
-use Max\Utils\Traits\AutoFillProperties;
 use SessionHandlerInterface;
 use SplFileInfo;
 use Throwable;
-
 use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
@@ -33,20 +31,17 @@ use function unlink;
 
 class FileHandler implements SessionHandlerInterface
 {
-    use AutoFillProperties;
-
-    protected string $path = '/tmp';
-
-    protected int $gcDivisor = 100;
-
-    protected int $gcProbability = 1;
-
-    protected int $gcMaxLifetime = 1440;
-
-    public function __construct(array $options = [])
+    public function __construct(
+        protected int    $gcDivisor = 100,
+        protected int    $gcProbability = 1,
+        protected int    $gcMaxLifetime = 1440,
+        protected string $path = '',
+    )
     {
-        $this->fillProperties($options);
-        ! is_dir($this->path) && mkdir($this->path, 0755, true);
+        if (!$this->path) {
+            $this->path = sys_get_temp_dir();
+        }
+        !is_dir($this->path) && mkdir($this->path, 0755, true);
     }
 
     /**
@@ -57,8 +52,8 @@ class FileHandler implements SessionHandlerInterface
     {
         try {
             $number = 0;
-            $now    = time();
-            $files  = $this->findFiles($this->path, function (SplFileInfo $item) use ($maxLifeTime, $now) {
+            $now = time();
+            $files = $this->findFiles($this->path, function (SplFileInfo $item) use ($maxLifeTime, $now) {
                 return $now - $maxLifeTime > $item->getMTime();
             });
 
@@ -102,7 +97,7 @@ class FileHandler implements SessionHandlerInterface
     #[\ReturnTypeWillChange]
     public function write($id, $data): bool
     {
-        return (bool) file_put_contents($this->getSessionFile($id), $data, LOCK_EX);
+        return (bool)file_put_contents($this->getSessionFile($id), $data, LOCK_EX);
     }
 
     /**
@@ -145,7 +140,7 @@ class FileHandler implements SessionHandlerInterface
 
         /** @var SplFileInfo $item */
         foreach ($items as $item) {
-            if ($item->isDir() && ! $item->isLink()) {
+            if ($item->isDir() && !$item->isLink()) {
                 yield from $this->findFiles($item->getPathname(), $filter);
             } elseif ($filter($item)) {
                 yield $item;

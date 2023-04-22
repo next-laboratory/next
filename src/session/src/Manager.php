@@ -11,19 +11,14 @@ declare(strict_types=1);
 
 namespace Max\Session;
 
-use Max\Config\Contract\ConfigInterface;
 use SessionHandlerInterface;
 
 class Manager
 {
-    protected SessionHandlerInterface $sessionHandler;
-
-    public function __construct(ConfigInterface $config)
+    public function __construct(
+        protected SessionHandlerInterface $sessionHandler
+    )
     {
-        $config               = $config->get('session');
-        $handler              = $config['handler'];
-        $config               = $config['config'];
-        $this->sessionHandler = new $handler($config);
     }
 
     /**
