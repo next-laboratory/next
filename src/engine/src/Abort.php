@@ -1,6 +1,6 @@
 <?php
 
-namespace Max\Pipeline;
+namespace Max\Engine;
 
 use RuntimeException;
 
