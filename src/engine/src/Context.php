@@ -13,7 +13,7 @@ namespace Max\Engine;
 
 use RuntimeException;
 
-abstract class Context
+class Context
 {
     protected array $values = [];
 
@@ -22,7 +22,7 @@ abstract class Context
      */
     protected array $handlers = [];
 
-    public function use(callable ...$handlers): static
+    final public function withHandlers(callable ...$handlers): static
     {
         if (!empty($handlers)) {
             $this->handlers = [...$this->handlers, ...$handlers];
@@ -30,12 +30,6 @@ abstract class Context
 
         return $this;
     }
-
-    abstract public function getRequestMethod(): string;
-
-    abstract public function getPath(): string;
-
-    abstract public function setParameters(array $parameters);
 
     final public function next(): void
     {
@@ -45,22 +39,27 @@ abstract class Context
         array_shift($this->handlers)($this);
     }
 
-    public function abort(string $message = '', int $code = 0)
+    final public function abort(string $message = '', int $code = 0)
     {
         throw new Abort($message, $code);
     }
 
-    public function setValue(string $key, mixed $value): void
+    final public function setValues(array $values): void
+    {
+        $this->values = $values;
+    }
+
+    final public function setValue(string $key, mixed $value): void
     {
         $this->values[$key] = $value;
     }
 
-    public function hasValue(string $key): bool
+    final public function hasValue(string $key): bool
     {
         return isset($this->values[$key]);
     }
 
-    public function getValue(string $key): mixed
+    final public function getValue(string $key): mixed
     {
         return $this->values[$key] ?? null;
     }
