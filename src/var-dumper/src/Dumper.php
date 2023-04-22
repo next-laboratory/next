@@ -13,7 +13,7 @@ namespace Max\VarDumper;
 
 use RuntimeException;
 
-class Abort extends RuntimeException
+class Dumper extends RuntimeException
 {
     public array $vars;
 

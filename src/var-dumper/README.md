@@ -20,7 +20,7 @@ declare(strict_types=1);
 return [
     'handler' => [
         'http' => [
-            Max\VarDumper\Adapter\HyperfAbortHandler::class,
+            Max\VarDumper\Adapter\HyperfDumperHandler::class,
             Hyperf\HttpServer\Exception\Handler\HttpExceptionHandler::class,
             App\Exception\Handler\AppExceptionHandler::class,
         ],
@@ -38,8 +38,8 @@ return [
 
 namespace App;
 
-use Max\VarDumper\Abort;
-use Max\VarDumper\AbortHandler;
+use Max\VarDumper\Dumper;
+use Max\VarDumper\DumperHandler;
 use support\exception\Handler;
 use Throwable;
 use Webman\Http\Request;
@@ -47,11 +47,11 @@ use Webman\Http\Response;
 
 class ExceptionHandler extends Handler
 {
-    use AbortHandler;
+    use DumperHandler;
 
     public function render(Request $request, Throwable $exception): Response
     {
-        if ($exception instanceof Abort) {
+        if ($exception instanceof Dumper) {
             return \response(self::convertToHtml($exception));
         }
         return parent::render($request, $exception);

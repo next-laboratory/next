@@ -15,9 +15,9 @@ use Symfony\Component\VarDumper\Caster\ReflectionCaster;
 use Symfony\Component\VarDumper\Cloner\VarCloner;
 use Symfony\Component\VarDumper\Dumper\HtmlDumper;
 
-trait AbortHandler
+trait DumperHandler
 {
-    public static function convertToHtml(Abort $abort): string
+    public static function convertToHtml(Dumper $abort): string
     {
         ob_start();
         $cloner = new VarCloner();

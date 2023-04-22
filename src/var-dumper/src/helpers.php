@@ -9,15 +9,15 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-use Max\VarDumper\Abort;
+use Max\VarDumper\Dumper;
 
 if (function_exists('d') === false) {
     /**
-     * @throws Abort
+     * @throws Dumper
      */
     function d(...$vars)
     {
-        throw new Abort($vars);
+        throw new Dumper($vars);
     }
 }
 

@@ -14,17 +14,17 @@ namespace Max\VarDumper\Adapter;
 use ErrorException;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\HttpMessage\Stream\SwooleStream;
-use Max\VarDumper\Abort;
-use Max\VarDumper\AbortHandler;
+use Max\VarDumper\Dumper;
+use Max\VarDumper\DumperHandler;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
 
-class HyperfAbortHandler extends ExceptionHandler
+class HyperfDumperHandler extends ExceptionHandler
 {
-    use AbortHandler;
+    use DumperHandler;
 
     /**
-     * @param Abort $e
+     * @param Dumper $e
      *
      * @throws ErrorException
      */
@@ -37,6 +37,6 @@ class HyperfAbortHandler extends ExceptionHandler
 
     public function isValid(Throwable $e): bool
     {
-        return $e instanceof Abort;
+        return $e instanceof Dumper;
     }
 }
