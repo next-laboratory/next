@@ -35,7 +35,6 @@ class WorkerManResponseEmitter implements ResponseEmitterInterface
         if ($body instanceof FileStream) {
             $sender->send($response->withFile($body->getFilename(), $body->getOffset(), $body->getLength()));
         } else {
-            /** @var string[] $cookies */
             foreach ($cookies as $cookie) {
                 $cookie = Cookie::parse($cookie);
                 $response->cookie(
