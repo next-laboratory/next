@@ -25,11 +25,10 @@ if (function_exists('dd') === false) {
     /**
      * Use `d` instead of `dd`
      *
-     * @throws ErrorException
      * @deprecated
      */
-    function dd(...$vars)
+    function dd(...$vars): void
     {
-        throw new ErrorException('Use `d` instead of `dd`');
+        d(...$vars);
     }
 }
