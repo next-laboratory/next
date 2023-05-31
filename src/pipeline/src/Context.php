@@ -11,34 +11,33 @@ declare(strict_types=1);
 
 namespace Max\Pipeline;
 
+use RuntimeException;
+
 class Context
 {
     /**
      * @var array
      */
-    protected $values = [];
+    protected array $values = [];
 
     /**
      * @var array<callable>
      */
-    protected $handlers = [];
+    protected array $handlers = [];
 
-    /**
-     * @return $this
-     */
-    final public function withHandlers(callable ...$handlers): Context
+    final public function withHandlers(callable ...$handlers): static
     {
-        if (! empty($handlers)) {
+        if (!empty($handlers)) {
             array_push($this->handlers, ...$handlers);
         }
 
         return $this;
     }
 
-    final public function next()
+    final public function next(): void
     {
         if (count($this->handlers) === 0) {
-            throw new \RuntimeException('There is no handler that can be executed');
+            throw new RuntimeException('There is no handler that can be executed');
         }
         array_shift($this->handlers)($this);
     }
@@ -51,12 +50,12 @@ class Context
         throw new Abort($message, $code);
     }
 
-    final public function setValues(array $values)
+    final public function setValues(array $values): void
     {
         $this->values = $values;
     }
 
-    final public function setValue(string $key, mixed $value)
+    final public function setValue(string $key, mixed $value): void
     {
         $this->values[$key] = $value;
     }
@@ -66,10 +65,7 @@ class Context
         return isset($this->values[$key]);
     }
 
-    /**
-     * @return mixed
-     */
-    final public function getValue(string $key)
+    final public function getValue(string $key): mixed
     {
         return $this->values[$key] ?? null;
     }
