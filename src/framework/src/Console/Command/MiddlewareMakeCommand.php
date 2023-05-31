@@ -27,11 +27,11 @@ class MiddlewareMakeCommand extends Command
     protected function configure()
     {
         $this->setName('make:middleware')
-            ->setDescription('Create a new middleware')
-            ->setDefinition([
-                new InputArgument('middleware', InputArgument::REQUIRED, 'A middleware name such as `auth`.'),
-                new InputOption('suffix', 's', InputOption::VALUE_OPTIONAL, 'File is suffixed when this option is available.'),
-            ]);
+             ->setDescription('Make a new middleware')
+             ->setDefinition([
+                 new InputArgument('middleware', InputArgument::REQUIRED, 'A middleware name such as `auth`.'),
+                 new InputOption('suffix', 's', InputOption::VALUE_OPTIONAL, 'File is suffixed when this option is available.'),
+             ]);
     }
 
     /**
@@ -40,10 +40,10 @@ class MiddlewareMakeCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $filesystem               = new Filesystem();
-        $stubFile                 = $this->stubsPath . 'middleware.stub';
+        $filesystem = new Filesystem();
+        $stubFile   = $this->stubsPath . 'middleware.stub';
         [$namespace, $middleware] = $this->parse($input->getArgument('middleware'));
-        $middlewarePath           = base_path('app/Http/Middleware/' . str_replace('\\', '/', $namespace) . '/');
+        $middlewarePath = base_path('app/Http/Middleware/' . str_replace('\\', '/', $namespace) . '/');
         $filesystem->exists($middlewarePath) || $filesystem->makeDirectory($middlewarePath, 0755, true);
         $suffix         = $input->getOption('suffix') ? 'Middleware' : '';
         $middlewareFile = $middlewarePath . $middleware . $suffix . '.php';
@@ -61,8 +61,8 @@ class MiddlewareMakeCommand extends Command
     {
         $array     = explode('/', $input);
         $class     = ucfirst(array_pop($array));
-        $namespace = implode('\\', array_map(fn ($value) => ucfirst($value), $array));
-        if (! empty($namespace)) {
+        $namespace = implode('\\', array_map(fn($value) => ucfirst($value), $array));
+        if (!empty($namespace)) {
             $namespace = '\\' . $namespace;
         }
         return [$namespace, $class];
