@@ -10,24 +10,24 @@
          stopOnFailure="false">
     <coverage processUncoveredFiles="true">
         <include>
-            <directory suffix=".php">./src/aop/src</directory>
-            <directory suffix=".php">./src/bc/src</directory>
-            <directory suffix=".php">./src/cache/src</directory>
-            <directory suffix=".php">./src/config/src</directory>
-            <directory suffix=".php">./src/database/src</directory>
-            <directory suffix=".php">./src/di/src</directory>
-            <directory suffix=".php">./src/event/src</directory>
-            <directory suffix=".php">./src/framework/src</directory>
-            <directory suffix=".php">./src/http-message/src</directory>
-            <directory suffix=".php">./src/http-server/src</directory>
-            <directory suffix=".php">./src/macro/src</directory>
-            <directory suffix=".php">./src/redis/src</directory>
-            <directory suffix=".php">./src/routing/src</directory>
-            <directory suffix=".php">./src/session/src</directory>
-            <directory suffix=".php">./src/swoole/src</directory>
-            <directory suffix=".php">./src/utils/src</directory>
-            <directory suffix=".php">./src/validation/src</directory>
-            <directory suffix=".php">./src/view/src</directory>
+            <directory suffix=".php">./src/aop/tests</directory>
+            <directory suffix=".php">./src/bc/tests</directory>
+            <directory suffix=".php">./src/cache/tests</directory>
+            <directory suffix=".php">./src/config/tests</directory>
+            <directory suffix=".php">./src/database/tests</directory>
+            <directory suffix=".php">./src/di/tests</directory>
+            <directory suffix=".php">./src/event/tests</directory>
+            <directory suffix=".php">./src/framework/tests</directory>
+            <directory suffix=".php">./src/http-message/tests</directory>
+            <directory suffix=".php">./src/http-server/tests</directory>
+            <directory suffix=".php">./src/macro/tests</directory>
+            <directory suffix=".php">./src/redis/tests</directory>
+            <directory suffix=".php">./src/routing/tests</directory>
+            <directory suffix=".php">./src/session/tests</directory>
+            <directory suffix=".php">./src/swoole/tests</directory>
+            <directory suffix=".php">./src/utils/tests</directory>
+            <directory suffix=".php">./src/validation/tests</directory>
+            <directory suffix=".php">./src/view/tests</directory>
         </include>
     </coverage>
     <testsuites>
