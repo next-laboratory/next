@@ -3,7 +3,7 @@ var-dumper 适配包，用来将变量打印到浏览器
 # 安装
 
 ```shell
-composer require max/var-dumper
+composer require max/var-dumper:dev-master
 ```
 
 # 使用
@@ -68,7 +68,7 @@ return [
 ];
 ```
 
-## 其他框架可参考webman配置，引入AbortHandler，将异常转为响应即可
+## 其他框架可参考webman配置，引入DumperHandler，将异常转为响应即可
 
 # 打印
 
