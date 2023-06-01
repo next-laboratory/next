@@ -20,17 +20,11 @@ composer require max/aop
 ## 修改start.php文件
 
 ```php
-\Max\Aop\Scanner::init(new \Max\Aop\ScannerConfig([
-    'cache'      => false,
-    'scanDirs'   => [
-        BASE_PATH . '/app',
-    ],
-    'collectors' => [
-        \Max\Aop\Collector\AspectCollector::class,
-        \Max\Aop\Collector\PropertyAttributeCollector::class,
-    ],
-    'runtimeDir' => BASE_PATH . '/runtime',
-]));
+Aop::init(
+    [__DIR__ . '/../app'],
+    [\Max\Routing\RouteCollector::class],
+    __DIR__ . '/../runtime/aop',
+);
 ```
 
 * cache 是否缓存，true时下次启动不会重新生成代理类

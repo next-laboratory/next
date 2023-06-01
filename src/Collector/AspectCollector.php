@@ -13,7 +13,7 @@ namespace Max\Aop\Collector;
 
 use Max\Aop\Attribute\AspectConfig;
 use Max\Aop\Contract\AspectInterface;
-use Max\Aop\Scanner;
+use Max\Aop\Aop;
 use Max\Di\Reflection;
 use ReflectionException;
 
@@ -38,7 +38,7 @@ class AspectCollector extends AbstractCollector
     {
         if ($attribute instanceof AspectInterface) {
             foreach (Reflection::class($class)->getMethods() as $reflectionMethod) {
-                if (! $reflectionMethod->isConstructor()) {
+                if (!$reflectionMethod->isConstructor()) {
                     self::$container[$class][$reflectionMethod->getName()][] = $attribute;
                 }
             }
@@ -48,16 +48,16 @@ class AspectCollector extends AbstractCollector
             $methods         = $attribute->methods;
             if ($methods === '*') {
                 foreach ($reflectionClass->getMethods() as $reflectionMethod) {
-                    if (! $reflectionMethod->isConstructor()) {
+                    if (!$reflectionMethod->isConstructor()) {
                         self::$container[$attribute->class][$reflectionMethod->getName()][] = $annotation;
                     }
                 }
             } else {
-                foreach ((array) $methods as $method) {
+                foreach ((array)$methods as $method) {
                     self::$container[$attribute->class][$method][] = $annotation;
                 }
             }
-            Scanner::instance()->addClass($attribute->class, $reflectionClass->getFileName());
+            Aop::addClass($attribute->class, $reflectionClass->getFileName());
         }
     }
 
