@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Max\Aop;
 
 use Attribute;
-use Exception;
 use Max\Aop\Collector\AspectCollector;
 use Max\Aop\Collector\PropertyAttributeCollector;
 use Max\Di\Reflection;
@@ -21,154 +20,127 @@ use Max\Utils\Filesystem;
 use PhpParser\NodeTraverser;
 use PhpParser\PrettyPrinter\Standard;
 use ReflectionException;
+use RuntimeException;
 use Symfony\Component\Finder\Finder;
 use Throwable;
 
-final class Scanner
+final class Aop
 {
-    private AstManager $astManager;
-
-    private string $proxyMap;
-
-    private array $classMap = [];
-
-    private Filesystem $filesystem;
-
-    private static bool $initialized = false;
-
-    private static self $scanner;
+    private AstManager   $astManager;
+    private string       $proxyMapFile;
+    private static array $classMap    = [];
+    private Filesystem   $filesystem;
+    private static bool  $initialized = false;
 
     private function __construct(
-        private ScannerConfig $config
+        private array  $scanDirs = [],
+        private array  $collectors = [],
+        private string $runtimeDir = '',
+        private bool   $cache = false
     )
     {
-        $this->filesystem = new Filesystem();
-        $this->astManager = new AstManager();
-        $runtimeDir       = $config->getRuntimeDir();
-        if (!$this->filesystem->isDirectory($runtimeDir)) {
-            $this->filesystem->makeDirectory($runtimeDir, 0755, true);
+        self::$initialized = true;
+        $this->filesystem  = new Filesystem();
+        $this->astManager  = new AstManager();
+        $this->runtimeDir  = rtrim($runtimeDir, '/\\') . '/';
+        if (!$this->filesystem->isDirectory($this->runtimeDir)) {
+            $this->filesystem->makeDirectory($this->runtimeDir, 0755, true);
         }
-        $this->classMap = $this->findClasses($config->getScanDirs());
-        $this->proxyMap = $runtimeDir . 'proxy.php';
-    }
-
-    private function __clone(): void
-    {
-    }
-
-    /**
-     * @throws ReflectionException
-     * @throws Exception
-     */
-    public static function init(ScannerConfig $config): void
-    {
-        if (!self::$initialized) {
-            self::$scanner     = new self($config);
-            self::$initialized = true;
-            self::$scanner->boot();
-            Reflection::clear();
-        }
-    }
-
-    /**
-     * @throws Exception
-     */
-    public static function instance(): self
-    {
-        if (self::$initialized) {
-            return self::$scanner;
-        }
-        throw new Exception('Scanner is not initialized');
-    }
-
-    public function findClasses(array $dirs): array
-    {
-        $files   = Finder::create()->in($dirs)->name('*.php')->files();
-        $classes = [];
-        foreach ($files as $file) {
-            $realPath = $file->getRealPath();
-            foreach ($this->astManager->getClassesByRealPath($realPath) as $class) {
-                $classes[$class] = $realPath;
-            }
-        }
-        return $classes;
-    }
-
-    public function addClass(string $class, string $path): void
-    {
-        $this->classMap[$class] = $path;
-    }
-
-    /**
-     * @throws ReflectionException
-     * @throws Exception
-     */
-    private function boot(): void
-    {
-        if (!$this->config->isCache() || !$this->filesystem->exists($this->proxyMap)) {
-            $this->filesystem->exists($this->proxyMap) && $this->filesystem->delete($this->proxyMap);
+        $this->findClasses($this->scanDirs);
+        $this->proxyMapFile = $this->runtimeDir . 'proxy.php';
+        if (!$this->cache || !$this->filesystem->exists($this->proxyMapFile)) {
+            $this->filesystem->exists($this->proxyMapFile) && $this->filesystem->delete($this->proxyMapFile);
             if (($pid = pcntl_fork()) == -1) {
-                throw new Exception('Process fork failed.');
+                throw new RuntimeException('Process fork failed.');
             }
             pcntl_wait($pid);
         }
-        $collectors = $this->config->getCollectors();
-        Composer::getClassLoader()->addClassMap($this->getProxyMap($collectors));
-        $this->collect($collectors);
+        Composer::getClassLoader()->addClassMap($this->getProxyMap());
+        $this->collect();
         unset($this->filesystem, $this->astManager);
+        Reflection::clear();
+    }
+
+    public static function init(
+        array  $scanDirs = [],
+        array  $collectors = [],
+        string $runtimeDir = '',
+        bool   $cache = false
+    ): void
+    {
+        if (self::$initialized) {
+            throw new RuntimeException('Bad method call: init');
+        }
+        new self($scanDirs, $collectors, $runtimeDir, $cache);
+    }
+
+    private function findClasses(array $dirs): void
+    {
+        $files = Finder::create()->in($dirs)->name('*.php')->files();
+        foreach ($files as $file) {
+            $realPath = $file->getRealPath();
+            foreach ($this->astManager->getClassesByRealPath($realPath) as $class) {
+                self::addClass($class, $realPath);
+            }
+        }
+    }
+
+    public static function addClass(string $class, string $filepath): void
+    {
+        self::$classMap[$class] = $filepath;
     }
 
     /**
      * @throws ReflectionException
      */
-    private function getProxyMap(array $collectors): array
+    private function getProxyMap(): array
     {
-        if (!$this->filesystem->exists($this->proxyMap)) {
-            $proxyDir = $this->config->getRuntimeDir() . 'proxy/';
+        if (!$this->filesystem->exists($this->proxyMapFile)) {
+            $proxyDir = $this->runtimeDir . 'proxy/';
             $this->filesystem->exists($proxyDir) || $this->filesystem->makeDirectory($proxyDir, 0755, true, true);
             $this->filesystem->cleanDirectory($proxyDir);
-            $this->collect($collectors);
+            $this->collect();
             $collectedClasses = array_unique(array_merge(AspectCollector::getCollectedClasses(), PropertyAttributeCollector::getCollectedClasses()));
-            $scanMap          = [];
+            $proxies          = [];
             foreach ($collectedClasses as $class) {
                 $proxyPath = $proxyDir . str_replace('\\', '_', $class) . '_Proxy.php';
-                $this->filesystem->put($proxyPath, $this->generateProxyClass($collectors, $class, $this->classMap[$class]));
-                $scanMap[$class] = $proxyPath;
+                $this->filesystem->put($proxyPath, $this->generateProxyClass($class));
+                $proxies[$class] = $proxyPath;
             }
-            $this->filesystem->put($this->proxyMap, sprintf("<?php \nreturn %s;", var_export($scanMap, true)));
+            $this->filesystem->put($this->proxyMapFile, sprintf("<?php \nreturn %s;", var_export($proxies, true)));
             exit;
         }
-        return include $this->proxyMap;
+        return include $this->proxyMapFile;
     }
 
-    private function generateProxyClass(array $collectors, string $class, string $path): string
+    private function generateProxyClass(string $class): string
     {
         $traverser = new NodeTraverser();
         $metadata  = new Metadata($class);
-        if (in_array(PropertyAttributeCollector::class, $collectors)) {
+        if (in_array(PropertyAttributeCollector::class, $this->collectors)) {
             if (PropertyAttributeCollector::getByClass($class)) {
                 $traverser->addVisitor(new PropertyHandlerVisitor($metadata));
             }
         }
-        if (in_array(AspectCollector::class, $collectors)) {
+        if (in_array(AspectCollector::class, $this->collectors)) {
             $traverser->addVisitor(new ProxyHandlerVisitor($metadata));
         }
-        return (new Standard())->prettyPrintFile($traverser->traverse($this->astManager->getNodes($path)));
+        return (new Standard())->prettyPrintFile($traverser->traverse($this->astManager->getNodes(self::$classMap[$class])));
     }
 
     /**
      * @throws ReflectionException
      */
-    private function collect(array $collectors): void
+    private function collect(): void
     {
-        foreach ($this->classMap as $class => $path) {
+        foreach (self::$classMap as $class => $path) {
             $reflectionClass = Reflection::class($class);
             // 收集类注解
             foreach ($reflectionClass->getAttributes() as $attribute) {
                 try {
                     $attributeInstance = $attribute->newInstance();
                     if (!$attributeInstance instanceof Attribute) {
-                        foreach ($collectors as $collector) {
+                        foreach ($this->collectors as $collector) {
                             $collector::collectClass($class, $attributeInstance);
                         }
                     }
@@ -182,7 +154,7 @@ final class Scanner
                 foreach ($reflectionProperty->getAttributes() as $attribute) {
                     try {
                         $attributeInstance = $attribute->newInstance();
-                        foreach ($collectors as $collector) {
+                        foreach ($this->collectors as $collector) {
                             $collector::collectProperty($class, $propertyName, $attributeInstance);
                         }
                     } catch (Throwable $e) {
@@ -196,7 +168,7 @@ final class Scanner
                 foreach ($reflectionMethod->getAttributes() as $attribute) {
                     try {
                         $attributeInstance = $attribute->newInstance();
-                        foreach ($collectors as $collector) {
+                        foreach ($this->collectors as $collector) {
                             $collector::collectMethod($class, $method, $attributeInstance);
                         }
                     } catch (Throwable $e) {
@@ -209,7 +181,7 @@ final class Scanner
                     foreach ($reflectionParameter->getAttributes() as $attribute) {
                         try {
                             $attributeInstance = $attribute->newInstance();
-                            foreach ($collectors as $collector) {
+                            foreach ($this->collectors as $collector) {
                                 $collector::collectorMethodParameter($class, $method, $parameterName, $attributeInstance);
                             }
                         } catch (Throwable $e) {
@@ -219,5 +191,9 @@ final class Scanner
                 }
             }
         }
+    }
+
+    private function __clone(): void
+    {
     }
 }
