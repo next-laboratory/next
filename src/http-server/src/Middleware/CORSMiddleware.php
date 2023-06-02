@@ -20,7 +20,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use function Max\Utils\collect;
 
-class AllowCrossDomain implements MiddlewareInterface
+class CORSMiddleware implements MiddlewareInterface
 {
     /**
      * @var array 允许域，全部可以使用`*`
