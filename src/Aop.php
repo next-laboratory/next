@@ -69,7 +69,7 @@ final class Aop
     ): void
     {
         if (self::$initialized) {
-            throw new RuntimeException('Bad method call: init');
+            throw new RuntimeException('aop is already initialized, so don\'t call init again');
         }
         new self($scanDirs, $collectors, $runtimeDir, $cache);
     }
