@@ -21,7 +21,7 @@ class Kernel extends Application
     )
     {
         parent::__construct($name, $version);
-        foreach (array_merge($this->commands, $this->commands()) as $command) {
+        foreach (array_merge($this->commands, $this->commands(), CommandCollector::all()) as $command) {
             $this->add(make($command));
         }
     }
