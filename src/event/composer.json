@@ -3,8 +3,6 @@
   "license": "Apache-2.0",
   "description": "Event based on the PSR-14 specification",
   "homepage": "https://github.com/marxphp/event.git",
-  "minimum-stability": "dev",
-  "prefer-stable": true,
   "keywords": [
     "event",
     "psr-14"
@@ -20,8 +18,13 @@
       "Max\\Event\\": "src/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Max\\Event\\Tests\\": "tests/"
+    }
+  },
   "require": {
-    "php": "^8.0",
+    "php": "^8.0||^8.1||^8.2",
     "psr/event-dispatcher": "^1.0"
   }
 }

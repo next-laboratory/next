@@ -19,11 +19,15 @@ class EventDispatcher implements EventDispatcherInterface
 {
     public function __construct(
         protected ListenerProviderInterface $listenerProvider
-    ) {
+    )
+    {
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
+     * @template T
+     * @return T
+     * @var T $event
      */
     public function dispatch(object $event)
     {

@@ -13,6 +13,7 @@ namespace Max\Event;
 
 use Max\Event\Contract\EventListenerInterface;
 use Psr\EventDispatcher\ListenerProviderInterface;
+use SplPriorityQueue;
 
 class ListenerProvider implements ListenerProviderInterface
 {
@@ -31,13 +32,21 @@ class ListenerProvider implements ListenerProviderInterface
     /**
      * 注册单个事件监听.
      */
-    public function addListener(EventListenerInterface $eventListener)
+    public function addListener(EventListenerInterface ...$eventListeners)
     {
-        $listener = $eventListener::class;
-        if (!$this->listened($listener)) {
-            $this->listeners[$listener] = $eventListener;
-            foreach ($eventListener->listen() as $event) {
-                $this->events[$event][] = $eventListener;
+        if (empty($eventListeners)) {
+            return;
+        }
+        foreach ($eventListeners as $eventListener) {
+            $listener = $eventListener::class;
+            if (!$this->listened($listener)) {
+                $this->listeners[$listener] = $eventListener;
+                foreach ($eventListener->listen() as $event) {
+                    if (!isset($this->events[$event])) {
+                        $this->events[$event] = new SplPriorityQueue();
+                    }
+                    $this->events[$event]->insert($eventListener, $eventListener->getPriority());
+                }
             }
         }
     }
@@ -52,6 +61,7 @@ class ListenerProvider implements ListenerProviderInterface
 
     /**
      * {@inheritdoc}
+     * @return SplPriorityQueue|array
      */
     public function getListenersForEvent(object $event): iterable
     {

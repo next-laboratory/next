@@ -27,8 +27,21 @@ class UserStatusListener implements EventListenerInterface
     {
         $event->user = false;
     }
+    
+    /**
+    * 监听器优先级
+    * 如果一个事件被多个监听器监听，那么执行顺序可以通过该方法调整
+    * 优先级数字越大，优先级越高，越先执行
+    * @return int
+    */
+    public function getPriority(): int 
+    {
+        return 0;
+    }
 }
 ```
+
+> 如果你不需要调整优先级，可以直接继承`Max\Event\EventListener`类
 
 2. 需要创建一个`Event`类，例如
 
@@ -44,10 +57,11 @@ class UserRegistered
 }
 ```
 
-3. 实例化一个`ListenerProvider`, 构造函数需要传入所有监听器对象
+3. 实例化一个`ListenerProvider`, 使用`addListener`添加监听器
 
 ```php
-$listenerProvider = new ListenerProvider(...[new UserStatusListener]);
+$listenerProvider = new ListenerProvider();
+$listenerProvider->addListener(new UserStatusListener());
 ```
 
 4. 实例化调度器，给构造函数传入`ListenerProvider`实例
