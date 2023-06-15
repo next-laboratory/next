@@ -3,6 +3,7 @@
 namespace Max\Event\Tests\Listeners;
 
 use Max\Event\EventListener;
+use Max\Event\Tests\Events\BarEvent;
 use Max\Event\Tests\Events\FooEvent;
 
 class BarListener extends EventListener
@@ -11,14 +12,18 @@ class BarListener extends EventListener
     {
         return [
             FooEvent::class,
+            BarEvent::class,
         ];
     }
 
     public function process(object $event): void
     {
-        if ($event instanceof FooEvent) {
-            var_dump('------------BAR--------------');
-            $event->value = self::class;
+        switch (true) {
+            case $event instanceof FooEvent:
+                $event->value = self::class;
+                break;
+            case $event instanceof BarEvent:
+                $event->value = 2;
         }
     }
 
