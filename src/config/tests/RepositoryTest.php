@@ -24,37 +24,26 @@ class RepositoryTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->repository = new Repository();
-    }
-
-    public function testAll()
-    {
-        $this->assertEquals([], $this->repository->all());
-    }
-
-    public function testLoadOne()
-    {
-        $this->repository->loadOne(__DIR__ . '/examples/app.php');
-        $this->assertArrayHasKey('app', $this->repository->all());
-    }
-
-    public function testLoad()
-    {
-        $this->repository->load([__DIR__ . '/examples/app.php', __DIR__ . '/examples/db.php']);
-        $this->assertArrayHasKey('app', $this->repository->all());
-        $this->assertArrayHasKey('db', $this->repository->all());
+        $this->repository = new Repository([
+            'app' => [
+                'debug' => true,
+                'name' => 'maxphp',
+            ],
+            'cache' => [
+                'driver' => 'file',
+            ],
+        ]);
     }
 
     public function testGet()
     {
-        $this->repository->loadOne(__DIR__ . '/examples/app.php');
-        $this->assertEquals(123, $this->repository->get('app.id'));
-        $this->assertNull($this->repository->get('app.none'));
+        $this->assertTrue($this->repository->get('app.debug'));
+        $this->assertEquals(['driver' => 'file'], $this->repository->get('cache'));
     }
 
     public function testSet()
     {
-        $this->repository->set(__METHOD__, __METHOD__);
-        $this->assertEquals(__METHOD__, $this->repository->get(__METHOD__));
+        $this->repository->set('cookie.name', 'maxphp');
+        $this->assertEquals('maxphp', $this->repository->get('cookie.name'));
     }
 }
