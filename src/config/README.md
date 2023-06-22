@@ -2,13 +2,9 @@
 
 ```php
 $repository = new \Max\Config\Repository();
-
-// 扫描该路径下的所有PHP文件
-$repository->scan([__DIR__]);
-
-// 加载某一个文件
-$repository->load([__DIR__.'./config/app.php']);
-
+$repository->set('app', [
+    'debug' => false,
+]);
 // 获取配置
 $repository->get('app.debug');
 ```
