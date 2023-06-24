@@ -11,84 +11,119 @@ declare(strict_types=1);
 
 namespace Max\Config;
 
+use ArrayAccess;
 use Max\Config\Contract\ConfigInterface;
 use Max\Utils\Arr;
-use Max\Utils\Filesystem;
 
-use function pathinfo;
-
-class Repository implements ConfigInterface
+class Repository implements ArrayAccess, ConfigInterface
 {
-    /**
-     * 配置数组.
-     */
-    protected array $items = [];
+    public function __construct(
+        protected array $items = [],
+    )
+    {
+    }
 
     /**
      * 获取[支持点语法].
      */
-    public function get(string $key, mixed $default = null): mixed
+    public function get(string|array $key, mixed $default = null): mixed
     {
+        if (is_array($key)) {
+            return $this->getMany($key);
+        }
+
         return Arr::get($this->items, $key, $default);
+    }
+
+    /**
+     * Get many configuration values.
+     *
+     * @param array $keys
+     * @return array
+     */
+    public function getMany(array $keys): array
+    {
+        $config = [];
+
+        foreach ($keys as $key => $default) {
+            if (is_numeric($key)) {
+                [$key, $default] = [$default, null];
+            }
+
+            $config[$key] = Arr::get($this->items, $key, $default);
+        }
+
+        return $config;
     }
 
     /**
      * 设置[支持点语法]. swoole/workerman等环境下不可使用.
      */
-    public function set(string $key, mixed $value): void
+    public function set(string|array $key, mixed $value): void
     {
-        Arr::set($this->items, $key, $value);
-    }
+        $keys = is_array($key) ? $key : [$key => $value];
 
-    /**
-     * 扫描目录.
-     */
-    public function scan(string|array $dirs): void
-    {
-        $files = (new Filesystem())->files($dirs, pattern: '*.php');
-        foreach ($files as $file) {
-            $this->loadOne($file->getRealPath());
+        foreach ($keys as $key => $value) {
+            Arr::set($this->items, $key, $value);
         }
-        //
-        //
-        //        foreach ((array)$dirs as $dir) {
-        //            $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
-        //            /** @var SplFileInfo $file */
-        //            foreach ($files as $file) {
-        //                if (!$file->isFile()) {
-        //                    continue;
-        //                }
-        //                $path = $file->getRealPath() ?: $file->getPathname();
-        //                if (pathinfo($path, PATHINFO_EXTENSION) !== 'php') {
-        //                    continue;
-        //                }
-        //                $configFiles[] = $path;
-        //                gc_mem_caches();
-        //            }
-        //        }
-        //        $this->load($configFiles);
     }
 
     /**
-     * 全部.
+     * Get all the configuration items for the application.
+     *
+     * @return array
      */
-    public function all(): array
+    public function all()
     {
         return $this->items;
     }
 
-    public function loadOne(string $file)
+    /**
+     * Determine if the given configuration option exists.
+     *
+     * @param string $key
+     * @return bool
+     */
+    #[\ReturnTypeWillChange]
+    public function offsetExists($key)
     {
-        $this->items[pathinfo($file, PATHINFO_FILENAME)] = include $file;
+        return $this->has($key);
     }
 
     /**
-     * 加载配置.
+     * Get a configuration option.
+     *
+     * @param string $key
+     * @return mixed
      */
-    public function load(string|array $files): void
+    #[\ReturnTypeWillChange]
+    public function offsetGet($key)
     {
-        foreach ((array) $files as $file) {
-            $this->loadOne($file);
-        }
+        return $this->get($key);
+    }
+
+    /**
+     * Set a configuration option.
+     *
+     * @param string $key
+     * @param mixed $value
+     * @return void
+     */
+    #[\ReturnTypeWillChange]
+    public function offsetSet($key, $value)
+    {
+        $this->set($key, $value);
+    }
+
+    /**
+     * Unset a configuration option.
+     *
+     * @param string $key
+     * @return void
+     */
+    #[\ReturnTypeWillChange]
+    public function offsetUnset($key)
+    {
+        $this->set($key, null);
     }
 }
