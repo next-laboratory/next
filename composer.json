@@ -51,7 +51,6 @@
     }
   ],
   "replace": {
-    "max/framework": "*",
     "max/aop": "*",
     "max/bc": "*",
     "max/cache": "*",
@@ -59,17 +58,16 @@
     "max/database": "*",
     "max/di": "*",
     "max/event": "*",
-    "max/pool": "*",
-    "max/json-rpc": "*",
+    "max/framework": "*",
     "max/http-message": "*",
     "max/http-server": "*",
-    "max/resource": "*",
+    "max/pool": "*",
+    "max/json-rpc": "*",
     "max/routing": "*",
     "max/session": "*",
     "max/swoole": "*",
     "max/macro": "*",
     "max/utils": "*",
-    "max/validation": "*",
     "max/view": "*",
     "max/var-dumper": "*"
   },
