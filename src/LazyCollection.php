@@ -17,7 +17,6 @@ use DateTimeInterface;
 use Generator;
 use InvalidArgumentException;
 use IteratorAggregate;
-use Max\Macro\Macroable;
 use Max\Utils\Contract\Arrayable;
 use Max\Utils\Contract\CanBeEscapedWhenCastToString;
 use Max\Utils\Contract\Enumerable;
