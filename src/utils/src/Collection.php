@@ -13,7 +13,6 @@ namespace Max\Utils;
 
 use ArrayAccess;
 use ArrayIterator;
-use Max\Macro\Macroable;
 use Max\Utils\Contract\Arrayable;
 use Max\Utils\Contract\CanBeEscapedWhenCastToString;
 use Max\Utils\Contract\Enumerable;

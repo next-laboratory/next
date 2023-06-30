@@ -14,7 +14,6 @@ namespace Max\Utils;
 use ArgumentCountError;
 use ArrayAccess;
 use InvalidArgumentException;
-use Max\Macro\Macroable;
 use Max\Utils\Contract\Enumerable;
 
 /**

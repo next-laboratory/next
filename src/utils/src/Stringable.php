@@ -13,7 +13,6 @@ namespace Max\Utils;
 
 use Closure;
 use JsonSerializable;
-use Max\Macro\Macroable;
 use Max\Utils\Traits\Conditionable;
 use Max\Utils\Traits\Tappable;
 use Symfony\Component\VarDumper\VarDumper;
@@ -35,7 +34,8 @@ class Stringable implements JsonSerializable, \Stringable
      */
     public function __construct(
         protected string $value = ''
-    ) {
+    )
+    {
     }
 
     /**
@@ -195,7 +195,7 @@ class Stringable implements JsonSerializable, \Stringable
 
         $segments = preg_split($pattern, $this->value, $limit, $flags);
 
-        return ! empty($segments) ? collect($segments) : collect();
+        return !empty($segments) ? collect($segments) : collect();
     }
 
     /**
@@ -235,7 +235,7 @@ class Stringable implements JsonSerializable, \Stringable
      */
     public function isNotEmpty(): bool
     {
-        return ! $this->isEmpty();
+        return !$this->isEmpty();
     }
 
     /**

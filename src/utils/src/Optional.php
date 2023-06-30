@@ -13,7 +13,6 @@ namespace Max\Utils;
 
 use ArrayAccess;
 use ArrayObject;
-use Max\Macro\Macroable;
 
 /**
  * Most of the methods in this file come from illuminate
@@ -32,7 +31,8 @@ class Optional implements ArrayAccess
      */
     public function __construct(
         protected mixed $value
-    ) {
+    )
+    {
     }
 
     /**

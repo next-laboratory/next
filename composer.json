@@ -12,24 +12,16 @@
     "psr-4": {
       "Max\\": "src/framework/src",
       "Max\\Aop\\": "src/aop/src",
-      "Max\\Bc\\": "src/bc/src",
       "Max\\Cache\\": "src/cache/src",
       "Max\\Config\\": "src/config/src",
       "Max\\Database\\": "src/database/src",
       "Max\\Di\\": "src/di/src",
       "Max\\Event\\": "src/event/src",
-      "Max\\JsonRpc\\": "src/json-rpc/src",
-      "Max\\Pool\\": "src/pool/src",
-      "Max\\Macro\\": "src/macro/src",
       "Max\\Http\\Message\\": "src/http-message/src",
       "Max\\Http\\Server\\": "src/http-server/src",
-      "Max\\Resource\\": "src/resource/src",
       "Max\\Routing\\": "src/routing/src",
       "Max\\Session\\": "src/session/src",
       "Max\\Utils\\": "src/utils/src",
-      "Max\\Validation\\": "src/validation/src",
-      "Max\\View\\": "src/view/src",
-      "Max\\Swoole\\": "src/swoole/src",
       "Max\\VarDumper\\": "src/var-dumper/src"
     },
     "files": [
@@ -52,7 +44,6 @@
   ],
   "replace": {
     "max/aop": "*",
-    "max/bc": "*",
     "max/cache": "*",
     "max/config": "*",
     "max/database": "*",
@@ -61,14 +52,9 @@
     "max/framework": "*",
     "max/http-message": "*",
     "max/http-server": "*",
-    "max/pool": "*",
-    "max/json-rpc": "*",
     "max/routing": "*",
     "max/session": "*",
-    "max/swoole": "*",
-    "max/macro": "*",
     "max/utils": "*",
-    "max/view": "*",
     "max/var-dumper": "*"
   },
   "require": {
@@ -79,7 +65,8 @@
     "psr/http-message": "^1.0",
     "psr/http-server-middleware": "^1.0",
     "psr/http-server-handler": "^1.0",
-    "psr/log": "^1.0"
+    "psr/log": "^1.0",
+    "doctrine/inflector": "^2.0"
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^3.11",
