@@ -36,9 +36,18 @@ class Repository implements ArrayAccess, ConfigInterface
     }
 
     /**
+     * Determine if the given configuration value exists.
+     */
+    public function has(string $key): bool
+    {
+        return Arr::has($this->items, $key);
+    }
+
+    /**
      * Get many configuration values.
      *
      * @param array $keys
+     *
      * @return array
      */
     public function getMany(array $keys): array
@@ -82,6 +91,7 @@ class Repository implements ArrayAccess, ConfigInterface
      * Determine if the given configuration option exists.
      *
      * @param string $key
+     *
      * @return bool
      */
     #[\ReturnTypeWillChange]
@@ -94,6 +104,7 @@ class Repository implements ArrayAccess, ConfigInterface
      * Get a configuration option.
      *
      * @param string $key
+     *
      * @return mixed
      */
     #[\ReturnTypeWillChange]
@@ -106,7 +117,8 @@ class Repository implements ArrayAccess, ConfigInterface
      * Set a configuration option.
      *
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
+     *
      * @return void
      */
     #[\ReturnTypeWillChange]
@@ -119,6 +131,7 @@ class Repository implements ArrayAccess, ConfigInterface
      * Unset a configuration option.
      *
      * @param string $key
+     *
      * @return void
      */
     #[\ReturnTypeWillChange]
