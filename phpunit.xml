@@ -20,7 +20,6 @@
             <directory suffix=".php">./src/framework/tests</directory>
             <directory suffix=".php">./src/http-message/tests</directory>
             <directory suffix=".php">./src/http-server/tests</directory>
-            <directory suffix=".php">./src/macro/tests</directory>
             <directory suffix=".php">./src/redis/tests</directory>
             <directory suffix=".php">./src/routing/tests</directory>
             <directory suffix=".php">./src/session/tests</directory>
@@ -41,7 +40,6 @@
             <directory suffix="Test.php">./src/framework</directory>
             <directory suffix="Test.php">./src/http-message</directory>
             <directory suffix="Test.php">./src/http-server</directory>
-            <directory suffix="Test.php">./src/macro</directory>
             <directory suffix="Test.php">./src/redis</directory>
             <directory suffix="Test.php">./src/routing</directory>
             <directory suffix="Test.php">./src/session</directory>
