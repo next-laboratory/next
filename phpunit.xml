@@ -11,7 +11,6 @@
     <coverage processUncoveredFiles="true">
         <include>
             <directory suffix=".php">./src/aop/tests</directory>
-            <directory suffix=".php">./src/bc/tests</directory>
             <directory suffix=".php">./src/cache/tests</directory>
             <directory suffix=".php">./src/config/tests</directory>
             <directory suffix=".php">./src/database/tests</directory>
@@ -31,7 +30,6 @@
     <testsuites>
         <testsuite name="Tests">
             <directory suffix="Test.php">./src/aop</directory>
-            <directory suffix="Test.php">./src/bc</directory>
             <directory suffix="Test.php">./src/cache</directory>
             <directory suffix="Test.php">./src/config</directory>
             <directory suffix="Test.php">./src/database</directory>

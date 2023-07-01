@@ -17,6 +17,11 @@
       "Max\\Utils\\": "src/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Max\\Utils\\Tests\\": "tests/"
+    }
+  },
   "require": {
     "php": "^8.0|^8.1|^8.2",
     "symfony/finder": "*",
@@ -25,5 +30,8 @@
     "voku/portable-ascii": "*",
     "league/commonmark": "*",
     "doctrine/inflector": "*"
+  },
+  "suggest": {
+    "ext-bcmath": "*"
   }
 }
