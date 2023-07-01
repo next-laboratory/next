@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * This file is part of MaxPHP.
+ * This file is part of MarxPHP.
  *
  * @link     https://github.com/marxphp
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace Max\Session\Exception;
 
-use RuntimeException;
-
-class SessionException extends RuntimeException
+class SessionException extends \RuntimeException
 {
 }

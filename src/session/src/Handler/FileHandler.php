@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * This file is part of MaxPHP.
+ * This file is part of MarxPHP.
  *
  * @link     https://github.com/marxphp
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
@@ -11,37 +11,21 @@ declare(strict_types=1);
 
 namespace Max\Session\Handler;
 
-use Closure;
 use Exception;
-use FilesystemIterator;
-use Generator;
-use SessionHandlerInterface;
-use SplFileInfo;
 use Throwable;
-use function file_exists;
-use function file_get_contents;
-use function file_put_contents;
-use function is_dir;
-use function is_file;
-use function mkdir;
-use function random_int;
-use function rtrim;
-use function time;
-use function unlink;
 
-class FileHandler implements SessionHandlerInterface
+class FileHandler implements \SessionHandlerInterface
 {
     public function __construct(
-        protected int    $gcDivisor = 100,
-        protected int    $gcProbability = 1,
-        protected int    $gcMaxLifetime = 1440,
+        protected int $gcDivisor = 100,
+        protected int $gcProbability = 1,
+        protected int $gcMaxLifetime = 1440,
         protected string $path = '',
-    )
-    {
-        if (!$this->path) {
+    ) {
+        if (! $this->path) {
             $this->path = sys_get_temp_dir();
         }
-        !is_dir($this->path) && mkdir($this->path, 0755, true);
+        ! \is_dir($this->path) && \mkdir($this->path, 0755, true);
     }
 
     /**
@@ -52,8 +36,8 @@ class FileHandler implements SessionHandlerInterface
     {
         try {
             $number = 0;
-            $now = time();
-            $files = $this->findFiles($this->path, function (SplFileInfo $item) use ($maxLifeTime, $now) {
+            $now    = \time();
+            $files  = $this->findFiles($this->path, function (\SplFileInfo $item) use ($maxLifeTime, $now) {
                 return $now - $maxLifeTime > $item->getMTime();
             });
 
@@ -83,8 +67,8 @@ class FileHandler implements SessionHandlerInterface
     public function read($id): string|false
     {
         $sessionFile = $this->getSessionFile($id);
-        if (file_exists($sessionFile)) {
-            return file_get_contents($sessionFile) ?: '';
+        if (\file_exists($sessionFile)) {
+            return \file_get_contents($sessionFile) ?: '';
         }
 
         return '';
@@ -97,17 +81,17 @@ class FileHandler implements SessionHandlerInterface
     #[\ReturnTypeWillChange]
     public function write($id, $data): bool
     {
-        return (bool)file_put_contents($this->getSessionFile($id), $data, LOCK_EX);
+        return (bool) \file_put_contents($this->getSessionFile($id), $data, LOCK_EX);
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     #[\ReturnTypeWillChange]
     public function close(): bool
     {
         // 垃圾回收
-        if (random_int(1, $this->gcDivisor) <= $this->gcProbability) {
+        if (\random_int(1, $this->gcDivisor) <= $this->gcProbability) {
             $this->gc($this->gcMaxLifetime);
         }
         return true;
@@ -134,13 +118,13 @@ class FileHandler implements SessionHandlerInterface
     /**
      * 查找文件.
      */
-    protected function findFiles(string $root, Closure $filter): Generator
+    protected function findFiles(string $root, \Closure $filter): \Generator
     {
-        $items = new FilesystemIterator($root);
+        $items = new \FilesystemIterator($root);
 
-        /** @var SplFileInfo $item */
+        /** @var \SplFileInfo $item */
         foreach ($items as $item) {
-            if ($item->isDir() && !$item->isLink()) {
+            if ($item->isDir() && ! $item->isLink()) {
                 yield from $this->findFiles($item->getPathname(), $filter);
             } elseif ($filter($item)) {
                 yield $item;
@@ -153,7 +137,7 @@ class FileHandler implements SessionHandlerInterface
      */
     protected function getSessionFile(string $id): string
     {
-        return rtrim($this->path, '/\\') . '/sess_' . $id;
+        return \rtrim($this->path, '/\\') . '/sess_' . $id;
     }
 
     /**
@@ -161,6 +145,6 @@ class FileHandler implements SessionHandlerInterface
      */
     private function unlink(string $file): bool
     {
-        return is_file($file) && unlink($file);
+        return \is_file($file) && \unlink($file);
     }
 }

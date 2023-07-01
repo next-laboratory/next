@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * This file is part of MaxPHP.
+ * This file is part of MarxPHP.
  *
  * @link     https://github.com/marxphp
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
@@ -11,24 +11,43 @@ declare(strict_types=1);
 
 namespace Max\Session;
 
-use InvalidArgumentException;
 use Max\Session\Exception\SessionException;
 use Max\Utils\Arr;
-use SessionHandlerInterface;
-
-use function ctype_alnum;
-use function session_create_id;
-use function unserialize;
 
 class Session
 {
+    /**
+     * Session not started.
+     */
+    protected const STATE_NOT_STARTED = 0;
+
+    /**
+     * Session started.
+     */
+    protected const STATE_STARTED = 1;
+
+    /**
+     * Session destroyed.
+     */
+    protected const STATE_DESTROYED = 2;
+
+    /**
+     * Session ID.
+     */
     protected string $id        = '';
+
+    /**
+     * Session data.
+     */
     protected array  $data      = [];
-    protected bool   $started   = false;
-    protected bool   $destroyed = false;
+
+    /**
+     * Session state.
+     */
+    protected int $state = 0;
 
     public function __construct(
-        protected SessionHandlerInterface $sessionHandler
+        protected \SessionHandlerInterface $sessionHandler
     ) {
     }
 
@@ -40,11 +59,11 @@ class Session
         if ($this->isStarted()) {
             throw new SessionException('Cannot restart session.');
         }
-        $this->id = ($id && $this->isValidId($id)) ? $id : session_create_id();
+        $this->id = ($id && $this->isValidId($id)) ? $id : \session_create_id();
         if ($data = $this->sessionHandler->read($this->id)) {
-            $this->data = (array)(unserialize($data) ?: []);
+            $this->data = (array) (\unserialize($data) ?: []);
         }
-        $this->started = true;
+        $this->state = static::STATE_STARTED;
     }
 
     /**
@@ -60,7 +79,7 @@ class Session
      */
     public function regenerateId(): void
     {
-        $this->id = session_create_id();
+        $this->id = \session_create_id();
     }
 
     /**
@@ -129,7 +148,7 @@ class Session
         $this->sessionHandler->destroy($this->id);
         $this->data      = [];
         $this->id        = '';
-        $this->destroyed = true;
+        $this->state     = static::STATE_DESTROYED;
     }
 
     /**
@@ -145,8 +164,8 @@ class Session
      */
     public function setId(string $id): void
     {
-        if (!$this->isValidId($id)) {
-            throw new InvalidArgumentException('The length of the session ID must be 40.');
+        if (! $this->isValidId($id)) {
+            throw new \InvalidArgumentException('The length of the session ID must be 40.');
         }
         $this->id = $id;
     }
@@ -156,7 +175,7 @@ class Session
      */
     public function isStarted(): bool
     {
-        return $this->started;
+        return $this->state === static::STATE_STARTED;
     }
 
     /**
@@ -164,7 +183,7 @@ class Session
      */
     public function isDestroyed(): bool
     {
-        return $this->destroyed;
+        return $this->state == static::STATE_DESTROYED;
     }
 
     /**
@@ -172,6 +191,6 @@ class Session
      */
     protected function isValidId(string $id): bool
     {
-        return ctype_alnum($id);
+        return \ctype_alnum($id);
     }
 }
