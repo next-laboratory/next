@@ -59,6 +59,7 @@ class Session
         if ($this->isStarted()) {
             throw new SessionException('Cannot restart session.');
         }
+        $this->sessionHandler->open('', '');
         $this->id = ($id && $this->isValidId($id)) ? $id : \session_create_id();
         if ($data = $this->sessionHandler->read($this->id)) {
             $this->data = (array) (\unserialize($data) ?: []);

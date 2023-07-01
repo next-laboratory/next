@@ -24,7 +24,7 @@ class RedisHandler implements \SessionHandlerInterface
         protected string|null $persistentId = null,
         protected int $retryInterval = 0,
         protected float $readTimeout = 0,
-        protected array|null $context = null,
+        protected array $context = [],
         protected string $password = '',
         protected int $database = 0,
         protected string $sessionPrefix = '',
@@ -59,12 +59,12 @@ class RedisHandler implements \SessionHandlerInterface
         $this->redis = new \Redis();
         return $this->redis->connect(
             $this->host,
-            $this->port          = 6379,
-            $this->timeout       = 0,
-            $this->persistentId  = null,
-            $this->retryInterval = 0,
-            $this->readTimeout   = 0,
-            $this->context       = null
+            $this->port,
+            $this->timeout,
+            $this->persistentId,
+            $this->retryInterval,
+            $this->readTimeout,
+            $this->context
         );
     }
 
@@ -91,6 +91,6 @@ class RedisHandler implements \SessionHandlerInterface
 
     protected function normalizeId(string $id): string
     {
-        return $this->sessionPrefix . $id;
+        return $this->sessionPrefix . ':sesssion:' . $id;
     }
 }
