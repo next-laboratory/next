@@ -1,21 +1,21 @@
 {
-    "name": "max/routing",
-    "description": "A lightweight and fast routing component.",
-    "homepage": "https://github.com/marxphp/routing",
-    "license": "Apache-2.0",
-    "authors": [
-        {
-            "name": "chengyao",
-            "email": "987861463@qq.com"
-        }
-    ],
-    "require": {
-        "php": "^8.0",
-        "max/http-message": "dev-master"
-    },
-    "autoload": {
-        "psr-4": {
-            "Max\\Routing\\": "src/"
-        }
+  "name": "max/routing",
+  "description": "A lightweight and fast routing component.",
+  "homepage": "https://github.com/marxphp/routing",
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "chengyao",
+      "email": "987861463@qq.com"
     }
+  ],
+  "require": {
+    "php": "^8.0|^8.1|^8.2",
+    "max/http-message": "~0.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Max\\Routing\\": "src/"
+    }
+  }
 }
