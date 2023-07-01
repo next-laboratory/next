@@ -1,21 +1,19 @@
-Session组件，支持File和Redis存储
+## Session组件，支持File和Redis(不支持协程) Handler，可以自定义SesssionHandler
 
 ```php
 composer require max/session
 ```
 
 ```php
-$sessionManager = \Max\Di\Context::getContainer()->make(\Max\Session\Manager::class);
+$sessionHandler = new \Max\Session\Handler\FileHandler();
 
-$session = $sessionManager->create();
+$session = new \Max\Session\Session($sessionHandler);
 
-$session->start($id); // 如果为null则创建id
-
-$session->set($key, $value);
-
-$session->get($key);
-
+$session->start(null); // 如果为null则创建id
+$session->set('foo', 'bar');
+$session->get('foo');
 $session->save();
-
 $session->close();
+
+$sessionId = $session->getId();
 ```

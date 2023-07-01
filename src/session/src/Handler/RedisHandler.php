@@ -11,43 +11,25 @@ declare(strict_types=1);
 
 namespace Max\Session\Handler;
 
-use Max\Redis\Redis;
-use Max\Utils\Traits\AutoFillProperties;
 use RedisException;
 
 class RedisHandler implements \SessionHandlerInterface
 {
-    use AutoFillProperties;
+    protected \Redis $redis;
 
-    protected Redis $handler;
-
-    protected string $connector;
-
-    protected string $prefix = 'PHP_SESS';
-
-    /**
-     * @var string 主机
-     */
-    protected string $host = '127.0.0.1';
-
-    /**
-     * @var int 端口
-     */
-    protected int $port = 6379;
-
-    /**
-     * @var int 过期时间
-     */
-    protected int    $expire   = 3600;
-
-    protected int    $database = 0;
-
-    protected string $password = '';
-
-    public function __construct(array $options = [])
-    {
-        $this->fillProperties($options);
-        $this->handler = new Redis(new $this->connector($this->host, $this->port));
+    public function __construct(
+        protected string $host = '127.0.0.1',
+        protected int $port = 6379,
+        protected float $timeout = 0,
+        protected string|null $persistentId = null,
+        protected int $retryInterval = 0,
+        protected float $readTimeout = 0,
+        protected array|null $context = null,
+        protected string $password = '',
+        protected int $database = 0,
+        protected string $sessionPrefix = '',
+        protected int $sessionTTL = 3600,
+    ) {
     }
 
     public function close(): bool
@@ -58,7 +40,7 @@ class RedisHandler implements \SessionHandlerInterface
     public function destroy(string $id): bool
     {
         try {
-            return (bool) $this->handler->del($id);
+            return (bool) $this->redis->del($id);
         } catch (RedisException) {
             return false;
         }
@@ -69,15 +51,27 @@ class RedisHandler implements \SessionHandlerInterface
         return 1;
     }
 
+    /**
+     * @throws \RedisException
+     */
     public function open(string $path, string $name): bool
     {
-        return true;
+        $this->redis = new \Redis();
+        return $this->redis->connect(
+            $this->host,
+            $this->port          = 6379,
+            $this->timeout       = 0,
+            $this->persistentId  = null,
+            $this->retryInterval = 0,
+            $this->readTimeout   = 0,
+            $this->context       = null
+        );
     }
 
     public function read(string $id): string|false
     {
         try {
-            if ($data = $this->handler->get($this->normalizeId($id))) {
+            if ($data = $this->redis->get($this->normalizeId($id))) {
                 return (string) $data;
             }
             return false;
@@ -89,7 +83,7 @@ class RedisHandler implements \SessionHandlerInterface
     public function write(string $id, string $data): bool
     {
         try {
-            return (bool) $this->handler->set($this->normalizeId($id), $data, $this->expire);
+            return (bool) $this->redis->set($this->normalizeId($id), $data, $this->sessionTTL);
         } catch (RedisException) {
             return false;
         }
@@ -97,6 +91,6 @@ class RedisHandler implements \SessionHandlerInterface
 
     protected function normalizeId(string $id): string
     {
-        return $this->prefix . $id;
+        return $this->sessionPrefix . $id;
     }
 }
