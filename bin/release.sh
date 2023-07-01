@@ -2,7 +2,7 @@
 
 set -e
 
-if (( "$#" != 1 ))
+if (( "$#" == 0 ))
 then
     echo "Tag has to be provided"
 
@@ -20,7 +20,11 @@ BASEPATH=$(cd `dirname $0`; cd ../src/; pwd)
 #    VERSION="v$VERSION"
 #fi
 
-repos=$(ls $BASEPATH)
+if [ -z $2 ] ; then
+    repos=$(ls $BASEPATH)
+else
+    repos=${@:2}
+fi
 
 for REMOTE in $repos
 do
