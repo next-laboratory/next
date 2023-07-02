@@ -98,6 +98,11 @@ class RedisHandler implements \SessionHandlerInterface
 
     protected function normalizeId(string $id): string
     {
-        return $this->sessionPrefix . ':sesssion:' . $id;
+        $key = 'session:' . $id;
+        if ($this->sessionPrefix) {
+            $key = $this->sessionPrefix . ':' . $key;
+        }
+
+        return $key;
     }
 }

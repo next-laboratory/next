@@ -28,6 +28,7 @@ class RedisDriver extends AbstractDriver
         array $context = [],
         string $password = '',
         int $database = 0,
+        protected string $cachePrefix = '',
     ) {
         $this->redis = new \Redis();
         if ($this->redis->connect($host, $port, $timeout, $persistentId, $retryInterval, $readTimeout, $context)) {
@@ -44,7 +45,7 @@ class RedisDriver extends AbstractDriver
      */
     public function delete($key): bool
     {
-        return (bool) $this->redis->del($key);
+        return (bool) $this->redis->del($this->normalizeKey($key));
     }
 
     /**
@@ -53,7 +54,7 @@ class RedisDriver extends AbstractDriver
      */
     public function has($key): bool
     {
-        return (bool) $this->redis->exists($key);
+        return (bool) $this->redis->exists($this->normalizeKey($key));
     }
 
     /**
@@ -61,7 +62,13 @@ class RedisDriver extends AbstractDriver
      */
     public function clear(): bool
     {
-        return $this->redis->flushAll();
+        return $this->redis->eval(<<<'LUA'
+ local keys = redis.call('keys', ARGV[1])
+    for _, key in ipairs(keys) do
+        redis.call('del', key)
+    end
+LUA
+            , [$this->normalizeKey('*')]);
     }
 
     /**
@@ -69,7 +76,7 @@ class RedisDriver extends AbstractDriver
      */
     public function get(string $key): mixed
     {
-        return $this->redis->get($key);
+        return $this->redis->get($this->normalizeKey($key));
     }
 
     /**
@@ -77,6 +84,16 @@ class RedisDriver extends AbstractDriver
      */
     public function set(string $key, mixed $value, ?int $ttl = null): bool
     {
-        return $this->redis->set($key, $value, $ttl);
+        return $this->redis->set($this->normalizeKey($key), $value, $ttl);
+    }
+
+    protected function normalizeKey($id)
+    {
+        $key = 'cache:' . $id;
+        if ($this->cachePrefix) {
+            $key = $this->cachePrefix . ':' . $key;
+        }
+
+        return $key;
     }
 }
