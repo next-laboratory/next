@@ -21,5 +21,10 @@
     "max/di": "~0.1",
     "psr/http-server-middleware": "^1.0",
     "psr/http-server-handler": "^1.0"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.1.x-dev"
+    }
   }
 }

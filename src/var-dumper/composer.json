@@ -1,23 +1,28 @@
 {
-    "name": "max/var-dumper",
-    "license": "Apache-2.0",
-    "homepage": "https://github.com/marxphp/var-dumper",
-    "autoload": {
-        "psr-4": {
-            "Max\\VarDumper\\": "src/"
-        },
-        "files": [
-            "src/helpers.php"
-        ]
+  "name": "max/var-dumper",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/marxphp/var-dumper",
+  "autoload": {
+    "psr-4": {
+      "Max\\VarDumper\\": "src/"
     },
-    "authors": [
-        {
-            "name": "chengyao",
-            "email": "987861463@qq.com"
-        }
-    ],
-    "require": {
-        "php": ">=7.4",
-        "symfony/var-dumper": "*"
+    "files": [
+      "src/helpers.php"
+    ]
+  },
+  "authors": [
+    {
+      "name": "chengyao",
+      "email": "987861463@qq.com"
     }
+  ],
+  "require": {
+    "php": ">=7.4",
+    "symfony/var-dumper": "*"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.1.x-dev"
+    }
+  }
 }

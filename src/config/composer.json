@@ -20,5 +20,10 @@
   "require": {
     "php": "^8.0",
     "max/utils": "~0.1"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.1.x-dev"
+    }
   }
 }

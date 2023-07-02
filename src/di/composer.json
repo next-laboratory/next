@@ -1,34 +1,39 @@
 {
-    "name": "max/di",
-    "description": "A lightweight dependency injection tool, container based on the PSR-11 specification.",
-    "homepage": "https://github.com/marxphp/di",
-    "license": "Apache-2.0",
-    "keywords": [
-        "container",
-        "maxphp",
-        "dependence injection"
-    ],
-    "authors": [
-        {
-            "name": "chengyao",
-            "email": "987861463@qq.com"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "Max\\Di\\": "src/"
-        },
-        "files": [
-            "src/helpers.php"
-        ]
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Max\\Di\\Tests\\": "tests/"
-        }
-    },
-    "require": {
-        "php": "^8.0|^8.1",
-        "psr/container": "^1.0|^2.0"
+  "name": "max/di",
+  "description": "A lightweight dependency injection tool, container based on the PSR-11 specification.",
+  "homepage": "https://github.com/marxphp/di",
+  "license": "Apache-2.0",
+  "keywords": [
+    "container",
+    "maxphp",
+    "dependence injection"
+  ],
+  "authors": [
+    {
+      "name": "chengyao",
+      "email": "987861463@qq.com"
     }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Max\\Di\\": "src/"
+    },
+    "files": [
+      "src/helpers.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Max\\Di\\Tests\\": "tests/"
+    }
+  },
+  "require": {
+    "php": "^8.0|^8.1",
+    "psr/container": "^1.0|^2.0"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.1.x-dev"
+    }
+  }
 }
