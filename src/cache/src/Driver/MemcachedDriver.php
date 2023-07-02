@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * This file is part of MaxPHP.
+ * This file is part of MarxPHP.
  *
  * @link     https://github.com/marxphp
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
@@ -11,25 +11,18 @@ declare(strict_types=1);
 
 namespace Max\Cache\Driver;
 
-use Max\Utils\Traits\AutoFillProperties;
-
 class MemcachedDriver extends AbstractDriver
 {
-    use AutoFillProperties;
-
-    protected string $host = '127.0.0.1';
-
-    protected int $port = 11211;
-
-    protected int $weight = 0;
-
     protected \Memcached $memcached;
 
-    public function __construct(array $options)
+    public function __construct()
     {
-        $this->fillProperties($options);
         $this->memcached = new \Memcached();
-        $this->memcached->addServer($this->host, $this->port, $this->weight);
+    }
+
+    public function addServer($host = '127.0.0.1', $port = 11211, $weight = 0): void
+    {
+        $this->memcached->addServer($host, $port, $weight);
     }
 
     public function delete($key): bool

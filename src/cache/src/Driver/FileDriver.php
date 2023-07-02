@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * This file is part of MaxPHP.
+ * This file is part of MarxPHP.
  *
  * @link     https://github.com/marxphp
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
@@ -16,16 +16,15 @@ use Throwable;
 
 class FileDriver extends AbstractDriver
 {
-    protected string $path;
-
     /**
      * @throws CacheException
      */
-    public function __construct(array $config)
-    {
-        if (file_exists($path = $config['path'])) {
+    public function __construct(
+        protected string $path
+    ) {
+        if (file_exists($path)) {
             if (is_file($path)) {
-                throw new CacheException('已经存在同名文件，不能创建文件夹!');
+                throw new CacheException('The folder cannot be created as a file with the same name already exists!');
             }
             if (! is_writable($path) || ! is_readable($path)) {
                 chmod($path, 0755);

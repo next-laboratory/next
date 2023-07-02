@@ -1,5 +1,3 @@
-<br>
-
 <p align="center">
 <img src="https://raw.githubusercontent.com/marxphp/max/master/public/favicon.ico" width="120" alt="Max">
 </p>
@@ -13,27 +11,22 @@
 
 # 起步
 
-缓存组件基于PSR16开发，已经独立，不再必须使用MaxPHP。你可以使用下面的命令安装开发版本。
+符合Psr16的缓存组件，支持File,Memcached,Redis,Apcu驱动。协程环境下需要自定义驱动
+
+## 安装
 
 ```
 composer require max/cache
 ```
 
-# 使用
-
-> 如果你使用文件缓存，安装好后你可能需要修改配置中的缓存存放路径，参考代码
+## 使用
 
 ```php
 <?php
 
 use Max\Cache\Cache;
 
-require './vendor/autoload.php';
-//配置文件
-$config = include './vendor/max/cache/src/cache.php';
-$cache = new \Max\Cache\Cache($config)
-//如果需要切换存储，只需要将参数传递给store方法
-$cache = $cache->store('store');
+$cache = new \Max\Cache\Cache(new \Max\Cache\Driver\FileDriver('./runtime/cache'))
 //设置缓存
 $cache->set('stat', 12, 10);
 //读取缓存

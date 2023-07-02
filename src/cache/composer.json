@@ -1,29 +1,28 @@
 {
-    "name": "max/cache",
-    "type": "library",
-    "license": "Apache-2.0",
-    "homepage": "https://github.com/marxphp/cache",
-    "description": "A cache component based on PSR16 specification which supports File,Redis,Memcached and APC.",
-    "keywords": [
-        "cache",
-        "maxphp"
-    ],
-    "authors": [
-        {
-            "name": "chengyao",
-            "email": "987861463@qq.com",
-            "homepage": "https://www.chengyao.xyz"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "Max\\Cache\\": "src/"
-        }
-    },
-    "require": {
-        "php": "^8.0",
-        "max/utils": "dev-master",
-        "psr/simple-cache": "^1.0",
-        "max/redis": "dev-master"
+  "name": "max/cache",
+  "type": "library",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/marxphp/cache",
+  "description": "A cache component based on PSR16 specification which supports File,Redis,Memcached and APC.",
+  "keywords": [
+    "cache",
+    "maxphp"
+  ],
+  "authors": [
+    {
+      "name": "chengyao",
+      "email": "987861463@qq.com",
+      "homepage": "https://www.chengyao.xyz"
     }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Max\\Cache\\": "src/"
+    }
+  },
+  "require": {
+    "php": "^8.0",
+    "max/utils": "~0.`",
+    "psr/simple-cache": "^1.0"
+  }
 }
