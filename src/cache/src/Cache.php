@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Max\Cache;
 
-use Exception;
 use Max\Cache\Contract\CacheDriverInterface;
 use Psr\SimpleCache\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException;
@@ -69,7 +68,7 @@ class Cache implements CacheInterface
                 $this->set($key, $value, $ttl);
             }
             return true;
-        } catch (Exception) {
+        } catch (\Exception) {
             return false;
         }
     }
@@ -81,7 +80,7 @@ class Cache implements CacheInterface
                 $this->delete($key);
             }
             return true;
-        } catch (Exception) {
+        } catch (\Exception) {
             return false;
         }
     }

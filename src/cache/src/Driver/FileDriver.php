@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Max\Cache\Driver;
 
-use Max\Cache\Exception\CacheException;
+use Max\Cache\CacheException;
 use Throwable;
 
 class FileDriver extends AbstractDriver
