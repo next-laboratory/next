@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * This file is part of MaxPHP.
+ * This file is part of MarxPHP.
  *
  * @link     https://github.com/marxphp
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Max\Aop;
 
-use Attribute;
 use Max\Aop\Collector\AspectCollector;
 use Max\Aop\Collector\PropertyAttributeCollector;
 use Max\Di\Reflection;
@@ -19,39 +18,39 @@ use Max\Utils\Composer;
 use Max\Utils\Filesystem;
 use PhpParser\NodeTraverser;
 use PhpParser\PrettyPrinter\Standard;
-use ReflectionException;
-use RuntimeException;
 use Symfony\Component\Finder\Finder;
-use Throwable;
 
 final class Aop
 {
     private AstManager   $astManager;
+
     private string       $proxyMapFile;
+
     private static array $classMap    = [];
+
     private Filesystem   $filesystem;
+
     private static bool  $initialized = false;
 
     private function __construct(
-        private array  $scanDirs = [],
-        private array  $collectors = [],
+        private array $scanDirs = [],
+        private array $collectors = [],
         private string $runtimeDir = '',
-        private bool   $cache = false
-    )
-    {
+        private bool $cache = false
+    ) {
         self::$initialized = true;
         $this->filesystem  = new Filesystem();
         $this->astManager  = new AstManager();
         $this->runtimeDir  = rtrim($runtimeDir, '/\\') . '/';
-        if (!$this->filesystem->isDirectory($this->runtimeDir)) {
+        if (! $this->filesystem->isDirectory($this->runtimeDir)) {
             $this->filesystem->makeDirectory($this->runtimeDir, 0755, true);
         }
         $this->findClasses($this->scanDirs);
         $this->proxyMapFile = $this->runtimeDir . 'proxy.php';
-        if (!$this->cache || !$this->filesystem->exists($this->proxyMapFile)) {
+        if (! $this->cache || ! $this->filesystem->exists($this->proxyMapFile)) {
             $this->filesystem->exists($this->proxyMapFile) && $this->filesystem->delete($this->proxyMapFile);
             if (($pid = pcntl_fork()) == -1) {
-                throw new RuntimeException('Process fork failed.');
+                throw new \RuntimeException('Process fork failed.');
             }
             pcntl_wait($pid);
         }
@@ -61,17 +60,25 @@ final class Aop
         Reflection::clear();
     }
 
-    public static function init(
-        array  $scanDirs = [],
-        array  $collectors = [],
-        string $runtimeDir = '',
-        bool   $cache = false
-    ): void
+    private function __clone(): void
     {
+    }
+
+    public static function init(
+        array $scanDirs = [],
+        array $collectors = [],
+        string $runtimeDir = '',
+        bool $cache = false
+    ): void {
         if (self::$initialized) {
-            throw new RuntimeException('aop is already initialized, so don\'t call init again');
+            throw new \RuntimeException('aop is already initialized, so don\'t call init again');
         }
         new self($scanDirs, $collectors, $runtimeDir, $cache);
+    }
+
+    public static function addClass(string $class, string $filepath): void
+    {
+        self::$classMap[$class] = $filepath;
     }
 
     private function findClasses(array $dirs): void
@@ -85,17 +92,12 @@ final class Aop
         }
     }
 
-    public static function addClass(string $class, string $filepath): void
-    {
-        self::$classMap[$class] = $filepath;
-    }
-
     /**
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     private function getProxyMap(): array
     {
-        if (!$this->filesystem->exists($this->proxyMapFile)) {
+        if (! $this->filesystem->exists($this->proxyMapFile)) {
             $proxyDir = $this->runtimeDir . 'proxy/';
             $this->filesystem->exists($proxyDir) || $this->filesystem->makeDirectory($proxyDir, 0755, true, true);
             $this->filesystem->cleanDirectory($proxyDir);
@@ -129,7 +131,7 @@ final class Aop
     }
 
     /**
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     private function collect(): void
     {
@@ -139,12 +141,12 @@ final class Aop
             foreach ($reflectionClass->getAttributes() as $attribute) {
                 try {
                     $attributeInstance = $attribute->newInstance();
-                    if (!$attributeInstance instanceof Attribute) {
+                    if (! $attributeInstance instanceof \Attribute) {
                         foreach ($this->collectors as $collector) {
                             $collector::collectClass($class, $attributeInstance);
                         }
                     }
-                } catch (Throwable $e) {
+                } catch (\Throwable $e) {
                     printf("\033[33m [INFO] \033[0m%s: %s\n", $class, $e->getMessage());
                 }
             }
@@ -157,7 +159,7 @@ final class Aop
                         foreach ($this->collectors as $collector) {
                             $collector::collectProperty($class, $propertyName, $attributeInstance);
                         }
-                    } catch (Throwable $e) {
+                    } catch (\Throwable $e) {
                         printf("\033[33m [INFO] \033[0m%s->%s: %s\n", $class, $propertyName, $e->getMessage());
                     }
                 }
@@ -171,7 +173,7 @@ final class Aop
                         foreach ($this->collectors as $collector) {
                             $collector::collectMethod($class, $method, $attributeInstance);
                         }
-                    } catch (Throwable $e) {
+                    } catch (\Throwable $e) {
                         printf("\033[33m [INFO] \033[0m%s: %s\n", $class, $e->getMessage());
                     }
                 }
@@ -184,16 +186,12 @@ final class Aop
                             foreach ($this->collectors as $collector) {
                                 $collector::collectorMethodParameter($class, $method, $parameterName, $attributeInstance);
                             }
-                        } catch (Throwable $e) {
+                        } catch (\Throwable $e) {
                             printf("\033[33m [INFO] \033[0m%s: %s\n", $class, $e->getMessage());
                         }
                     }
                 }
             }
         }
-    }
-
-    private function __clone(): void
-    {
     }
 }
