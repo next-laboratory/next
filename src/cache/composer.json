@@ -20,6 +20,11 @@
       "Max\\Cache\\": "src/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Max\\Cache\\Tests\\": "tests/"
+    }
+  },
   "require": {
     "php": "^8.0",
     "max/utils": "~0.1",
