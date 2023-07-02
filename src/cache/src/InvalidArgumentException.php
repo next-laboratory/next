@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @license  https://github.com/marxphp/max/blob/master/LICENSE
  */
 
-namespace Max\Cache\Exception;
+namespace Max\Cache;
 
 use InvalidArgumentException as InvalidArgument;
 use Psr\SimpleCache\InvalidArgumentException as PsrCacheInvalidArgument;

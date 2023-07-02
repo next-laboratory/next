@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace Max\Cache\Tests;
 
 use Max\Cache\Cache;
+use Max\Cache\CacheException;
 use Max\Cache\Driver\FileDriver;
-use Max\Cache\Exception\CacheException;
 use PHPUnit\Framework\TestCase;
 use Psr\SimpleCache\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException;
@@ -31,7 +31,7 @@ class CacheTest extends TestCase
      */
     protected function setUp(): void
     {
-        $tmpDir = sys_get_temp_dir();
+        $tmpDir          = sys_get_temp_dir();
         $this->fileCache = new Cache(new FileDriver($tmpDir . '/cache'));
     }
 
