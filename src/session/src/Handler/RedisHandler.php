@@ -57,7 +57,7 @@ class RedisHandler implements \SessionHandlerInterface
     public function open(string $path, string $name): bool
     {
         $this->redis = new \Redis();
-        return $this->redis->connect(
+        if ($this->redis->connect(
             $this->host,
             $this->port,
             $this->timeout,
@@ -65,7 +65,14 @@ class RedisHandler implements \SessionHandlerInterface
             $this->retryInterval,
             $this->readTimeout,
             $this->context
-        );
+        )) {
+            $this->redis->select($this->database);
+            if ($this->password) {
+                $this->redis->auth($this->password);
+            }
+        }
+
+        return false;
     }
 
     public function read(string $id): string|false
