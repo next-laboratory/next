@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of MarxPHP.
+ *
+ * @link     https://github.com/marxphp
+ * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ */
+
 namespace Max\Event\Tests;
 
 use Max\Event\EventDispatcher;
@@ -10,7 +19,11 @@ use Max\Event\Tests\Listeners\BarListener;
 use Max\Event\Tests\Listeners\FooListener;
 use PHPUnit\Framework\TestCase;
 
-class EventTest extends TestCase
+/**
+ * @internal
+ * @coversNothing
+ */
+class EventDispatcherTest extends TestCase
 {
     protected EventDispatcher $eventDispatcher;
 
@@ -21,14 +34,14 @@ class EventTest extends TestCase
         $this->eventDispatcher = new EventDispatcher($listenerProvider);
     }
 
-    public function testEvent()
+    public function testDispatch()
     {
         $fooEvent = $this->eventDispatcher->dispatch(new FooEvent());
 
         $this->assertEquals(FooListener::class, $fooEvent->value);
     }
 
-    public function testStoppableEvent()
+    public function testStoppableEventDispatch()
     {
         $barEvent = $this->eventDispatcher->dispatch(new BarEvent());
 
