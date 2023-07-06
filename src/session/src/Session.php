@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace Max\Session;
 
-use Max\Session\Exception\SessionException;
 use Max\Utils\Arr;
+use Max\Utils\Contract\PackerInterface;
 
 class Session
 {
@@ -34,12 +34,12 @@ class Session
     /**
      * Session ID.
      */
-    protected string $id        = '';
+    protected string $id = '';
 
     /**
      * Session data.
      */
-    protected array  $data      = [];
+    protected array $data = [];
 
     /**
      * Session state.
@@ -47,7 +47,8 @@ class Session
     protected int $state = 0;
 
     public function __construct(
-        protected \SessionHandlerInterface $sessionHandler
+        protected \SessionHandlerInterface $sessionHandler,
+        protected PackerInterface $packer,
     ) {
     }
 
@@ -57,12 +58,12 @@ class Session
     public function start(string $id = ''): void
     {
         if ($this->isStarted()) {
-            throw new SessionException('Cannot restart session.');
+            throw new \BadMethodCallException('the session is started');
         }
         $this->sessionHandler->open('', '');
         $this->id = ($id && $this->isValidId($id)) ? $id : \session_create_id();
         if ($data = $this->sessionHandler->read($this->id)) {
-            $this->data = (array) (\unserialize($data) ?: []);
+            $this->data = (array) ($this->packer->unpack($data) ?: []);
         }
         $this->state = static::STATE_STARTED;
     }
@@ -72,7 +73,7 @@ class Session
      */
     public function save(): void
     {
-        $this->sessionHandler->write($this->id, serialize($this->data));
+        $this->sessionHandler->write($this->id, $this->packer->pack($this->data));
     }
 
     /**
@@ -147,9 +148,9 @@ class Session
     public function destroy(): void
     {
         $this->sessionHandler->destroy($this->id);
-        $this->data      = [];
-        $this->id        = '';
-        $this->state     = static::STATE_DESTROYED;
+        $this->data  = [];
+        $this->id    = '';
+        $this->state = static::STATE_DESTROYED;
     }
 
     /**
