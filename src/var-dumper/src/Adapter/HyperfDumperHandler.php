@@ -32,7 +32,7 @@ class HyperfDumperHandler extends ExceptionHandler
     {
         $this->stopPropagation();
 
-        return $response->withBody(new SwooleStream($this->convertToHtml($e)));
+        return $response->withBody(new SwooleStream(self::convertToHtml($e)));
     }
 
     public function isValid(Throwable $e): bool
