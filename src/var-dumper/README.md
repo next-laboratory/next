@@ -3,7 +3,7 @@ var-dumper 适配包，用来将变量打印到浏览器
 # 安装
 
 ```shell
-composer require max/var-dumper:dev-master
+composer require max/var-dumper
 ```
 
 # 使用
