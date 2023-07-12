@@ -1,0 +1,21 @@
+{
+  "name": "max/database",
+  "type": "library",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/marxphp/database",
+  "authors": [
+    {
+      "name": "chengyao",
+      "email": "987861463@qq.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Max\\Database\\": "src/"
+    }
+  },
+  "require": {
+    "php": "^8.0|^8.1|^8.2",
+    "ext-pdo": "*"
+  }
+}
