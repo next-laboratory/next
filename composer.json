@@ -14,6 +14,7 @@
       "Max\\Aop\\": "src/aop/src",
       "Max\\Cache\\": "src/cache/src",
       "Max\\Config\\": "src/config/src",
+      "Max\\Database\\": "src/database/src",
       "Max\\Di\\": "src/di/src",
       "Max\\Event\\": "src/event/src",
       "Max\\Http\\Message\\": "src/http-message/src",
