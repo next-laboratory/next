@@ -158,25 +158,6 @@ class ServerRequest extends Request implements ServerRequestInterface
         return $psrRequest;
     }
 
-    /**
-     * @param \Amp\Http\Server\Request $request
-     */
-    public static function createFromAmp($request): ServerRequestInterface
-    {
-        $uri                      = $request->getUri();
-        $psrRequest               = new static($request->getMethod(), $uri, $request->getHeaders(), null);
-        $psrRequest->cookieParams = new CookieBag();
-        foreach ($request->getCookies() as $requestCookie) {
-            $psrRequest->cookieParams->set($requestCookie->getName(), $requestCookie->getValue());
-        }
-        parse_str($uri->getQuery(), $query);
-        $psrRequest->queryParams = new ParameterBag($query);
-        foreach ($request->getCookies() as $requestCookie) {
-            $psrRequest->cookieParams->set($requestCookie->getName(), $requestCookie->getValue());
-        }
-        return $psrRequest;
-    }
-
     public static function createFromPsrRequest(ServerRequestInterface $request): ServerRequestInterface
     {
         $psrRequest                = new static($request->getMethod(), $request->getUri(), $request->getHeaders(), $request->getBody());

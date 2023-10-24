@@ -15,17 +15,15 @@
 
 ## 主要组件
 
-- 基于 Psr7 的 [max/http-message](https://github.com/marxphp/http-message) HTTP消息
-- 基于 Psr11 的 [max/di](https://github.com/marxphp/di) 依赖注入容器
-- 基于代理类实现的切面编程 [max/aop](https://github.com/marxphp/aop)
-- 基于 Psr14 的 [max/event](https://github.com/marxphp/event) 事件
-- 基于 Psr15 的 [max/http-server](https://github.com/marxphp/http-server) HTTP服务
-- 基于 Psr16 的 [max/cache](https://github.com/marxphp/cache)，支持 File,Memcached,Redis,APC [可扩展]
-- 符合 Psr7 规范的 [max/routing](https://github.com/marxphp/routing) 路由组件
-- 数据库 [max/database](https://github.com/marxphp/database) 组件，支持连接池
-- 支持多适配器的 [max/session](https://github.com/marxphp/session) Session
-- 可扩展的Blade视图组件 [max/view](https://github.com/marxphp/view)
-- 验证器: [max/validator](https://github.com/marxphp/validator)
+- 符合 Psr7 的 [max/http-message](https://github.com/marxphp/http-message) HTTP消息
+- 符合 Psr7 的 [max/routing](https://github.com/marxphp/routing) 路由组件
+- 符合 Psr11 的 [max/di](https://github.com/marxphp/di) 依赖注入容器
+- 符合 Psr14 的 [max/event](https://github.com/marxphp/event) 事件
+- 符合 Psr15 的 [max/http-server](https://github.com/marxphp/http-server) HTTP服务
+- 符合 Psr16 的 [max/cache](https://github.com/marxphp/cache)，支持 File,Memcached,Redis,APC [可扩展]
+- AOP [max/aop](https://github.com/marxphp/aop)
+- database [max/database](https://github.com/marxphp/database) 
+- session [max/session](https://github.com/marxphp/session) 
 
 ## 贡献一览
 
