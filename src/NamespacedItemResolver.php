@@ -1,6 +1,6 @@
 <?php
 
-namespace Max\Utils;
+namespace Next\Utils;
 
 class NamespacedItemResolver
 {

@@ -1,12 +1,12 @@
 <?php
 
-namespace Max\Utils;
+namespace Next\Utils;
 
-use Max\Utils\Contract\MessageBag as MessageBagContract;
+use Next\Utils\Contract\MessageBag as MessageBagContract;
 use JsonSerializable;
-use Max\Utils\Contract\Arrayable;
-use Max\Utils\Contract\Jsonable;
-use Max\Utils\Contract\MessageProvider;
+use Next\Utils\Contract\Arrayable;
+use Next\Utils\Contract\Jsonable;
+use Next\Utils\Contract\MessageProvider;
 
 class MessageBag implements Jsonable, JsonSerializable, MessageBagContract, MessageProvider
 {

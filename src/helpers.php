@@ -6,17 +6,17 @@ declare(strict_types=1);
  * This file is part of MaxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Utils;
+namespace Next\Utils;
 
 use Closure;
 use Countable;
 use Exception;
-use Max\Utils\Contract\DeferringDisplayableValue;
-use Max\Utils\Contract\Htmlable;
-use Max\Utils\Proxy\HigherOrderTapProxy;
+use Next\Utils\Contract\DeferringDisplayableValue;
+use Next\Utils\Contract\Htmlable;
+use Next\Utils\Proxy\HigherOrderTapProxy;
 use RuntimeException;
 use Throwable;
 

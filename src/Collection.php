@@ -6,19 +6,19 @@ declare(strict_types=1);
  * This file is part of MaxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Utils;
+namespace Next\Utils;
 
 use ArrayAccess;
 use ArrayIterator;
-use Max\Utils\Contract\Arrayable;
-use Max\Utils\Contract\CanBeEscapedWhenCastToString;
-use Max\Utils\Contract\Enumerable;
-use Max\Utils\Exception\ItemNotFoundException;
-use Max\Utils\Exception\MultipleItemsFoundException;
-use Max\Utils\Traits\EnumeratesValues;
+use Next\Utils\Contract\Arrayable;
+use Next\Utils\Contract\CanBeEscapedWhenCastToString;
+use Next\Utils\Contract\Enumerable;
+use Next\Utils\Exception\ItemNotFoundException;
+use Next\Utils\Exception\MultipleItemsFoundException;
+use Next\Utils\Traits\EnumeratesValues;
 use stdClass;
 use Traversable;
 

@@ -6,10 +6,10 @@ declare(strict_types=1);
  * This file is part of MaxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Utils\Proxy;
+namespace Next\Utils\Proxy;
 
 class HigherOrderWhenProxy
 {

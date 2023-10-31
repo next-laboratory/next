@@ -1,5 +1,5 @@
 {
-  "name": "max/utils",
+  "name": "next/utils",
   "type": "library",
   "license": "Apache-2.0",
   "homepage": "https://github.com/marxphp/utils",
@@ -14,12 +14,12 @@
       "src/helpers.php"
     ],
     "psr-4": {
-      "Max\\Utils\\": "src/"
+      "Next\\Utils\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Max\\Utils\\Tests\\": "tests/"
+      "Next\\Utils\\Tests\\": "tests/"
     }
   },
   "require": {

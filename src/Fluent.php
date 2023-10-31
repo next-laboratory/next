@@ -1,10 +1,10 @@
 <?php
 
-namespace Max\Utils;
+namespace Next\Utils;
 
 use ArrayAccess;
-use Max\Utils\Contract\Arrayable;
-use Max\Utils\Contract\Jsonable;
+use Next\Utils\Contract\Arrayable;
+use Next\Utils\Contract\Jsonable;
 use JsonSerializable;
 
 /**
