@@ -1,6 +1,6 @@
 # ！！！ 不能生产使用，仅作为研究用途
 
-一款简单Aop实现。支持常驻内存型PHP应用。可以方便接入MaxPHP, Swoole，WebMan等框架。
+一款简单Aop实现。支持常驻内存型PHP应用。可以方便接入nextphp, Swoole，WebMan等框架。
 
 # 环境要求
 
