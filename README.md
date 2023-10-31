@@ -12,7 +12,7 @@ php >=8.0 with ext-pcntl
 # 安装
 
 ```shell
-composer require max/aop
+composer require next/aop
 ```
 
 # 使用，以下以webman为例
@@ -22,7 +22,7 @@ composer require max/aop
 ```php
 Aop::init(
     [__DIR__ . '/../app'],
-    [\Max\Routing\RouteCollector::class],
+    [\Next\Routing\RouteCollector::class],
     __DIR__ . '/../runtime/aop',
 );
 ```
@@ -30,8 +30,8 @@ Aop::init(
 * cache 是否缓存，true时下次启动不会重新生成代理类
 * paths 注解扫描路径
 * collectors 注解收集器
-    - \Max\Aop\Collector\AspectCollector::class 切面收集器，取消后不能使用切面
-    - \Max\Aop\Collector\PropertyAttributeCollector::class 属性注解收集器，取消后不支持属性自动注入
+    - \Next\Aop\Collector\AspectCollector::class 切面收集器，取消后不能使用切面
+    - \Next\Aop\Collector\PropertyAttributeCollector::class 属性注解收集器，取消后不支持属性自动注入
 * runtimeDir 运行时，生成的代理类和代理类地图会被缓存到这里
 
 ## 编写切面类，实现AspectInterface接口
@@ -42,8 +42,8 @@ Aop::init(
 namespace App\aspects;
 
 use Closure;
-use Max\Aop\JoinPoint;
-use Max\Aop\Contract\AspectInterface;
+use Next\Aop\JoinPoint;
+use Next\Aop\Contract\AspectInterface;
 
 #[\Attribute(\Attribute::TARGET_METHOD)]
 class Round implements AspectInterface
@@ -67,7 +67,7 @@ class Round implements AspectInterface
 namespace app\controller;
 
 use App\aspects\Round;
-use Max\Di\Attribute\Inject;
+use Next\Di\Attribute\Inject;
 use support\Request;
 
 class Index
@@ -95,9 +95,9 @@ class Index
 namespace App\aspects;
 
 use Closure;
-use Max\Aop\Attribute\AspectConfig;
-use Max\Aop\JoinPoint;
-use Max\Aop\Contract\AspectInterface;
+use Next\Aop\Attribute\AspectConfig;
+use Next\Aop\JoinPoint;
+use Next\Aop\Contract\AspectInterface;
 
 #[\Attribute(\Attribute::TARGET_METHOD)]
 #[AspectConfig('BaconQrCode\Writer', 'writeFile')]

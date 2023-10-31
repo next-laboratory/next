@@ -6,16 +6,16 @@ declare(strict_types=1);
  * This file is part of MarxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Aop;
+namespace Next\Aop;
 
-use Max\Aop\Collector\AspectCollector;
-use Max\Aop\Collector\PropertyAttributeCollector;
-use Max\Di\Reflection;
-use Max\Utils\Composer;
-use Max\Utils\Filesystem;
+use Next\Aop\Collector\AspectCollector;
+use Next\Aop\Collector\PropertyAttributeCollector;
+use Next\Di\Reflection;
+use Next\Utils\Composer;
+use Next\Utils\Filesystem;
 use PhpParser\NodeTraverser;
 use PhpParser\PrettyPrinter\Standard;
 use Symfony\Component\Finder\Finder;

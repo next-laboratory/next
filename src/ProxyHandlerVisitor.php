@@ -6,13 +6,13 @@ declare(strict_types=1);
  * This file is part of MaxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Aop;
+namespace Next\Aop;
 
-use Max\Aop\Collector\AspectCollector;
-use Max\Utils\Str;
+use Next\Aop\Collector\AspectCollector;
+use Next\Utils\Str;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Assign;
@@ -40,7 +40,7 @@ class ProxyHandlerVisitor extends NodeVisitorAbstract
     {
         if ($node instanceof Class_) {
             $node->stmts = array_merge(
-                [new TraitUse([new Name('\Max\Aop\ProxyHandler')])],
+                [new TraitUse([new Name('\Next\Aop\ProxyHandler')])],
                 $node->stmts
             );
         }

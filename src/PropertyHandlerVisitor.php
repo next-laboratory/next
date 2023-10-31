@@ -6,13 +6,13 @@ declare(strict_types=1);
  * This file is part of MaxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Aop;
+namespace Next\Aop;
 
-use Max\Di\Reflection;
-use Max\Utils\Composer;
+use Next\Di\Reflection;
+use Next\Utils\Composer;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ClassConstFetch;
@@ -121,7 +121,7 @@ class PropertyHandlerVisitor extends NodeVisitorAbstract
                 $c                    = [$constructor];
             }
 
-            $node->stmts = array_merge([new TraitUse([new Name('\Max\Aop\PropertyHandler')])], $c, $node->stmts);
+            $node->stmts = array_merge([new TraitUse([new Name('\Next\Aop\PropertyHandler')])], $c, $node->stmts);
         }
         if ($node instanceof ClassMethod && $node->name->toString() === '__construct') {
             array_unshift(
