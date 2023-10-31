@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://raw.githubusercontent.com/marxphp/simple/master/public/favicon.ico" width="120" alt="Max">
+<img src="https://raw.githubusercontent.com/next-laboratory/simple/master/public/favicon.ico" width="120" alt="Max">
 </p>
 
 <p align="center">轻量 • 简单 • 快速</p>
@@ -15,15 +15,15 @@
 
 ## 主要组件
 
-- 符合 Psr7 的 [next/http-message](https://github.com/marxphp/http-message) HTTP消息
-- 符合 Psr7 的 [next/routing](https://github.com/marxphp/routing) 路由组件
-- 符合 Psr11 的 [next/di](https://github.com/marxphp/di) 依赖注入容器
-- 符合 Psr14 的 [next/event](https://github.com/marxphp/event) 事件
-- 符合 Psr15 的 [next/http-server](https://github.com/marxphp/http-server) HTTP服务
-- 符合 Psr16 的 [next/cache](https://github.com/marxphp/cache)，支持 File,Memcached,Redis,APC [可扩展]
-- AOP [next/aop](https://github.com/marxphp/aop)
-- database [next/database](https://github.com/marxphp/database) 
-- session [next/session](https://github.com/marxphp/session) 
+- 符合 Psr7 的 [next/http-message](https://github.com/next-laboratory/http-message) HTTP消息
+- 符合 Psr7 的 [next/routing](https://github.com/next-laboratory/routing) 路由组件
+- 符合 Psr11 的 [next/di](https://github.com/next-laboratory/di) 依赖注入容器
+- 符合 Psr14 的 [next/event](https://github.com/next-laboratory/event) 事件
+- 符合 Psr15 的 [next/http-server](https://github.com/next-laboratory/http-server) HTTP服务
+- 符合 Psr16 的 [next/cache](https://github.com/next-laboratory/cache)，支持 File,Memcached,Redis,APC [可扩展]
+- AOP [next/aop](https://github.com/next-laboratory/aop)
+- database [next/database](https://github.com/next-laboratory/database) 
+- session [next/session](https://github.com/next-laboratory/session) 
 
 ## 贡献一览
 
@@ -33,4 +33,4 @@
 
 ## 致谢
 
-感谢PHP最好用IDE: <a href="https://www.jetbrains.com/?from=marxphp">PHPStorm</a>
+感谢PHP最好用IDE: <a href="https://www.jetbrains.com/?from=next-laboratory">PHPStorm</a>

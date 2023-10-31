@@ -2,7 +2,7 @@
   "name": "next/cache",
   "type": "library",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/marxphp/cache",
+  "homepage": "https://github.com/next-laboratory/cache",
   "description": "A cache component based on PSR16 specification which supports File,Redis,Memcached and APC.",
   "keywords": [
     "cache",

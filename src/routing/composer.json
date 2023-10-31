@@ -1,7 +1,7 @@
 {
   "name": "next/routing",
   "description": "A lightweight and fast routing component.",
-  "homepage": "https://github.com/marxphp/routing",
+  "homepage": "https://github.com/next-laboratory/routing",
   "license": "Apache-2.0",
   "authors": [
     {

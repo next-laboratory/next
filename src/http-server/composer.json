@@ -1,7 +1,7 @@
 {
   "name": "next/http-server",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/marxphp/http-server",
+  "homepage": "https://github.com/next-laboratory/http-server",
   "autoload": {
     "psr-4": {
       "Next\\Http\\Server\\": "src/"

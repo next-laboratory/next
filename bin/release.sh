@@ -32,7 +32,7 @@ do
     echo ""
     echo "Cloning $REMOTE";
     TMP_DIR="/tmp/nextphp-split"
-    REMOTE_URL="git@github.com:marxphp/$REMOTE.git"
+    REMOTE_URL="git@github.com:next-laboratory/$REMOTE.git"
 
     rm -rf $TMP_DIR;
     mkdir $TMP_DIR;

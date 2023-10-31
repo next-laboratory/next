@@ -1,7 +1,7 @@
 {
     "name": "next/aop",
     "description": "An AOP package that is resident in in-memory PHP frameworks, such as nextphp, WebMan.",
-    "homepage": "https://github.com/marxphp/aop",
+    "homepage": "https://github.com/next-laboratory/aop",
     "license": "Apache-2.0",
     "autoload": {
         "psr-4": {

@@ -2,7 +2,7 @@
   "name": "next/database",
   "type": "library",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/marxphp/database",
+  "homepage": "https://github.com/next-laboratory/database",
   "authors": [
     {
       "name": "chengyao",

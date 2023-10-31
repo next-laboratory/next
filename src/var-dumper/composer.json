@@ -1,7 +1,7 @@
 {
   "name": "next/var-dumper",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/marxphp/var-dumper",
+  "homepage": "https://github.com/next-laboratory/var-dumper",
   "autoload": {
     "psr-4": {
       "Next\\VarDumper\\": "src/"
