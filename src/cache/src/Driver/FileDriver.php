@@ -6,12 +6,12 @@ declare(strict_types=1);
  * This file is part of MarxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Cache\Driver;
+namespace Next\Cache\Driver;
 
-use Max\Cache\CacheException;
+use Next\Cache\CacheException;
 use Throwable;
 
 class FileDriver extends AbstractDriver

@@ -5,7 +5,7 @@
 > 环境要求 PHP >= 8.0
 
 ```shell
-composer require max/di
+composer require next/di
 ```
 
 # 使用
@@ -13,7 +13,7 @@ composer require max/di
 获取容器实例，注意不要直接实例化
 
 ```php
-$container = \Max\Di\Context::getContainer();
+$container = \Next\Di\Context::getContainer();
 $container = container();
 ```
 

@@ -6,16 +6,16 @@ declare(strict_types=1);
  * This file is part of MarxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Cache;
+namespace Next\Cache;
 
-use Max\Cache\Contract\CacheDriverInterface;
+use Next\Cache\Contract\CacheDriverInterface;
 use Psr\SimpleCache\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException;
 
-use function Max\Utils\value;
+use function Next\Utils\value;
 
 class Cache implements CacheInterface
 {

@@ -5,7 +5,7 @@
 ### 创建监听器
 
 ```php
-use Max\Event\Contract\EventListenerInterface;
+use Next\Event\Contract\EventListenerInterface;
 
 class UserStatusListener implements EventListenerInterface
 {
@@ -41,7 +41,7 @@ class UserStatusListener implements EventListenerInterface
 }
 ```
 
-> 如果你不需要调整优先级，可以直接继承`Max\Event\EventListener`类
+> 如果你不需要调整优先级，可以直接继承`Next\Event\EventListener`类
 
 ### 需要创建一个事件类
 
@@ -67,7 +67,7 @@ $listenerProvider->addListener(new UserStatusListener());
 ### 实例化调度器，给构造函数传入`ListenerProvider`实例
 
 ```php
-$dispatcher = new \Max\Event\EventDispatcher($listenerProvider);
+$dispatcher = new \Next\Event\EventDispatcher($listenerProvider);
 ```
 
 ### 事件调度

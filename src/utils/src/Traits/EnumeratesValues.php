@@ -6,30 +6,30 @@ declare(strict_types=1);
  * This file is part of MaxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Utils\Traits;
+namespace Next\Utils\Traits;
 
 use CachingIterator;
 use Closure;
 use Exception;
 use JsonSerializable;
-use Max\Utils\Arr;
-use Max\Utils\Collection;
-use Max\Utils\Contract\Arrayable;
-use Max\Utils\Contract\Enumerable;
-use Max\Utils\Contract\Jsonable;
-use Max\Utils\Proxy\HigherOrderCollectionProxy;
+use Next\Utils\Arr;
+use Next\Utils\Collection;
+use Next\Utils\Contract\Arrayable;
+use Next\Utils\Contract\Enumerable;
+use Next\Utils\Contract\Jsonable;
+use Next\Utils\Proxy\HigherOrderCollectionProxy;
 use Symfony\Component\VarDumper\VarDumper;
 use Traversable;
 use UnexpectedValueException;
 use UnitEnum;
 
-use function Max\Utils\class_basename;
-use function Max\Utils\data_get;
-use function Max\Utils\e;
-use function Max\Utils\value;
+use function Next\Utils\class_basename;
+use function Next\Utils\data_get;
+use function Next\Utils\e;
+use function Next\Utils\value;
 
 /**
  * @template TKey of array-key

@@ -6,14 +6,14 @@ declare(strict_types=1);
  * This file is part of MaxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Console\Command;
+namespace Next\Console\Command;
 
 use Exception;
 use InvalidArgumentException;
-use Max\Utils\Filesystem;
+use Next\Utils\Filesystem;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

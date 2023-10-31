@@ -1,5 +1,5 @@
 {
-  "name": "max/config",
+  "name": "next/config",
   "license": "Apache-2.0",
   "authors": [
     {
@@ -9,17 +9,17 @@
   ],
   "autoload": {
     "psr-4": {
-      "Max\\Config\\": "src/"
+      "Next\\Config\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Max\\Config\\Tests\\": "tests/"
+      "Next\\Config\\Tests\\": "tests/"
     }
   },
   "require": {
     "php": "^8.0",
-    "max/utils": "~0.1"
+    "next/utils": "~0.1"
   },
   "extra": {
     "branch-alias": {

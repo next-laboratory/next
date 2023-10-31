@@ -6,15 +6,15 @@ declare(strict_types=1);
  * This file is part of MarxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Event\Tests;
+namespace Next\Event\Tests;
 
-use Max\Event\ListenerProvider;
-use Max\Event\Tests\Events\FooEvent;
-use Max\Event\Tests\Listeners\BarListener;
-use Max\Event\Tests\Listeners\FooListener;
+use Next\Event\ListenerProvider;
+use Next\Event\Tests\Events\FooEvent;
+use Next\Event\Tests\Listeners\BarListener;
+use Next\Event\Tests\Listeners\FooListener;
 use PHPUnit\Framework\TestCase;
 
 /**

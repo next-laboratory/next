@@ -6,10 +6,10 @@ declare(strict_types=1);
  * This file is part of MarxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Event\Tests\Events;
+namespace Next\Event\Tests\Events;
 
 use Psr\EventDispatcher\StoppableEventInterface;
 

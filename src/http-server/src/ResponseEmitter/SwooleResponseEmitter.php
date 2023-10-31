@@ -6,14 +6,14 @@ declare(strict_types=1);
  * This file is part of MaxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Http\Server\ResponseEmitter;
+namespace Next\Http\Server\ResponseEmitter;
 
-use Max\Http\Message\Cookie;
-use Max\Http\Message\Stream\FileStream;
-use Max\Http\Server\Contract\ResponseEmitterInterface;
+use Next\Http\Message\Cookie;
+use Next\Http\Message\Stream\FileStream;
+use Next\Http\Server\Contract\ResponseEmitterInterface;
 use Psr\Http\Message\ResponseInterface;
 use Swoole\Http\Response;
 

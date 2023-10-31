@@ -1,5 +1,5 @@
 {
-  "name": "max/routing",
+  "name": "next/routing",
   "description": "A lightweight and fast routing component.",
   "homepage": "https://github.com/marxphp/routing",
   "license": "Apache-2.0",
@@ -11,12 +11,12 @@
   ],
   "autoload": {
     "psr-4": {
-      "Max\\Routing\\": "src/"
+      "Next\\Routing\\": "src/"
     }
   },
   "require": {
     "php": "^8.0|^8.1|^8.2",
-    "max/http-message": "~0.1"
+    "next/http-message": "~0.1"
   },
   "extra": {
     "branch-alias": {

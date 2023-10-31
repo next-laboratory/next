@@ -6,15 +6,15 @@ declare(strict_types=1);
  * This file is part of MarxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Http\Server\Middleware;
+namespace Next\Http\Server\Middleware;
 
-use Max\Http\Message\Contract\StatusCodeInterface;
-use Max\Http\Message\Exception\HttpException;
-use Max\Http\Message\Response;
-use Max\Utils\Arr;
+use Next\Http\Message\Contract\StatusCodeInterface;
+use Next\Http\Message\Exception\HttpException;
+use Next\Http\Message\Response;
+use Next\Utils\Arr;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;

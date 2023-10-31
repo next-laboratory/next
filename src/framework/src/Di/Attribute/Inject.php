@@ -6,15 +6,15 @@ declare(strict_types=1);
  * This file is part of MaxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Di\Attribute;
+namespace Next\Di\Attribute;
 
 use Attribute;
-use Max\Aop\Contract\PropertyAttribute;
-use Max\Aop\Exception\PropertyHandleException;
-use Max\Di\Reflection;
+use Next\Aop\Contract\PropertyAttribute;
+use Next\Aop\Exception\PropertyHandleException;
+use Next\Di\Reflection;
 use Psr\Container\ContainerExceptionInterface;
 use ReflectionException;
 use Throwable;

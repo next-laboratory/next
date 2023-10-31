@@ -3,7 +3,7 @@ var-dumper 适配包，用来将变量打印到浏览器
 # 安装
 
 ```shell
-composer require max/var-dumper
+composer require next/var-dumper
 ```
 
 # 使用
@@ -20,7 +20,7 @@ declare(strict_types=1);
 return [
     'handler' => [
         'http' => [
-            Max\VarDumper\Adapter\HyperfDumperHandler::class,
+            Next\VarDumper\Adapter\HyperfDumperHandler::class,
             Hyperf\HttpServer\Exception\Handler\HttpExceptionHandler::class,
             App\Exception\Handler\AppExceptionHandler::class,
         ],
@@ -38,8 +38,8 @@ return [
 
 namespace App;
 
-use Max\VarDumper\Dumper;
-use Max\VarDumper\DumperHandler;
+use Next\VarDumper\Dumper;
+use Next\VarDumper\DumperHandler;
 use support\exception\Handler;
 use Throwable;
 use Webman\Http\Request;

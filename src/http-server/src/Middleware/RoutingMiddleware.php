@@ -6,15 +6,15 @@ declare(strict_types=1);
  * This file is part of MaxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Http\Server\Middleware;
+namespace Next\Http\Server\Middleware;
 
-use Max\Routing\Exception\MethodNotAllowedException;
-use Max\Routing\Exception\RouteNotFoundException;
-use Max\Routing\Route;
-use Max\Routing\UrlMatcher;
+use Next\Routing\Exception\MethodNotAllowedException;
+use Next\Routing\Exception\RouteNotFoundException;
+use Next\Routing\Route;
+use Next\Routing\UrlMatcher;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;

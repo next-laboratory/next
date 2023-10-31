@@ -1,9 +1,9 @@
 <?php
 
-namespace Max\Routing;
+namespace Next\Routing;
 
-use Max\Http\Message\Contract\StatusCodeInterface;
-use Max\Routing\Exception\RouteNotFoundException;
+use Next\Http\Message\Contract\StatusCodeInterface;
+use Next\Routing\Exception\RouteNotFoundException;
 use Psr\Http\Message\ServerRequestInterface;
 use function array_key_exists;
 use function preg_match;

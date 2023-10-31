@@ -6,19 +6,19 @@ declare(strict_types=1);
  * This file is part of MaxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Http\Server\Middleware;
+namespace Next\Http\Server\Middleware;
 
 use Exception;
-use Max\Http\Message\Cookie;
-use Max\Http\Server\Exception\CSRFException;
+use Next\Http\Message\Cookie;
+use Next\Http\Server\Exception\CSRFException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use function Max\Utils\collect;
+use function Next\Utils\collect;
 
 class VerifyCSRFToken implements MiddlewareInterface
 {

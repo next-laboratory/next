@@ -6,13 +6,13 @@ declare(strict_types=1);
  * This file is part of MaxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Console;
+namespace Next\Console;
 
-use Max\Aop\Collector\AbstractCollector;
-use Max\Console\Attribute\AsCommand;
+use Next\Aop\Collector\AbstractCollector;
+use Next\Console\Attribute\AsCommand;
 
 class CommandCollector extends AbstractCollector
 {

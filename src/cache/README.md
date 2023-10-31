@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://raw.githubusercontent.com/marxphp/max/master/public/favicon.ico" width="120" alt="Max">
+<img src="https://raw.githubusercontent.com/next-laboratory/next/master/public/favicon.ico" width="120" alt="Max">
 </p>
 
 <p align="center">轻量 • 简单 • 快速</p>
@@ -16,7 +16,7 @@
 ## 安装
 
 ```
-composer require max/cache
+composer require next/cache
 ```
 
 ## 使用
@@ -24,9 +24,9 @@ composer require max/cache
 ```php
 <?php
 
-use Max\Cache\Cache;
+use Next\Cache\Cache;
 
-$cache = new \Max\Cache\Cache(new \Max\Cache\Driver\FileDriver('./runtime/cache'))
+$cache = new \Next\Cache\Cache(new \Next\Cache\Driver\FileDriver('./runtime/cache'))
 //设置缓存
 $cache->set('stat', 12, 10);
 //读取缓存

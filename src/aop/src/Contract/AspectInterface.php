@@ -6,13 +6,13 @@ declare(strict_types=1);
  * This file is part of MaxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Aop\Contract;
+namespace Next\Aop\Contract;
 
 use Closure;
-use Max\Aop\JoinPoint;
+use Next\Aop\JoinPoint;
 
 interface AspectInterface
 {

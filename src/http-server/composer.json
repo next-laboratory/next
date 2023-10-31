@@ -1,10 +1,10 @@
 {
-  "name": "max/http-server",
+  "name": "next/http-server",
   "license": "Apache-2.0",
   "homepage": "https://github.com/marxphp/http-server",
   "autoload": {
     "psr-4": {
-      "Max\\Http\\Server\\": "src/"
+      "Next\\Http\\Server\\": "src/"
     }
   },
   "authors": [
@@ -15,10 +15,10 @@
   ],
   "require": {
     "php": "^8.0|^8.1|^8.2",
-    "max/http-message": "~0.1",
-    "max/utils": "~0.1",
-    "max/routing": "~0.1",
-    "max/di": "~0.1",
+    "next/http-message": "~0.1",
+    "next/utils": "~0.1",
+    "next/routing": "~0.1",
+    "next/di": "~0.1",
     "psr/http-server-middleware": "^1.0",
     "psr/http-server-handler": "^1.0"
   },

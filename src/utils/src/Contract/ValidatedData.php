@@ -1,6 +1,6 @@
 <?php
 
-namespace Max\Utils\Contract;
+namespace Next\Utils\Contract;
 
 use ArrayAccess;
 use IteratorAggregate;

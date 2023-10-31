@@ -1,11 +1,11 @@
 {
-  "name": "max/di",
+  "name": "next/di",
   "description": "A lightweight dependency injection tool, container based on the PSR-11 specification.",
   "homepage": "https://github.com/marxphp/di",
   "license": "Apache-2.0",
   "keywords": [
     "container",
-    "maxphp",
+    "nextphp",
     "dependence injection"
   ],
   "authors": [
@@ -16,7 +16,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "Max\\Di\\": "src/"
+      "Next\\Di\\": "src/"
     },
     "files": [
       "src/helpers.php"
@@ -24,7 +24,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Max\\Di\\Tests\\": "tests/"
+      "Next\\Di\\Tests\\": "tests/"
     }
   },
   "require": {

@@ -1,7 +1,7 @@
 <br>
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/marxphp/max/master/public/favicon.ico" width="120" alt="Max">
+<img src="https://raw.githubusercontent.com/next-laboratory/next/master/public/favicon.ico" width="120" alt="Max">
 </p>
 
 <p align="center">轻量 • 简单 • 快速</p>
@@ -16,7 +16,7 @@
 ### 使用示例
 
 ```php
-$db = new \Max\Database\Database(new \Max\Database\PDOConfig());
+$db = new \Next\Database\Database(new \Next\Database\PDOConfig());
 
 $query = $db->query(); // 实例化，建立连接
 $query->select('select * from users');

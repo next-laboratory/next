@@ -6,19 +6,19 @@ declare(strict_types=1);
  * This file is part of MaxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Utils\Contract;
+namespace Next\Utils\Contract;
 
 use CachingIterator;
 use Countable;
 use Exception;
 use IteratorAggregate;
 use JsonSerializable;
-use Max\Utils\Collection;
-use Max\Utils\Exception\ItemNotFoundException;
-use Max\Utils\Exception\MultipleItemsFoundException;
+use Next\Utils\Collection;
+use Next\Utils\Exception\ItemNotFoundException;
+use Next\Utils\Exception\MultipleItemsFoundException;
 use Traversable;
 
 /**

@@ -2,27 +2,27 @@
   "name": "next/next",
   "license": "Apache-2.0",
   "description": "一款支持swoole, workerman, FPM环境的框架的组件化的轻量`PHP`框架。",
-  "homepage": "https://github.com/marxphp/max",
+  "homepage": "https://github.com/next-laboratory/next",
   "keywords": [
-    "maxphp",
+    "nextphp",
     "flexible",
     "php framework"
   ],
   "autoload": {
     "psr-4": {
-      "Max\\": "src/framework/src",
-      "Max\\Aop\\": "src/aop/src",
-      "Max\\Cache\\": "src/cache/src",
-      "Max\\Config\\": "src/config/src",
-      "Max\\Database\\": "src/database/src",
-      "Max\\Di\\": "src/di/src",
-      "Max\\Event\\": "src/event/src",
-      "Max\\Http\\Message\\": "src/http-message/src",
-      "Max\\Http\\Server\\": "src/http-server/src",
-      "Max\\Routing\\": "src/routing/src",
-      "Max\\Session\\": "src/session/src",
-      "Max\\Utils\\": "src/utils/src",
-      "Max\\VarDumper\\": "src/var-dumper/src"
+      "Next\\": "src/framework/src",
+      "Next\\Aop\\": "src/aop/src",
+      "Next\\Cache\\": "src/cache/src",
+      "Next\\Config\\": "src/config/src",
+      "Next\\Database\\": "src/database/src",
+      "Next\\Di\\": "src/di/src",
+      "Next\\Event\\": "src/event/src",
+      "Next\\Http\\Message\\": "src/http-message/src",
+      "Next\\Http\\Server\\": "src/http-server/src",
+      "Next\\Routing\\": "src/routing/src",
+      "Next\\Session\\": "src/session/src",
+      "Next\\Utils\\": "src/utils/src",
+      "Next\\VarDumper\\": "src/var-dumper/src"
     },
     "files": [
       "src/di/src/helpers.php",
@@ -33,7 +33,7 @@
   "autoload-dev": {
     "psr-4": {
       "Tests\\": "tests/",
-      "Max\\Event\\Tests\\": "src/event/tests/"
+      "Next\\Event\\Tests\\": "src/event/tests/"
     }
   },
   "authors": [
@@ -43,19 +43,19 @@
     }
   ],
   "replace": {
-    "max/aop": "*",
-    "max/cache": "*",
-    "max/config": "*",
-    "max/database": "*",
-    "max/di": "*",
-    "max/event": "*",
-    "max/framework": "*",
-    "max/http-message": "*",
-    "max/http-server": "*",
-    "max/routing": "*",
-    "max/session": "*",
-    "max/utils": "*",
-    "max/var-dumper": "*"
+    "next/aop": "*",
+    "next/cache": "*",
+    "next/config": "*",
+    "next/database": "*",
+    "next/di": "*",
+    "next/event": "*",
+    "next/framework": "*",
+    "next/http-message": "*",
+    "next/http-server": "*",
+    "next/routing": "*",
+    "next/session": "*",
+    "next/utils": "*",
+    "next/var-dumper": "*"
   },
   "require": {
     "php": "^8.0",

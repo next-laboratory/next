@@ -1,10 +1,10 @@
 <?php
 
-namespace Max\Console;
+namespace Next\Console;
 
-use Max\Console\Command\ControllerMakeCommand;
-use Max\Console\Command\MiddlewareMakeCommand;
-use Max\Console\Command\RouteListCommand;
+use Next\Console\Command\ControllerMakeCommand;
+use Next\Console\Command\MiddlewareMakeCommand;
+use Next\Console\Command\RouteListCommand;
 use Symfony\Component\Console\Application;
 
 class Kernel extends Application

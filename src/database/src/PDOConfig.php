@@ -6,12 +6,12 @@ declare(strict_types=1);
  * This file is part of MarxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Database;
+namespace Next\Database;
 
-use Max\Database\Contract\ConfigInterface;
+use Next\Database\Contract\ConfigInterface;
 
 class PDOConfig implements ConfigInterface
 {

@@ -1,11 +1,11 @@
 {
-    "name": "max/aop",
+    "name": "next/aop",
     "description": "An AOP package that is resident in in-memory PHP frameworks, such as MaxPHP, WebMan.",
     "homepage": "https://github.com/marxphp/aop",
     "license": "Apache-2.0",
     "autoload": {
         "psr-4": {
-            "Max\\Aop\\": "src/"
+            "Next\\Aop\\": "src/"
         }
     },
     "authors": [
@@ -17,8 +17,8 @@
     "require": {
         "php": "^8.0",
         "ext-pcntl": "*",
-        "max/utils": "dev-master",
-        "max/di": "dev-master",
+        "next/utils": "dev-master",
+        "next/di": "dev-master",
         "nikic/php-parser": "^4.13",
         "symfony/finder": "*"
     }

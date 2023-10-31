@@ -1,6 +1,6 @@
 <?php
 
-namespace Max\Http\Server\Contract;
+namespace Next\Http\Server\Contract;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

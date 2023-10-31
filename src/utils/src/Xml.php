@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Max\Utils;
+namespace Next\Utils;
 
 use InvalidArgumentException;
-use Max\Utils\Contract\Arrayable;
-use Max\Utils\Contract\Xmlable;
+use Next\Utils\Contract\Arrayable;
+use Next\Utils\Contract\Xmlable;
 use SimpleXMLElement;
 
 class Xml

@@ -6,16 +6,16 @@ declare(strict_types=1);
  * This file is part of MaxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Aop;
+namespace Next\Aop;
 
 use ArrayObject;
 use Closure;
-use Max\Aop\Collector\AspectCollector;
-use Max\Aop\Contract\AspectInterface;
-use Max\Di\Reflection;
+use Next\Aop\Collector\AspectCollector;
+use Next\Aop\Contract\AspectInterface;
+use Next\Di\Reflection;
 use ReflectionException;
 
 trait ProxyHandler

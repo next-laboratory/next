@@ -1,5 +1,5 @@
 {
-  "name": "max/session",
+  "name": "next/session",
   "license": "Apache-2.0",
   "homepage": "https://github.com/marxphp/session",
   "authors": [
@@ -10,7 +10,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "Max\\Session\\": "src/"
+      "Next\\Session\\": "src/"
     }
   },
   "require": {

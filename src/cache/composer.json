@@ -1,12 +1,12 @@
 {
-  "name": "max/cache",
+  "name": "next/cache",
   "type": "library",
   "license": "Apache-2.0",
   "homepage": "https://github.com/marxphp/cache",
   "description": "A cache component based on PSR16 specification which supports File,Redis,Memcached and APC.",
   "keywords": [
     "cache",
-    "maxphp"
+    "nextphp"
   ],
   "authors": [
     {
@@ -17,17 +17,17 @@
   ],
   "autoload": {
     "psr-4": {
-      "Max\\Cache\\": "src/"
+      "Next\\Cache\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Max\\Cache\\Tests\\": "tests/"
+      "Next\\Cache\\Tests\\": "tests/"
     }
   },
   "require": {
     "php": "^8.0",
-    "max/utils": "~0.1",
+    "next/utils": "~0.1",
     "psr/simple-cache": "^1.0"
   },
   "extra": {

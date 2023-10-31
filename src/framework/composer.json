@@ -1,8 +1,8 @@
 {
-  "name": "max/framework",
+  "name": "next/framework",
   "autoload": {
     "psr-4": {
-      "Max\\": "src/"
+      "Next\\": "src/"
     }
   },
   "authors": [

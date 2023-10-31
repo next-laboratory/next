@@ -1,9 +1,9 @@
 <?php
 
-namespace Max\Utils;
+namespace Next\Utils;
 
 use ArrayIterator;
-use Max\Utils\Contract\ValidatedData;
+use Next\Utils\Contract\ValidatedData;
 use stdClass;
 use Traversable;
 

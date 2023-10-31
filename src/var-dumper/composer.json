@@ -1,10 +1,10 @@
 {
-  "name": "max/var-dumper",
+  "name": "next/var-dumper",
   "license": "Apache-2.0",
   "homepage": "https://github.com/marxphp/var-dumper",
   "autoload": {
     "psr-4": {
-      "Max\\VarDumper\\": "src/"
+      "Next\\VarDumper\\": "src/"
     },
     "files": [
       "src/helpers.php"

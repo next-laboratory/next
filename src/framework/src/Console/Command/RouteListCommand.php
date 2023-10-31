@@ -6,16 +6,16 @@ declare(strict_types=1);
  * This file is part of MaxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Console\Command;
+namespace Next\Console\Command;
 
 use Closure;
-use Max\Di\Exception\NotFoundException;
-use Max\Http\Server\Contract\HttpKernelInterface;
-use Max\Routing\Route;
-use Max\Utils\Collection;
+use Next\Di\Exception\NotFoundException;
+use Next\Http\Server\Contract\HttpKernelInterface;
+use Next\Routing\Route;
+use Next\Utils\Collection;
 use Psr\Container\ContainerExceptionInterface;
 use ReflectionException;
 use Symfony\Component\Console\Command\Command;

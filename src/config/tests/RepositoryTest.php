@@ -6,12 +6,12 @@ declare(strict_types=1);
  * This file is part of MarxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Config\Tests;
+namespace Next\Config\Tests;
 
-use Max\Config\Repository;
+use Next\Config\Repository;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -27,7 +27,7 @@ class RepositoryTest extends TestCase
         $this->repository = new Repository([
             'app' => [
                 'debug' => true,
-                'name' => 'maxphp',
+                'name' => 'nextphp',
             ],
             'cache' => [
                 'driver' => 'file',
@@ -43,7 +43,7 @@ class RepositoryTest extends TestCase
 
     public function testSet()
     {
-        $this->repository->set('cookie.name', 'maxphp');
-        $this->assertEquals('maxphp', $this->repository->get('cookie.name'));
+        $this->repository->set('cookie.name', 'nextphp');
+        $this->assertEquals('nextphp', $this->repository->get('cookie.name'));
     }
 }

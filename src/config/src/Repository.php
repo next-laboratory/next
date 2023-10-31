@@ -6,14 +6,14 @@ declare(strict_types=1);
  * This file is part of MarxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Config;
+namespace Next\Config;
 
 use ArrayAccess;
-use Max\Config\Contract\ConfigInterface;
-use Max\Utils\Arr;
+use Next\Config\Contract\ConfigInterface;
+use Next\Utils\Arr;
 
 class Repository implements ArrayAccess, ConfigInterface
 {

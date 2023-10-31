@@ -6,7 +6,7 @@ request -> kernel -> response
 
 # 使用
 
-新建类继承`\Max\Http\Server\Kernel`类
+新建类继承`\Next\Http\Server\Kernel`类
 
 ```php
 class HttpKernel extends Kernel 
@@ -25,16 +25,16 @@ class HttpKernel extends Kernel
 然后使用容器实例化`HttpKernel`类
 
 ```php
-$kernel = \Max\Di\Context::getContainer->make(HttpKernel::class);
+$kernel = \Next\Di\Context::getContainer->make(HttpKernel::class);
 
 // 获取一个PsrServerRequest
-$request = \Max\Http\Message\ServerRequest::createFromGlobals();
+$request = \Next\Http\Message\ServerRequest::createFromGlobals();
 
 // 返回PsrResponse
 $response = $kernel->handle($request);
 
 // 发送响应
-(new \Max\Http\Server\ResponseEmitter\FPMResponseEmitter())->emit($response);
+(new \Next\Http\Server\ResponseEmitter\FPMResponseEmitter())->emit($response);
 
 ```
 

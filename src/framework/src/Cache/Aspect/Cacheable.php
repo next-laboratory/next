@@ -6,13 +6,13 @@ declare(strict_types=1);
  * This file is part of MarxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Cache\Aspect;
+namespace Next\Cache\Aspect;
 
-use Max\Aop\Contract\AspectInterface;
-use Max\Aop\JoinPoint;
+use Next\Aop\Contract\AspectInterface;
+use Next\Aop\JoinPoint;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\SimpleCache\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException;

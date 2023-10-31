@@ -1,7 +1,7 @@
 这是一款独立的组件包，可以使用点语法来获取加载的配置
 
 ```php
-$repository = new \Max\Config\Repository();
+$repository = new \Next\Config\Repository();
 $repository->set('app', [
     'debug' => false,
 ]);

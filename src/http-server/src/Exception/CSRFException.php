@@ -6,12 +6,12 @@ declare(strict_types=1);
  * This file is part of MaxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Http\Server\Exception;
+namespace Next\Http\Server\Exception;
 
-use Max\Http\Message\Exception\HttpException;
+use Next\Http\Message\Exception\HttpException;
 
 class CSRFException extends HttpException
 {

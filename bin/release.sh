@@ -31,7 +31,7 @@ do
     echo ""
     echo ""
     echo "Cloning $REMOTE";
-    TMP_DIR="/tmp/maxphp-split"
+    TMP_DIR="/tmp/nextphp-split"
     REMOTE_URL="git@github.com:marxphp/$REMOTE.git"
 
     rm -rf $TMP_DIR;

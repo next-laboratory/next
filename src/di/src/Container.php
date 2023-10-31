@@ -6,15 +6,15 @@ declare(strict_types=1);
  * This file is part of MaxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Di;
+namespace Next\Di;
 
 use BadMethodCallException;
 use Closure;
-use Max\Di\Exception\ContainerException;
-use Max\Di\Exception\NotFoundException;
+use Next\Di\Exception\ContainerException;
+use Next\Di\Exception\NotFoundException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;

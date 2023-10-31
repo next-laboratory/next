@@ -6,18 +6,18 @@ declare(strict_types=1);
  * This file is part of MaxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Http\Message;
+namespace Next\Http\Message;
 
-use Max\Http\Message\Bag\CookieBag;
-use Max\Http\Message\Bag\FileBag;
-use Max\Http\Message\Bag\ParameterBag;
-use Max\Http\Message\Bag\ServerBag;
-use Max\Http\Message\Stream\StandardStream;
-use Max\Utils\Arr;
-use Max\Utils\Str;
+use Next\Http\Message\Bag\CookieBag;
+use Next\Http\Message\Bag\FileBag;
+use Next\Http\Message\Bag\ParameterBag;
+use Next\Http\Message\Bag\ServerBag;
+use Next\Http\Message\Stream\StandardStream;
+use Next\Utils\Arr;
+use Next\Utils\Str;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;

@@ -3,7 +3,7 @@
 ## 初始化
 
 ```php
-$router = new Router(array $options = [], ?Max\Routing\RouteCollection $routeCollection);
+$router = new Router(array $options = [], ?Next\Routing\RouteCollection $routeCollection);
 ```
 
 如果传递给Router类的路由收集器是null，则内部会自动实例化
@@ -47,9 +47,9 @@ $router->get('/p/{id}\.html', 'CateController@show');
 ### 路由支持分组并且支持分组嵌套，例如：
 
 ```php
-$router->prefix('api')->group(function(\Max\Routing\Router $router) {
-    $router->middleware('Authentication')->group(function(\Max\Routing\Router $router) {
-        $router->get('/', function(\Max\Routing\Router $router) {
+$router->prefix('api')->group(function(\Next\Routing\Router $router) {
+    $router->middleware('Authentication')->group(function(\Next\Routing\Router $router) {
+        $router->get('/', function(\Next\Routing\Router $router) {
             // Do something.
         });
         
@@ -64,7 +64,7 @@ $router->prefix('api')->group(function(\Max\Routing\Router $router) {
 对于分组路由，你还可以在闭包中通过引入文件的方式来注册，例如：
 
 ```php
-$router->group(function(\Max\Routing\Router $router) {
+$router->group(function(\Next\Routing\Router $router) {
     // 使用引入文件的方式
     require_once './route.php';
 });

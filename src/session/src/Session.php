@@ -6,13 +6,13 @@ declare(strict_types=1);
  * This file is part of MarxPHP.
  *
  * @link     https://github.com/marxphp
- * @license  https://github.com/marxphp/max/blob/master/LICENSE
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Max\Session;
+namespace Next\Session;
 
-use Max\Utils\Arr;
-use Max\Utils\Contract\PackerInterface;
+use Next\Utils\Arr;
+use Next\Utils\Contract\PackerInterface;
 
 class Session
 {

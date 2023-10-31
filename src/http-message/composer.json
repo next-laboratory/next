@@ -1,10 +1,10 @@
 {
-  "name": "max/http-message",
+  "name": "next/http-message",
   "license": "Apache-2.0",
   "home-page": "https://github.com/marxphp/http-message",
   "autoload": {
     "psr-4": {
-      "Max\\Http\\Message\\": "src/"
+      "Next\\Http\\Message\\": "src/"
     },
     "files": [
       "src/helpers.php"
