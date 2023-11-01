@@ -33,7 +33,8 @@ class ProxyHandlerVisitor extends NodeVisitorAbstract
 {
     public function __construct(
         protected Metadata $metadata
-    ) {
+    )
+    {
     }
 
     public function leaveNode(Node $node)
@@ -52,7 +53,7 @@ class ProxyHandlerVisitor extends NodeVisitorAbstract
             }
             if (AspectCollector::getMethodAspects($this->metadata->className, $methodName)) {
                 $methodCall = new Node\Expr\StaticCall(
-                    new Node\Expr\ConstFetch(new Name('self')),
+                    new Name('self'),
                     '__callViaProxy',
                     [
                         new Arg(new Function_()),
@@ -68,7 +69,7 @@ class ProxyHandlerVisitor extends NodeVisitorAbstract
                     $node->stmts = [new Expression($methodCall)];
                 } else {
                     if ($node->returnsByRef()) {
-                        $valueRef = new Variable('__returnValueRef_' . Str::random());
+                        $valueRef    = new Variable('__returnValueRef_' . Str::random());
                         $node->stmts = [new Expression(new Assign($valueRef, $methodCall)), new Return_($valueRef)];
                     } else {
                         $node->stmts = [new Return_($methodCall)];
