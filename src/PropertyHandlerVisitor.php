@@ -38,7 +38,8 @@ class PropertyHandlerVisitor extends NodeVisitorAbstract
 {
     public function __construct(
         protected Metadata $metadata
-    ) {
+    )
+    {
     }
 
     public function enterNode(Node $node)
@@ -95,7 +96,7 @@ class PropertyHandlerVisitor extends NodeVisitorAbstract
                 }
             }
             $c = [];
-            if (! $this->metadata->hasConstructor) {
+            if (!$this->metadata->hasConstructor) {
                 $constructor        = new ClassMethod('__construct', [
                     'params' => $params,
                 ]);
@@ -107,7 +108,7 @@ class PropertyHandlerVisitor extends NodeVisitorAbstract
                     ]), [
                         'stmts' => [
                             new Expression(new StaticCall(
-                                new ConstFetch(new Name('parent')),
+                                new Name('parent'),
                                 '__construct',
                                 [new Arg(new FuncCall(new Name('func_get_args')), unpack: true)]
                             )),
