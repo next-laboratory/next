@@ -10,7 +10,6 @@
   ],
   "autoload": {
     "psr-4": {
-      "Next\\": "src/framework/src",
       "Next\\Aop\\": "src/aop/src",
       "Next\\Cache\\": "src/cache/src",
       "Next\\Config\\": "src/config/src",
@@ -49,7 +48,6 @@
     "next/database": "*",
     "next/di": "*",
     "next/event": "*",
-    "next/framework": "*",
     "next/http-message": "*",
     "next/http-server": "*",
     "next/routing": "*",
