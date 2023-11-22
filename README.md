@@ -22,7 +22,7 @@ composer require next/aop
 ```php
 Aop::init(
     [__DIR__ . '/../app'],
-    [\Next\Routing\RouteCollector::class],
+    [\App\Aop\Collector\RouteCollector::class],
     __DIR__ . '/../runtime/aop',
 );
 ```
@@ -66,9 +66,7 @@ class Round implements AspectInterface
 
 namespace app\controller;
 
-use App\aspects\Round;
-use Next\Di\Attribute\Inject;
-use support\Request;
+use App\Aop\Attribute\Inject;use App\aspects\Round;use support\Request;
 
 class Index
 {
