@@ -15,16 +15,17 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
+use PhpParser\PhpVersion;
 
 class AstManager
 {
     protected Parser $parser;
 
-    protected array  $container = [];
+    protected array $container = [];
 
     public function __construct()
     {
-        $this->parser = (new ParserFactory())->create(ParserFactory::ONLY_PHP7);
+        $this->parser = (new ParserFactory())->createForHostVersion();
     }
 
     public function getNodes(string $realpath)
