@@ -111,9 +111,9 @@ final class StandardStream implements StreamInterface
             return $body;
         }
 
-        if (is_string($body)) {
+        if (is_null($body) || is_string($body)) {
             $resource = fopen('php://temp', 'rw+');
-            fwrite($resource, $body);
+            fwrite($resource, (string)$body);
             rewind($resource);
             $body = $resource;
         }
@@ -151,7 +151,7 @@ final class StandardStream implements StreamInterface
      */
     public function detach()
     {
-        if (! isset($this->stream)) {
+        if (!isset($this->stream)) {
             return null;
         }
 
@@ -172,7 +172,7 @@ final class StandardStream implements StreamInterface
             return $this->size;
         }
 
-        if (! isset($this->stream)) {
+        if (!isset($this->stream)) {
             return null;
         }
 
@@ -208,7 +208,7 @@ final class StandardStream implements StreamInterface
      */
     public function eof(): bool
     {
-        return ! $this->stream || feof($this->stream);
+        return !$this->stream || feof($this->stream);
     }
 
     /**
@@ -224,7 +224,7 @@ final class StandardStream implements StreamInterface
      */
     public function seek($offset, $whence = SEEK_SET): void
     {
-        if (! $this->seekable) {
+        if (!$this->seekable) {
             throw new RuntimeException('Stream is not seekable');
         }
 
@@ -254,7 +254,7 @@ final class StandardStream implements StreamInterface
      */
     public function write($string): int
     {
-        if (! $this->writable) {
+        if (!$this->writable) {
             throw new RuntimeException('Cannot write to a non-writable stream');
         }
 
@@ -281,7 +281,7 @@ final class StandardStream implements StreamInterface
      */
     public function read($length): string
     {
-        if (! $this->readable) {
+        if (!$this->readable) {
             throw new RuntimeException('Cannot read from non-readable stream');
         }
 
@@ -293,7 +293,7 @@ final class StandardStream implements StreamInterface
      */
     public function getContents(): string
     {
-        if (! isset($this->stream)) {
+        if (!isset($this->stream)) {
             throw new RuntimeException('Unable to read stream contents');
         }
 
@@ -309,7 +309,7 @@ final class StandardStream implements StreamInterface
      */
     public function getMetadata($key = null)
     {
-        if (! isset($this->stream)) {
+        if (!isset($this->stream)) {
             return $key ? null : [];
         }
 

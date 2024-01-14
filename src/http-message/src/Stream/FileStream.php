@@ -29,9 +29,10 @@ class FileStream implements StreamInterface
      */
     public function __construct(
         SplFileInfo|string $file,
-        protected int $offset = 0,
-        protected int $length = 0,
-    ) {
+        protected int      $offset = 0,
+        protected int      $length = 0,
+    )
+    {
         if (!$file instanceof SplFileInfo) {
             $file = new SplFileInfo($file);
         }
@@ -50,9 +51,8 @@ class FileStream implements StreamInterface
      * string casting operations.
      *
      * @see http://php.net/manual/en/language.oop5.magic.php#object.tostring
-     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         try {
             return $this->getContents();
@@ -69,7 +69,7 @@ class FileStream implements StreamInterface
     /**
      * Closes the stream and any underlying resources.
      */
-    public function close()
+    public function close(): void
     {
         if (isset($this->resource)) {
             if (is_resource($this->resource)) {
@@ -94,7 +94,7 @@ class FileStream implements StreamInterface
      *
      * @return null|int returns the size in bytes if known, or null if unknown
      */
-    public function getSize()
+    public function getSize(): ?int
     {
         if (!$this->size) {
             $this->size = filesize($this->getContents());
@@ -108,7 +108,7 @@ class FileStream implements StreamInterface
      * @return int Position of the file pointer
      * @throws RuntimeException on error
      */
-    public function tell()
+    public function tell(): int
     {
         throw new BadMethodCallException('Not implemented');
     }
@@ -118,7 +118,7 @@ class FileStream implements StreamInterface
      *
      * @return bool
      */
-    public function eof()
+    public function eof(): bool
     {
         throw new BadMethodCallException('Not implemented');
     }
@@ -128,7 +128,7 @@ class FileStream implements StreamInterface
      *
      * @return bool
      */
-    public function isSeekable()
+    public function isSeekable(): bool
     {
         throw new BadMethodCallException('Not implemented');
     }
@@ -147,7 +147,7 @@ class FileStream implements StreamInterface
      *
      * @throws RuntimeException on failure
      */
-    public function seek($offset, $whence = SEEK_SET)
+    public function seek($offset, $whence = SEEK_SET): void
     {
         throw new BadMethodCallException('Not implemented');
     }
@@ -161,7 +161,7 @@ class FileStream implements StreamInterface
      * @see http://www.php.net/manual/en/function.fseek.php
      * @see seek()
      */
-    public function rewind()
+    public function rewind(): void
     {
         throw new BadMethodCallException('Not implemented');
     }
@@ -171,7 +171,7 @@ class FileStream implements StreamInterface
      *
      * @return bool
      */
-    public function isWritable()
+    public function isWritable(): bool
     {
         return false;
     }
@@ -184,7 +184,7 @@ class FileStream implements StreamInterface
      * @return int returns the number of bytes written to the stream
      * @throws RuntimeException on failure
      */
-    public function write($string)
+    public function write($string): int
     {
         throw new BadMethodCallException('Not implemented');
     }
@@ -194,7 +194,7 @@ class FileStream implements StreamInterface
      *
      * @return bool
      */
-    public function isReadable()
+    public function isReadable(): bool
     {
         return true;
     }
@@ -210,7 +210,7 @@ class FileStream implements StreamInterface
      *                if no bytes are available
      * @throws RuntimeException if an error occurs
      */
-    public function read($length)
+    public function read($length): string
     {
         throw new BadMethodCallException('Not implemented');
     }
@@ -222,7 +222,7 @@ class FileStream implements StreamInterface
      * @throws RuntimeException if unable to read or an error occurs while
      *                           reading
      */
-    public function getContents()
+    public function getContents(): string
     {
         if (false === $contents = stream_get_contents($this->getResource(), $this->getLength() ?: null, $this->getOffset() ?: -1)) {
             throw new RuntimeException('Unable to read stream contents');

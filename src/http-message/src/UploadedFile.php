@@ -16,10 +16,8 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use RuntimeException;
 use SplFileInfo;
-
-use const UPLOAD_ERR_OK;
-
 use function mime_content_type;
+use const UPLOAD_ERR_OK;
 
 class UploadedFile extends SplFileInfo implements UploadedFileInterface
 {
@@ -44,12 +42,13 @@ class UploadedFile extends SplFileInfo implements UploadedFileInterface
      * @param int       $error           错误码
      */
     public function __construct(
-        protected string $tmpFilename,
+        protected string    $tmpFilename,
         protected int|false $size = 0,
-        protected string $clientFilename = '',
-        protected string $clientMediaType = '',
-        protected int $error = UPLOAD_ERR_OK,
-    ) {
+        protected string    $clientFilename = '',
+        protected string    $clientMediaType = '',
+        protected int       $error = UPLOAD_ERR_OK,
+    )
+    {
         parent::__construct($this->tmpFilename);
     }
 
@@ -67,7 +66,7 @@ class UploadedFile extends SplFileInfo implements UploadedFileInterface
     /**
      * {@inheritDoc}
      */
-    public function moveTo($targetPath): SplFileInfo
+    public function moveTo($targetPath): void
     {
         if (($error = $this->getError()) > 0) {
             throw new RuntimeException(static::ERROR_MESSAGES[$error], $error);
@@ -75,22 +74,20 @@ class UploadedFile extends SplFileInfo implements UploadedFileInterface
         $path = pathinfo($targetPath, PATHINFO_DIRNAME);
         !is_dir($path) && mkdir($path, 0755, true);
         if (is_uploaded_file($this->tmpFilename)) {
-            $moved = move_uploaded_file($this->tmpFilename, $targetPath);
+            $this->moved = move_uploaded_file($this->tmpFilename, $targetPath);
         } else {
             // 兼容WorkerMan
-            $moved = rename($this->tmpFilename, $targetPath);
+            $this->moved = rename($this->tmpFilename, $targetPath);
         }
-        if ($moved) {
-            $this->moved = true;
-            return new SplFileInfo($targetPath);
+        if (!$this->moved) {
+            throw new RuntimeException('Failed to upload file. Check directory permission.');
         }
-        throw new RuntimeException('Failed to upload file. Check directory permission.');
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getSize(): int|false
+    public function getSize(): ?int
     {
         return $this->size;
     }

@@ -330,6 +330,8 @@ function optional(mixed $value = null, callable $callback = null): mixed
     if (! is_null($value)) {
         return $callback($value);
     }
+
+    return null;
 }
 
 /**

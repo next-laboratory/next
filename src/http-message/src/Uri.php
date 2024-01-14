@@ -30,7 +30,7 @@ class Uri implements UriInterface
 
     protected string $host = 'localhost';
 
-    protected int|string $port = 80;
+    protected ?int $port = 80;
 
     protected string $query = '';
 
@@ -62,7 +62,7 @@ class Uri implements UriInterface
             if (isset($parts['host'])) {
                 $this->host = $parts['host'];
             }
-            $this->port = $parts['port'] ?? $this->getDefaultPort();
+            $this->port = (int)($parts['port'] ?? $this->getDefaultPort());
             if (isset($parts['path'])) {
                 $this->path = '/' . trim($parts['path'], '/');
             }
@@ -79,10 +79,7 @@ class Uri implements UriInterface
         }
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return sprintf(
             '%s://%s%s%s%s%s',
@@ -130,9 +127,9 @@ class Uri implements UriInterface
     }
 
     /**
-     * @return int|string|null
+     * @return int|null
      */
-    public function getPort(): int|string|null
+    public function getPort(): ?int
     {
         return $this->port;
     }
@@ -227,7 +224,7 @@ class Uri implements UriInterface
     /**
      * {@inheritDoc}
      */
-    public function withQuery($query):UriInterface
+    public function withQuery($query): UriInterface
     {
         if ($query === $this->query) {
             return $this;
@@ -240,7 +237,7 @@ class Uri implements UriInterface
     /**
      * {@inheritDoc}
      */
-    public function withFragment($fragment):UriInterface
+    public function withFragment($fragment): UriInterface
     {
         if ($fragment === $this->fragment) {
             return $this;

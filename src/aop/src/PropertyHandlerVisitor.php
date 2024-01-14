@@ -60,7 +60,7 @@ class PropertyHandlerVisitor extends NodeVisitorAbstract
             if ($reflectionConstructor = $reflectionClass->getConstructor()) {
                 $declaringClass = $reflectionConstructor->getDeclaringClass()->getName();
                 if ($classPath = Composer::getClassLoader()->findFile($declaringClass)) {
-                    $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
+                    $parser = (new ParserFactory())->createForHostVersion();
                     $ast    = $parser->parse(file_get_contents($classPath));
                     foreach ($ast as $stmt) {
                         if ($stmt instanceof Node\Stmt\Namespace_) {

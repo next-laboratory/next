@@ -14,7 +14,7 @@
     }
   ],
   "require": {
-    "php": "^8.0|^8.1|^8.2",
+    "php": "^8.2",
     "next/http-message": "~0.1",
     "next/utils": "~0.1",
     "next/routing": "~0.1",
