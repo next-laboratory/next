@@ -17,9 +17,9 @@
   "require": {
     "php": "^8.2",
     "ext-pcntl": "*",
-    "next/utils": "dev-master",
-    "next/di": "dev-master",
-    "nikic/php-parser": "^5.0",
-    "symfony/finder": "*"
+    "next/utils": "~0.1",
+    "next/di": "~0.1",
+    "nikic/php-parser": "^5.0.2",
+    "symfony/finder": "^7.0"
   }
 }
