@@ -18,7 +18,7 @@
   ],
   "require": {
     "php": ">=7.4",
-    "symfony/var-dumper": "*"
+    "symfony/var-dumper": "^7.0"
   },
   "extra": {
     "branch-alias": {

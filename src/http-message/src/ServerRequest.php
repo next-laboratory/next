@@ -71,7 +71,7 @@ class ServerRequest extends Request implements ServerRequestInterface
             $uri             = $uri->withHost($hostHeaderParts[0]);
             if (isset($hostHeaderParts[1])) {
                 $hasPort = true;
-                $uri     = $uri->withPort($hostHeaderParts[1]);
+                $uri     = $uri->withPort((int)$hostHeaderParts[1]);
             }
         } else if (isset($server['server_name'])) {
             $uri = $uri->withHost($server['server_name']);
@@ -80,9 +80,10 @@ class ServerRequest extends Request implements ServerRequestInterface
         } else if (isset($header['host'])) {
             $hasPort = true;
             if (strpos($header['host'], ':')) {
-                [$host, $port] = explode(':', $header['host'], 2);
-                if ($port != $uri->getDefaultPort()) {
-                    $uri = $uri->withPort($port);
+                $hostParts = explode(':', $header['host'], 2);
+                $host      = $hostParts[0];
+                if (isset($hostParts[1]) && (int)$hostParts[1] !== $uri->getDefaultPort()) {
+                    $uri = $uri->withPort((int)$hostParts[1]);
                 }
             } else {
                 $host = $header['host'];

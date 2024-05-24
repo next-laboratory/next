@@ -66,7 +66,7 @@ class Repository implements ArrayAccess, ConfigInterface
     }
 
     /**
-     * 设置[支持点语法]. swoole/workerman等环境下不可使用.
+     * 设置[支持点语法]. swoole/workerman多进程环境下谨慎使用.
      */
     public function set(string|array $key, mixed $value): void
     {
@@ -79,10 +79,8 @@ class Repository implements ArrayAccess, ConfigInterface
 
     /**
      * Get all the configuration items for the application.
-     *
-     * @return array
      */
-    public function all()
+    public function all(): array
     {
         return $this->items;
     }

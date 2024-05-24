@@ -48,8 +48,9 @@ class Session
 
     public function __construct(
         protected \SessionHandlerInterface $sessionHandler,
-        protected PackerInterface $packer,
-    ) {
+        protected PackerInterface          $packer,
+    )
+    {
     }
 
     /**
@@ -58,12 +59,12 @@ class Session
     public function start(string $id = ''): void
     {
         if ($this->isStarted()) {
-            throw new \BadMethodCallException('the session is started');
+            throw new SessionException('The session is already started');
         }
         $this->sessionHandler->open('', '');
         $this->id = ($id && $this->isValidId($id)) ? $id : \session_create_id();
         if ($data = $this->sessionHandler->read($this->id)) {
-            $this->data = (array) ($this->packer->unpack($data) ?: []);
+            $this->data = (array)($this->packer->unpack($data) ?: []);
         }
         $this->state = static::STATE_STARTED;
     }
@@ -166,7 +167,7 @@ class Session
      */
     public function setId(string $id): void
     {
-        if (! $this->isValidId($id)) {
+        if (!$this->isValidId($id)) {
             throw new \InvalidArgumentException('The length of the session ID must be 40.');
         }
         $this->id = $id;
