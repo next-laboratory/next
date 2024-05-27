@@ -1,0 +1,23 @@
+{
+  "name": "next/foundation",
+  "autoload": {
+    "psr-4": {
+      "Next\\Foundation\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "chengyao",
+      "email": "987861463@qq.com"
+    }
+  ],
+  "require": {
+    "php": "^8.2",
+    "next/aop": "^0.1"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.1.x-dev"
+    }
+  }
+}
