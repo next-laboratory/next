@@ -16,6 +16,7 @@
       "Next\\Database\\": "src/database/src",
       "Next\\Di\\": "src/di/src",
       "Next\\Event\\": "src/event/src",
+      "Next\\Foundation\\": "src/foundation/src",
       "Next\\Http\\Message\\": "src/http-message/src",
       "Next\\Http\\Server\\": "src/http-server/src",
       "Next\\Routing\\": "src/routing/src",
@@ -50,6 +51,7 @@
     "next/event": "*",
     "next/http-message": "*",
     "next/http-server": "*",
+    "next/foundation": "*",
     "next/routing": "*",
     "next/session": "*",
     "next/utils": "*",
@@ -69,6 +71,7 @@
     "next/session": "*",
     "next/var-dumper": "*",
     "next/utils": "*",
+    "next/foundation": "*",
     "psr/container": "^2.0",
     "psr/simple-cache": "^1.0",
     "psr/event-dispatcher": "^1.0",
@@ -85,13 +88,18 @@
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "*",
-    "phpunit/phpunit": "*",
     "phpstan/phpstan": "*",
-    "doctrine/inflector": "*"
+    "doctrine/inflector": "*",
+    "pestphp/pest": "^2.34"
   },
   "scripts": {
-    "test": "@php ./vendor/bin/phpunit --prepend tests/bootstrap.php -c phpunit.xml --colors=always",
+    "test": "@php ./vendor/bin/phpunit -c phpunit.xml --colors=always",
     "cs-fix": "@php ./vendor/bin/php-cs-fixer fix $1",
     "analyse": "@php ./vendor/bin/phpstan analyse --memory-limit 300M -l 0 -c phpstan.neon"
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
   }
 }

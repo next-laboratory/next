@@ -1,39 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
-         bootstrap="./tests/bootstrap.php"
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         processIsolation="false"
-         stopOnFailure="false">
-    <coverage processUncoveredFiles="true">
-        <include>
-            <directory suffix=".php">./src/aop/tests</directory>
-            <directory suffix=".php">./src/cache/tests</directory>
-            <directory suffix=".php">./src/config/tests</directory>
-            <directory suffix=".php">./src/di/tests</directory>
-            <directory suffix=".php">./src/event/tests</directory>
-            <directory suffix=".php">./src/http-message/tests</directory>
-            <directory suffix=".php">./src/http-server/tests</directory>
-            <directory suffix=".php">./src/routing/tests</directory>
-            <directory suffix=".php">./src/session/tests</directory>
-            <directory suffix=".php">./src/utils/tests</directory>
-        </include>
-    </coverage>
-    <testsuites>
-        <testsuite name="Tests">
-            <directory suffix="Test.php">./src/aop</directory>
-            <directory suffix="Test.php">./src/cache</directory>
-            <directory suffix="Test.php">./src/config</directory>
-            <directory suffix="Test.php">./src/di</directory>
-            <directory suffix="Test.php">./src/event</directory>
-            <directory suffix="Test.php">./src/http-message</directory>
-            <directory suffix="Test.php">./src/http-server</directory>
-            <directory suffix="Test.php">./src/routing</directory>
-            <directory suffix="Test.php">./src/session</directory>
-            <directory suffix="Test.php">./src/utils</directory>
-        </testsuite>
-    </testsuites>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false" bootstrap="./tests/bootstrap.php" colors="true" processIsolation="false" stopOnFailure="false" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd" cacheDirectory=".phpunit.cache" backupStaticProperties="false">
+  <testsuites>
+    <testsuite name="Tests">
+      <directory suffix="Test.php">./src/aop</directory>
+      <directory suffix="Test.php">./src/cache</directory>
+      <directory suffix="Test.php">./src/config</directory>
+      <directory suffix="Test.php">./src/di</directory>
+      <directory suffix="Test.php">./src/event</directory>
+      <directory suffix="Test.php">./src/http-message</directory>
+      <directory suffix="Test.php">./src/http-server</directory>
+      <directory suffix="Test.php">./src/routing</directory>
+      <directory suffix="Test.php">./src/session</directory>
+      <directory suffix="Test.php">./src/utils</directory>
+    </testsuite>
+  </testsuites>
+  <source>
+    <include>
+      <directory suffix=".php">./src/aop/tests</directory>
+      <directory suffix=".php">./src/cache/tests</directory>
+      <directory suffix=".php">./src/config/tests</directory>
+      <directory suffix=".php">./src/di/tests</directory>
+      <directory suffix=".php">./src/event/tests</directory>
+      <directory suffix=".php">./src/http-message/tests</directory>
+      <directory suffix=".php">./src/http-server/tests</directory>
+      <directory suffix=".php">./src/routing/tests</directory>
+      <directory suffix=".php">./src/session/tests</directory>
+      <directory suffix=".php">./src/utils/tests</directory>
+    </include>
+  </source>
 </phpunit>
