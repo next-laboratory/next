@@ -42,36 +42,8 @@
       "email": "987861463@qq.com"
     }
   ],
-  "replace": {
-    "next/aop": "*",
-    "next/cache": "*",
-    "next/config": "*",
-    "next/database": "*",
-    "next/di": "*",
-    "next/event": "*",
-    "next/http-message": "*",
-    "next/http-server": "*",
-    "next/foundation": "*",
-    "next/routing": "*",
-    "next/session": "*",
-    "next/utils": "*",
-    "next/var-dumper": "*"
-  },
   "require": {
     "php": "^8.2",
-    "next/aop": "*",
-    "next/cache": "*",
-    "next/config": "*",
-    "next/database": "*",
-    "next/di": "*",
-    "next/event": "*",
-    "next/http-message": "*",
-    "next/http-server": "*",
-    "next/routing": "*",
-    "next/session": "*",
-    "next/var-dumper": "*",
-    "next/utils": "*",
-    "next/foundation": "*",
     "psr/container": "^2.0",
     "psr/simple-cache": "^1.0",
     "psr/event-dispatcher": "^1.0",
@@ -91,6 +63,21 @@
     "phpstan/phpstan": "*",
     "doctrine/inflector": "*",
     "pestphp/pest": "^2.34"
+  },
+  "replace": {
+    "next/aop": "*",
+    "next/cache": "*",
+    "next/config": "*",
+    "next/database": "*",
+    "next/di": "*",
+    "next/event": "*",
+    "next/http-message": "*",
+    "next/http-server": "*",
+    "next/foundation": "*",
+    "next/routing": "*",
+    "next/session": "*",
+    "next/utils": "*",
+    "next/var-dumper": "*"
   },
   "scripts": {
     "test": "@php ./vendor/bin/phpunit -c phpunit.xml --colors=always",
