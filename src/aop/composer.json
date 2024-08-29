@@ -21,5 +21,10 @@
     "next/di": "~0.1",
     "nikic/php-parser": "^5.0.2",
     "symfony/finder": "^7.0"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.1.x-dev"
+    }
   }
 }
