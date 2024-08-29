@@ -22,7 +22,10 @@ composer require next/aop
 ```php
 Aop::init(
     [__DIR__ . '/../app'],
-    [\App\Aop\Collector\RouteCollector::class],
+    [
+        \Next\Aop\Collector\PropertyAttributeCollector::class,
+        \Next\Aop\Collector\AspectCollector::class,
+    ],
     __DIR__ . '/../runtime/aop',
 );
 ```
