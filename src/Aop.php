@@ -59,7 +59,6 @@ final class Aop
             $result = shell_exec($cmd);
             if ($result) {
                 print($result . PHP_EOL);
-                exit(255);
             }
 //            if (($pid = pcntl_fork()) == -1) {
 //                throw new \RuntimeException('Process fork failed.');
