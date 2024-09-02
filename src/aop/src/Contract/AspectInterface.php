@@ -11,10 +11,9 @@ declare(strict_types=1);
 
 namespace Next\Aop\Contract;
 
-use Closure;
-use Next\Aop\JoinPoint;
+use Next\Aop\ProceedingJoinPoint;
 
 interface AspectInterface
 {
-    public function process(JoinPoint $joinPoint, Closure $next);
+    public function process(ProceedingJoinPoint $joinPoint);
 }
