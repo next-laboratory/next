@@ -10,7 +10,6 @@ declare(strict_types=1);
  */
 
 return [
-    'cache'      => false,
     'scanDirs'   => [
         __DIR__ . '/app',
     ],
