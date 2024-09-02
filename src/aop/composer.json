@@ -16,11 +16,10 @@
   ],
   "require": {
     "php": "^8.2",
-    "ext-pcntl": "*",
-    "next/utils": "~0.1",
-    "next/di": "~0.1",
-    "nikic/php-parser": "^5.0.2",
-    "symfony/finder": "^7.0"
+    "next/utils": "^0.1",
+    "next/di": "^0.1",
+    "nikic/php-parser": "^5.1",
+    "symfony/finder": "^7.1"
   },
   "extra": {
     "branch-alias": {

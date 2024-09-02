@@ -5,8 +5,8 @@
 # 环境要求
 
 ```
-linux OS
-php >=8.0 with ext-pcntl
+php 8.2
+开启passthru函数
 ```
 
 # 安装
@@ -30,7 +30,6 @@ Aop::init(
 );
 ```
 
-* cache 是否缓存，true时下次启动不会重新生成代理类
 * paths 注解扫描路径
 * collectors 注解收集器
     - \Next\Aop\Collector\AspectCollector::class 切面收集器，取消后不能使用切面
@@ -123,7 +122,7 @@ class Round implements AspectInterface
 php start.php start
 ```
 
-打开浏览器打开对应页面
+打开浏览器打开~~对应页面~~
 
 ## 控制台输出内容为
 

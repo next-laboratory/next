@@ -22,37 +22,49 @@ use Symfony\Component\Finder\Finder;
 
 final class Aop
 {
-    private AstManager   $astManager;
+    private AstManager $astManager;
 
-    private string       $proxyMapFile;
+    private string $proxyMapFile;
 
-    private static array $classMap    = [];
+    private static array $classMap = [];
 
-    private Filesystem   $filesystem;
-
-    private static bool  $initialized = false;
+    private Filesystem $filesystem;
 
     private function __construct(
-        private array $scanDirs = [],
-        private array $collectors = [],
+        private array  $scanDirs = [],
+        private array  $collectors = [],
         private string $runtimeDir = '',
-        private bool $cache = false
-    ) {
-        self::$initialized = true;
-        $this->filesystem  = new Filesystem();
-        $this->astManager  = new AstManager();
-        $this->runtimeDir  = rtrim($runtimeDir, '/\\') . '/';
-        if (! $this->filesystem->isDirectory($this->runtimeDir)) {
+    )
+    {
+        $this->filesystem = new Filesystem();
+        $this->astManager = new AstManager();
+        $this->runtimeDir = rtrim($runtimeDir, '/\\') . '/';
+        if (!$this->filesystem->isDirectory($this->runtimeDir)) {
             $this->filesystem->makeDirectory($this->runtimeDir, 0755, true);
         }
         $this->findClasses($this->scanDirs);
         $this->proxyMapFile = $this->runtimeDir . 'proxy.php';
-        if (! $this->cache || ! $this->filesystem->exists($this->proxyMapFile)) {
+        $lockFile           = $this->runtimeDir . 'lock';
+        if (file_exists($lockFile)) {
+            unlink($lockFile);
+            $this->getProxyMap();
+        } else {
             $this->filesystem->exists($this->proxyMapFile) && $this->filesystem->delete($this->proxyMapFile);
-            if (($pid = pcntl_fork()) == -1) {
-                throw new \RuntimeException('Process fork failed.');
+        }
+        if (!$this->filesystem->exists($this->proxyMapFile)) {
+            touch($lockFile);
+            $this->filesystem->exists($this->proxyMapFile) && $this->filesystem->delete($this->proxyMapFile);
+            global $argv;
+            $cmd    = PHP_BINARY . ' ' . implode(' ', $argv) . ' 2>&1';
+            $result = shell_exec($cmd);
+            if ($result) {
+                print($result . PHP_EOL);
+                exit(255);
             }
-            pcntl_wait($pid);
+//            if (($pid = pcntl_fork()) == -1) {
+//                throw new \RuntimeException('Process fork failed.');
+//            }
+//            pcntl_wait($pid);
         }
         Composer::getClassLoader()->addClassMap($this->getProxyMap());
         $this->collect();
@@ -65,14 +77,12 @@ final class Aop
     }
 
     public static function init(
-        array $scanDirs = [],
-        array $collectors = [],
+        array  $scanDirs = [],
+        array  $collectors = [],
         string $runtimeDir = '',
-        bool $cache = false
-    ): void {
-        if (self::$initialized) {
-            throw new \RuntimeException('aop is already initialized, so don\'t call init again');
-        }
+        bool   $cache = false
+    ): void
+    {
         new self($scanDirs, $collectors, $runtimeDir, $cache);
     }
 
@@ -97,7 +107,7 @@ final class Aop
      */
     private function getProxyMap(): array
     {
-        if (! $this->filesystem->exists($this->proxyMapFile)) {
+        if (!$this->filesystem->exists($this->proxyMapFile)) {
             $proxyDir = $this->runtimeDir . 'proxy/';
             $this->filesystem->exists($proxyDir) || $this->filesystem->makeDirectory($proxyDir, 0755, true, true);
             $this->filesystem->cleanDirectory($proxyDir);
@@ -110,7 +120,7 @@ final class Aop
                 $proxies[$class] = $proxyPath;
             }
             $this->filesystem->put($this->proxyMapFile, sprintf("<?php \nreturn %s;", var_export($proxies, true)));
-            exit;
+            exit(0);
         }
         return include $this->proxyMapFile;
     }
@@ -141,7 +151,7 @@ final class Aop
             foreach ($reflectionClass->getAttributes() as $attribute) {
                 try {
                     $attributeInstance = $attribute->newInstance();
-                    if (! $attributeInstance instanceof \Attribute) {
+                    if (!$attributeInstance instanceof \Attribute) {
                         foreach ($this->collectors as $collector) {
                             $collector::collectClass($class, $attributeInstance);
                         }
