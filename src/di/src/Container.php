@@ -22,6 +22,7 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
+use ReflectionIntersectionType;
 use ReflectionNamedType;
 use ReflectionUnionType;
 
@@ -239,6 +240,7 @@ class Container implements ContainerInterface
                 if (is_null($type)
                     || ($type instanceof ReflectionNamedType && $type->isBuiltin())
                     || $type instanceof ReflectionUnionType
+                    || $type instanceof ReflectionIntersectionType
                     || ($typeName = $type->getName()) === 'Closure'
                 ) {
                     if (!$parameter->isVariadic()) {
