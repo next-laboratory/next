@@ -43,22 +43,21 @@ Aop::init(
 
 namespace App\aspects;
 
-use Closure;
-use Next\Aop\JoinPoint;
+use Next\Aop\ProceedingJoinPoint;
 use Next\Aop\Contract\AspectInterface;
 
 #[\Attribute(\Attribute::TARGET_METHOD)]
 class Round implements AspectInterface
 {
-    public function process(JoinPoint $joinPoint, Closure $next): mixed
+    public function process(ProceedingJoinPoint $joinPoint): mixed
     {
         echo 'before';
-        $result = $next($joinPoint);
+        $result = $joinPoint->proceed(); // 直接调用被代理的方法
+//        $result = $joinPoint->process(); // 继续执行其他切面逻辑
         echo 'after';
         return $result;
     }
 }
-
 ```
 
 修改方法添加切面注解
@@ -94,19 +93,18 @@ class Index
 
 namespace App\aspects;
 
-use Closure;
 use Next\Aop\Attribute\AspectConfig;
-use Next\Aop\JoinPoint;
+use Next\Aop\ProceedingJoinPoint;
 use Next\Aop\Contract\AspectInterface;
 
 #[\Attribute(\Attribute::TARGET_METHOD)]
 #[AspectConfig('BaconQrCode\Writer', 'writeFile')]
 class Round implements AspectInterface
 {
-    public function process(JoinPoint $joinPoint, Closure $next): mixed
+    public function process(ProceedingJoinPoint $joinPoint): mixed
     {
         echo 'before';
-        $result = $next($joinPoint);
+        $result = $joinPoint->process();
         echo 'after';
         return $result;
     }
