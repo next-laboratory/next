@@ -13,7 +13,7 @@
   ],
   "require": {
     "php": "^8.2",
-    "next/aop": "^0.1"
+    "next/aop": "~0.1"
   },
   "extra": {
     "branch-alias": {
