@@ -11,11 +11,10 @@ declare(strict_types=1);
 
 namespace Next\Aop\Collector;
 
+use Next\Aop\Aop;
 use Next\Aop\Attribute\AspectConfig;
 use Next\Aop\Contract\AspectInterface;
-use Next\Aop\Aop;
 use Next\Di\Reflection;
-use ReflectionException;
 
 class AspectCollector extends AbstractCollector
 {
@@ -32,13 +31,13 @@ class AspectCollector extends AbstractCollector
     }
 
     /**
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public static function collectClass(string $class, object $attribute): void
     {
         if ($attribute instanceof AspectInterface) {
             foreach (Reflection::class($class)->getMethods() as $reflectionMethod) {
-                if (!$reflectionMethod->isConstructor()) {
+                if (! $reflectionMethod->isConstructor()) {
                     self::$container[$class][$reflectionMethod->getName()][] = $attribute;
                 }
             }
@@ -48,12 +47,12 @@ class AspectCollector extends AbstractCollector
             $methods         = $attribute->methods;
             if ($methods === '*') {
                 foreach ($reflectionClass->getMethods() as $reflectionMethod) {
-                    if (!$reflectionMethod->isConstructor()) {
+                    if (! $reflectionMethod->isConstructor()) {
                         self::$container[$attribute->class][$reflectionMethod->getName()][] = $annotation;
                     }
                 }
             } else {
-                foreach ((array)$methods as $method) {
+                foreach ((array) $methods as $method) {
                     self::$container[$attribute->class][$method][] = $annotation;
                 }
             }

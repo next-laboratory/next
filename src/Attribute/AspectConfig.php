@@ -11,9 +11,7 @@ declare(strict_types=1);
 
 namespace Next\Aop\Attribute;
 
-use Attribute;
-
-#[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class AspectConfig
 {
     /**
@@ -23,8 +21,7 @@ class AspectConfig
      */
     public function __construct(
         public string $class,
-        public string|array $methods = '*',
+        public array|string $methods = '*',
         public array $params = []
-    ) {
-    }
+    ) {}
 }
