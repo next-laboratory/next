@@ -11,27 +11,11 @@ declare(strict_types=1);
 
 namespace Next\Di;
 
-use BadMethodCallException;
-use Closure;
 use Next\Di\Exception\ContainerException;
 use Next\Di\Exception\NotFoundException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use ReflectionClass;
-use ReflectionException;
-use ReflectionFunction;
-use ReflectionFunctionAbstract;
-use ReflectionIntersectionType;
-use ReflectionNamedType;
-use ReflectionUnionType;
-
-use function array_key_exists;
-use function array_push;
-use function array_values;
-use function is_null;
-use function is_object;
-use function is_string;
 
 class Container implements ContainerInterface
 {
@@ -48,7 +32,7 @@ class Container implements ContainerInterface
     /**
      * 将实例化的类存放到数组中.
      *
-     * @param string|class-string $id       标识
+     * @param class-string|string $id       标识
      * @param object              $concrete 实例
      */
     public function set(string $id, object $concrete)
@@ -71,9 +55,6 @@ class Container implements ContainerInterface
         return $this->resolvedEntries[$binding] ?? throw new NotFoundException('No instance found: ' . $id);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function has(string $id): bool
     {
         return isset($this->resolvedEntries[$this->getBinding($id)]);
@@ -125,15 +106,15 @@ class Container implements ContainerInterface
      * @param array           $arguments 构造函数参数列表（关联数组）
      *
      * @return T
-     * @throws ContainerExceptionInterface|NotFoundExceptionInterface|ReflectionException
+     * @throws ContainerExceptionInterface|NotFoundExceptionInterface|\ReflectionException
      */
     public function make(string $id, array $arguments = [])
     {
-        if (!$this->has($id)) {
+        if (! $this->has($id)) {
             $id              = $this->getBinding($id);
             $reflectionClass = Reflection::class($id);
             if ($reflectionClass->isInterface()) {
-                if (!$this->bound($id)) {
+                if (! $this->bound($id)) {
                     throw new ContainerException('The ' . $id . ' has no implementation class. ', 600);
                 }
                 // TODO 当绑定的类并没有实现该接口
@@ -160,21 +141,21 @@ class Container implements ContainerInterface
     /**
      * 调用类的方法.
      *
-     * @param array|Closure|string $callable  $callable 可调用的类或者实例和方法数组
-     * @param array                $arguments 给方法传递的参数（关联数组）
+     * @param array|\Closure|string $callable  $callable 可调用的类或者实例和方法数组
+     * @param array                 $arguments 给方法传递的参数（关联数组）
      *
-     * @throws ContainerExceptionInterface|ReflectionException
+     * @throws ContainerExceptionInterface|\ReflectionException
      */
-    public function call(array|string|Closure $callable, array $arguments = []): mixed
+    public function call(array|\Closure|string $callable, array $arguments = []): mixed
     {
-        if ($callable instanceof Closure || is_string($callable)) {
+        if ($callable instanceof \Closure || \is_string($callable)) {
             return $this->callFunc($callable, $arguments);
         }
         [$objectOrClass, $method] = $callable;
-        $isObject         = is_object($objectOrClass);
-        $reflectionMethod = Reflection::method($isObject ? $objectOrClass::class : $this->getBinding($objectOrClass), $method);
+        $isObject                 = \is_object($objectOrClass);
+        $reflectionMethod         = Reflection::method($isObject ? $objectOrClass::class : $this->getBinding($objectOrClass), $method);
         if ($reflectionMethod->isAbstract() === false) {
-            if (!$reflectionMethod->isPublic()) {
+            if (! $reflectionMethod->isPublic()) {
                 $reflectionMethod->setAccessible(true);
             }
 
@@ -183,20 +164,20 @@ class Container implements ContainerInterface
                 $this->getFuncArgs($reflectionMethod, $arguments)
             );
         }
-        throw new BadMethodCallException('Unable to call method: ' . $method);
+        throw new \BadMethodCallException('Unable to call method: ' . $method);
     }
 
     /**
      * 调用闭包.
      *
-     * @param Closure|string $function  函数
-     * @param array          $arguments 参数列表（关联数组）
+     * @param \Closure|string $function  函数
+     * @param array           $arguments 参数列表（关联数组）
      *
-     * @throws NotFoundExceptionInterface|ReflectionException|ContainerExceptionInterface
+     * @throws ContainerExceptionInterface|NotFoundExceptionInterface|\ReflectionException
      */
-    public function callFunc(string|Closure $function, array $arguments = [])
+    public function callFunc(\Closure|string $function, array $arguments = [])
     {
-        $reflectFunction = new ReflectionFunction($function);
+        $reflectFunction = new \ReflectionFunction($function);
 
         return $reflectFunction->invokeArgs(
             $this->getFuncArgs($reflectFunction, $arguments)
@@ -207,12 +188,12 @@ class Container implements ContainerInterface
      * 获取构造函数的参数.
      *
      * @throws ContainerExceptionInterface
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
-    public function getConstructorArgs(ReflectionClass $reflectionClass, array $arguments = []): array
+    public function getConstructorArgs(\ReflectionClass $reflectionClass, array $arguments = []): array
     {
-        if (is_null($constructor = $reflectionClass->getConstructor())) {
-            return array_values($arguments);
+        if (\is_null($constructor = $reflectionClass->getConstructor())) {
+            return \array_values($arguments);
         }
         if ($reflectionClass->isInstantiable()) {
             return $this->getFuncArgs($constructor, $arguments);
@@ -221,41 +202,41 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param ReflectionFunctionAbstract $reflectionFunction 反射方法
-     * @param array                      $arguments          参数列表（关联数组）
+     * @param \ReflectionFunctionAbstract $reflectionFunction 反射方法
+     * @param array                       $arguments          参数列表（关联数组）
      *
-     * @throws ReflectionException
+     * @throws \ReflectionException
      * @throws ContainerExceptionInterface
      */
-    public function getFuncArgs(ReflectionFunctionAbstract $reflectionFunction, array $arguments = []): array
+    public function getFuncArgs(\ReflectionFunctionAbstract $reflectionFunction, array $arguments = []): array
     {
         $funcArgs = [];
         foreach ($reflectionFunction->getParameters() as $parameter) {
             $name = $parameter->getName();
-            if (array_key_exists($name, $arguments)) {
+            if (\array_key_exists($name, $arguments)) {
                 $funcArgs[] = &$arguments[$name];
                 unset($arguments[$name]);
             } else {
                 $type = $parameter->getType();
-                if (is_null($type)
-                    || ($type instanceof ReflectionNamedType && $type->isBuiltin())
-                    || $type instanceof ReflectionUnionType
-                    || $type instanceof ReflectionIntersectionType
+                if (\is_null($type)
+                    || ($type instanceof \ReflectionNamedType && $type->isBuiltin())
+                    || $type instanceof \ReflectionUnionType
+                    || $type instanceof \ReflectionIntersectionType
                     || ($typeName = $type->getName()) === 'Closure'
                 ) {
-                    if (!$parameter->isVariadic()) {
+                    if (! $parameter->isVariadic()) {
                         $funcArgs[] = $parameter->isOptional()
                             ? $parameter->getDefaultValue()
                             : throw new ContainerException(sprintf('Missing parameter `%s`', $name));
                     } else {
                         // 末尾的可变参数
-                        array_push($funcArgs, ...array_values($arguments));
+                        \array_push($funcArgs, ...\array_values($arguments));
                         break;
                     }
                 } else {
                     try {
                         $funcArgs[] = $this->make($typeName);
-                    } catch (ReflectionException|ContainerExceptionInterface $e) {
+                    } catch (ContainerExceptionInterface|\ReflectionException $e) {
                         $funcArgs[] = $parameter->isOptional() ? $parameter->getDefaultValue() : throw $e;
                     }
                 }

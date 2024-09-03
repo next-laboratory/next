@@ -20,6 +20,5 @@ class Metadata
     public function __construct(
         public string $className,
         public bool $hasConstructor = false
-    ) {
-    }
+    ) {}
 }

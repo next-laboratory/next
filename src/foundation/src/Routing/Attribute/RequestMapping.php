@@ -11,9 +11,7 @@ declare(strict_types=1);
 
 namespace Next\Foundation\Routing\Attribute;
 
-use Attribute;
-
-#[Attribute(Attribute::TARGET_METHOD)]
+#[\Attribute(\Attribute::TARGET_METHOD)]
 class RequestMapping
 {
     /**
@@ -28,11 +26,10 @@ class RequestMapping
      */
     public function __construct(
         public string $path = '/',
-        array         $methods = [],
-        public array  $middlewares = [],
-    )
-    {
-        if (!empty($methods)) {
+        array $methods = [],
+        public array $middlewares = [],
+    ) {
+        if (! empty($methods)) {
             $this->methods = $methods;
         }
     }

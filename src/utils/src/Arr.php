@@ -11,9 +11,6 @@ declare(strict_types=1);
 
 namespace Next\Utils;
 
-use ArgumentCountError;
-use ArrayAccess;
-use InvalidArgumentException;
 use Next\Utils\Contract\Enumerable;
 
 /**
@@ -32,7 +29,7 @@ class Arr
      */
     public static function accessible($value)
     {
-        return is_array($value) || $value instanceof ArrayAccess;
+        return is_array($value) || $value instanceof \ArrayAccess;
     }
 
     /**
@@ -179,7 +176,7 @@ class Arr
             return $array->has($key);
         }
 
-        if ($array instanceof ArrayAccess) {
+        if ($array instanceof \ArrayAccess) {
             return $array->offsetExists($key);
         }
 
@@ -197,7 +194,7 @@ class Arr
      * @param  mixed    $default
      * @return mixed
      */
-    public static function first($array, callable $callback = null, $default = null)
+    public static function first($array, ?callable $callback = null, $default = null)
     {
         if (is_null($callback)) {
             if (empty($array)) {
@@ -225,7 +222,7 @@ class Arr
      * @param  mixed $default
      * @return mixed
      */
-    public static function last($array, callable $callback = null, $default = null)
+    public static function last($array, ?callable $callback = null, $default = null)
     {
         if (is_null($callback)) {
             return empty($array) ? value($default) : end($array);
@@ -549,7 +546,7 @@ class Arr
 
         try {
             $items = array_map($callback, $array, $keys);
-        } catch (ArgumentCountError) {
+        } catch (\ArgumentCountError) {
             $items = array_map($callback, $array);
         }
 
@@ -609,8 +606,8 @@ class Arr
      * @param  array                     $array
      * @param  null|int                  $number
      * @param  bool|false                $preserveKeys
-     * @throws \InvalidArgumentException
      * @return mixed
+     * @throws \InvalidArgumentException
      */
     public static function random($array, $number = null, $preserveKeys = false)
     {
@@ -619,7 +616,7 @@ class Arr
         $count = count($array);
 
         if ($requested > $count) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 "You requested {$requested} items, but there are only {$count} items available."
             );
         }

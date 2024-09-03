@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Next\Utils\Traits;
 
-use Closure;
 use Next\Utils\Proxy\HigherOrderWhenProxy;
 
 /**
@@ -27,14 +26,14 @@ trait Conditionable
      * @template TWhenReturnType
      *
      * @param null|mixed                                              $value
-     * @param (callable($this, TWhenParameter): TWhenReturnType)|null $callback
-     * @param (callable($this, TWhenParameter): TWhenReturnType)|null $default
+     * @param null|(callable($this, TWhenParameter): TWhenReturnType) $callback
+     * @param null|(callable($this, TWhenParameter): TWhenReturnType) $default
      *
      * @return $this|TWhenReturnType
      */
-    public function when($value = null, callable $callback = null, callable $default = null)
+    public function when($value = null, ?callable $callback = null, ?callable $default = null)
     {
-        $value = $value instanceof Closure ? $value($this) : $value;
+        $value = $value instanceof \Closure ? $value($this) : $value;
 
         if (func_num_args() === 0) {
             return new HigherOrderWhenProxy($this);
@@ -61,14 +60,14 @@ trait Conditionable
      * @template TUnlessReturnType
      *
      * @param null|mixed                                                  $value
-     * @param (callable($this, TUnlessParameter): TUnlessReturnType)|null $callback
-     * @param (callable($this, TUnlessParameter): TUnlessReturnType)|null $default
+     * @param null|(callable($this, TUnlessParameter): TUnlessReturnType) $callback
+     * @param null|(callable($this, TUnlessParameter): TUnlessReturnType) $default
      *
      * @return $this|TUnlessReturnType
      */
-    public function unless($value = null, callable $callback = null, callable $default = null)
+    public function unless($value = null, ?callable $callback = null, ?callable $default = null)
     {
-        $value = $value instanceof Closure ? $value($this) : $value;
+        $value = $value instanceof \Closure ? $value($this) : $value;
 
         if (func_num_args() === 0) {
             return (new HigherOrderWhenProxy($this))->negateConditionOnCapture();

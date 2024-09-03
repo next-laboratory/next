@@ -28,8 +28,7 @@ class Pipeline
 
     public function __construct(
         protected ?ContainerInterface $container = null
-    ) {
-    }
+    ) {}
 
     public function send(mixed $passable): static
     {
@@ -55,7 +54,7 @@ class Pipeline
         return $this;
     }
 
-    public function then(Closure $destination): mixed
+    public function then(\Closure $destination): mixed
     {
         $pipeline = array_reduce(
             array_reverse($this->pipes),
@@ -65,14 +64,14 @@ class Pipeline
         return $pipeline($this->passable);
     }
 
-    protected function prepareDestination(Closure $destination): Closure
+    protected function prepareDestination(\Closure $destination): \Closure
     {
         return static function ($passable) use ($destination) {
             return $destination($passable);
         };
     }
 
-    protected function carry(): Closure
+    protected function carry(): \Closure
     {
         return function ($stack, $pipe) {
             return function ($passable) use ($stack, $pipe) {

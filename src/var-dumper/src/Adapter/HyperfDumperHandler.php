@@ -11,13 +11,11 @@ declare(strict_types=1);
 
 namespace Next\VarDumper\Adapter;
 
-use ErrorException;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\HttpMessage\Stream\SwooleStream;
 use Next\VarDumper\Dumper;
 use Next\VarDumper\DumperHandler;
 use Psr\Http\Message\ResponseInterface;
-use Throwable;
 
 class HyperfDumperHandler extends ExceptionHandler
 {
@@ -26,16 +24,16 @@ class HyperfDumperHandler extends ExceptionHandler
     /**
      * @param Dumper $e
      *
-     * @throws ErrorException
+     * @throws \ErrorException
      */
-    public function handle(Throwable $e, ResponseInterface $response)
+    public function handle(\Throwable $e, ResponseInterface $response)
     {
         $this->stopPropagation();
 
         return $response->withBody(new SwooleStream(self::convertToHtml($e)));
     }
 
-    public function isValid(Throwable $e): bool
+    public function isValid(\Throwable $e): bool
     {
         return $e instanceof Dumper;
     }

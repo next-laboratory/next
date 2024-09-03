@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * This file is part of MarxPHP.
+ * This file is part of nextphp.
  *
  * @link     https://github.com/next-laboratory
  * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
@@ -13,6 +13,4 @@ namespace Next\Cache;
 
 use Psr\SimpleCache\CacheException as PsrCacheException;
 
-class CacheException extends \Exception implements PsrCacheException
-{
-}
+class CacheException extends \Exception implements PsrCacheException {}

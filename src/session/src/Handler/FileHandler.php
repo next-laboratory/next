@@ -3,16 +3,13 @@
 declare(strict_types=1);
 
 /**
- * This file is part of MarxPHP.
+ * This file is part of nextphp.
  *
  * @link     https://github.com/next-laboratory
  * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
 namespace Next\Session\Handler;
-
-use Exception;
-use Throwable;
 
 class FileHandler implements \SessionHandlerInterface
 {
@@ -32,7 +29,7 @@ class FileHandler implements \SessionHandlerInterface
      * @param int $maxLifeTime
      */
     #[\ReturnTypeWillChange]
-    public function gc($maxLifeTime): int|false
+    public function gc($maxLifeTime): false|int
     {
         try {
             $number = 0;
@@ -46,7 +43,7 @@ class FileHandler implements \SessionHandlerInterface
                 ++$number;
             }
             return $number;
-        } catch (Throwable) {
+        } catch (\Throwable) {
             return false;
         }
     }
@@ -55,7 +52,7 @@ class FileHandler implements \SessionHandlerInterface
     {
         try {
             return $this->unlink($this->getSessionFile($id));
-        } catch (Exception) {
+        } catch (\Exception) {
             return false;
         }
     }
@@ -64,7 +61,7 @@ class FileHandler implements \SessionHandlerInterface
      * @param string $id
      */
     #[\ReturnTypeWillChange]
-    public function read($id): string|false
+    public function read($id): false|string
     {
         $sessionFile = $this->getSessionFile($id);
         if (\file_exists($sessionFile)) {

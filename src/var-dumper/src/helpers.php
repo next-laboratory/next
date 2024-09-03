@@ -23,7 +23,7 @@ if (function_exists('d') === false) {
 
 if (function_exists('dd') === false) {
     /**
-     * Use `d` instead of `dd`
+     * Use `d` instead of `dd`.
      *
      * @deprecated
      */

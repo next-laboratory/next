@@ -13,6 +13,4 @@ namespace Next\Http\Server\Exception;
 
 use Next\Http\Message\Exception\HttpException;
 
-class CSRFException extends HttpException
-{
-}
+class CSRFException extends HttpException {}

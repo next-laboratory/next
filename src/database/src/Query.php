@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * This file is part of MarxPHP.
+ * This file is part of nextphp.
  *
  * @link     https://github.com/next-laboratory
  * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
@@ -19,10 +19,9 @@ class Query
     public function __construct(
         protected \PDO $PDO,
         protected ?EventDispatcherInterface $eventDispatcher = null,
-    ) {
-    }
+    ) {}
 
-    public function select(string $query, array $bindings = [], int $mode = \PDO::FETCH_ASSOC, ...$args): bool|array
+    public function select(string $query, array $bindings = [], int $mode = \PDO::FETCH_ASSOC, ...$args): array|bool
     {
         return $this->statement($query, $bindings)->fetchAll($mode, ...$args);
     }

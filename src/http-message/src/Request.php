@@ -26,7 +26,7 @@ class Request extends Message implements RequestInterface
         protected string $method,
         string|UriInterface $uri,
         array $headers = [],
-        string|null|StreamInterface $body = null,
+        null|StreamInterface|string $body = null,
         protected string $protocolVersion = '1.1'
     ) {
         $this->uri = $uri instanceof UriInterface ? $uri : new Uri($uri);
@@ -34,9 +34,6 @@ class Request extends Message implements RequestInterface
         $this->headers = new HeaderBag($headers);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getRequestTarget(): string
     {
         if ($this->requestTarget === '/') {
@@ -45,9 +42,6 @@ class Request extends Message implements RequestInterface
         return '/';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withRequestTarget($requestTarget): RequestInterface
     {
         if ($requestTarget === $this->requestTarget) {
@@ -59,17 +53,11 @@ class Request extends Message implements RequestInterface
         return $new;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getMethod(): string
     {
         return $this->method;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withMethod($method): RequestInterface
     {
         if ($method === $this->method) {
@@ -81,17 +69,11 @@ class Request extends Message implements RequestInterface
         return $new;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getUri(): UriInterface
     {
         return $this->uri;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withUri(UriInterface $uri, $preserveHost = false): RequestInterface
     {
         if ($uri === $this->uri) {

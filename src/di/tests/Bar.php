@@ -11,6 +11,4 @@ declare(strict_types=1);
 
 namespace Next\Di\Tests;
 
-class Bar
-{
-}
+class Bar {}

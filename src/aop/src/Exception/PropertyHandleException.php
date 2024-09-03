@@ -11,8 +11,4 @@ declare(strict_types=1);
 
 namespace Next\Aop\Exception;
 
-use RuntimeException;
-
-class PropertyHandleException extends RuntimeException
-{
-}
+class PropertyHandleException extends \RuntimeException {}

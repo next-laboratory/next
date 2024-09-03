@@ -11,8 +11,4 @@ declare(strict_types=1);
 
 namespace Next\Http\Message\Exception;
 
-use RuntimeException;
-
-class HttpException extends RuntimeException
-{
-}
+class HttpException extends \RuntimeException {}

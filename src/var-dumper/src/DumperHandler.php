@@ -25,6 +25,6 @@ trait DumperHandler
         foreach ($abort->vars as $var) {
             (new HtmlDumper())->dump($cloner->cloneVar($var));
         }
-        return (string)ob_get_clean();
+        return (string) ob_get_clean();
     }
 }

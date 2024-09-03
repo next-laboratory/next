@@ -11,14 +11,11 @@ declare(strict_types=1);
 
 namespace Next\Utils;
 
-use ArrayAccess;
-use ArrayObject;
-
 /**
  * Most of the methods in this file come from illuminate
  * thanks Laravel Team provide such a useful class.
  */
-class Optional implements ArrayAccess
+class Optional implements \ArrayAccess
 {
     use Macroable {
         __call as macroCall;
@@ -31,9 +28,7 @@ class Optional implements ArrayAccess
      */
     public function __construct(
         protected mixed $value
-    )
-    {
-    }
+    ) {}
 
     /**
      * Dynamically access a property on the underlying object.
@@ -57,7 +52,7 @@ class Optional implements ArrayAccess
             return isset($this->value->{$name});
         }
 
-        if (is_array($this->value) || $this->value instanceof ArrayObject) {
+        if (is_array($this->value) || $this->value instanceof \ArrayObject) {
             return isset($this->value[$name]);
         }
 
@@ -80,27 +75,18 @@ class Optional implements ArrayAccess
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     #[\ReturnTypeWillChange]
     public function offsetExists($key)
     {
         return Arr::accessible($this->value) && Arr::exists($this->value, $key);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     #[\ReturnTypeWillChange]
     public function offsetGet($key)
     {
         return Arr::get($this->value, $key);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     #[\ReturnTypeWillChange]
     public function offsetSet($key, $value)
     {
@@ -109,9 +95,6 @@ class Optional implements ArrayAccess
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     #[\ReturnTypeWillChange]
     public function offsetUnset($key)
     {

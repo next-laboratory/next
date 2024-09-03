@@ -24,8 +24,7 @@ class RoutingMiddleware implements MiddlewareInterface
 {
     public function __construct(
         protected UrlMatcher $urlMatcher,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws MethodNotAllowedException

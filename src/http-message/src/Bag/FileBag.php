@@ -11,19 +11,17 @@ declare(strict_types=1);
 
 namespace Next\Http\Message\Bag;
 
-use InvalidArgumentException;
 use Next\Http\Message\UploadedFile;
 use Psr\Http\Message\UploadedFileInterface;
 
 /**
- * 文件上传解析代码来自hyperf，感谢
+ * 文件上传解析代码来自hyperf，感谢.
  */
 class FileBag
 {
     public function __construct(
         protected array $uploadedFiles = []
-    ) {
-    }
+    ) {}
 
     public function all(): array
     {
@@ -40,7 +38,7 @@ class FileBag
      *
      * @param array $files An array which respect $_FILES structure
      *
-     * @throws InvalidArgumentException for unrecognized values
+     * @throws \InvalidArgumentException for unrecognized values
      */
     private static function normalizeFiles(array $files): array
     {
@@ -49,12 +47,12 @@ class FileBag
         foreach ($files as $key => $value) {
             if ($value instanceof UploadedFileInterface) {
                 $normalized[$key] = $value;
-            } else if (is_array($value) && isset($value['tmp_name'])) {
+            } elseif (is_array($value) && isset($value['tmp_name'])) {
                 $normalized[$key] = self::createUploadedFileFromSpec($value);
-            } else if (is_array($value)) {
+            } elseif (is_array($value)) {
                 $normalized[$key] = self::normalizeFiles($value);
             } else {
-                throw new InvalidArgumentException('Invalid value in files specification');
+                throw new \InvalidArgumentException('Invalid value in files specification');
             }
         }
 
@@ -68,7 +66,7 @@ class FileBag
      *
      * @param array $value $_FILES struct
      *
-     * @return UploadedFileInterface[]|UploadedFileInterface
+     * @return UploadedFileInterface|UploadedFileInterface[]
      */
     private static function createUploadedFileFromSpec(array $value): array|UploadedFileInterface
     {
@@ -76,7 +74,7 @@ class FileBag
             return self::normalizeNestedFileSpec($value);
         }
 
-        return new UploadedFile($value['tmp_name'], (int)$value['size'], $value['name'], $value['type'], (int)$value['error']);
+        return new UploadedFile($value['tmp_name'], (int) $value['size'], $value['name'], $value['type'], (int) $value['error']);
     }
 
     /**

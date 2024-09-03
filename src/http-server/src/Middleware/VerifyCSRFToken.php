@@ -11,13 +11,13 @@ declare(strict_types=1);
 
 namespace Next\Http\Server\Middleware;
 
-use Exception;
 use Next\Http\Message\Cookie;
 use Next\Http\Server\Exception\CSRFException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+
 use function Next\Utils\collect;
 
 class VerifyCSRFToken implements MiddlewareInterface
@@ -38,7 +38,7 @@ class VerifyCSRFToken implements MiddlewareInterface
     protected array $shouldVerifyMethods = ['POST', 'PUT', 'PATCH'];
 
     /**
-     * @throws CSRFException|Exception
+     * @throws CSRFException|\Exception
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -70,7 +70,7 @@ class VerifyCSRFToken implements MiddlewareInterface
     /**
      * 将token添加到cookie中.
      *
-     * @throws Exception
+     * @throws \Exception
      */
     protected function addCookieToResponse(ResponseInterface $response): ResponseInterface
     {
@@ -81,7 +81,7 @@ class VerifyCSRFToken implements MiddlewareInterface
     /**
      * 生成CSRF Token.
      *
-     * @throws Exception
+     * @throws \Exception
      */
     protected function newCSRFToken(): string
     {
@@ -102,7 +102,7 @@ class VerifyCSRFToken implements MiddlewareInterface
     protected function shouldVerify(ServerRequestInterface $request): bool
     {
         if (in_array($request->getMethod(), $this->shouldVerifyMethods)) {
-            return !collect($this->except)->first(function ($pattern) use ($request) {
+            return ! collect($this->except)->first(function ($pattern) use ($request) {
                 return $request->is($pattern);
             });
         }

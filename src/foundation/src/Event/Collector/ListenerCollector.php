@@ -11,16 +11,15 @@ declare(strict_types=1);
 
 namespace Next\Foundation\Event\Collector;
 
-use Next\Foundation\Event\Attribute\Listen;
 use Next\Aop\Collector\AbstractCollector;
 use Next\Event\ListenerProvider;
+use Next\Foundation\Event\Attribute\Listen;
 use Psr\Container\ContainerExceptionInterface;
-use ReflectionException;
 
 class ListenerCollector extends AbstractCollector
 {
     /**
-     * @throws ReflectionException
+     * @throws \ReflectionException
      * @throws ContainerExceptionInterface
      */
     public static function collectClass(string $class, object $attribute): void

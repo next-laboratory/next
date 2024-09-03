@@ -34,7 +34,7 @@ if (function_exists('call') === false) {
      * @throws ContainerExceptionInterface
      * @throws ReflectionException
      */
-    function call(array|string|Closure $callback, array $arguments = []): mixed
+    function call(array|Closure|string $callback, array $arguments = []): mixed
     {
         return container()->call($callback, $arguments);
     }
@@ -46,9 +46,9 @@ if (function_exists('make') === false) {
      *
      * @param class-string<T> $id
      *
+     * @return T
      * @throws NotFoundException
      * @throws ContainerExceptionInterface|ReflectionException
-     * @return T
      */
     function make(string $id, array $parameters = [])
     {

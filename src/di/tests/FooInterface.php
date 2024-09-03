@@ -11,6 +11,4 @@ declare(strict_types=1);
 
 namespace Next\Di\Tests;
 
-interface FooInterface
-{
-}
+interface FooInterface {}

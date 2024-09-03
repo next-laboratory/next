@@ -3,15 +3,13 @@
 declare(strict_types=1);
 
 /**
- * This file is part of MarxPHP.
+ * This file is part of nextphp.
  *
  * @link     https://github.com/next-laboratory
  * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
 namespace Next\Session\Handler;
-
-use RedisException;
 
 class RedisHandler implements \SessionHandlerInterface
 {
@@ -21,7 +19,7 @@ class RedisHandler implements \SessionHandlerInterface
         protected string $host = '127.0.0.1',
         protected int $port = 6379,
         protected float $timeout = 0,
-        protected string|null $persistentId = null,
+        protected ?string $persistentId = null,
         protected int $retryInterval = 0,
         protected float $readTimeout = 0,
         protected array $context = [],
@@ -29,8 +27,7 @@ class RedisHandler implements \SessionHandlerInterface
         protected int $database = 0,
         protected string $sessionPrefix = '',
         protected int $sessionTTL = 3600,
-    ) {
-    }
+    ) {}
 
     public function close(): bool
     {
@@ -41,12 +38,12 @@ class RedisHandler implements \SessionHandlerInterface
     {
         try {
             return (bool) $this->redis->del($id);
-        } catch (RedisException) {
+        } catch (\RedisException) {
             return false;
         }
     }
 
-    public function gc(int $max_lifetime): int|false
+    public function gc(int $max_lifetime): false|int
     {
         return 1;
     }
@@ -75,14 +72,14 @@ class RedisHandler implements \SessionHandlerInterface
         return false;
     }
 
-    public function read(string $id): string|false
+    public function read(string $id): false|string
     {
         try {
             if ($data = $this->redis->get($this->normalizeId($id))) {
                 return (string) $data;
             }
             return false;
-        } catch (RedisException) {
+        } catch (\RedisException) {
             return false;
         }
     }
@@ -91,7 +88,7 @@ class RedisHandler implements \SessionHandlerInterface
     {
         try {
             return (bool) $this->redis->set($this->normalizeId($id), $data, $this->sessionTTL);
-        } catch (RedisException) {
+        } catch (\RedisException) {
             return false;
         }
     }

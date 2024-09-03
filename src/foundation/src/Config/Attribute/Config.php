@@ -11,16 +11,13 @@ declare(strict_types=1);
 
 namespace Next\Foundation\Config\Attribute;
 
-use Attribute;
 use Next\Aop\Contract\PropertyAttribute;
 use Next\Aop\Exception\PropertyHandleException;
 use Next\Config\Repository;
 use Next\Di\Reflection;
 use Psr\Container\ContainerExceptionInterface;
-use ReflectionException;
-use Throwable;
 
-#[Attribute(Attribute::TARGET_PROPERTY)]
+#[\Attribute(\Attribute::TARGET_PROPERTY)]
 class Config implements PropertyAttribute
 {
     /**
@@ -29,17 +26,15 @@ class Config implements PropertyAttribute
      */
     public function __construct(
         protected string $key,
-        protected mixed  $default = null
-    )
-    {
-    }
+        protected mixed $default = null
+    ) {}
 
     public function handle(object $object, string $property): void
     {
         try {
             $reflectionProperty = Reflection::property($object::class, $property);
             $reflectionProperty->setValue($object, $this->getValue());
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             throw new PropertyHandleException('Property assign failed. ' . $e->getMessage());
         }
     }
@@ -48,7 +43,7 @@ class Config implements PropertyAttribute
      * 获取配置值
      *
      * @throws ContainerExceptionInterface
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     protected function getValue()
     {

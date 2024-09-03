@@ -2,27 +2,32 @@
 
 declare(strict_types=1);
 
+/**
+ * This file is part of nextphp.
+ *
+ * @link     https://github.com/next-laboratory
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
+ */
+
 namespace Next\Utils;
 
-use InvalidArgumentException;
 use Next\Utils\Contract\Arrayable;
 use Next\Utils\Contract\Xmlable;
-use SimpleXMLElement;
 
 class Xml
 {
     public static function toXml($data, $parentNode = null, $root = 'root'): string
     {
         if ($data instanceof Xmlable) {
-            return (string)$data;
+            return (string) $data;
         }
         if ($data instanceof Arrayable) {
             $data = $data->toArray();
         } else {
-            $data = (array)$data;
+            $data = (array) $data;
         }
         if ($parentNode === null) {
-            $xml = new SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?>' . "<{$root}></{$root}>");
+            $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?>' . "<{$root}></{$root}>");
         } else {
             $xml = $parentNode;
         }
@@ -31,9 +36,9 @@ class Xml
                 self::toXml($value, $xml->addChild($key));
             } else {
                 if (is_numeric($key)) {
-                    $xml->addChild('item' . $key, (string)$value);
+                    $xml->addChild('item' . $key, (string) $value);
                 } else {
-                    $xml->addChild($key, (string)$value);
+                    $xml->addChild($key, (string) $value);
                 }
             }
         }
@@ -55,7 +60,7 @@ class Xml
         }
 
         if ($respObject === false) {
-            throw new InvalidArgumentException('Syntax error.');
+            throw new \InvalidArgumentException('Syntax error.');
         }
 
         return json_decode(json_encode($respObject), true);

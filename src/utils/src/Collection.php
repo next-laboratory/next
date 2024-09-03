@@ -12,15 +12,12 @@ declare(strict_types=1);
 namespace Next\Utils;
 
 use ArrayAccess;
-use ArrayIterator;
 use Next\Utils\Contract\Arrayable;
 use Next\Utils\Contract\CanBeEscapedWhenCastToString;
 use Next\Utils\Contract\Enumerable;
 use Next\Utils\Exception\ItemNotFoundException;
 use Next\Utils\Exception\MultipleItemsFoundException;
 use Next\Utils\Traits\EnumeratesValues;
-use stdClass;
-use Traversable;
 
 /**
  * @template TKey of array-key
@@ -29,7 +26,7 @@ use Traversable;
  * @implements ArrayAccess<TKey, TValue>
  * @implements Enumerable<TKey, TValue>
  */
-class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerable
+class Collection implements \ArrayAccess, CanBeEscapedWhenCastToString, Enumerable
 {
     /*
      * @use Traits\EnumeratesValues<TKey, TValue>
@@ -90,7 +87,7 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
     /**
      * Get the average value of a given key.
      *
-     * @param (callable(TValue): float|int)|string|null $callback
+     * @param null|(callable(TValue): float|int)|string $callback
      *
      * @return null|float|int
      */
@@ -179,9 +176,9 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
     /**
      * Determine if an item exists in the collection.
      *
-     * @param (callable(TValue, TKey): bool)|TValue|string $key
-     * @param mixed $operator
-     * @param mixed $value
+     * @param (callable(TValue, TKey): bool)|string|TValue $key
+     * @param mixed                                        $operator
+     * @param mixed                                        $value
      *
      * @return bool
      */
@@ -189,7 +186,7 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
     {
         if (func_num_args() === 1) {
             if ($this->useAsCallable($key)) {
-                $placeholder = new stdClass();
+                $placeholder = new \stdClass();
 
                 return $this->first($key, $placeholder) !== $placeholder;
             }
@@ -310,8 +307,8 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
     /**
      * Retrieve duplicate items from the collection.
      *
-     * @param (callable(TValue): bool)|string|null $callback
-     * @param bool $strict
+     * @param null|(callable(TValue): bool)|string $callback
+     * @param bool                                 $strict
      *
      * @return static
      */
@@ -339,7 +336,7 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
     /**
      * Retrieve duplicate items from the collection using strict comparison.
      *
-     * @param (callable(TValue): bool)|string|null $callback
+     * @param null|(callable(TValue): bool)|string $callback
      *
      * @return static
      */
@@ -369,11 +366,11 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
     /**
      * Run a filter over each of the items.
      *
-     * @param (callable(TValue, TKey): bool)|null $callback
+     * @param null|(callable(TValue, TKey): bool) $callback
      *
      * @return static
      */
-    public function filter(callable $callback = null)
+    public function filter(?callable $callback = null)
     {
         if ($callback) {
             return new static(Arr::where($this->items, $callback));
@@ -387,12 +384,12 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
      *
      * @template TFirstDefault
      *
-     * @param (callable(TValue, TKey): bool)|null       $callback
-     * @param TFirstDefault|(\Closure(): TFirstDefault) $default
+     * @param null|(callable(TValue, TKey): bool)       $callback
+     * @param (\Closure(): TFirstDefault)|TFirstDefault $default
      *
      * @return TFirstDefault|TValue
      */
-    public function first(callable $callback = null, $default = null)
+    public function first(?callable $callback = null, $default = null)
     {
         return Arr::first($this->items, $callback, $default);
     }
@@ -440,8 +437,8 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
      *
      * @template TGetDefault
      *
-     * @param TKey $key
-     * @param TGetDefault|(\Closure(): TGetDefault) $default
+     * @param TKey                                  $key
+     * @param (\Closure(): TGetDefault)|TGetDefault $default
      *
      * @return TGetDefault|TValue
      */
@@ -476,8 +473,8 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
     /**
      * Group an associative array by a field or using a callback.
      *
-     * @param (callable(TValue, TKey): array-key)|array|string $groupBy
-     * @param bool $preserveKeys
+     * @param array|(callable(TValue, TKey): array-key)|string $groupBy
+     * @param bool                                             $preserveKeys
      *
      * @return static<array-key, static<array-key, TValue>>
      */
@@ -527,7 +524,7 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
     /**
      * Key an associative array by a field or using a callback.
      *
-     * @param (callable(TValue, TKey): array-key)|array|string $keyBy
+     * @param array|(callable(TValue, TKey): array-key)|string $keyBy
      *
      * @return static<array-key, TValue>
      */
@@ -710,12 +707,12 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
      *
      * @template TLastDefault
      *
-     * @param (callable(TValue, TKey): bool)|null     $callback
-     * @param TLastDefault|(\Closure(): TLastDefault) $default
+     * @param null|(callable(TValue, TKey): bool)     $callback
+     * @param (\Closure(): TLastDefault)|TLastDefault $default
      *
      * @return TLastDefault|TValue
      */
-    public function last(callable $callback = null, $default = null)
+    public function last(?callable $callback = null, $default = null)
     {
         return Arr::last($this->items, $callback, $default);
     }
@@ -988,8 +985,8 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
      *
      * @template TPullDefault
      *
-     * @param TKey $key
-     * @param TPullDefault|(\Closure(): TPullDefault) $default
+     * @param TKey                                    $key
+     * @param (\Closure(): TPullDefault)|TPullDefault $default
      *
      * @return TPullDefault|TValue
      */
@@ -1016,10 +1013,10 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
     /**
      * Get one or a specified number of items randomly from the collection.
      *
-     * @param (callable(TValue): int)|int|null $number
+     * @param null|(callable(TValue): int)|int $number
      *
-     * @throws \InvalidArgumentException
      * @return static<int, TValue>|TValue
+     * @throws \InvalidArgumentException
      */
     public function random($number = null)
     {
@@ -1071,8 +1068,8 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
     /**
      * Search the collection for a given value and return the corresponding key if successful.
      *
-     * @param TValue|(callable(TValue,TKey): bool) $value
-     * @param bool $strict
+     * @param (callable(TValue,TKey): bool)|TValue $value
+     * @param bool                                 $strict
      *
      * @return bool|TKey
      */
@@ -1251,12 +1248,12 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
      * Get the first item in the collection, but only if exactly one item exists. Otherwise, throw an exception.
      *
      * @param (callable(TValue, TKey): bool)|string $key
-     * @param mixed $operator
-     * @param mixed $value
+     * @param mixed                                 $operator
+     * @param mixed                                 $value
      *
+     * @return TValue
      * @throws ItemNotFoundException
      * @throws MultipleItemsFoundException
-     * @return TValue
      */
     public function sole($key = null, $operator = null, $value = null)
     {
@@ -1283,11 +1280,11 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
      * Get the first item in the collection but throw an exception if no matching items exist.
      *
      * @param (callable(TValue, TKey): bool)|string $key
-     * @param mixed $operator
-     * @param mixed $value
+     * @param mixed                                 $operator
+     * @param mixed                                 $value
      *
-     * @throws ItemNotFoundException
      * @return TValue
+     * @throws ItemNotFoundException
      */
     public function firstOrFail($key = null, $operator = null, $value = null)
     {
@@ -1295,7 +1292,7 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
             ? $this->operatorForWhere(...func_get_args())
             : $key;
 
-        $placeholder = new stdClass();
+        $placeholder = new \stdClass();
 
         $item = $this->first($filter, $placeholder);
 
@@ -1345,7 +1342,7 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
     /**
      * Sort through each item with a callback.
      *
-     * @param (callable(TValue, TValue): int)|null|int $callback
+     * @param null|(callable(TValue, TValue): int)|int $callback
      *
      * @return static
      */
@@ -1379,9 +1376,9 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
     /**
      * Sort the collection using the given callback.
      *
-     * @param array<array-key, (callable(TValue, TValue): mixed)|(callable(TValue, TKey): mixed)|string|array{string, string}>|(callable(TValue, TKey): mixed)|string $callback
-     * @param int  $options
-     * @param bool $descending
+     * @param array<array-key, array{string, string}|(callable(TValue, TKey): mixed)|(callable(TValue, TValue): mixed)|string>|(callable(TValue, TKey): mixed)|string $callback
+     * @param int                                                                                                                                                     $options
+     * @param bool                                                                                                                                                    $descending
      *
      * @return static
      */
@@ -1418,8 +1415,8 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
     /**
      * Sort the collection in descending order using the given callback.
      *
-     * @param array<array-key, (callable(TValue, TValue): mixed)|(callable(TValue, TKey): mixed)|string|array{string, string}>|(callable(TValue, TKey): mixed)|string $callback
-     * @param int $options
+     * @param array<array-key, array{string, string}|(callable(TValue, TKey): mixed)|(callable(TValue, TValue): mixed)|string>|(callable(TValue, TKey): mixed)|string $callback
+     * @param int                                                                                                                                                     $options
      *
      * @return static
      */
@@ -1558,8 +1555,8 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
     /**
      * Return only unique items from the collection array.
      *
-     * @param (callable(TValue, TKey): mixed)|string|null $key
-     * @param bool $strict
+     * @param null|(callable(TValue, TKey): mixed)|string $key
+     * @param bool                                        $strict
      *
      * @return static
      */
@@ -1637,9 +1634,9 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
      *
      * @return \ArrayIterator<TKey, TValue>
      */
-    public function getIterator(): Traversable
+    public function getIterator(): \Traversable
     {
-        return new ArrayIterator($this->items);
+        return new \ArrayIterator($this->items);
     }
 
     /**
@@ -1653,7 +1650,7 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
     /**
      * Count the number of items in the collection by a field or using a callback.
      *
-     * @param (callable(TValue, TKey): mixed)|string|null $countBy
+     * @param null|(callable(TValue, TKey): mixed)|string $countBy
      *
      * @return static<array-key, int>
      */
@@ -1756,7 +1753,7 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
     /**
      * Sort the collection using multiple comparisons.
      *
-     * @param array<array-key, (callable(TValue, TValue): mixed)|(callable(TValue, TKey): mixed)|string|array{string, string}> $comparisons
+     * @param array<array-key, array{string, string}|(callable(TValue, TKey): mixed)|(callable(TValue, TValue): mixed)|string> $comparisons
      *
      * @return static
      */

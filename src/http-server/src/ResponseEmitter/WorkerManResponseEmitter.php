@@ -48,7 +48,7 @@ class WorkerManResponseEmitter implements ResponseEmitterInterface
                     $cookie->getSameSite()
                 );
             }
-            $sender->send($response->withBody((string)$body?->getContents()));
+            $sender->send($response->withBody((string) $body?->getContents()));
         }
         $body?->close();
         $sender->close();

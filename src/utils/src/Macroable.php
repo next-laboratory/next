@@ -11,12 +11,6 @@ declare(strict_types=1);
 
 namespace Next\Utils;
 
-use BadMethodCallException;
-use Closure;
-use ReflectionClass;
-use ReflectionException;
-use ReflectionMethod;
-
 /**
  * Most of the methods in this file come from illuminate
  * thanks Laravel Team provide such a useful class.
@@ -31,13 +25,13 @@ trait Macroable
     /**
      * Dynamically handle calls to the class.
      *
-     * @throws BadMethodCallException
      * @return mixed
+     * @throws \BadMethodCallException
      */
     public static function __callStatic(string $method, array $parameters)
     {
         if (! static::hasMacro($method)) {
-            throw new BadMethodCallException(sprintf(
+            throw new \BadMethodCallException(sprintf(
                 'Method %s::%s does not exist.',
                 static::class,
                 $method
@@ -46,7 +40,7 @@ trait Macroable
 
         $macro = static::$macros[$method];
 
-        if ($macro instanceof Closure) {
+        if ($macro instanceof \Closure) {
             $macro = $macro->bindTo(null, static::class);
         }
 
@@ -56,13 +50,13 @@ trait Macroable
     /**
      * Dynamically handle calls to the class.
      *
-     * @throws BadMethodCallException
      * @return mixed
+     * @throws \BadMethodCallException
      */
     public function __call(string $method, array $parameters)
     {
         if (! static::hasMacro($method)) {
-            throw new BadMethodCallException(sprintf(
+            throw new \BadMethodCallException(sprintf(
                 'Method %s::%s does not exist.',
                 static::class,
                 $method
@@ -71,7 +65,7 @@ trait Macroable
 
         $macro = static::$macros[$method];
 
-        if ($macro instanceof Closure) {
+        if ($macro instanceof \Closure) {
             $macro = $macro->bindTo($this, static::class);
         }
 
@@ -89,12 +83,12 @@ trait Macroable
     /**
      * Mix another object into the class.
      *
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public static function mixin(object $mixin, bool $replace = true): void
     {
-        $methods = (new ReflectionClass($mixin))->getMethods(
-            ReflectionMethod::IS_PUBLIC | ReflectionMethod::IS_PROTECTED
+        $methods = (new \ReflectionClass($mixin))->getMethods(
+            \ReflectionMethod::IS_PUBLIC | \ReflectionMethod::IS_PROTECTED
         );
 
         foreach ($methods as $method) {

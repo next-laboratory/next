@@ -13,6 +13,4 @@ namespace Next\Routing\Exception;
 
 use Next\Http\Message\Exception\HttpException;
 
-class RouteNotFoundException extends HttpException
-{
-}
+class RouteNotFoundException extends HttpException {}

@@ -20,7 +20,6 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use ReflectionException;
 
 class Kernel implements HttpKernelInterface
 {
@@ -30,9 +29,8 @@ class Kernel implements HttpKernelInterface
     protected array $middlewares = [];
 
     /**
-     * @param ContainerInterface       $container       容器
-     * @param RouteCollection          $routeCollection 路由收集器
-     * @param RouteDispatcherInterface $routeDispatcher
+     * @param ContainerInterface $container       容器
+     * @param RouteCollection    $routeCollection 路由收集器
      */
     final public function __construct(
         protected ContainerInterface $container,
@@ -44,7 +42,7 @@ class Kernel implements HttpKernelInterface
 
     /**
      * @throws ContainerExceptionInterface
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
@@ -71,7 +69,5 @@ class Kernel implements HttpKernelInterface
     /**
      * 路由注册.
      */
-    protected function map(Router $router): void
-    {
-    }
+    protected function map(Router $router): void {}
 }

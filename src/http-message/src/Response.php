@@ -83,7 +83,7 @@ class Response extends Message implements ResponseInterface
     public function __construct(
         protected int $statusCode = 200,
         array $headers = [],
-        null|string|StreamInterface $body = null,
+        null|StreamInterface|string $body = null,
         protected string $protocolVersion = '1.1'
     ) {
         $this->reasonPhrase = static::PHRASES[$statusCode] ?? '';
@@ -91,17 +91,11 @@ class Response extends Message implements ResponseInterface
         $this->headers = new HeaderBag($headers);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getStatusCode(): int
     {
         return $this->statusCode;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withStatus($code, $reasonPhrase = ''): ResponseInterface
     {
         if ($code === $this->statusCode) {
@@ -119,9 +113,6 @@ class Response extends Message implements ResponseInterface
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getReasonPhrase(): string
     {
         return $this->reasonPhrase ?: (self::PHRASES[$this->getStatusCode()] ?? '');
@@ -204,7 +195,7 @@ class Response extends Message implements ResponseInterface
     /**
      * Is the response a redirect of some form?
      */
-    public function isRedirect(string $location = null): bool
+    public function isRedirect(?string $location = null): bool
     {
         return in_array($this->statusCode, [201, 301, 302, 303, 307, 308])
             && ($location === null || $location == $this->getHeaderLine('Location'));

@@ -11,15 +11,14 @@ declare(strict_types=1);
 
 namespace Next\Foundation\Routing\Collector;
 
-use Next\Foundation\Routing\Attribute\Controller;
-use Next\Foundation\Routing\Attribute\RequestMapping;
 use Next\Aop\Collector\AbstractCollector;
 use Next\Di\Context;
 use Next\Di\Exception\NotFoundException;
+use Next\Foundation\Routing\Attribute\Controller;
+use Next\Foundation\Routing\Attribute\RequestMapping;
 use Next\Routing\RouteCollection;
 use Next\Routing\Router;
 use Psr\Container\ContainerExceptionInterface;
-use ReflectionException;
 
 class RouteCollector extends AbstractCollector
 {
@@ -35,7 +34,7 @@ class RouteCollector extends AbstractCollector
 
     /**
      * @throws ContainerExceptionInterface
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public static function collectClass(string $class, object $attribute): void
     {
@@ -52,7 +51,7 @@ class RouteCollector extends AbstractCollector
      */
     public static function collectMethod(string $class, string $method, object $attribute): void
     {
-        if ($attribute instanceof RequestMapping && self::$class === $class && !is_null(self::$router)) {
+        if ($attribute instanceof RequestMapping && self::$class === $class && ! is_null(self::$router)) {
             self::$router->request($attribute->path, [$class, $method], $attribute->methods)->middleware(...$attribute->middlewares);
         }
     }

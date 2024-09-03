@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * This file is part of MarxPHP.
+ * This file is part of nextphp.
  *
  * @link     https://github.com/next-laboratory
  * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Next\Cache\Driver;
 
 use Next\Cache\CacheException;
-use Throwable;
 
 class FileDriver extends AbstractDriver
 {
@@ -48,7 +47,7 @@ class FileDriver extends AbstractDriver
                 return true;
             }
             return false;
-        } catch (Throwable) {
+        } catch (\Throwable) {
             return false;
         }
     }
@@ -71,7 +70,7 @@ class FileDriver extends AbstractDriver
         try {
             $this->unlink($this->path);
             return true;
-        } catch (Throwable) {
+        } catch (\Throwable) {
             return false;
         }
     }

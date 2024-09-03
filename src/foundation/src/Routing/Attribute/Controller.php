@@ -11,9 +11,7 @@ declare(strict_types=1);
 
 namespace Next\Foundation\Routing\Attribute;
 
-use Attribute;
-
-#[Attribute(Attribute::TARGET_CLASS)]
+#[\Attribute(\Attribute::TARGET_CLASS)]
 class Controller
 {
     /**
@@ -23,9 +21,7 @@ class Controller
      */
     public function __construct(
         public string $prefix = '/',
-        public array  $middlewares = [],
-        public array  $patterns = [],
-    )
-    {
-    }
+        public array $middlewares = [],
+        public array $patterns = [],
+    ) {}
 }

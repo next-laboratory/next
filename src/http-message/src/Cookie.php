@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace Next\Http\Message;
 
-use InvalidArgumentException;
-
 class Cookie
 {
     public const SAME_SITE_LAX    = 'lax';
@@ -32,7 +30,7 @@ class Cookie
         protected string $sameSite = '',
     ) {
         if ($this->sameSite && ! in_array(strtolower($sameSite), [self::SAME_SITE_LAX, self::SAME_SITE_NONE, self::SAME_SITE_STRICT])) {
-            throw new InvalidArgumentException('The "sameSite" parameter value is not valid.');
+            throw new \InvalidArgumentException('The "sameSite" parameter value is not valid.');
         }
     }
 

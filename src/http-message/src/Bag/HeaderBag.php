@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace Next\Http\Message\Bag;
 
-use InvalidArgumentException;
-
 class HeaderBag extends ServerBag
 {
     protected array $map = [];
@@ -64,7 +62,7 @@ class HeaderBag extends ServerBag
     {
         $uppercaseKey = strtoupper($key);
         if (isset($this->map[$uppercaseKey])) {
-            array_push($this->parameters[$this->map[$uppercaseKey]], ...(array)$value);
+            array_push($this->parameters[$this->map[$uppercaseKey]], ...(array) $value);
         } else {
             $this->map[$uppercaseKey] = $key;
             $this->parameters[$key]   = $this->formatValue($value);
@@ -72,17 +70,15 @@ class HeaderBag extends ServerBag
     }
 
     /**
-     * @param $value
-     *
      * @return array|string[]
      */
     protected function formatValue($value): array
     {
         if (is_scalar($value)) {
-            $value = [(string)$value];
+            $value = [(string) $value];
         }
-        if (!is_array($value)) {
-            throw new InvalidArgumentException('The given header cannot be set.');
+        if (! is_array($value)) {
+            throw new \InvalidArgumentException('The given header cannot be set.');
         }
 
         return array_values($value);

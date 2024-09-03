@@ -16,7 +16,6 @@ use Next\Utils\Composer;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ClassConstFetch;
-use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
@@ -30,17 +29,12 @@ use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\TraitUse;
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\ParserFactory;
-use ReflectionException;
-use ReflectionNamedType;
-use ReflectionUnionType;
 
 class PropertyHandlerVisitor extends NodeVisitorAbstract
 {
     public function __construct(
         protected Metadata $metadata
-    )
-    {
-    }
+    ) {}
 
     public function enterNode(Node $node)
     {
@@ -50,7 +44,7 @@ class PropertyHandlerVisitor extends NodeVisitorAbstract
     }
 
     /**
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public function leaveNode(Node $node)
     {
@@ -79,11 +73,11 @@ class PropertyHandlerVisitor extends NodeVisitorAbstract
                 foreach ($reflectionConstructor->getParameters() as $key => $reflectionParameter) {
                     $type = $reflectionParameter->getType();
                     if (is_null($type)
-                        || ($type instanceof ReflectionNamedType && ($type->isBuiltin() || $type->getName() === 'Closure'))
+                        || ($type instanceof \ReflectionNamedType && ($type->isBuiltin() || $type->getName() === 'Closure'))
                     ) {
                         continue;
                     }
-                    if ($type instanceof ReflectionUnionType) {
+                    if ($type instanceof \ReflectionUnionType) {
                         $unionType = [];
                         foreach ($type->getTypes() as $reflectionNamedType) {
                             $unionType[] = ($reflectionNamedType->isBuiltin() ? '' : '\\') . $reflectionNamedType->getName();
@@ -96,7 +90,7 @@ class PropertyHandlerVisitor extends NodeVisitorAbstract
                 }
             }
             $c = [];
-            if (!$this->metadata->hasConstructor) {
+            if (! $this->metadata->hasConstructor) {
                 $constructor        = new ClassMethod('__construct', [
                     'params' => $params,
                 ]);

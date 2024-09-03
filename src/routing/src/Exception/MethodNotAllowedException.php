@@ -13,6 +13,4 @@ namespace Next\Routing\Exception;
 
 use Next\Http\Message\Exception\HttpException;
 
-class MethodNotAllowedException extends HttpException
-{
-}
+class MethodNotAllowedException extends HttpException {}

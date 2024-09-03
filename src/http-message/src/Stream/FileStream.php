@@ -11,35 +11,37 @@ declare(strict_types=1);
 
 namespace Next\Http\Message\Stream;
 
-use BadMethodCallException;
 use Psr\Http\Message\StreamInterface;
-use RuntimeException;
-use SplFileInfo;
-use Throwable;
 
 class FileStream implements StreamInterface
 {
-    protected int         $size;
-    protected SplFileInfo $file;
-    /** @var resource $resource */
+    protected int $size;
+
+    protected \SplFileInfo $file;
+
+    /** @var resource */
     protected $resource;
 
     /**
      * SwooleFileStream constructor.
      */
     public function __construct(
-        SplFileInfo|string $file,
-        protected int      $offset = 0,
-        protected int      $length = 0,
-    )
-    {
-        if (!$file instanceof SplFileInfo) {
-            $file = new SplFileInfo($file);
+        \SplFileInfo|string $file,
+        protected int $offset = 0,
+        protected int $length = 0,
+    ) {
+        if (! $file instanceof \SplFileInfo) {
+            $file = new \SplFileInfo($file);
         }
-        if (!$file->isReadable()) {
-            throw new RuntimeException('File must be readable.');
+        if (! $file->isReadable()) {
+            throw new \RuntimeException('File must be readable.');
         }
         $this->file = $file;
+    }
+
+    public function __destruct()
+    {
+        $this->close();
     }
 
     /**
@@ -56,14 +58,9 @@ class FileStream implements StreamInterface
     {
         try {
             return $this->getContents();
-        } catch (Throwable) {
+        } catch (\Throwable) {
             return '';
         }
-    }
-
-    public function __destruct()
-    {
-        $this->close();
     }
 
     /**
@@ -86,7 +83,7 @@ class FileStream implements StreamInterface
      */
     public function detach()
     {
-        throw new BadMethodCallException('Not implemented');
+        throw new \BadMethodCallException('Not implemented');
     }
 
     /**
@@ -96,7 +93,7 @@ class FileStream implements StreamInterface
      */
     public function getSize(): ?int
     {
-        if (!$this->size) {
+        if (! $this->size) {
             $this->size = filesize($this->getContents());
         }
         return $this->size;
@@ -105,32 +102,28 @@ class FileStream implements StreamInterface
     /**
      * Returns the current position of the file read/write pointer.
      *
-     * @return int Position of the file pointer
-     * @throws RuntimeException on error
+     * @return int               Position of the file pointer
+     * @throws \RuntimeException on error
      */
     public function tell(): int
     {
-        throw new BadMethodCallException('Not implemented');
+        throw new \BadMethodCallException('Not implemented');
     }
 
     /**
      * Returns true if the stream is at the end of the stream.
-     *
-     * @return bool
      */
     public function eof(): bool
     {
-        throw new BadMethodCallException('Not implemented');
+        throw new \BadMethodCallException('Not implemented');
     }
 
     /**
      * Returns whether the stream is seekable.
-     *
-     * @return bool
      */
     public function isSeekable(): bool
     {
-        throw new BadMethodCallException('Not implemented');
+        throw new \BadMethodCallException('Not implemented');
     }
 
     /**
@@ -145,11 +138,11 @@ class FileStream implements StreamInterface
      *                    offset bytes SEEK_CUR: Set position to current location plus offset
      *                    SEEK_END: Set position to end-of-stream plus offset.
      *
-     * @throws RuntimeException on failure
+     * @throws \RuntimeException on failure
      */
     public function seek($offset, $whence = SEEK_SET): void
     {
-        throw new BadMethodCallException('Not implemented');
+        throw new \BadMethodCallException('Not implemented');
     }
 
     /**
@@ -157,19 +150,17 @@ class FileStream implements StreamInterface
      * If the stream is not seekable, this method will raise an exception;
      * otherwise, it will perform a seek(0).
      *
-     * @throws RuntimeException on failure
+     * @throws \RuntimeException on failure
      * @see http://www.php.net/manual/en/function.fseek.php
      * @see seek()
      */
     public function rewind(): void
     {
-        throw new BadMethodCallException('Not implemented');
+        throw new \BadMethodCallException('Not implemented');
     }
 
     /**
      * Returns whether the stream is writable.
-     *
-     * @return bool
      */
     public function isWritable(): bool
     {
@@ -181,18 +172,16 @@ class FileStream implements StreamInterface
      *
      * @param string $string the string that is to be written
      *
-     * @return int returns the number of bytes written to the stream
-     * @throws RuntimeException on failure
+     * @return int               returns the number of bytes written to the stream
+     * @throws \RuntimeException on failure
      */
     public function write($string): int
     {
-        throw new BadMethodCallException('Not implemented');
+        throw new \BadMethodCallException('Not implemented');
     }
 
     /**
      * Returns whether or not the stream is readable.
-     *
-     * @return bool
      */
     public function isReadable(): bool
     {
@@ -206,26 +195,25 @@ class FileStream implements StreamInterface
      *                    them. Fewer than $length bytes may be returned if underlying stream
      *                    call returns fewer bytes.
      *
-     * @return string returns the data read from the stream, or an empty string
-     *                if no bytes are available
-     * @throws RuntimeException if an error occurs
+     * @return string            returns the data read from the stream, or an empty string
+     *                           if no bytes are available
+     * @throws \RuntimeException if an error occurs
      */
     public function read($length): string
     {
-        throw new BadMethodCallException('Not implemented');
+        throw new \BadMethodCallException('Not implemented');
     }
 
     /**
      * Returns the remaining contents in a string.
      *
-     * @return string
-     * @throws RuntimeException if unable to read or an error occurs while
+     * @throws \RuntimeException if unable to read or an error occurs while
      *                           reading
      */
     public function getContents(): string
     {
         if (false === $contents = stream_get_contents($this->getResource(), $this->getLength() ?: null, $this->getOffset() ?: -1)) {
-            throw new RuntimeException('Unable to read stream contents');
+            throw new \RuntimeException('Unable to read stream contents');
         }
         return $contents;
     }
@@ -246,7 +234,7 @@ class FileStream implements StreamInterface
     public function getMetadata($key = null)
     {
         $resource = $this->getResource();
-        if (!isset($resource)) {
+        if (! isset($resource)) {
             return $key ? null : [];
         }
 
@@ -264,17 +252,11 @@ class FileStream implements StreamInterface
         return $this->file->getPathname();
     }
 
-    /**
-     * @return int
-     */
     public function getLength(): int
     {
         return $this->length;
     }
 
-    /**
-     * @return int
-     */
     public function getOffset(): int
     {
         return $this->offset;
@@ -287,8 +269,8 @@ class FileStream implements StreamInterface
     {
         if (is_null($this->resource)) {
             $filename = $this->getFilename();
-            if (!$this->resource = fopen($filename, 'r')) {
-                throw new RuntimeException('Open file failed: ' . $filename);
+            if (! $this->resource = fopen($filename, 'r')) {
+                throw new \RuntimeException('Open file failed: ' . $filename);
             }
             fseek($this->resource, $this->offset);
         }

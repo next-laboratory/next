@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Next\Utils;
 
-use Countable;
 use Doctrine\Inflector\Inflector;
 use Doctrine\Inflector\InflectorFactory;
 
@@ -71,7 +70,7 @@ class Pluralizer
     /**
      * Get the plural form of an English word.
      */
-    public static function plural(string $value, Countable|array|int $count = 2): string
+    public static function plural(string $value, array|\Countable|int $count = 2): string
     {
         if (is_countable($count)) {
             $count = count($count);

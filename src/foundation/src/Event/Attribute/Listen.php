@@ -11,9 +11,5 @@ declare(strict_types=1);
 
 namespace Next\Foundation\Event\Attribute;
 
-use Attribute;
-
-#[Attribute(Attribute::TARGET_CLASS)]
-class Listen
-{
-}
+#[\Attribute(\Attribute::TARGET_CLASS)]
+class Listen {}

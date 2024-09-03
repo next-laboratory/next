@@ -11,13 +11,10 @@ declare(strict_types=1);
 
 namespace Next\Routing;
 
-use ArrayIterator;
-use Countable;
-use IteratorAggregate;
 use Next\Http\Message\Contract\StatusCodeInterface;
 use Next\Routing\Exception\MethodNotAllowedException;
 
-class RouteCollection implements IteratorAggregate, Countable
+class RouteCollection implements \IteratorAggregate, \Countable
 {
     /**
      * 未分组的全部路由.
@@ -62,10 +59,10 @@ class RouteCollection implements IteratorAggregate, Countable
     }
 
     /**
-     * @return ArrayIterator<string, Route>
+     * @return \ArrayIterator<string, Route>
      */
-    public function getIterator(): ArrayIterator
+    public function getIterator(): \ArrayIterator
     {
-        return new ArrayIterator($this->routes);
+        return new \ArrayIterator($this->routes);
     }
 }

@@ -11,12 +11,6 @@ declare(strict_types=1);
 
 namespace Next\Routing;
 
-use Closure;
-
-use function preg_replace_callback;
-use function sprintf;
-use function trim;
-
 class Route
 {
     /**
@@ -42,19 +36,19 @@ class Route
     public function __construct(
         protected array $methods,
         protected string $path,
-        protected Closure|array $action,
+        protected array|\Closure $action,
         protected array $patterns = [],
         protected array $middlewares = []
     ) {
-        $compiledPath       = preg_replace_callback(sprintf('#%s#', self::VARIABLE_REGEX), function ($matches) {
+        $compiledPath       = \preg_replace_callback(\sprintf('#%s#', self::VARIABLE_REGEX), function ($matches) {
             $name           = $matches[1];
             if (isset($matches[2])) {
                 $this->patterns[$name] = $matches[2];
             }
             $this->setParameter($name, null);
-            return sprintf('(?P<%s>%s)', $name, $this->getPattern($name));
-        }, $this->path      = '/' . trim($this->path, '/'));
-        $this->compiledPath = sprintf('#^%s$#iU', $compiledPath);
+            return \sprintf('(?P<%s>%s)', $name, $this->getPattern($name));
+        }, $this->path      = '/' . \trim($this->path, '/'));
+        $this->compiledPath = \sprintf('#^%s$#iU', $compiledPath);
     }
 
     /**
@@ -143,7 +137,7 @@ class Route
         return $this->methods;
     }
 
-    public function getAction(): array|string|Closure
+    public function getAction(): array|\Closure|string
     {
         return $this->action;
     }

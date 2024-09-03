@@ -11,15 +11,12 @@ declare(strict_types=1);
 
 namespace Next\Foundation\Di\Attribute;
 
-use Attribute;
 use Next\Aop\Contract\PropertyAttribute;
 use Next\Aop\Exception\PropertyHandleException;
 use Next\Di\Reflection;
 use Psr\Container\ContainerExceptionInterface;
-use ReflectionException;
-use Throwable;
 
-#[Attribute(Attribute::TARGET_PROPERTY)]
+#[\Attribute(\Attribute::TARGET_PROPERTY)]
 class Inject implements PropertyAttribute
 {
     /**
@@ -27,25 +24,23 @@ class Inject implements PropertyAttribute
      */
     public function __construct(
         protected string $id = ''
-    )
-    {
-    }
+    ) {}
 
     public function handle(object $object, string $property): void
     {
         try {
             $reflectionProperty = Reflection::property($object::class, $property);
-            if ((!is_null($type = $reflectionProperty->getType()) && $type = $type->getName()) || $type = $this->id) {
+            if ((! is_null($type = $reflectionProperty->getType()) && $type = $type->getName()) || $type = $this->id) {
                 $reflectionProperty->setValue($object, $this->getBinding($type));
             }
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             throw new PropertyHandleException('Property assign failed. ' . $e->getMessage());
         }
     }
 
     /**
      * @throws ContainerExceptionInterface
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     protected function getBinding(string $type): object
     {

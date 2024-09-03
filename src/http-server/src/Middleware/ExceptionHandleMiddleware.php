@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * This file is part of MarxPHP.
+ * This file is part of nextphp.
  *
  * @link     https://github.com/next-laboratory
  * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Next\Http\Server\Middleware;
 
-use Closure;
 use Next\Http\Message\Contract\StatusCodeInterface;
 use Next\Http\Message\Exception\HttpException;
 use Next\Http\Message\Response;
@@ -32,17 +31,6 @@ class ExceptionHandleMiddleware implements MiddlewareInterface
 
     protected array $renderCallbacks = [];
 
-    protected function renderable(callable $renderUsing)
-    {
-        if (!$renderUsing instanceof Closure) {
-            $renderUsing = $renderUsing(...);
-        }
-
-        $this->renderCallbacks[] = $renderUsing;
-
-        return $this;
-    }
-
     /**
      * @throws \Throwable
      */
@@ -56,19 +44,28 @@ class ExceptionHandleMiddleware implements MiddlewareInterface
             restore_error_handler();
             return $response;
         } catch (\Throwable $e) {
-            if (!$this->shouldntReport($e)) {
+            if (! $this->shouldntReport($e)) {
                 $this->report($e, $request);
             }
             return $this->render($e, $request);
         }
     }
 
+    protected function renderable(callable $renderUsing)
+    {
+        if (! $renderUsing instanceof \Closure) {
+            $renderUsing = $renderUsing(...);
+        }
+
+        $this->renderCallbacks[] = $renderUsing;
+
+        return $this;
+    }
+
     /**
      * 报告异常.
      */
-    protected function report(\Throwable $e, ServerRequestInterface $request): void
-    {
-    }
+    protected function report(\Throwable $e, ServerRequestInterface $request): void {}
 
     /**
      * 将异常转为ResponseInterface对象
@@ -118,7 +115,7 @@ HTML;
      */
     protected function shouldntReport(\Throwable $e): bool
     {
-        return !is_null(Arr::first($this->dontReport, fn($type) => $e instanceof $type));
+        return ! is_null(Arr::first($this->dontReport, fn ($type) => $e instanceof $type));
     }
 
     /**

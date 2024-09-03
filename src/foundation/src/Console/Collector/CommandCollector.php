@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace Next\Foundation\Console\Collector;
 
-use Next\Foundation\Console\Attribute\Command;
 use Next\Aop\Collector\AbstractCollector;
+use Next\Foundation\Console\Attribute\Command;
 
 class CommandCollector extends AbstractCollector
 {
@@ -27,7 +27,7 @@ class CommandCollector extends AbstractCollector
 
     public static function add(string $class): void
     {
-        if (!in_array($class, self::$container)) {
+        if (! in_array($class, self::$container)) {
             self::$container[] = $class;
         }
     }

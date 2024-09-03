@@ -11,12 +11,6 @@ declare(strict_types=1);
 
 namespace Next\Routing;
 
-use Closure;
-use InvalidArgumentException;
-
-use function array_unique;
-use function sprintf;
-
 class Router
 {
     protected const ALL_METHODS = ['GET', 'HEAD', 'POST', 'OPTIONS', 'PUT', 'PATCH', 'DELETE'];
@@ -41,10 +35,10 @@ class Router
      * Allow almost all methods.
      * For example: $router->any('/', [IndexController@class, 'index']).
      *
-     * @param string               $path   the request path
-     * @param array|Closure|string $action the handling method
+     * @param string                $path   the request path
+     * @param array|\Closure|string $action the handling method
      */
-    public function any(string $path, array|Closure|string $action): Route
+    public function any(string $path, array|\Closure|string $action): Route
     {
         return $this->request($path, $action, self::ALL_METHODS);
     }
@@ -52,7 +46,7 @@ class Router
     /**
      * Method PATCH.
      */
-    public function patch(string $uri, string|array|Closure $action): Route
+    public function patch(string $uri, array|\Closure|string $action): Route
     {
         return $this->request($uri, $action, ['PATCH']);
     }
@@ -60,7 +54,7 @@ class Router
     /**
      * Method OPTIONS.
      */
-    public function options(string $uri, string|array|Closure $action): Route
+    public function options(string $uri, array|\Closure|string $action): Route
     {
         return $this->request($uri, $action, ['OPTIONS']);
     }
@@ -68,7 +62,7 @@ class Router
     /**
      * Method PUT.
      */
-    public function put(string $uri, string|array|Closure $action): Route
+    public function put(string $uri, array|\Closure|string $action): Route
     {
         return $this->request($uri, $action, ['PUT']);
     }
@@ -76,7 +70,7 @@ class Router
     /**
      * Method DELETE.
      */
-    public function delete(string $uri, string|array|Closure $action): Route
+    public function delete(string $uri, array|\Closure|string $action): Route
     {
         return $this->request($uri, $action, ['DELETE']);
     }
@@ -84,7 +78,7 @@ class Router
     /**
      * Method POST.
      */
-    public function post(string $uri, string|array|Closure $action): Route
+    public function post(string $uri, array|\Closure|string $action): Route
     {
         return $this->request($uri, $action, ['POST']);
     }
@@ -92,7 +86,7 @@ class Router
     /**
      * Method GET.
      */
-    public function get(string $uri, string|array|Closure $action): Route
+    public function get(string $uri, array|\Closure|string $action): Route
     {
         return $this->request($uri, $action, ['GET', 'HEAD']);
     }
@@ -100,27 +94,27 @@ class Router
     /**
      * Allow multi request methods.
      */
-    public function request(string $path, array|Closure|string $action, array $methods = ['GET', 'HEAD', 'POST']): Route
+    public function request(string $path, array|\Closure|string $action, array $methods = ['GET', 'HEAD', 'POST']): Route
     {
         if (is_string($action)) {
             $action = str_contains($action, '@')
                 ? explode('@', $this->formatController($action), 2)
                 : [$this->formatController($action), '__invoke'];
         }
-        if ($action instanceof Closure || count($action) === 2) {
+        if ($action instanceof \Closure || count($action) === 2) {
             if (is_array($action)) {
                 [$controller, $action] = $action;
-                $action = [$this->formatController($controller), $action];
+                $action                = [$this->formatController($controller), $action];
             }
             return $this->routeCollection->add(new Route($methods, $this->prefix . $path, $action, $this->patterns, $this->middlewares));
         }
-        throw new InvalidArgumentException('Invalid route action: ' . $path);
+        throw new \InvalidArgumentException('Invalid route action: ' . $path);
     }
 
     /**
      * 分组路由.
      */
-    public function group(Closure $group): void
+    public function group(\Closure $group): void
     {
         $group($this);
     }
@@ -131,7 +125,7 @@ class Router
     public function middleware(string ...$middlewares): Router
     {
         $new              = clone $this;
-        $new->middlewares = array_unique([...$this->middlewares, ...$middlewares]);
+        $new->middlewares = \array_unique([...$this->middlewares, ...$middlewares]);
 
         return $new;
     }
@@ -164,7 +158,7 @@ class Router
     public function namespace(string $namespace): Router
     {
         $new            = clone $this;
-        $new->namespace = sprintf('%s\\%s', $this->namespace, trim($namespace, '\\'));
+        $new->namespace = \sprintf('%s\%s', $this->namespace, trim($namespace, '\\'));
 
         return $new;
     }

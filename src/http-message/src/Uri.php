@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Next\Http\Message;
 
-use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 
 class Uri implements UriInterface
@@ -50,7 +49,7 @@ class Uri implements UriInterface
     {
         if ($uri !== '') {
             if (false === $parts = parse_url($uri)) {
-                throw new InvalidArgumentException("Unable to parse URI: {$uri}");
+                throw new \InvalidArgumentException("Unable to parse URI: {$uri}");
             }
 
             if (isset($parts['scheme'])) {
@@ -62,7 +61,7 @@ class Uri implements UriInterface
             if (isset($parts['host'])) {
                 $this->host = $parts['host'];
             }
-            $this->port = (int)($parts['port'] ?? $this->getDefaultPort());
+            $this->port = (int) ($parts['port'] ?? $this->getDefaultPort());
             if (isset($parts['path'])) {
                 $this->path = '/' . trim($parts['path'], '/');
             }
@@ -97,17 +96,11 @@ class Uri implements UriInterface
         return self::DEFAULT_PORT[$this->scheme] ?? null;
     }
 
-    /**
-     * @return string
-     */
     public function getScheme(): string
     {
         return $this->scheme;
     }
 
-    /**
-     * @return string
-     */
     public function getAuthority(): string
     {
         return $this->authority;
@@ -118,49 +111,31 @@ class Uri implements UriInterface
         return $this->userinfo;
     }
 
-    /**
-     * @return string
-     */
     public function getHost(): string
     {
         return $this->host;
     }
 
-    /**
-     * @return int|null
-     */
     public function getPort(): ?int
     {
         return $this->port;
     }
 
-    /**
-     * @return string
-     */
     public function getPath(): string
     {
         return $this->path;
     }
 
-    /**
-     * @return string
-     */
     public function getQuery(): string
     {
         return $this->query;
     }
 
-    /**
-     * @return string
-     */
     public function getFragment(): string
     {
         return $this->fragment;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withScheme($scheme): UriInterface
     {
         if ($scheme === $this->scheme) {
@@ -172,9 +147,6 @@ class Uri implements UriInterface
         return $new;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withUserInfo($user, $password = null): UriInterface
     {
         $new           = clone $this;
@@ -182,9 +154,6 @@ class Uri implements UriInterface
         return $new;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withHost($host): UriInterface
     {
         if ($host === $this->host) {
@@ -195,9 +164,6 @@ class Uri implements UriInterface
         return $new;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withPort($port): UriInterface
     {
         if ($port === $this->port) {
@@ -208,9 +174,6 @@ class Uri implements UriInterface
         return $new;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withPath($path): UriInterface
     {
         if ($path === $this->path) {
@@ -221,9 +184,6 @@ class Uri implements UriInterface
         return $new;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withQuery($query): UriInterface
     {
         if ($query === $this->query) {
@@ -234,9 +194,6 @@ class Uri implements UriInterface
         return $new;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function withFragment($fragment): UriInterface
     {
         if ($fragment === $this->fragment) {

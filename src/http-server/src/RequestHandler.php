@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Next\Http\Server;
 
-use InvalidArgumentException;
 use Next\Http\Server\Contract\RouteDispatcherInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -19,7 +18,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use ReflectionException;
 
 class RequestHandler implements RequestHandlerInterface
 {
@@ -27,12 +25,11 @@ class RequestHandler implements RequestHandlerInterface
         protected ContainerInterface $container,
         protected RouteDispatcherInterface $routeDispatcher,
         protected array $middlewares = [],
-    ) {
-    }
+    ) {}
 
     /**
      * @throws ContainerExceptionInterface
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
@@ -41,7 +38,7 @@ class RequestHandler implements RequestHandlerInterface
             if ($middleware instanceof MiddlewareInterface) {
                 return $middleware->process($request, $this);
             }
-            throw new InvalidArgumentException(sprintf('The middleware %s should implement Psr\Http\Server\MiddlewareInterface', $middlewareClass));
+            throw new \InvalidArgumentException(sprintf('The middleware %s should implement Psr\Http\Server\MiddlewareInterface', $middlewareClass));
         }
         return $this->routeDispatcher->dispatch($request);
     }

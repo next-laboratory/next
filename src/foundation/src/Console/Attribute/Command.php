@@ -11,9 +11,5 @@ declare(strict_types=1);
 
 namespace Next\Foundation\Console\Attribute;
 
-use Attribute;
-
-#[Attribute(Attribute::TARGET_CLASS)]
-class Command
-{
-}
+#[\Attribute(\Attribute::TARGET_CLASS)]
+class Command {}

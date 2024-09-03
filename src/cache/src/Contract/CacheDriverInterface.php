@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * This file is part of MarxPHP.
+ * This file is part of nextphp.
  *
  * @link     https://github.com/next-laboratory
  * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
@@ -23,7 +23,7 @@ interface CacheDriverInterface
 
     public function delete(string $key): bool;
 
-    public function increment(string $key, int $step = 1): int|bool;
+    public function increment(string $key, int $step = 1): bool|int;
 
-    public function decrement(string $key, int $step = 1): int|bool;
+    public function decrement(string $key, int $step = 1): bool|int;
 }

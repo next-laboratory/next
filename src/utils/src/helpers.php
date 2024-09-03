@@ -12,13 +12,10 @@ declare(strict_types=1);
 namespace Next\Utils;
 
 use Closure;
-use Countable;
 use Exception;
 use Next\Utils\Contract\DeferringDisplayableValue;
 use Next\Utils\Contract\Htmlable;
 use Next\Utils\Proxy\HigherOrderTapProxy;
-use RuntimeException;
-use Throwable;
 
 /**
  * Most of the methods in this file come from illuminate
@@ -44,7 +41,7 @@ function data_fill(mixed &$target, array|string $key, mixed $value): mixed
 /**
  * Get an item from an array or object using "dot" notation.
  */
-function data_get(mixed $target, array|int|string|null $key, mixed $default = null): mixed
+function data_get(mixed $target, null|array|int|string $key, mixed $default = null): mixed
 {
     if (is_null($key)) {
         return $target;
@@ -167,7 +164,7 @@ function last(array $array): mixed
 function str($string = null)
 {
     if (func_num_args() === 0) {
-        return new class() {
+        return new class {
             public function __call($method, $parameters)
             {
                 return Str::$method(...$parameters);
@@ -188,13 +185,13 @@ function str($string = null)
  */
 function value(mixed $value, ...$args): mixed
 {
-    return $value instanceof Closure ? $value(...$args) : $value;
+    return $value instanceof \Closure ? $value(...$args) : $value;
 }
 
 /**
  * Call the given Closure with the given value then return the value.
  */
-function tap(mixed $value, callable $callback = null): mixed
+function tap(mixed $value, ?callable $callback = null): mixed
 {
     if (is_null($callback)) {
         return new HigherOrderTapProxy($value);
@@ -240,7 +237,7 @@ function blank(mixed $value): bool
         return false;
     }
 
-    if ($value instanceof Countable) {
+    if ($value instanceof \Countable) {
         return count($value) === 0;
     }
 
@@ -278,7 +275,7 @@ function class_uses_recursive(object|string $class): array
 /**
  * Encode HTML special characters in a string.
  */
-function e(Htmlable|string|DeferringDisplayableValue|null $value, bool $doubleEncode = true): string
+function e(null|DeferringDisplayableValue|Htmlable|string $value, bool $doubleEncode = true): string
 {
     if ($value instanceof DeferringDisplayableValue) {
         $value = $value->resolveDisplayableValue();
@@ -322,7 +319,7 @@ function object_get(object $object, ?string $key, mixed $default = null): mixed
 /**
  * Provide access to optional objects.
  */
-function optional(mixed $value = null, callable $callback = null): mixed
+function optional(mixed $value = null, ?callable $callback = null): mixed
 {
     if (is_null($callback)) {
         return new Optional($value);
@@ -337,9 +334,9 @@ function optional(mixed $value = null, callable $callback = null): mixed
 /**
  * Retry an operation a given number of times.
  *
- * @throws Exception
+ * @throws \Exception
  */
-function retry(int $times, callable $callback, int|Closure $sleepMilliseconds = 0, callable $when = null): mixed
+function retry(int $times, callable $callback, \Closure|int $sleepMilliseconds = 0, ?callable $when = null): mixed
 {
     $attempts = 0;
 
@@ -349,7 +346,7 @@ function retry(int $times, callable $callback, int|Closure $sleepMilliseconds = 
 
     try {
         return $callback($attempts);
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
         if ($times < 1 || ($when && ! $when($e))) {
             throw $e;
         }
@@ -365,16 +362,16 @@ function retry(int $times, callable $callback, int|Closure $sleepMilliseconds = 
 /**
  * Throw the given exception if the given condition is true.
  *
- * @throws Throwable
+ * @throws \Throwable
  */
-function throw_if(mixed $condition, Throwable|string $exception = 'RuntimeException', ...$parameters): mixed
+function throw_if(mixed $condition, string|\Throwable $exception = 'RuntimeException', ...$parameters): mixed
 {
     if ($condition) {
         if (is_string($exception) && class_exists($exception)) {
             $exception = new $exception(...$parameters);
         }
 
-        throw is_string($exception) ? new RuntimeException($exception) : $exception;
+        throw is_string($exception) ? new \RuntimeException($exception) : $exception;
     }
 
     return $condition;
@@ -383,9 +380,9 @@ function throw_if(mixed $condition, Throwable|string $exception = 'RuntimeExcept
 /**
  * Throw the given exception unless the given condition is true.
  *
- * @throws Throwable
+ * @throws \Throwable
  */
-function throw_unless(mixed $condition, Throwable|string $exception = 'RuntimeException', ...$parameters): mixed
+function throw_unless(mixed $condition, string|\Throwable $exception = 'RuntimeException', ...$parameters): mixed
 {
     throw_if(! $condition, $exception, ...$parameters);
 
@@ -433,7 +430,7 @@ function windows_os(): bool
 /**
  * Return the given value, optionally passed through the given callback.
  */
-function with(mixed $value, callable $callback = null): mixed
+function with(mixed $value, ?callable $callback = null): mixed
 {
     return is_null($callback) ? $value : $callback($value);
 }

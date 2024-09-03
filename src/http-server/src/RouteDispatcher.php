@@ -17,14 +17,12 @@ use Next\Routing\Route;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use ReflectionException;
-use RuntimeException;
 
 class RouteDispatcher implements RouteDispatcherInterface
 {
     /**
      * @throws ContainerExceptionInterface
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public function dispatch(ServerRequestInterface $request): ResponseInterface
     {
@@ -34,6 +32,6 @@ class RouteDispatcher implements RouteDispatcherInterface
             $parameters['request'] = $request;
             return Context::getContainer()->call($route->getAction(), $parameters);
         }
-        throw new RuntimeException('No route found in the request context', 404);
+        throw new \RuntimeException('No route found in the request context', 404);
     }
 }

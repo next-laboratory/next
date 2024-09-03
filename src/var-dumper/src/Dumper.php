@@ -11,9 +11,7 @@ declare(strict_types=1);
 
 namespace Next\VarDumper;
 
-use RuntimeException;
-
-class Dumper extends RuntimeException
+class Dumper extends \RuntimeException
 {
     public array $vars;
 

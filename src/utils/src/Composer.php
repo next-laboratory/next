@@ -12,12 +12,11 @@ declare(strict_types=1);
 namespace Next\Utils;
 
 use Composer\Autoload\ClassLoader;
-use Exception;
 
 class Composer
 {
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public static function getClassLoader(): ClassLoader
     {
@@ -26,6 +25,6 @@ class Composer
                 return $loader;
             }
         }
-        throw new Exception('Cannot find any composer class loader');
+        throw new \Exception('Cannot find any composer class loader');
     }
 }
