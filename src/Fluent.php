@@ -1,11 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of nextphp.
+ *
+ * @link     https://github.com/next-laboratory
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
+ */
+
 namespace Next\Utils;
 
 use ArrayAccess;
 use Next\Utils\Contract\Arrayable;
 use Next\Utils\Contract\Jsonable;
-use JsonSerializable;
 
 /**
  * @template TKey of array-key
@@ -14,7 +22,7 @@ use JsonSerializable;
  * @implements Arrayable<TKey, TValue>
  * @implements ArrayAccess<TKey, TValue>
  */
-class Fluent implements Arrayable, ArrayAccess, Jsonable, JsonSerializable
+class Fluent implements Arrayable, \ArrayAccess, Jsonable, \JsonSerializable
 {
     /**
      * All of the attributes set on the fluent instance.
@@ -27,8 +35,6 @@ class Fluent implements Arrayable, ArrayAccess, Jsonable, JsonSerializable
      * Create a new fluent instance.
      *
      * @param iterable<TKey, TValue> $attributes
-     *
-     * @return void
      */
     public function __construct($attributes = [])
     {
@@ -38,14 +44,79 @@ class Fluent implements Arrayable, ArrayAccess, Jsonable, JsonSerializable
     }
 
     /**
+     * Handle dynamic calls to the fluent instance to set attributes.
+     *
+     * @param TKey              $method
+     * @param array{0: ?TValue} $parameters
+     *
+     * @return $this
+     */
+    public function __call($method, $parameters)
+    {
+        $this->attributes[$method] = count($parameters) > 0 ? $parameters[0] : true;
+
+        return $this;
+    }
+
+    /**
+     * Dynamically retrieve the value of an attribute.
+     *
+     * @param TKey $key
+     *
+     * @return null|TValue
+     */
+    public function __get($key)
+    {
+        return $this->get($key);
+    }
+
+    /**
+     * Dynamically set the value of an attribute.
+     *
+     * @param TKey   $key
+     * @param TValue $value
+     */
+    public function __set($key, $value)
+    {
+        $this->offsetSet($key, $value);
+    }
+
+    /**
+     * Dynamically check if an attribute is set.
+     *
+     * @param TKey $key
+     *
+     * @return bool
+     */
+    public function __isset($key)
+    {
+        return $this->offsetExists($key);
+    }
+
+    /**
+     * Dynamically unset an attribute.
+     *
+     * @param TKey $key
+     */
+    public function __unset($key)
+    {
+        $this->offsetUnset($key);
+    }
+
+    public function __toString(): string
+    {
+        return $this->toJson();
+    }
+
+    /**
      * Get an attribute from the fluent instance.
      *
      * @template TGetDefault
      *
      * @param TKey                                  $key
-     * @param TGetDefault|(\Closure(): TGetDefault) $default
+     * @param (\Closure(): TGetDefault)|TGetDefault $default
      *
-     * @return TValue|TGetDefault
+     * @return TGetDefault|TValue
      */
     public function get($key, $default = null)
     {
@@ -102,8 +173,6 @@ class Fluent implements Arrayable, ArrayAccess, Jsonable, JsonSerializable
      * Determine if the given offset exists.
      *
      * @param TKey $offset
-     *
-     * @return bool
      */
     public function offsetExists($offset): bool
     {
@@ -115,7 +184,7 @@ class Fluent implements Arrayable, ArrayAccess, Jsonable, JsonSerializable
      *
      * @param TKey $offset
      *
-     * @return TValue|null
+     * @return null|TValue
      */
     public function offsetGet($offset): mixed
     {
@@ -127,8 +196,6 @@ class Fluent implements Arrayable, ArrayAccess, Jsonable, JsonSerializable
      *
      * @param TKey   $offset
      * @param TValue $value
-     *
-     * @return void
      */
     public function offsetSet($offset, $value): void
     {
@@ -139,80 +206,9 @@ class Fluent implements Arrayable, ArrayAccess, Jsonable, JsonSerializable
      * Unset the value at the given offset.
      *
      * @param TKey $offset
-     *
-     * @return void
      */
     public function offsetUnset($offset): void
     {
         unset($this->attributes[$offset]);
-    }
-
-    /**
-     * Handle dynamic calls to the fluent instance to set attributes.
-     *
-     * @param TKey              $method
-     * @param array{0: ?TValue} $parameters
-     *
-     * @return $this
-     */
-    public function __call($method, $parameters)
-    {
-        $this->attributes[$method] = count($parameters) > 0 ? $parameters[0] : true;
-
-        return $this;
-    }
-
-    /**
-     * Dynamically retrieve the value of an attribute.
-     *
-     * @param TKey $key
-     *
-     * @return TValue|null
-     */
-    public function __get($key)
-    {
-        return $this->get($key);
-    }
-
-    /**
-     * Dynamically set the value of an attribute.
-     *
-     * @param TKey   $key
-     * @param TValue $value
-     *
-     * @return void
-     */
-    public function __set($key, $value)
-    {
-        $this->offsetSet($key, $value);
-    }
-
-    /**
-     * Dynamically check if an attribute is set.
-     *
-     * @param TKey $key
-     *
-     * @return bool
-     */
-    public function __isset($key)
-    {
-        return $this->offsetExists($key);
-    }
-
-    /**
-     * Dynamically unset an attribute.
-     *
-     * @param TKey $key
-     *
-     * @return void
-     */
-    public function __unset($key)
-    {
-        $this->offsetUnset($key);
-    }
-
-    public function __toString(): string
-    {
-        return $this->toJson();
     }
 }

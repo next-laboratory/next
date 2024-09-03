@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace Next\Utils;
 
-use Closure;
-use JsonSerializable;
 use Next\Utils\Traits\Conditionable;
 use Next\Utils\Traits\Tappable;
 use Symfony\Component\VarDumper\VarDumper;
@@ -21,7 +19,7 @@ use Symfony\Component\VarDumper\VarDumper;
  * Most of the methods in this file come from illuminate
  * thanks Laravel Team provide such a useful class.
  */
-class Stringable implements JsonSerializable, \Stringable
+class Stringable implements \JsonSerializable, \Stringable
 {
     use Conditionable;
     use Macroable;
@@ -34,9 +32,7 @@ class Stringable implements JsonSerializable, \Stringable
      */
     public function __construct(
         protected string $value = ''
-    )
-    {
-    }
+    ) {}
 
     /**
      * Proxy dynamic properties onto methods.
@@ -195,7 +191,7 @@ class Stringable implements JsonSerializable, \Stringable
 
         $segments = preg_split($pattern, $this->value, $limit, $flags);
 
-        return !empty($segments) ? collect($segments) : collect();
+        return ! empty($segments) ? collect($segments) : collect();
     }
 
     /**
@@ -235,7 +231,7 @@ class Stringable implements JsonSerializable, \Stringable
      */
     public function isNotEmpty(): bool
     {
-        return !$this->isEmpty();
+        return ! $this->isEmpty();
     }
 
     /**
@@ -432,15 +428,15 @@ class Stringable implements JsonSerializable, \Stringable
     /**
      * Replace the patterns matching the given regular expression.
      *
-     * @param string         $pattern
-     * @param Closure|string $replace
-     * @param int            $limit
+     * @param string          $pattern
+     * @param \Closure|string $replace
+     * @param int             $limit
      *
      * @return static
      */
     public function replaceMatches($pattern, $replace, $limit = -1)
     {
-        if ($replace instanceof Closure) {
+        if ($replace instanceof \Closure) {
             return new static(preg_replace_callback($pattern, $replace, $this->value, $limit));
         }
 

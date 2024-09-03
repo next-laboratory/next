@@ -1,11 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * This file is part of nextphp.
+ *
+ * @link     https://github.com/next-laboratory
+ * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
+ */
+
 namespace Next\Utils;
 
-use ArrayIterator;
 use Next\Utils\Contract\ValidatedData;
-use stdClass;
-use Traversable;
 
 class ValidatedInput implements ValidatedData
 {
@@ -18,14 +24,56 @@ class ValidatedInput implements ValidatedData
 
     /**
      * Create a new validated input container.
-     *
-     * @param array $input
-     *
-     * @return void
      */
     public function __construct(array $input)
     {
         $this->input = $input;
+    }
+
+    /**
+     * Dynamically access input data.
+     *
+     * @param string $name
+     *
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        return $this->input[$name];
+    }
+
+    /**
+     * Dynamically set input data.
+     *
+     * @param string $name
+     * @param mixed  $value
+     *
+     * @return mixed
+     */
+    public function __set($name, $value)
+    {
+        $this->input[$name] = $value;
+    }
+
+    /**
+     * Determine if an input key is set.
+     *
+     * @param  mixed $name
+     * @return bool
+     */
+    public function __isset($name)
+    {
+        return isset($this->input[$name]);
+    }
+
+    /**
+     * Remove an input key.
+     *
+     * @param string $name
+     */
+    public function __unset($name)
+    {
+        unset($this->input[$name]);
     }
 
     /**
@@ -41,7 +89,7 @@ class ValidatedInput implements ValidatedData
 
         $input = $this->input;
 
-        $placeholder = new stdClass;
+        $placeholder = new \stdClass();
 
         foreach (is_array($keys) ? $keys : func_get_args() as $key) {
             $value = data_get($input, $key, $placeholder);
@@ -75,8 +123,6 @@ class ValidatedInput implements ValidatedData
     /**
      * Merge the validated input with the given array of additional data.
      *
-     * @param array $items
-     *
      * @return static
      */
     public function merge(array $items)
@@ -106,8 +152,6 @@ class ValidatedInput implements ValidatedData
 
     /**
      * Get the instance as an array.
-     *
-     * @return array
      */
     public function toArray(): array
     {
@@ -115,58 +159,9 @@ class ValidatedInput implements ValidatedData
     }
 
     /**
-     * Dynamically access input data.
-     *
-     * @param string $name
-     *
-     * @return mixed
-     */
-    public function __get($name)
-    {
-        return $this->input[$name];
-    }
-
-    /**
-     * Dynamically set input data.
-     *
-     * @param string $name
-     * @param mixed  $value
-     *
-     * @return mixed
-     */
-    public function __set($name, $value)
-    {
-        $this->input[$name] = $value;
-    }
-
-    /**
-     * Determine if an input key is set.
-     *
-     * @return bool
-     */
-    public function __isset($name)
-    {
-        return isset($this->input[$name]);
-    }
-
-    /**
-     * Remove an input key.
-     *
-     * @param string $name
-     *
-     * @return void
-     */
-    public function __unset($name)
-    {
-        unset($this->input[$name]);
-    }
-
-    /**
      * Determine if an item exists at an offset.
      *
      * @param mixed $key
-     *
-     * @return bool
      */
     public function offsetExists($key): bool
     {
@@ -177,8 +172,6 @@ class ValidatedInput implements ValidatedData
      * Get an item at a given offset.
      *
      * @param mixed $key
-     *
-     * @return mixed
      */
     public function offsetGet($key): mixed
     {
@@ -190,8 +183,6 @@ class ValidatedInput implements ValidatedData
      *
      * @param mixed $key
      * @param mixed $value
-     *
-     * @return void
      */
     public function offsetSet($key, $value): void
     {
@@ -206,8 +197,6 @@ class ValidatedInput implements ValidatedData
      * Unset the item at a given offset.
      *
      * @param string $key
-     *
-     * @return void
      */
     public function offsetUnset($key): void
     {
@@ -219,8 +208,8 @@ class ValidatedInput implements ValidatedData
      *
      * @return \ArrayIterator
      */
-    public function getIterator(): Traversable
+    public function getIterator(): \Traversable
     {
-        return new ArrayIterator($this->input);
+        return new \ArrayIterator($this->input);
     }
 }

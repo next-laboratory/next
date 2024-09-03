@@ -11,8 +11,4 @@ declare(strict_types=1);
 
 namespace Next\Utils\Exception;
 
-use RuntimeException;
-
-class ItemNotFoundException extends RuntimeException
-{
-}
+class ItemNotFoundException extends \RuntimeException {}

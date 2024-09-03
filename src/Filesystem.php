@@ -11,10 +11,7 @@ declare(strict_types=1);
 
 namespace Next\Utils;
 
-use FilesystemIterator;
 use Next\Utils\Exception\FileNotFoundException;
-use RuntimeException;
-use SplFileObject;
 use Symfony\Component\Filesystem\Filesystem as SymfonyFilesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -41,7 +38,7 @@ class Filesystem
      */
     public function missing(string $path): bool
     {
-        return !static::exists($path);
+        return ! static::exists($path);
     }
 
     /**
@@ -130,18 +127,18 @@ class Filesystem
      */
     public function lines(string $path): LazyCollection
     {
-        if (!static::isFile($path)) {
+        if (! static::isFile($path)) {
             throw new FileNotFoundException(
                 "File does not exist at path {$path}."
             );
         }
 
         return LazyCollection::make(function () use ($path) {
-            $file = new SplFileObject($path);
+            $file = new \SplFileObject($path);
 
-            $file->setFlags(SplFileObject::DROP_NEW_LINE);
+            $file->setFlags(\SplFileObject::DROP_NEW_LINE);
 
-            while (!$file->eof()) {
+            while (! $file->eof()) {
                 yield $file->fgets();
             }
         });
@@ -231,7 +228,7 @@ class Filesystem
         $success = true;
 
         foreach ($paths as $path) {
-            if (!@unlink($path)) {
+            if (! @unlink($path)) {
                 $success = false;
             }
         }
@@ -260,24 +257,24 @@ class Filesystem
      */
     public function link(string $target, string $link): bool
     {
-        if (!windows_os()) {
+        if (! windows_os()) {
             return symlink($target, $link);
         }
 
         $mode = static::isDirectory($target) ? 'J' : 'H';
 
-        return (bool)exec("mklink /{$mode} " . escapeshellarg($link) . ' ' . escapeshellarg($target));
+        return (bool) exec("mklink /{$mode} " . escapeshellarg($link) . ' ' . escapeshellarg($target));
     }
 
     /**
      * Create a relative symlink to the target file or directory.
      *
-     * @throws RuntimeException
+     * @throws \RuntimeException
      */
     public function relativeLink(string $target, string $link): void
     {
-        if (!class_exists(SymfonyFilesystem::class)) {
-            throw new RuntimeException(
+        if (! class_exists(SymfonyFilesystem::class)) {
+            throw new \RuntimeException(
                 'To enable support for relative links, please install the symfony/filesystem package.'
             );
         }
@@ -322,12 +319,12 @@ class Filesystem
     /**
      * Guess the file extension from the mime-type of a given file.
      *
-     * @throws RuntimeException
+     * @throws \RuntimeException
      */
     public function guessExtension(string $path): ?string
     {
-        if (!class_exists(MimeTypes::class)) {
-            throw new RuntimeException(
+        if (! class_exists(MimeTypes::class)) {
+            throw new \RuntimeException(
                 'To enable support for guessing extensions, please install the symfony/mime package.'
             );
         }
@@ -402,7 +399,7 @@ class Filesystem
     /**
      * Find path names matching a given pattern.
      */
-    public function glob(string $pattern, int $flags = 0): bool|array
+    public function glob(string $pattern, int $flags = 0): array|bool
     {
         return glob($pattern, $flags);
     }
@@ -412,10 +409,10 @@ class Filesystem
      *
      * @return SplFileInfo[]
      */
-    public function files(string|array $directory, bool $hidden = false, string $pattern = '*'): array
+    public function files(array|string $directory, bool $hidden = false, string $pattern = '*'): array
     {
         return iterator_to_array(
-            Finder::create()->files()->ignoreDotFiles(!$hidden)->in($directory)->name($pattern)->depth(0)->sortByName(),
+            Finder::create()->files()->ignoreDotFiles(! $hidden)->in($directory)->name($pattern)->depth(0)->sortByName(),
             false
         );
     }
@@ -428,7 +425,7 @@ class Filesystem
     public function allFiles(string $directory, bool $hidden = false): array
     {
         return iterator_to_array(
-            Finder::create()->files()->ignoreDotFiles(!$hidden)->in($directory)->sortByName(),
+            Finder::create()->files()->ignoreDotFiles(! $hidden)->in($directory)->sortByName(),
             false
         );
     }
@@ -452,7 +449,7 @@ class Filesystem
      */
     public function ensureDirectoryExists(string $path, int $mode = 0755, bool $recursive = true): void
     {
-        if (!static::isDirectory($path)) {
+        if (! static::isDirectory($path)) {
             static::makeDirectory($path, $mode, $recursive);
         }
     }
@@ -474,7 +471,7 @@ class Filesystem
      */
     public function moveDirectory(string $from, string $to, bool $overwrite = false): bool
     {
-        if ($overwrite && static::isDirectory($to) && !static::deleteDirectory($to)) {
+        if ($overwrite && static::isDirectory($to) && ! static::deleteDirectory($to)) {
             return false;
         }
 
@@ -486,18 +483,18 @@ class Filesystem
      */
     public function copyDirectory(string $directory, string $destination, ?int $options = null): bool
     {
-        if (!static::isDirectory($directory)) {
+        if (! static::isDirectory($directory)) {
             return false;
         }
 
-        $options = $options ?: FilesystemIterator::SKIP_DOTS;
+        $options = $options ?: \FilesystemIterator::SKIP_DOTS;
 
         // If the destination directory does not actually exist, we will go ahead and
         // create it recursively, which just gets the destination prepared to copy
         // the files over. Once we make the directory we'll proceed the copying.
         static::ensureDirectoryExists($destination, 0777);
 
-        $items = new FilesystemIterator($directory, $options);
+        $items = new \FilesystemIterator($directory, $options);
 
         foreach ($items as $item) {
             // As we spin through items, we will check to see if the current file is actually
@@ -508,7 +505,7 @@ class Filesystem
             if ($item->isDir()) {
                 $path = $item->getPathname();
 
-                if (!static::copyDirectory($path, $target, $options)) {
+                if (! static::copyDirectory($path, $target, $options)) {
                     return false;
                 }
             }
@@ -517,7 +514,7 @@ class Filesystem
             // location and keep looping. If for some reason the copy fails we'll bail out
             // and return false, so the developer is aware that the copy process failed.
             else {
-                if (!static::copy($item->getPathname(), $target)) {
+                if (! static::copy($item->getPathname(), $target)) {
                     return false;
                 }
             }
@@ -532,17 +529,17 @@ class Filesystem
      */
     public function deleteDirectory(string $directory, bool $preserve = false): bool
     {
-        if (!static::isDirectory($directory)) {
+        if (! static::isDirectory($directory)) {
             return false;
         }
 
-        $items = new FilesystemIterator($directory);
+        $items = new \FilesystemIterator($directory);
 
         foreach ($items as $item) {
             // If the item is a directory, we can just recurse into the function and
             // delete that subdirectory otherwise we'll just delete the file and
             // keep iterating through each file until the directory is cleaned.
-            if ($item->isDir() && !$item->isLink()) {
+            if ($item->isDir() && ! $item->isLink()) {
                 static::deleteDirectory($item->getPathname());
             }
 
@@ -554,7 +551,7 @@ class Filesystem
             }
         }
 
-        if (!$preserve) {
+        if (! $preserve) {
             @rmdir($directory);
         }
 
@@ -568,7 +565,7 @@ class Filesystem
     {
         $allDirectories = static::directories($directory);
 
-        if (!empty($allDirectories)) {
+        if (! empty($allDirectories)) {
             foreach ($allDirectories as $directoryName) {
                 static::deleteDirectory($directoryName);
             }

@@ -13,18 +13,15 @@ namespace Next\Utils\Packer;
 
 use Next\Utils\Contract\PackerInterface;
 
-use function json_decode;
-use function json_encode;
-
 class JsonPacker implements PackerInterface
 {
     public function pack($data): string
     {
-        return json_encode($data, JSON_UNESCAPED_UNICODE);
+        return \json_encode($data, JSON_UNESCAPED_UNICODE);
     }
 
     public function unpack(string $data)
     {
-        return json_decode($data, true);
+        return \json_decode($data, true);
     }
 }

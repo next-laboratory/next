@@ -11,8 +11,4 @@ declare(strict_types=1);
 
 namespace Next\Utils\Exception;
 
-use RuntimeException;
-
-class MultipleItemsFoundException extends RuntimeException
-{
-}
+class MultipleItemsFoundException extends \RuntimeException {}

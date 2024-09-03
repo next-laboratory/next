@@ -11,8 +11,4 @@ declare(strict_types=1);
 
 namespace Next\Utils\Exception;
 
-use Exception;
-
-class FileNotFoundException extends Exception
-{
-}
+class FileNotFoundException extends \Exception {}

@@ -11,9 +11,6 @@ declare(strict_types=1);
 
 namespace Next\Utils;
 
-use Closure;
-use Countable;
-use JsonException;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
 use League\CommonMark\Extension\InlinesOnly\InlinesOnlyExtension;
@@ -98,7 +95,7 @@ class Str
             return $subject;
         }
 
-        $position = strrpos($subject, (string)$search);
+        $position = strrpos($subject, (string) $search);
 
         if ($position === false) {
             return $subject;
@@ -117,7 +114,7 @@ class Str
      */
     public static function ascii($value, $language = 'en')
     {
-        return ASCII::to_ascii((string)$value, $language);
+        return ASCII::to_ascii((string) $value, $language);
     }
 
     /**
@@ -148,7 +145,7 @@ class Str
             return $subject;
         }
 
-        $result = strstr($subject, (string)$search, true);
+        $result = strstr($subject, (string) $search, true);
 
         return $result === false ? $subject : $result;
     }
@@ -241,11 +238,11 @@ class Str
     {
         if ($ignoreCase) {
             $haystack = mb_strtolower($haystack);
-            $needles  = array_map('mb_strtolower', (array)$needles);
+            $needles  = array_map('mb_strtolower', (array) $needles);
         }
 
-        foreach ((array)$needles as $needle) {
-            if ($needle !== '' && str_contains((string)$haystack, (string)$needle)) {
+        foreach ((array) $needles as $needle) {
+            if ($needle !== '' && str_contains((string) $haystack, (string) $needle)) {
                 return true;
             }
         }
@@ -270,7 +267,7 @@ class Str
         }
 
         foreach ($needles as $needle) {
-            if (!static::contains($haystack, $needle)) {
+            if (! static::contains($haystack, $needle)) {
                 return false;
             }
         }
@@ -288,8 +285,8 @@ class Str
      */
     public static function endsWith($haystack, $needles)
     {
-        foreach ((array)$needles as $needle) {
-            if ((string)$needle !== '' && str_ends_with($haystack, $needle)) {
+        foreach ((array) $needles as $needle) {
+            if ((string) $needle !== '' && str_ends_with($haystack, $needle)) {
                 return true;
             }
         }
@@ -308,10 +305,10 @@ class Str
      */
     public static function excerpt($text, $phrase = '', $options = [])
     {
-        $radius   = $options['radius'] ?? 100;
+        $radius   = $options['radius']   ?? 100;
         $omission = $options['omission'] ?? '...';
 
-        preg_match('/^(.*?)(' . preg_quote((string)$phrase) . ')(.*)$/iu', (string)$text, $matches);
+        preg_match('/^(.*?)(' . preg_quote((string) $phrase) . ')(.*)$/iu', (string) $text, $matches);
 
         if (empty($matches)) {
             return null;
@@ -320,15 +317,15 @@ class Str
         $start = ltrim($matches[1]);
 
         $start = str(mb_substr($start, max(mb_strlen($start, 'UTF-8') - $radius, 0), $radius, 'UTF-8'))->ltrim()->unless(
-            fn($startWithRadius) => $startWithRadius->exactly($start),
-            fn($startWithRadius) => $startWithRadius->prepend($omission),
+            fn ($startWithRadius) => $startWithRadius->exactly($start),
+            fn ($startWithRadius) => $startWithRadius->prepend($omission),
         );
 
         $end = rtrim($matches[3]);
 
         $end = str(mb_substr($end, 0, $radius, 'UTF-8'))->rtrim()->unless(
-            fn($endWithRadius) => $endWithRadius->exactly($end),
-            fn($endWithRadius) => $endWithRadius->append($omission),
+            fn ($endWithRadius) => $endWithRadius->exactly($end),
+            fn ($endWithRadius) => $endWithRadius->append($omission),
         );
 
         return $start->append($matches[2], $end)->toString();
@@ -361,14 +358,14 @@ class Str
     {
         $patterns = Arr::wrap($pattern);
 
-        $value = (string)$value;
+        $value = (string) $value;
 
         if (empty($patterns)) {
             return false;
         }
 
         foreach ($patterns as $pattern) {
-            $pattern = (string)$pattern;
+            $pattern = (string) $pattern;
 
             // If the given value is an exact match we can of course return true right
             // from the beginning. Otherwise, we will translate asterisks and do an
@@ -401,7 +398,7 @@ class Str
      */
     public static function isAscii($value)
     {
-        return ASCII::is_ascii((string)$value);
+        return ASCII::is_ascii((string) $value);
     }
 
     /**
@@ -413,13 +410,13 @@ class Str
      */
     public static function isJson($value)
     {
-        if (!is_string($value)) {
+        if (! is_string($value)) {
             return false;
         }
 
         try {
             json_decode($value, true, 512, JSON_THROW_ON_ERROR);
-        } catch (JsonException) {
+        } catch (\JsonException) {
             return false;
         }
 
@@ -435,7 +432,7 @@ class Str
      */
     public static function isUuid($value)
     {
-        if (!is_string($value)) {
+        if (! is_string($value)) {
             return false;
         }
 
@@ -514,7 +511,7 @@ class Str
     {
         preg_match('/^\s*+(?:\S++\s*+){1,' . $words . '}/u', $value, $matches);
 
-        if (!isset($matches[0]) || static::length($value) === static::length($matches[0])) {
+        if (! isset($matches[0]) || static::length($value) === static::length($matches[0])) {
             return $value;
         }
 
@@ -532,7 +529,7 @@ class Str
     {
         $converter = new GithubFlavoredMarkdownConverter($options);
 
-        return (string)$converter->convert($string);
+        return (string) $converter->convert($string);
     }
 
     /**
@@ -551,7 +548,7 @@ class Str
 
         $converter = new MarkdownConverter($environment);
 
-        return (string)$converter->convert($string);
+        return (string) $converter->convert($string);
     }
 
     /**
@@ -603,7 +600,7 @@ class Str
     {
         preg_match($pattern, $subject, $matches);
 
-        if (!$matches) {
+        if (! $matches) {
             return '';
         }
 
@@ -687,8 +684,8 @@ class Str
     /**
      * Get the plural form of an English word.
      *
-     * @param string              $value
-     * @param array|Countable|int $count
+     * @param string               $value
+     * @param array|\Countable|int $count
      *
      * @return string
      */
@@ -700,8 +697,8 @@ class Str
     /**
      * Pluralize the last word of an English, studly caps case string.
      *
-     * @param string              $value
-     * @param array|Countable|int $count
+     * @param string               $value
+     * @param array|\Countable|int $count
      *
      * @return string
      */
@@ -741,7 +738,7 @@ class Str
     /**
      * Set the callable that will be used to generate random strings.
      */
-    public static function createRandomStringsUsing(callable $factory = null)
+    public static function createRandomStringsUsing(?callable $factory = null)
     {
         static::$randomStringFactory = $factory;
     }
@@ -843,7 +840,7 @@ class Str
      */
     public static function replaceFirst($search, $replace, $subject)
     {
-        $search = (string)$search;
+        $search = (string) $search;
 
         if ($search === '') {
             return $subject;
@@ -1025,7 +1022,7 @@ class Str
             return static::$snakeCache[$key][$delimiter];
         }
 
-        if (!ctype_lower($value)) {
+        if (! ctype_lower($value)) {
             $value = preg_replace('/\s+/u', '', ucwords($value));
 
             $value = static::lower(preg_replace('/(.)(?=[A-Z])/u', '$1' . $delimiter, $value));
@@ -1056,8 +1053,8 @@ class Str
      */
     public static function startsWith($haystack, $needles)
     {
-        foreach ((array)$needles as $needle) {
-            if ((string)$needle !== '' && str_starts_with($haystack, $needle)) {
+        foreach ((array) $needles as $needle) {
+            if ((string) $needle !== '' && str_starts_with($haystack, $needle)) {
                 return true;
             }
         }
@@ -1082,7 +1079,7 @@ class Str
 
         $words = explode(' ', static::replace(['-', '_'], ' ', $value));
 
-        $studlyWords = array_map(fn($word) => static::ucfirst($word), $words);
+        $studlyWords = array_map(fn ($word) => static::ucfirst($word), $words);
 
         return static::$studlyCache[$key] = implode($studlyWords);
     }
@@ -1113,7 +1110,7 @@ class Str
      */
     public static function substrCount($haystack, $needle, $offset = 0, $length = null)
     {
-        if (!is_null($length)) {
+        if (! is_null($length)) {
             return substr_count($haystack, $needle, $offset, $length);
         }
         return substr_count($haystack, $needle, $offset);
@@ -1239,7 +1236,7 @@ class Str
     /**
      * Set the callable that will be used to generate UUIDs.
      */
-    public static function createUuidsUsing(callable $factory = null)
+    public static function createUuidsUsing(?callable $factory = null)
     {
         static::$uuidFactory = $factory;
     }
@@ -1281,11 +1278,11 @@ class Str
      *
      * @return UuidInterface
      */
-    public static function freezeUuids(Closure $callback = null)
+    public static function freezeUuids(?\Closure $callback = null)
     {
         $uuid = Str::uuid();
 
-        Str::createUuidsUsing(fn() => $uuid);
+        Str::createUuidsUsing(fn () => $uuid);
 
         if ($callback !== null) {
             $callback($uuid);
