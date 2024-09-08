@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Next\Aop;
 
 use Next\Aop\Collector\AspectCollector;
-use Next\Utils\Str;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Assign;
@@ -28,12 +27,15 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\TraitUse;
 use PhpParser\NodeVisitorAbstract;
+use Symfony\Component\String\ByteString;
 
 class ProxyHandlerVisitor extends NodeVisitorAbstract
 {
     public function __construct(
         protected Metadata $metadata
-    ) {}
+    )
+    {
+    }
 
     public function leaveNode(Node $node)
     {
@@ -67,7 +69,7 @@ class ProxyHandlerVisitor extends NodeVisitorAbstract
                     $node->stmts = [new Expression($methodCall)];
                 } else {
                     if ($node->returnsByRef()) {
-                        $valueRef    = new Variable('__returnValueRef_' . Str::random());
+                        $valueRef    = new Variable('__returnValueRef_' . ByteString::fromRandom(16));
                         $node->stmts = [new Expression(new Assign($valueRef, $methodCall)), new Return_($valueRef)];
                     } else {
                         $node->stmts = [new Return_($methodCall)];

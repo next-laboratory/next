@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Next\Aop;
 
 use Next\Di\Reflection;
-use Next\Utils\Composer;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ClassConstFetch;
@@ -34,7 +33,9 @@ class PropertyHandlerVisitor extends NodeVisitorAbstract
 {
     public function __construct(
         protected Metadata $metadata
-    ) {}
+    )
+    {
+    }
 
     public function enterNode(Node $node)
     {
@@ -90,7 +91,7 @@ class PropertyHandlerVisitor extends NodeVisitorAbstract
                 }
             }
             $c = [];
-            if (! $this->metadata->hasConstructor) {
+            if (!$this->metadata->hasConstructor) {
                 $constructor        = new ClassMethod('__construct', [
                     'params' => $params,
                 ]);

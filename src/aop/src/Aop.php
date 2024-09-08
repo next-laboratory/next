@@ -14,8 +14,6 @@ namespace Next\Aop;
 use Next\Aop\Collector\AspectCollector;
 use Next\Aop\Collector\PropertyAttributeCollector;
 use Next\Di\Reflection;
-use Next\Utils\Composer;
-use Next\Utils\Filesystem;
 use PhpParser\NodeTraverser;
 use PhpParser\PrettyPrinter\Standard;
 use Symfony\Component\Finder\Finder;
@@ -28,18 +26,16 @@ final class Aop
 
     private static array $classMap = [];
 
-    private Filesystem $filesystem;
-
     private function __construct(
-        private array $scanDirs = [],
-        private array $collectors = [],
+        private array  $scanDirs = [],
+        private array  $collectors = [],
         private string $runtimeDir = '',
-    ) {
-        $this->filesystem = new Filesystem();
+    )
+    {
         $this->astManager = new AstManager();
         $this->runtimeDir = rtrim($runtimeDir, '/\\') . '/';
-        if (! $this->filesystem->isDirectory($this->runtimeDir)) {
-            $this->filesystem->makeDirectory($this->runtimeDir, 0755, true);
+        if (!is_dir($this->runtimeDir)) {
+            mkdir($this->runtimeDir, 0755, true);
         }
         $this->findClasses($this->scanDirs);
         $this->proxyMapFile = $this->runtimeDir . 'proxy.php';
@@ -48,11 +44,11 @@ final class Aop
             unlink($lockFile);
             $this->getProxyMap();
         } else {
-            $this->filesystem->exists($this->proxyMapFile) && $this->filesystem->delete($this->proxyMapFile);
+            file_exists($this->proxyMapFile) && unlink($this->proxyMapFile);
         }
-        if (! $this->filesystem->exists($this->proxyMapFile)) {
+        if (!file_exists($this->proxyMapFile)) {
             touch($lockFile);
-            $this->filesystem->exists($this->proxyMapFile) && $this->filesystem->delete($this->proxyMapFile);
+            file_exists($this->proxyMapFile) && unlink($this->proxyMapFile);
             global $argv;
             $cmd    = PHP_BINARY . ' ' . implode(' ', $argv) . ' 2>&1';
             $result = shell_exec($cmd);
@@ -66,19 +62,21 @@ final class Aop
         }
         Composer::getClassLoader()->addClassMap($this->getProxyMap());
         $this->collect();
-        unset($this->filesystem, $this->astManager);
+        unset($this->astManager);
         Reflection::clear();
     }
 
-    private function __clone(): void {}
+    private function __clone(): void
+    {
+    }
 
     public static function init(
-        array $scanDirs = [],
-        array $collectors = [],
+        array  $scanDirs = [],
+        array  $collectors = [],
         string $runtimeDir = '',
-        bool $cache = false
-    ): void {
-        new self($scanDirs, $collectors, $runtimeDir, $cache);
+    ): void
+    {
+        new self($scanDirs, $collectors, $runtimeDir);
     }
 
     public static function addClass(string $class, string $filepath): void
@@ -102,19 +100,18 @@ final class Aop
      */
     private function getProxyMap(): array
     {
-        if (! $this->filesystem->exists($this->proxyMapFile)) {
+        if (!file_exists($this->proxyMapFile)) {
             $proxyDir = $this->runtimeDir . 'proxy/';
-            $this->filesystem->exists($proxyDir) || $this->filesystem->makeDirectory($proxyDir, 0755, true, true);
-            $this->filesystem->cleanDirectory($proxyDir);
+            file_exists($proxyDir) || mkdir($proxyDir, 0755, true);
             $this->collect();
             $collectedClasses = array_unique(array_merge(AspectCollector::getCollectedClasses(), PropertyAttributeCollector::getCollectedClasses()));
             $proxies          = [];
             foreach ($collectedClasses as $class) {
                 $proxyPath = $proxyDir . str_replace('\\', '_', $class) . '_Proxy.php';
-                $this->filesystem->put($proxyPath, $this->generateProxyClass($class));
+                file_put_contents($proxyPath, $this->generateProxyClass($class));
                 $proxies[$class] = $proxyPath;
             }
-            $this->filesystem->put($this->proxyMapFile, sprintf("<?php \nreturn %s;", var_export($proxies, true)));
+            file_put_contents($this->proxyMapFile, sprintf("<?php \nreturn %s;", var_export($proxies, true)));
             exit(0);
         }
         return include $this->proxyMapFile;
@@ -146,7 +143,7 @@ final class Aop
             foreach ($reflectionClass->getAttributes() as $attribute) {
                 try {
                     $attributeInstance = $attribute->newInstance();
-                    if (! $attributeInstance instanceof \Attribute) {
+                    if (!$attributeInstance instanceof \Attribute) {
                         foreach ($this->collectors as $collector) {
                             $collector::collectClass($class, $attributeInstance);
                         }
