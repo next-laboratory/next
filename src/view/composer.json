@@ -1,0 +1,22 @@
+{
+  "name": "max/view",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/marxphp/view",
+  "description": "A simple blade view engine.",
+  "authors": [
+    {
+      "name": "chengyao",
+      "email": "987861463@qq.com"
+    }
+  ],
+  "require": {
+    "php": "^8.0",
+    "max/utils": "dev-master",
+    "max/config": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "Next\\View\\": "src/"
+    }
+  }
+}

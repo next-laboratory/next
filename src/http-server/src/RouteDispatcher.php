@@ -1,37 +1,22 @@
 <?php
 
-declare(strict_types=1);
-
-/**
- * This file is part of nextphp.
- *
- * @link     https://github.com/next-laboratory
- * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
- */
-
 namespace Next\Http\Server;
 
-use Next\Di\Context;
-use Next\Http\Server\Contract\RouteDispatcherInterface;
 use Next\Routing\Route;
-use Psr\Container\ContainerExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class RouteDispatcher implements RouteDispatcherInterface
+class RouteDispatcher implements RequestHandlerInterface
 {
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws \ReflectionException
-     */
-    public function dispatch(ServerRequestInterface $request): ResponseInterface
+    public function __construct(
+        protected Route $route,
+    )
     {
-        /** @var Route $route */
-        if ($route = $request->getAttribute(Route::class)) {
-            $parameters            = $route->getParameters();
-            $parameters['request'] = $request;
-            return Context::getContainer()->call($route->getAction(), $parameters);
-        }
-        throw new \RuntimeException('No route found in the request context', 404);
+    }
+
+    public function handle(ServerRequestInterface $request): ResponseInterface
+    {
+        return call_user_func_array($this->route->getAction(), [$request]);
     }
 }
