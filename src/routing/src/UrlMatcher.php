@@ -12,14 +12,16 @@ declare(strict_types=1);
 namespace Next\Routing;
 
 use Next\Http\Message\Contract\StatusCodeInterface;
-use Next\Routing\Exception\RouteNotFoundException;
+use Next\Http\Server\Exception\NotFoundException;
 use Psr\Http\Message\ServerRequestInterface;
 
 class UrlMatcher
 {
     public function __construct(
         protected RouteCollection $routeCollection
-    ) {}
+    )
+    {
+    }
 
     /**
      * 使用Psr Request匹配路由.
@@ -39,7 +41,7 @@ class UrlMatcher
         foreach ($this->routeCollection->list($method) as $route) {
             if (($compiledPath = $route->getCompiledPath()) && \preg_match($compiledPath, $path, $match)) {
                 $matchedRoute = clone $route;
-                if (! empty($match)) {
+                if (!empty($match)) {
                     foreach ($route->getParameters() as $key => $value) {
                         if (\array_key_exists($key, $match)) {
                             $matchedRoute->setParameter($key, $match[$key]);
@@ -50,6 +52,6 @@ class UrlMatcher
             }
         }
 
-        throw new RouteNotFoundException('Not Found', StatusCodeInterface::STATUS_NOT_FOUND);
+        throw new NotFoundException('Not Found', StatusCodeInterface::STATUS_NOT_FOUND);
     }
 }
