@@ -2,6 +2,7 @@
 
 namespace Next\Http\Server;
 
+use InvalidArgumentException;
 use Next\Http\Server\Exception\NotFoundException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -27,8 +28,11 @@ class RequestHandler implements RequestHandlerInterface
         return $this->requestHandler->handle($request);
     }
 
-    public function setRequestHandler(RequestHandlerInterface $requestHandler): static
+    public function withHandler(RequestHandlerInterface $requestHandler): static
     {
+        if ($requestHandler instanceof self) {
+            throw new InvalidArgumentException('Request handler must not be a MiddlewareHandler instance');
+        }
         $this->requestHandler = $requestHandler;
 
         return $this;

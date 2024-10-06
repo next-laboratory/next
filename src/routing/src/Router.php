@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Next\Routing;
 
+use Psr\Http\Server\MiddlewareInterface;
+
 class Router
 {
     protected const ALL_METHODS = ['GET', 'HEAD', 'POST', 'OPTIONS', 'PUT', 'PATCH', 'DELETE'];
@@ -22,12 +24,13 @@ class Router
      * @param string $namespace   命名空间
      */
     public function __construct(
-        protected string $prefix = '',
-        protected array $patterns = [],
-        protected string $namespace = '',
-        protected array $middlewares = [],
+        protected string           $prefix = '',
+        protected array            $patterns = [],
+        protected string           $namespace = '',
+        protected array            $middlewares = [],
         protected ?RouteCollection $routeCollection = null
-    ) {
+    )
+    {
         $this->routeCollection ??= new RouteCollection();
     }
 
@@ -94,21 +97,9 @@ class Router
     /**
      * Allow multi request methods.
      */
-    public function request(string $path, array|\Closure|string $action, array $methods = ['GET', 'HEAD', 'POST']): Route
+    public function request(string $path, callable $action, array $methods = ['GET', 'HEAD', 'POST']): Route
     {
-        if (is_string($action)) {
-            $action = str_contains($action, '@')
-                ? explode('@', $this->formatController($action), 2)
-                : [$this->formatController($action), '__invoke'];
-        }
-        if ($action instanceof \Closure || count($action) === 2) {
-            if (is_array($action)) {
-                [$controller, $action] = $action;
-                $action                = [$this->formatController($controller), $action];
-            }
-            return $this->routeCollection->add(new Route($methods, $this->prefix . $path, $action, $this->patterns, $this->middlewares));
-        }
-        throw new \InvalidArgumentException('Invalid route action: ' . $path);
+        return $this->routeCollection->add(new Route($methods, $this->prefix . $path, $action, $this->patterns, $this->middlewares));
     }
 
     /**
@@ -122,10 +113,10 @@ class Router
     /**
      * 添加中间件.
      */
-    public function middleware(string ...$middlewares): Router
+    public function middleware(MiddlewareInterface ...$middlewares): Router
     {
         $new              = clone $this;
-        $new->middlewares = \array_unique([...$this->middlewares, ...$middlewares]);
+        $new->middlewares = [...$this->middlewares, ...$middlewares];
 
         return $new;
     }
@@ -153,29 +144,10 @@ class Router
     }
 
     /**
-     * 命名空间.
-     */
-    public function namespace(string $namespace): Router
-    {
-        $new            = clone $this;
-        $new->namespace = \sprintf('%s\%s', $this->namespace, trim($namespace, '\\'));
-
-        return $new;
-    }
-
-    /**
      * 路由收集器.
      */
     public function getRouteCollection(): RouteCollection
     {
         return $this->routeCollection;
-    }
-
-    /**
-     * 将命名空间和控制器拼接起来.
-     */
-    protected function formatController(string $controller): string
-    {
-        return trim($this->namespace . '\\' . ltrim($controller, '\\'), '\\');
     }
 }

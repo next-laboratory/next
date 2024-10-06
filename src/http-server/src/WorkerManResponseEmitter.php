@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @license  https://github.com/next-laboratory/next/blob/master/LICENSE
  */
 
-namespace Next\Http\Server\ResponseEmitter;
+namespace Next\Http\Server;
 
 use Next\Http\Message\Cookie;
 use Next\Http\Message\Stream\FileStream;

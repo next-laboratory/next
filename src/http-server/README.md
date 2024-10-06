@@ -34,7 +34,7 @@ $request = \Next\Http\Message\ServerRequest::createFromGlobals();
 $response = $kernel->handle($request);
 
 // 发送响应
-(new \Next\Http\Server\ResponseEmitter\FPMResponseEmitter())->emit($response);
+(new \Next\Http\Server\FPMResponseEmitter())->emit($response);
 
 ```
 

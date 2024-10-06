@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Next\Routing;
 
+use Psr\Http\Server\MiddlewareInterface;
+
 class Route
 {
     /**
@@ -34,25 +36,25 @@ class Route
      * 初始化数据.
      */
     public function __construct(
-        protected array $methods,
-        protected string $path,
+        protected array          $methods,
+        protected string         $path,
         protected array|\Closure $action,
-        protected array $patterns = [],
-        protected array $middlewares = []
-    ) {
+        protected array          $patterns = [],
+        protected array          $middlewares = []
+    )
+    {
         $compiledPath       = \preg_replace_callback(\sprintf('#%s#', self::VARIABLE_REGEX), function ($matches) {
-            $name           = $matches[1];
+            $name = $matches[1];
             if (isset($matches[2])) {
                 $this->patterns[$name] = $matches[2];
             }
             $this->setParameter($name, null);
             return \sprintf('(?P<%s>%s)', $name, $this->getPattern($name));
-        }, $this->path      = '/' . \trim($this->path, '/'));
+        }, $this->path = '/' . \trim($this->path, '/'));
         $this->compiledPath = \sprintf('#^%s$#iU', $compiledPath);
     }
 
     /**
-     * /**
      * 获取路由参数规则.
      */
     public function getPattern(string $key): string
@@ -108,21 +110,9 @@ class Route
     /**
      * 设置中间件.
      */
-    public function middleware(string ...$middlewares): Route
+    public function middleware(MiddlewareInterface ...$middlewares): static
     {
-        $this->middlewares = array_unique([...$this->middlewares, ...$middlewares]);
-
-        return $this;
-    }
-
-    /**
-     * 排除的中间件.
-     */
-    public function withoutMiddleware(string $middleware): Route
-    {
-        if (($key = array_search($middleware, $this->middlewares)) !== false) {
-            unset($this->middlewares[$key]);
-        }
+        array_push($this->middlewares, ...$middlewares);
 
         return $this;
     }

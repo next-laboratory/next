@@ -6,5 +6,5 @@ use Next\Http\Message\Exception\HttpException;
 
 class MethodNotAllowedException extends HttpException
 {
-    protected $code = 405;
+    protected int $statusCode = 405;
 }
