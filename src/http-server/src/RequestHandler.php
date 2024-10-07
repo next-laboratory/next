@@ -22,7 +22,7 @@ class RequestHandler implements RequestHandlerInterface
         }
 
         if (is_null($this->requestHandler)) {
-            throw new NotFoundException('Not Found', 404);
+            throw new NotFoundException(404, 'Not Found');
         }
 
         return $this->requestHandler->handle($request);

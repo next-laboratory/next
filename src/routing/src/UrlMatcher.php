@@ -52,6 +52,6 @@ class UrlMatcher
             }
         }
 
-        throw new NotFoundException('Not Found', StatusCodeInterface::STATUS_NOT_FOUND);
+        throw new NotFoundException(StatusCodeInterface::STATUS_NOT_FOUND, 'Not Found');
     }
 }
