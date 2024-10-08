@@ -12,8 +12,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 class RequestHandler implements RequestHandlerInterface
 {
     /** @var array<MiddlewareInterface> */
-    protected array                    $middlewares    = [];
-    protected ?RequestHandlerInterface $requestHandler = null;
+    protected array                    $middlewares = [];
+    protected ?RequestHandlerInterface $handler     = null;
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
@@ -21,19 +21,19 @@ class RequestHandler implements RequestHandlerInterface
             return $middleware->process($request, $this);
         }
 
-        if (is_null($this->requestHandler)) {
+        if (is_null($this->handler)) {
             throw new NotFoundException(404, 'Not Found');
         }
 
-        return $this->requestHandler->handle($request);
+        return $this->handler->handle($request);
     }
 
-    public function withHandler(RequestHandlerInterface $requestHandler): static
+    public function withHandler(RequestHandlerInterface $handler): static
     {
-        if ($requestHandler instanceof self) {
-            throw new InvalidArgumentException('Request handler must not be a MiddlewareHandler instance');
+        if ($handler instanceof self) {
+            throw new InvalidArgumentException('Handler must not be an instance of RequestHandler');
         }
-        $this->requestHandler = $requestHandler;
+        $this->handler = $handler;
 
         return $this;
     }
