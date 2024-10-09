@@ -3,17 +3,17 @@
 namespace Next\Http\Server;
 
 use InvalidArgumentException;
-use Next\Http\Server\Exception\NotFoundException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use RuntimeException;
 
 class RequestHandler implements RequestHandlerInterface
 {
     /** @var array<MiddlewareInterface> */
-    protected array                    $middlewares = [];
-    protected ?RequestHandlerInterface $handler     = null;
+    protected array                   $middlewares = [];
+    protected RequestHandlerInterface $handler;
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
@@ -21,8 +21,8 @@ class RequestHandler implements RequestHandlerInterface
             return $middleware->process($request, $this);
         }
 
-        if (is_null($this->handler)) {
-            throw new NotFoundException(404, 'Not Found');
+        if (!isset($this->handler)) {
+            throw new RuntimeException('Handler has not bee set');
         }
 
         return $this->handler->handle($request);

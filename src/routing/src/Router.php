@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace Next\Routing;
 
+use Next\Http\Message\Contract\StatusCodeInterface;
+use Next\Http\Server\Exception\NotFoundException;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 
 class Router
@@ -149,5 +152,37 @@ class Router
     public function getRouteCollection(): RouteCollection
     {
         return $this->routeCollection;
+    }
+
+    /**
+     * 使用Psr Request匹配路由.
+     */
+    public function matchRequest(ServerRequestInterface $request): Route
+    {
+        $path   = '/' . trim($request->getUri()->getPath(), '/');
+        $method = $request->getMethod();
+        return $this->match($method, $path);
+    }
+
+    /**
+     * 使用请求方法和请求path来匹配路由.
+     */
+    public function match(string $method, string $path): Route
+    {
+        foreach ($this->routeCollection->list($method) as $route) {
+            if (($compiledPath = $route->getCompiledPath()) && \preg_match($compiledPath, $path, $match)) {
+                $matchedRoute = clone $route;
+                if (!empty($match)) {
+                    foreach ($route->getParameters() as $key => $value) {
+                        if (\array_key_exists($key, $match)) {
+                            $matchedRoute->setParameter($key, $match[$key]);
+                        }
+                    }
+                }
+                return $matchedRoute;
+            }
+        }
+
+        throw new NotFoundException(StatusCodeInterface::STATUS_NOT_FOUND, 'Not Found');
     }
 }
