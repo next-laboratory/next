@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Next\Routing;
 
 use Next\Http\Message\Contract\StatusCodeInterface;
-use Next\Routing\Exception\MethodNotAllowedException;
+use Next\Http\Server\Exception\MethodNotAllowedException;
 
 class RouteCollection implements \IteratorAggregate, \Countable
 {
@@ -50,7 +50,7 @@ class RouteCollection implements \IteratorAggregate, \Countable
     public function list(string $method): array
     {
         return $this->routes[$method]
-            ?? throw new MethodNotAllowedException('Method not allowed: ' . $method, StatusCodeInterface::STATUS_METHOD_NOT_ALLOWED);
+            ?? throw new MethodNotAllowedException(StatusCodeInterface::STATUS_METHOD_NOT_ALLOWED, 'Method not allowed: ' . $method);
     }
 
     public function count(): int

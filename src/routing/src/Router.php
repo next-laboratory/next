@@ -18,8 +18,6 @@ use Psr\Http\Server\MiddlewareInterface;
 
 class Router
 {
-    protected const ALL_METHODS = ['GET', 'HEAD', 'POST', 'OPTIONS', 'PUT', 'PATCH', 'DELETE'];
-
     /**
      * @param string $prefix      url前缀
      * @param array  $patterns    参数规则
@@ -41,18 +39,18 @@ class Router
      * Allow almost all methods.
      * For example: $router->any('/', [IndexController@class, 'index']).
      *
-     * @param string                $path   the request path
-     * @param array|\Closure|string $action the handling method
+     * @param string   $path   the request path
+     * @param callable $action the handling method
      */
-    public function any(string $path, array|\Closure|string $action): Route
+    public function any(string $path, callable $action): Route
     {
-        return $this->request($path, $action, self::ALL_METHODS);
+        return $this->request($path, $action, ['GET', 'HEAD', 'POST', 'OPTIONS', 'PUT', 'PATCH', 'DELETE']);
     }
 
     /**
      * Method PATCH.
      */
-    public function patch(string $uri, array|\Closure|string $action): Route
+    public function patch(string $uri, callable $action): Route
     {
         return $this->request($uri, $action, ['PATCH']);
     }
@@ -60,7 +58,7 @@ class Router
     /**
      * Method OPTIONS.
      */
-    public function options(string $uri, array|\Closure|string $action): Route
+    public function options(string $uri, callable $action): Route
     {
         return $this->request($uri, $action, ['OPTIONS']);
     }
@@ -68,7 +66,7 @@ class Router
     /**
      * Method PUT.
      */
-    public function put(string $uri, array|\Closure|string $action): Route
+    public function put(string $uri, callable $action): Route
     {
         return $this->request($uri, $action, ['PUT']);
     }
@@ -76,7 +74,7 @@ class Router
     /**
      * Method DELETE.
      */
-    public function delete(string $uri, array|\Closure|string $action): Route
+    public function delete(string $uri, callable $action): Route
     {
         return $this->request($uri, $action, ['DELETE']);
     }
@@ -84,7 +82,7 @@ class Router
     /**
      * Method POST.
      */
-    public function post(string $uri, array|\Closure|string $action): Route
+    public function post(string $uri, callable $action): Route
     {
         return $this->request($uri, $action, ['POST']);
     }
@@ -92,7 +90,7 @@ class Router
     /**
      * Method GET.
      */
-    public function get(string $uri, array|\Closure|string $action): Route
+    public function get(string $uri, callable $action): Route
     {
         return $this->request($uri, $action, ['GET', 'HEAD']);
     }

@@ -31,18 +31,20 @@ class Route
      * 路由参数.
      */
     protected array $parameters = [];
+    protected mixed $action;
 
     /**
      * 初始化数据.
      */
     public function __construct(
-        protected array          $methods,
-        protected string         $path,
-        protected array|\Closure $action,
-        protected array          $patterns = [],
-        protected array          $middlewares = []
+        protected array  $methods,
+        protected string $path,
+        callable         $action,
+        protected array  $patterns = [],
+        protected array  $middlewares = []
     )
     {
+        $this->action       = $action;
         $compiledPath       = \preg_replace_callback(\sprintf('#%s#', self::VARIABLE_REGEX), function ($matches) {
             $name = $matches[1];
             if (isset($matches[2])) {
@@ -127,7 +129,7 @@ class Route
         return $this->methods;
     }
 
-    public function getAction(): array|\Closure|string
+    public function getAction(): callable
     {
         return $this->action;
     }
