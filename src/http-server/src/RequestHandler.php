@@ -17,7 +17,8 @@ class RequestHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        if ($middleware = array_shift($this->middlewares)) {
+        if ($middleware = current($this->middlewares)) {
+            next($this->middlewares);
             return $middleware->process($request, $this);
         }
 
