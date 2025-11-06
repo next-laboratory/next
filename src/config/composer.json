@@ -19,7 +19,7 @@
   },
   "require": {
     "php": "^8.2",
-    "next/utils": "~0.1"
+    "next/utils": "^0.2"
   },
   "extra": {
     "branch-alias": {
