@@ -18,7 +18,7 @@
     "php": "^8.2",
     "next/di": "^0.2",
     "nikic/php-parser": "^5.1",
-    "symfony/finder": "^7.0｜^8.0",
+    "symfony/finder": "^7.0|^8.0.3",
     "symfony/string": "^7.0|^8.0"
   },
   "extra": {
