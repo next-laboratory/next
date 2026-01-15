@@ -25,6 +25,14 @@
 - database [next/database](https://github.com/next-laboratory/database) 
 - session [next/session](https://github.com/next-laboratory/session) 
 
+## 将仓库分离出去
+
+```shell
+git subtree split --prefix=src/utils -b utils
+git remote add utils git@github.com:next-laboratory/utils.git
+git push utils utils:master
+```
+
 ## 贡献一览
 
 [![Contributor over time](https://contributor-overtime-api.apiseven.com/contributors-svg?chart=contributorOverTime&repo=next-laboratory/next)](https://contributor-overtime-api.apiseven.com/contributors-svg?chart=contributorOverTime&repo=next-laboratory/next)
